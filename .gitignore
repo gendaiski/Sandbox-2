@@ -1,0 +1,13 @@
+# Upstream repos are cloned here by scripts/clone_all.sh, not committed
+vendor/
+
+# Per-system environments and outputs
+.venv/
+node_modules/
+dist/
+systems/*/reports/
+systems/*/output/
+systems/*/rag_storage/
+__pycache__/
+*.pyc
+.env

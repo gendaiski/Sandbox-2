@@ -1,0 +1,165 @@
+{
+  "id": "contract-review",
+  "name": "Contract review (harness fixture)",
+  "nodes": [
+    {
+      "id": "intake",
+      "label": "Intake contract",
+      "kind": "agent",
+      "position": {
+        "x": 80.0,
+        "y": 160.0
+      },
+      "agent": {
+        "system_prompt": "You triage incoming commercial contracts.",
+        "task_prompt": "Read the contract and return the parties, contract type and governing law.",
+        "model": "gpt-5.5",
+        "requestUserInput": false,
+        "output_schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "parties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "contract_type": {
+              "type": "string"
+            },
+            "governing_law": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "parties",
+            "contract_type",
+            "governing_law"
+          ]
+        }
+      }
+    },
+    {
+      "id": "clauses",
+      "label": "Extract key clauses",
+      "kind": "agent",
+      "position": {
+        "x": 340.0,
+        "y": 60.0
+      },
+      "agent": {
+        "system_prompt": "You extract key clauses from contracts verbatim.",
+        "task_prompt": "Using the intake summary, extract the liability, termination and confidentiality clauses.",
+        "model": "gpt-5.5",
+        "requestUserInput": false,
+        "output_schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "liability": {
+              "type": "string"
+            },
+            "termination": {
+              "type": "string"
+            },
+            "confidentiality": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "liability",
+            "termination",
+            "confidentiality"
+          ]
+        }
+      }
+    },
+    {
+      "id": "risks",
+      "label": "Flag risks",
+      "kind": "agent",
+      "position": {
+        "x": 340.0,
+        "y": 260.0
+      },
+      "agent": {
+        "system_prompt": "You review commercial contracts for client-side risk.",
+        "task_prompt": "Using the intake summary, list the highest-risk terms with a one-line reason each.",
+        "model": "gpt-5.5",
+        "requestUserInput": false,
+        "output_schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "risks": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "risks"
+          ]
+        }
+      }
+    },
+    {
+      "id": "memo",
+      "label": "Review memo",
+      "kind": "agent",
+      "position": {
+        "x": 600.0,
+        "y": 160.0
+      },
+      "agent": {
+        "system_prompt": "You write concise contract review memos for a supervising lawyer.",
+        "task_prompt": "Combine the extracted clauses and flagged risks into a review memo with recommended redlines.",
+        "model": "gpt-5.5",
+        "requestUserInput": false,
+        "output_schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "summary": {
+              "type": "string"
+            },
+            "redlines": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "summary",
+            "redlines"
+          ]
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "intake-clauses",
+      "from": "intake",
+      "to": "clauses"
+    },
+    {
+      "id": "intake-risks",
+      "from": "intake",
+      "to": "risks"
+    },
+    {
+      "id": "clauses-memo",
+      "from": "clauses",
+      "to": "memo"
+    },
+    {
+      "id": "risks-memo",
+      "from": "risks",
+      "to": "memo"
+    }
+  ]
+}

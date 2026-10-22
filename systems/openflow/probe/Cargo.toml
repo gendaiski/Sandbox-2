@@ -1,0 +1,13 @@
+[package]
+name = "openflow-probe"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Runs OpenFlow's own workflow validator over workflow JSON files"
+
+# Standalone: not part of the vendored OpenFlow workspace.
+[workspace]
+
+[dependencies]
+engine = { path = "../../../vendor/openflow/crates/engine" }
+serde_json = "1"
