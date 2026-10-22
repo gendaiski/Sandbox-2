@@ -3,6 +3,7 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   plugins: [react()],
+  base: './', // relative asset URLs, so the build works from any path
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/setupTests.ts'],

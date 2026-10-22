@@ -10,7 +10,9 @@ ROOT="$HERE/../.."
 [ -d "$HERE/.venv" ] || uv venv -q --python 3.12 "$HERE/.venv"
 PY="$HERE/.venv/bin/python"
 if [ "${1:-}" = "--full" ]; then
-  uv pip install -q --python "$PY" -e "$ROOT/vendor/rag-anything[image,text]"
+  # MinerU 4 renamed the `core` extra RAG-Anything asks for, which silently
+  # installs MinerU without its parsing engine; stay on the 3.x line it targets.
+  uv pip install -q --python "$PY" -e "$ROOT/vendor/rag-anything[image,text]" "mineru[core]>=3.4.1,<4"
 else
   # Skip mineru[core]: only document parsing needs it.
   uv pip install -q --python "$PY" --no-deps -e "$ROOT/vendor/rag-anything"

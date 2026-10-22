@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Alert,
   AlertDescription,
@@ -45,14 +45,22 @@ export const CLAUSES: Clause[] = [
 const RISK_BADGE = { low: 'success', medium: 'warning', high: 'destructive' } as const
 
 /** A small contract-review console that exercises a spread of Prism components. */
-export function App() {
+export function App({ initialDark = false }: { initialDark?: boolean }) {
   const [pack, setPack] = useState<PackId>('default')
-  const [dark, setDark] = useState(false)
+  const [dark, setDark] = useState(initialDark)
   const [query, setQuery] = useState('')
   const [approved, setApproved] = useState<string[]>([])
 
   const visible = CLAUSES.filter((c) => c.title.toLowerCase().includes(query.toLowerCase()))
   const attrs = themeAttributes({ pack, mode: dark ? 'dark' : 'light' })
+
+  // Mirror the theme onto <html> too, so the page background follows it.
+  useEffect(() => {
+    const root = document.documentElement
+    root.classList.toggle('dark', dark)
+    if (pack === 'default') root.removeAttribute('data-pack')
+    else root.setAttribute('data-pack', pack)
+  }, [pack, dark])
 
   return (
     <div {...attrs} data-testid="theme-root" style={{ padding: 24, maxWidth: 880, margin: '0 auto' }}>

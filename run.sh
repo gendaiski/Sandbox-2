@@ -9,10 +9,6 @@ SYSTEMS=(chunknorris chunckerflow pdfstract oxr rag-anything openflow prism-ui l
 
 script_for() { echo "$ROOT/systems/$1/test_${1//-/_}.py"; }
 
-python_for() {
-  local venv="$ROOT/systems/$1/.venv/bin/python"
-  if [ -x "$venv" ]; then echo "$venv"; else echo python3; fi
-}
 
 run_one() {
   local name="$1"; shift
@@ -29,7 +25,13 @@ run_one() {
     echo "==> setting up $name"
     "$ROOT/systems/$name/setup.sh" || return 1
   fi
-  "$(python_for "$name")" "$(script_for "$name")" "${args[@]}"
+  # Act as an activated venv, so tools a system shells out to (e.g. mineru) resolve.
+  local venv="$ROOT/systems/$name/.venv"
+  if [ -d "$venv" ]; then
+    (export VIRTUAL_ENV="$venv" PATH="$venv/bin:$PATH"; "$venv/bin/python" "$(script_for "$name")" "${args[@]}")
+  else
+    python3 "$(script_for "$name")" "${args[@]}"
+  fi
 }
 
 case "${1:-}" in
