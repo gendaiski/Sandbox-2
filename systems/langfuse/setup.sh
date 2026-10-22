@@ -22,13 +22,19 @@ uv pip install -q --python "$HERE/.venv/bin/python" "langfuse>=3" httpx
 if [ "${1:-}" != "--sdk" ]; then
   "${COMPOSE[@]}" up -d
   echo -n "waiting for http://localhost:3000/api/public/health "
+  up=0
   for _ in $(seq 1 120); do
     if curl -fsS http://localhost:3000/api/public/health >/dev/null 2>&1; then
+      up=1
       echo " up"
       break
     fi
     echo -n "."
     sleep 5
   done
+  if [ $up -eq 0 ]; then
+    echo " not healthy after 10 minutes; see: ${COMPOSE[*]} logs langfuse-web" >&2
+    exit 1
+  fi
 fi
 echo "langfuse ready (UI: http://localhost:3000, login harness@example.com / harness-password-123)"

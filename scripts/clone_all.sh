@@ -30,7 +30,7 @@ for name in "${names[@]}"; do
   if [ -d "$dest/.git" ]; then
     echo "==> updating $name"
     git -C "$dest" pull --ff-only -q
-  elif command -v gh >/dev/null 2>&1; then
+  elif command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
     echo "==> gh repo clone $slug"
     gh repo clone "$slug" "$dest" -- --depth 1 -q
   else

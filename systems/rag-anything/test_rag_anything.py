@@ -276,7 +276,9 @@ with h.check("parser: MinerU parses the sample PDF (setup.sh --full)") as c:
         rag = make_rag(tmp, fake_llm, fake_embed, DIM, parser="mineru")
         c.expect(rag.check_parser_installation(), "mineru CLI available")
         out = Path(tmp) / "parsed"
-        asyncio.run(rag.process_document_complete(str(SAMPLES / "service_agreement.pdf"), output_dir=str(out)))
+        # pipeline backend on CPU: works without a GPU; models download on first use.
+        asyncio.run(rag.process_document_complete(
+            str(SAMPLES / "service_agreement.pdf"), output_dir=str(out), backend="pipeline", device="cpu"))
         produced = list(out.rglob("*.json"))
         c.expect(produced, "MinerU wrote a content list")
         c.note(f"{len(produced)} json files from MinerU")
