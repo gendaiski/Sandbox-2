@@ -1,0 +1,177 @@
+<title>Systems Test Bench</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap">
+<style>
+/* Layout: a lab ledger. Status line, four totals, the systems table with every link, then every check. */
+:root {
+  --bg: #f4f5f3; --panel: #ffffff; --ink: #1b2124; --muted: #5d676c; --line: #dadfdc;
+  --accent: #1f6f8b; --ok: #2c7a3f; --bad: #b3261e; --warn: #8a5a00;
+  --ok-soft: #e3f1e6; --bad-soft: #f9e3e1; --warn-soft: #f6ecd8;
+  --f-display: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121618; --panel: #1a1f22; --ink: #e5e9ea; --muted: #9aa4a8; --line: #2c3437;
+  --accent: #6cc3dd; --ok: #79c98b; --bad: #f08a80; --warn: #e3b55a;
+  --ok-soft: #1d3324; --bad-soft: #3b2220; --warn-soft: #382d17; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121618; --panel: #1a1f22; --ink: #e5e9ea; --muted: #9aa4a8; --line: #2c3437;
+  --accent: #6cc3dd; --ok: #79c98b; --bad: #f08a80; --warn: #e3b55a;
+  --ok-soft: #1d3324; --bad-soft: #3b2220; --warn-soft: #382d17; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 32px 56px; display: grid; gap: 24px; }
+h1 { margin: 0; font: 500 clamp(1.8rem, 4vw, 2.5rem)/1.1 var(--f-display); letter-spacing: -0.01em; text-wrap: balance; }
+.lede { margin: 6px 0 0; color: var(--muted); max-width: 72ch; }
+.lede a, .note a { color: var(--accent); }
+.tiles { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); }
+.tile { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; display: grid; gap: 2px; }
+.tile span { font-size: 0.8rem; color: var(--muted); letter-spacing: 0.02em; }
+.tile b { font: 400 2rem/1.15 var(--f-display); font-variant-numeric: tabular-nums; }
+.tile b small { font: 400 0.95rem var(--f-body); color: var(--muted); }
+.tile.is-bad b { color: var(--bad); }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; display: grid; gap: 10px; min-width: 0; }
+.card h2 { margin: 0; font: 600 1.05rem var(--f-body); }
+.note { margin: 0; font-size: 0.85rem; color: var(--muted); }
+.scroll { overflow: auto; min-width: 0; }
+.scroll.tall { max-height: 34rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+th { text-align: left; font-weight: 500; font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted);
+  padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; position: sticky; top: 0; background: var(--panel); }
+td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+.num { text-align: right; }
+.name { font-weight: 600; white-space: nowrap; }
+.kind { color: var(--muted); white-space: nowrap; }
+.wrapcell { min-width: 16rem; color: var(--muted); }
+.mono { font-family: var(--f-mono); font-size: 0.82rem; }
+td a { color: var(--accent); text-underline-offset: 2px; white-space: nowrap; }
+a:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pill { display: inline-block; font-size: 0.78rem; font-weight: 500; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.pill.pass { color: var(--ok); background: var(--ok-soft); }
+.pill.fail { color: var(--bad); background: var(--bad-soft); }
+.pill.skip { color: var(--warn); background: var(--warn-soft); }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; }
+.controls input, .controls select { font: inherit; font-size: 0.9rem; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; min-width: 0; }
+.controls input { flex: 1 1 14rem; }
+.count { font-size: 0.8rem; color: var(--muted); align-self: center; }
+footer { font-size: 0.8rem; color: var(--muted); }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Systems Test Bench</h1>
+    <p class="lede" id="lede"></p>
+  </header>
+
+  <section class="tiles" aria-label="Totals">
+    <div class="tile"><span>Jobs passing</span><b id="t-passing"></b></div>
+    <div class="tile"><span>Checks passed</span><b id="t-passed"></b></div>
+    <div class="tile" id="tile-failed"><span>Checks failed</span><b id="t-failed"></b></div>
+    <div class="tile"><span>Checks skipped</span><b id="t-skipped"></b></div>
+  </section>
+
+  <section class="card" id="systems">
+    <h2>Systems</h2>
+    <p class="note">One CI job per system on GitHub's runners. Each row links to its test code, its CI job, the upstream project and, for Prism UI, the live demo.</p>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>System</th><th>Kind</th><th>Status</th><th class="num">Passed</th><th class="num">Failed</th><th class="num">Skipped</th><th>Test code</th><th>CI</th><th>Upstream</th><th>Demo</th><th>Finding</th></tr></thead>
+        <tbody id="systems-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card" id="checks">
+    <h2>Every check</h2>
+    <p class="note">What each job ran, from its CI report. A skip names what it needs, such as an API key.</p>
+    <div class="controls">
+      <input id="check-search" type="search" placeholder="Search checks" aria-label="Search checks">
+      <select id="check-system" aria-label="System"><option value="">All systems</option></select>
+      <select id="check-status" aria-label="Result"><option value="">Any result</option><option>Pass</option><option>Fail</option><option>Skip</option></select>
+      <span class="count" id="check-count"></span>
+    </div>
+    <div class="scroll tall">
+      <table>
+        <thead><tr><th>System</th><th>Check</th><th>Result</th><th class="num">Seconds</th><th>Detail</th></tr></thead>
+        <tbody id="checks-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>Results from {{RUN_LINK}} on gendaiski/Sandbox-2, built by <span class="mono">scripts/build_bench_page.py</span>.</footer>
+</div>
+
+<script>
+const BENCH = /*BENCH_DATA*/null;
+
+(() => {
+  const el = (tag, props = {}, ...kids) => {
+    const n = document.createElement(tag);
+    Object.assign(n, props);
+    kids.forEach((k) => k != null && n.append(k));
+    return n;
+  };
+  const link = (text, href) => text && href ? el('a', { href, target: '_blank', rel: 'noopener', textContent: text }) : (text || '');
+  const pill = (status) => el('span', { className: 'pill ' + (/^pass/i.test(status) ? 'pass' : /^fail/i.test(status) ? 'fail' : 'skip'), textContent: status });
+  const n = (v) => Number(v).toLocaleString('en');
+
+  const { systems, checks, totals } = BENCH;
+  document.getElementById('t-passing').append(n(totals.passing), ' ', el('small', { textContent: 'of ' + n(totals.jobs) }));
+  document.getElementById('t-passed').textContent = n(totals.passed);
+  document.getElementById('t-failed').textContent = n(totals.failed);
+  document.getElementById('t-skipped').textContent = n(totals.skipped);
+  if (totals.failed) document.getElementById('tile-failed').classList.add('is-bad');
+
+  const failing = systems.filter((s) => s.failed > 0).map((s) => s.system);
+  document.getElementById('lede').textContent = failing.length
+    ? `Eight systems, each tested on its own in a separate CI job. Failing now: ${failing.join(', ')}. Everything else passes.`
+    : 'Eight systems, each tested on its own in a separate CI job, and every job passes.';
+
+  const sysBody = document.getElementById('systems-body');
+  for (const s of systems) {
+    sysBody.append(el('tr', {},
+      el('td', { className: 'name', textContent: s.system }),
+      el('td', { className: 'kind', textContent: s.kind }),
+      el('td', {}, pill(s.status)),
+      el('td', { className: 'num', textContent: n(s.passed) }),
+      el('td', { className: 'num', textContent: n(s.failed) }),
+      el('td', { className: 'num', textContent: n(s.skipped) }),
+      el('td', { className: 'mono' }, link(s.code, s.code_url)),
+      el('td', {}, link(s.ci_label, s.ci_url)),
+      el('td', { className: 'mono' }, link(s.upstream, s.upstream_url)),
+      el('td', {}, link(s.demo_label, s.demo_url)),
+      el('td', { className: 'wrapcell', textContent: s.finding }),
+    ));
+  }
+
+  const search = document.getElementById('check-search');
+  const sysSel = document.getElementById('check-system');
+  const statusSel = document.getElementById('check-status');
+  [...new Set(checks.map((c) => c.system))].forEach((s) => sysSel.append(new Option(s, s)));
+
+  function drawChecks() {
+    const q = search.value.trim().toLowerCase();
+    const rows = checks.filter((c) =>
+      (!sysSel.value || c.system === sysSel.value) &&
+      (!statusSel.value || c.status === statusSel.value) &&
+      (!q || `${c.system} ${c.check} ${c.detail}`.toLowerCase().includes(q)));
+    document.getElementById('checks-body').replaceChildren(...rows.map((c) => el('tr', {},
+      el('td', { className: 'name', textContent: c.system }),
+      el('td', { textContent: c.check }),
+      el('td', {}, pill(c.status)),
+      el('td', { className: 'num', textContent: Number(c.seconds).toFixed(2) }),
+      el('td', { className: 'wrapcell', textContent: c.detail }),
+    )));
+    document.getElementById('check-count').textContent = `${rows.length} of ${checks.length} checks`;
+  }
+  [search, sysSel, statusSel].forEach((x) => x.addEventListener('input', drawChecks));
+  drawChecks();
+})();
+</script>

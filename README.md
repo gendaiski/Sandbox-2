@@ -40,11 +40,12 @@ Add an `OPENAI_API_KEY` repository secret to turn on the live OpenAI checks.
 Run the workflow by hand with *oxr_free_api* ticked to also parse the sample
 PDF on SoMark's free OXR API.
 
-The [Systems Test Bench](https://claude.ai/artifact/Lt2sBtvUQH4iQ19WMs57GZ)
-dashboard shows the latest CI results with every link, and the
-[Prism Review Console](https://claude.ai/artifact/R23JKwzoct7jFaKdRVNqot)
-is the Prism UI demo, live. Both are private until shared.
-`scripts/build_bench_data.py` rebuilds the dashboard's data from the CI reports.
+The latest results with every link are in [bench/README.md](bench/README.md),
+and as a page in the [Systems Test Bench](https://claude.ai/artifact/VXzNk7C8qtwaYUJKTZrK7U).
+The [Prism Review Console](https://claude.ai/artifact/R23JKwzoct7jFaKdRVNqot)
+is the Prism UI demo, live. Both pages are private until shared.
+`scripts/build_bench_data.py` and `scripts/build_bench_page.py` rebuild
+`bench/` from the CI reports; the last CI job commits it.
 
 ## The systems
 
