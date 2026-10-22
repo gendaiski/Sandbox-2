@@ -12,11 +12,11 @@
   "code": "systems/chunknorris",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/chunknorris",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/39822344113/job/119976606142",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/39826929937/job/119992561034",
   "demo_label": "",
   "demo_url": "",
   "finding": "Imports psutil without declaring it; setup adds it.",
-  "ran_at": "2026-10-22T17:24:23+0000"
+  "ran_at": "2026-10-22T17:56:02+0000"
  },
  {
   "job": "chunckerflow-full",
@@ -31,11 +31,11 @@
   "code": "systems/chunckerflow",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/chunckerflow",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/39822344113/job/119976606230",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/39826929937/job/119992561771",
   "demo_label": "",
   "demo_url": "",
   "finding": "No issues found.",
-  "ran_at": "2026-10-22T17:26:41+0000"
+  "ran_at": "2026-10-22T17:57:36+0000"
  },
  {
   "job": "pdfstract",
@@ -50,11 +50,11 @@
   "code": "systems/pdfstract",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/pdfstract",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/39822344113/job/119976606133",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/39826929937/job/119992561697",
   "demo_label": "",
   "demo_url": "",
   "finding": "pymupdf4llm 2.0 on PyPI is an empty package; setup pins <2.",
-  "ran_at": "2026-10-22T17:27:19+0000"
+  "ran_at": "2026-10-22T17:57:29+0000"
  },
  {
   "job": "oxr",
@@ -69,11 +69,11 @@
   "code": "systems/oxr",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/oxr",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/39822344113/job/119976605697",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/39826929937/job/119992561395",
   "demo_label": "",
   "demo_url": "",
   "finding": "2 of 622 upstream unit tests fail (demo keep_header_footer default).",
-  "ran_at": "2026-10-22T17:24:30+0000"
+  "ran_at": "2026-10-22T17:56:11+0000"
  },
  {
   "job": "rag-anything",
@@ -88,11 +88,11 @@
   "code": "systems/rag-anything",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/rag-anything",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/39822344113/job/119976606452",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/39826929937/job/119992561659",
   "demo_label": "",
   "demo_url": "",
   "finding": "Requires a parser even for pre-parsed content; test registers a stub.",
-  "ran_at": "2026-10-22T17:29:18+0000"
+  "ran_at": "2026-10-22T17:57:51+0000"
  },
  {
   "job": "rag-anything-full",
@@ -107,11 +107,11 @@
   "code": "systems/rag-anything",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/rag-anything",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/39822344113/job/119976606040",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/39826929937/job/119992561687",
   "demo_label": "",
   "demo_url": "",
   "finding": "Asks for mineru[core], which MinerU 4 dropped; setup pins MinerU 3.",
-  "ran_at": "2026-10-22T17:26:58+0000"
+  "ran_at": "2026-10-22T17:59:51+0000"
  },
  {
   "job": "openflow",
@@ -126,11 +126,11 @@
   "code": "systems/openflow",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/openflow",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/39822344113/job/119976606209",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/39826929937/job/119992561574",
   "demo_label": "",
   "demo_url": "",
   "finding": "Non-object output schemas fall back to a default instead of failing.",
-  "ran_at": "2026-10-22T17:28:08+0000"
+  "ran_at": "2026-10-22T17:59:04+0000"
  },
  {
   "job": "prism-ui",
@@ -145,11 +145,11 @@
   "code": "systems/prism-ui",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/prism-ui",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/39822344113/job/119976608063",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/39826929937/job/119992561436",
   "demo_label": "Open demo",
   "demo_url": "https://claude.ai/artifact/R23JKwzoct7jFaKdRVNqot",
   "finding": "No issues found.",
-  "ran_at": "2026-10-22T17:24:29+0000"
+  "ran_at": "2026-10-22T17:56:05+0000"
  },
  {
   "job": "langfuse",
@@ -164,10 +164,10 @@
   "code": "systems/langfuse",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/langfuse",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/39822344113/job/119976606271",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/39826929937/job/119992561633",
   "demo_label": "",
   "demo_url": "",
   "finding": "No issues found; ran against a real self-hosted server.",
-  "ran_at": "2026-10-22T17:27:30+0000"
+  "ran_at": "2026-10-22T17:58:29+0000"
  }
 ]
