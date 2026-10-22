@@ -94,3 +94,39 @@ jobs:
           name: report-${{ matrix.system }}${{ matrix.setup && '-full' || '' }}
           path: systems/${{ matrix.system }}/reports/latest.json
           if-no-files-found: ignore
+
+  bench:
+    # Collects every job's report into bench/ on this branch, for the
+    # Systems Test Bench dashboard. [skip ci] keeps the commit from re-running CI.
+    name: bench data
+    needs: test
+    if: always() && github.event_name != 'pull_request' && github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: report-*
+          path: bench-reports
+      - name: Link each row to its CI job
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs?per_page=50"
+          --jq '[.jobs[] | {(.name): .html_url}] | add' > jobs.json
+      - name: Build bench data
+        run: |
+          python3 scripts/build_bench_data.py bench-reports jobs.json bench
+          echo '{"run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "sha": "${{ github.sha }}"}' > bench/run.json
+      - name: Commit bench data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add bench
+          git diff --cached --quiet && exit 0
+          git commit -m "Update bench data from CI run ${{ github.run_number }} [skip ci]"
+          git pull --rebase origin "${{ github.ref_name }}"
+          git push origin HEAD:"${{ github.ref_name }}"

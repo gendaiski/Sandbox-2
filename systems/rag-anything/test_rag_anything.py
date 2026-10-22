@@ -173,6 +173,8 @@ async def offline_e2e(c, workdir: str) -> None:
 
 state: dict = {}
 work = tempfile.mkdtemp(prefix="raganything-")
+# One loop for the whole run: LightRAG's shared storage keeps process-wide
+# locks bound to the loop that first used them.
 loop = asyncio.new_event_loop()
 
 try:
@@ -263,7 +265,7 @@ with h.check("live: OpenAI models answer from the ingested agreement") as c:
         return answer
 
     with tempfile.TemporaryDirectory() as tmp:
-        answer = asyncio.run(live(tmp))
+        answer = loop.run_until_complete(live(tmp))
     c.note(f"answer: {str(answer)[:160]!r}")
     c.expect(re.search(r"24|twenty-four", str(answer), re.I), "answer mentions the 24-month term")
 
@@ -277,7 +279,7 @@ with h.check("parser: MinerU parses the sample PDF (setup.sh --full)") as c:
         c.expect(rag.check_parser_installation(), "mineru CLI available")
         out = Path(tmp) / "parsed"
         # pipeline backend on CPU: works without a GPU; models download on first use.
-        asyncio.run(rag.process_document_complete(
+        loop.run_until_complete(rag.process_document_complete(
             str(SAMPLES / "service_agreement.pdf"), output_dir=str(out), backend="pipeline", device="cpu"))
         produced = list(out.rglob("*.json"))
         c.expect(produced, "MinerU wrote a content list")

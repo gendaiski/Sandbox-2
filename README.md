@@ -29,6 +29,23 @@ download or a running service skips and says what to set.
 Requirements: `uv`, Python 3.12, `git`. Prism UI needs `node` and `pnpm`, OpenFlow
 needs Rust, and Langfuse needs Docker.
 
+## CI: every system, separately, on GitHub's runners
+
+`.github/workflows/systems.yml` runs one job per system on every push, with
+the checks that need network, model downloads or Docker switched on:
+Langfuse self-hosted, PDFStract embeddings, the ChunckerFlow semantic chunker,
+MinerU parsing for RAG-Anything, and the OpenFlow orchestration E2E. Each job
+writes its results to the job summary and uploads `report-<name>`.
+Add an `OPENAI_API_KEY` repository secret to turn on the live OpenAI checks.
+Run the workflow by hand with *oxr_free_api* ticked to also parse the sample
+PDF on SoMark's free OXR API.
+
+The [Systems Test Bench](https://claude.ai/artifact/Lt2sBtvUQH4iQ19WMs57GZ)
+dashboard shows the latest CI results with every link, and the
+[Prism Review Console](https://claude.ai/artifact/R23JKwzoct7jFaKdRVNqot)
+is the Prism UI demo, live. Both are private until shared.
+`scripts/build_bench_data.py` rebuilds the dashboard's data from the CI reports.
+
 ## The systems
 
 | System | What the test does | Opt-in extras |
@@ -57,5 +74,7 @@ needs Rust, and Langfuse needs Docker.
   downloaded.
 - **OpenFlow** doesn't reject an output schema that isn't object-shaped. It
   replaces it with a default schema, and a check documents that behaviour.
-- **Langfuse:** the test targets SDK v5. It wasn't run against a live server
-  here, because the sandbox it was written in couldn't pull the images.
+- **MinerU 4** dropped the `core` extra that RAG-Anything still requests, so a
+  plain install leaves MinerU without torch. `setup.sh --full` pins
+  `mineru[core]>=3.4.1,<4`.
+- **Langfuse:** 9/9 checks pass against a real self-hosted Langfuse (4.68.0) in CI.
