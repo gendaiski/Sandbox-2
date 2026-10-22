@@ -16,6 +16,10 @@ bench = Path(sys.argv[1] if len(sys.argv) > 1 else Path(__file__).resolve().pare
 systems = json.loads((bench / "systems.json").read_text())
 checks = json.loads((bench / "checks.json").read_text())
 run = json.loads((bench / "run.json").read_text()) if (bench / "run.json").exists() else {}
+artifacts = json.loads((bench / "artifacts.json").read_text()) if (bench / "artifacts.json").exists() else {}
+# Each CI row links to its system's report page (both RAG-Anything jobs share one).
+for s in systems:
+    s["report_url"] = artifacts.get(s["job"].removesuffix("-full"), "")
 
 totals = {
     "jobs": len(systems),
@@ -38,13 +42,13 @@ lines = [
     f"{totals['passed']} checks passed, {totals['failed']} failed, {totals['skipped']} skipped"
     + (f" · [CI run]({run['run_url']})" if run.get("run_url") else ""),
     "",
-    "| System | Status | Passed | Failed | Skipped | Test code | CI | Upstream | Demo | Finding |",
-    "|---|---|---:|---:|---:|---|---|---|---|---|",
+    "| System | Status | Passed | Failed | Skipped | Report | Test code | CI | Upstream | Demo | Finding |",
+    "|---|---|---:|---:|---:|---|---|---|---|---|---|",
 ]
 for s in systems:
     lines.append("| " + " | ".join([
         s["system"], s["status"], str(s["passed"]), str(s["failed"]), str(s["skipped"]),
-        md_link(s["code"], s["code_url"]), md_link(s["ci_label"], s["ci_url"]),
+        md_link("Report", s["report_url"]), md_link(s["code"], s["code_url"]), md_link(s["ci_label"], s["ci_url"]),
         md_link(s["upstream"], s["upstream_url"]), md_link(s["demo_label"], s["demo_url"]),
         s["finding"].replace("|", "\\|"),
     ]) + " |")

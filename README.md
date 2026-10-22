@@ -41,10 +41,11 @@ Run the workflow by hand with *oxr_free_api* ticked to also parse the sample
 PDF on SoMark's free OXR API.
 
 The latest results with every link are in [bench/README.md](bench/README.md),
-and as a page in the [Systems Test Bench](https://claude.ai/artifact/VXzNk7C8qtwaYUJKTZrK7U).
+and as a page in the [Systems Test Bench](https://claude.ai/artifact/VXzNk7C8qtwaYUJKTZrK7U),
+which links to a report page for each system (`bench/artifacts.json` lists them all).
 The [Prism Review Console](https://claude.ai/artifact/R23JKwzoct7jFaKdRVNqot)
 is the Prism UI demo, live. Both pages are private until shared.
-`scripts/build_bench_data.py` and `scripts/build_bench_page.py` rebuild
+`scripts/build_bench_data.py`, `build_bench_page.py` and `build_system_pages.py` rebuild
 `bench/` from the CI reports; the last CI job commits it.
 
 ## The systems

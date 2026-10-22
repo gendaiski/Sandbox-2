@@ -79,10 +79,10 @@ footer { font-size: 0.8rem; color: var(--muted); }
 
   <section class="card" id="systems">
     <h2>Systems</h2>
-    <p class="note">One CI job per system on GitHub's runners. Each row links to its test code, its CI job, the upstream project and, for Prism UI, the live demo.</p>
+    <p class="note">One CI job per system on GitHub's runners. Each row links to its report page, its test code, its CI job, the upstream project and, for Prism UI, the live demo.</p>
     <div class="scroll">
       <table>
-        <thead><tr><th>System</th><th>Kind</th><th>Status</th><th class="num">Passed</th><th class="num">Failed</th><th class="num">Skipped</th><th>Test code</th><th>CI</th><th>Upstream</th><th>Demo</th><th>Finding</th></tr></thead>
+        <thead><tr><th>System</th><th>Kind</th><th>Status</th><th class="num">Passed</th><th class="num">Failed</th><th class="num">Skipped</th><th>Report</th><th>Test code</th><th>CI</th><th>Upstream</th><th>Demo</th><th>Finding</th></tr></thead>
         <tbody id="systems-body"></tbody>
       </table>
     </div>
@@ -143,6 +143,7 @@ const BENCH = /*BENCH_DATA*/null;
       el('td', { className: 'num', textContent: n(s.passed) }),
       el('td', { className: 'num', textContent: n(s.failed) }),
       el('td', { className: 'num', textContent: n(s.skipped) }),
+      el('td', {}, link(s.report_url ? 'Report' : '', s.report_url)),
       el('td', { className: 'mono' }, link(s.code, s.code_url)),
       el('td', {}, link(s.ci_label, s.ci_url)),
       el('td', { className: 'mono' }, link(s.upstream, s.upstream_url)),
