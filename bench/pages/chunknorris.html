@@ -1,0 +1,108 @@
+<title>ChunkNorris Test Report</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #f4f5f3; --panel: #ffffff; --ink: #1b2124; --muted: #5d676c; --line: #dadfdc;
+  --accent: #1f6f8b; --ok: #2c7a3f; --bad: #b3261e; --warn: #8a5a00;
+  --ok-soft: #e3f1e6; --bad-soft: #f9e3e1; --warn-soft: #f6ecd8;
+  --f-display: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121618; --panel: #1a1f22; --ink: #e5e9ea; --muted: #9aa4a8; --line: #2c3437;
+  --accent: #6cc3dd; --ok: #79c98b; --bad: #f08a80; --warn: #e3b55a;
+  --ok-soft: #1d3324; --bad-soft: #3b2220; --warn-soft: #382d17; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121618; --panel: #1a1f22; --ink: #e5e9ea; --muted: #9aa4a8; --line: #2c3437;
+  --accent: #6cc3dd; --ok: #79c98b; --bad: #f08a80; --warn: #e3b55a;
+  --ok-soft: #1d3324; --bad-soft: #3b2220; --warn-soft: #382d17; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.55 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1040px; margin: 0 auto; padding-block: 28px 56px; display: grid; gap: 20px; }
+.crumb { font-size: 0.85rem; color: var(--muted); }
+.crumb a, .prose a, .links a, footer a { color: var(--accent); text-underline-offset: 2px; }
+.head { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: baseline; }
+h1 { margin: 0; font: 500 clamp(1.8rem, 4vw, 2.4rem)/1.1 var(--f-display); letter-spacing: -0.01em; text-wrap: balance; }
+.kind { color: var(--muted); }
+.lede { margin: 0; max-width: 70ch; font-size: 1.05rem; }
+.tiles { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr)); }
+.tile { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; display: grid; gap: 2px; }
+.tile span { font-size: 0.8rem; color: var(--muted); }
+.tile b { font: 400 1.8rem/1.15 var(--f-display); font-variant-numeric: tabular-nums; }
+.tile.is-bad b { color: var(--bad); }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; display: grid; gap: 10px; min-width: 0; }
+.card h2 { margin: 0; font: 600 1.02rem var(--f-body); }
+.prose { margin: 0; max-width: 70ch; }
+.muted { color: var(--muted); }
+.links { display: grid; gap: 6px 24px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); margin: 0; }
+.links div { display: grid; min-width: 0; }
+.links dt { font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.links dd { margin: 0; overflow-wrap: anywhere; font-family: var(--f-mono); font-size: 0.85rem; }
+.scroll { overflow-x: auto; min-width: 0; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+th { text-align: left; font-weight: 500; font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+.num { text-align: right; }
+.detail { min-width: 14rem; color: var(--muted); overflow-wrap: anywhere; }
+.pill { display: inline-block; font-size: 0.78rem; font-weight: 500; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.pill.pass { color: var(--ok); background: var(--ok-soft); }
+.pill.fail { color: var(--bad); background: var(--bad-soft); }
+.pill.skip { color: var(--warn); background: var(--warn-soft); }
+code { font-family: var(--f-mono); font-size: 0.85rem; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; overflow-wrap: anywhere; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+footer { font-size: 0.8rem; color: var(--muted); }
+</style>
+<div class="wrap">
+  <p class="crumb"><a href="https://claude.ai/artifact/VXzNk7C8qtwaYUJKTZrK7U" target="_blank" rel="noopener">Systems Test Bench</a> / ChunkNorris</p>
+  <header class="head">
+    <h1>ChunkNorris</h1>
+    <span class="kind">Chunking</span>
+    <span class="pill pass">Passing</span>
+  </header>
+  <p class="lede">Header-aware chunking for Markdown, HTML and PDF documents, built for RAG.</p>
+
+  <section class="tiles" aria-label="Results">
+    <div class="tile"><span>Checks passed</span><b>9</b></div>
+    <div class="tile"><span>Checks failed</span><b>0</b></div>
+    <div class="tile"><span>Checks skipped</span><b>0</b></div>
+    <div class="tile"><span>CI jobs</span><b>1</b></div>
+  </section>
+
+  <section class="card" id="what-is-tested">
+    <h2>What the test does</h2>
+    <p class="prose">Parses the sample services agreement as Markdown, HTML and PDF and chunks each one. Checks that parent headers are carried into every chunk, that the word and token caps split oversized sections, that chunk_string works on in-memory text, the JSON export, and page numbers on PDF chunks.</p>
+    <p class="prose muted">The token-cap check downloads the tiktoken vocabulary on first run.</p>
+  </section>
+
+  <section class="card" id="findings">
+    <h2>Findings</h2>
+    <ul class="prose"><li>Imports psutil without declaring it; setup adds it.</li></ul>
+  </section>
+
+  <section class="card" id="checks">
+    <h2>Every check</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Check</th><th>Result</th><th class="num">Seconds</th><th>Detail</th></tr></thead>
+      <tbody><tr><td>markdown: parse + chunk service_agreement.md</td><td><span class="pill pass">Pass</span></td><td class="num">0.00</td><td class="detail">8 chunks, word counts [40, 82, 110, 46, 52, 57, 81, 42]; &#x27;# Master Services Agreement\n\nThis Master Services Agreement (&quot;Agreement&quot;) is entered into &#x27;</td></tr><tr><td>html: parse + chunk service_agreement.html</td><td><span class="pill pass">Pass</span></td><td class="num">0.05</td><td class="detail">8 chunks, word counts [40, 82, 110, 46, 52, 57, 81, 42]; &#x27;# Master Services Agreement\n\nThis Master Services Agreement (&quot;Agreement&quot;) is entered into &#x27;</td></tr><tr><td>pdf: parse + chunk service_agreement.pdf</td><td><span class="pill pass">Pass</span></td><td class="num">0.01</td><td class="detail">8 chunks, word counts [43, 82, 109, 46, 52, 57, 81, 42]; &#x27;# Master Services Agreement\n\n## **Master Services Agreement**\nThis Master Services Agreeme&#x27;</td></tr><tr><td>markdown: parent headers are prepended to sub-section chunks</td><td><span class="pill pass">Pass</span></td><td class="num">0.00</td><td class="detail"></td></tr><tr><td>markdown: hard word limit splits oversized sections</td><td><span class="pill pass">Pass</span></td><td class="num">0.00</td><td class="detail">no cap: 1 chunk(s); cap 80: words [91, 87, 58, 94, 102, 78]</td></tr><tr><td>markdown: token cap with tiktoken</td><td><span class="pill pass">Pass</span></td><td class="num">1.03</td><td class="detail">token counts with cap 120: [57, 114, 81, 73, 27, 69, 67, 75, 115, 55]</td></tr><tr><td>chunk_string on an in-memory string</td><td><span class="pill pass">Pass</span></td><td class="num">0.00</td><td class="detail"></td></tr><tr><td>save_chunks writes a JSON list</td><td><span class="pill pass">Pass</span></td><td class="num">0.00</td><td class="detail">entry keys: [&#x27;end_page&#x27;, &#x27;start_line&#x27;, &#x27;start_page&#x27;, &#x27;text&#x27;]</td></tr><tr><td>pdf: chunks carry page numbers</td><td><span class="pill pass">Pass</span></td><td class="num">0.00</td><td class="detail">start pages seen: [0, 1]</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section class="card" id="links">
+    <h2>Links</h2>
+    <dl class="links">
+      <div><dt>Upstream project</dt><dd><a href="https://github.com/wikit-ai/chunknorris" target="_blank" rel="noopener">wikit-ai/chunknorris</a></dd></div>
+      <div><dt>Test code</dt><dd><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/chunknorris" target="_blank" rel="noopener">systems/chunknorris</a></dd></div>
+      <div><dt>CI job</dt><dd><a href="https://github.com/gendaiski/Sandbox-2/actions/runs/39830601512/job/120005397811" target="_blank" rel="noopener">View job on GitHub Actions</a></dd></div>
+      
+    </dl>
+    <p class="prose muted">Run it yourself: <code>scripts/clone_all.sh chunknorris</code> then <code>./run.sh chunknorris --setup</code> from the repository root.</p>
+  </section>
+
+  <footer>Results from the <a href="https://github.com/gendaiski/Sandbox-2/actions/runs/39830601512" target="_blank" rel="noopener">CI run</a> on gendaiski/Sandbox-2. Built by scripts/build_system_pages.py.</footer>
+</div>
