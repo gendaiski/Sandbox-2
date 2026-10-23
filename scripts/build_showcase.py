@@ -166,12 +166,20 @@ def launch_system(r):
   scope='The source-backed original interface is hosted in this repository and opens with its native browser controls.'
  else:
   target=f'{slug}.html';label='Open interactive study →';status='LOCAL STUDY · ORIGINAL RUNTIME SEPARATE'
-  scope='The HTML study has browser interactions. It does not run the source project’s backend, model, plugin, compiler or account features.'
+  runtime_notes={
+   'open-agent':'The original Open-Agent needs its Docker Compose services and model provider keys. Its multi-agent tasks do not run on this static showcase.',
+   'swiftui-flx':'The original components run in SwiftUI on a supported Apple platform. This browser page demonstrates their layout only.',
+   'tokens-studio':'The original Tokens Studio is a Figma plugin. Token editing and sync require the Figma plugin runtime and its configured integrations.',
+   'datagen':'The original DATAGEN is a Python data-analysis tool, not a browser dashboard. Run its source code with a suitable dataset to use its features.',
+   'swarms':'The original Swarms is a Python framework, not a hosted web application. Run its SDK with a model provider to execute agents.',
+   'hyperframes':'The original Hyperframes runs as a studio and rendering tool. Video export requires its native runtime; the HTML timeline is a study.',
+  }
+  scope=runtime_notes.get(slug,'The HTML study has browser interactions. It does not run the source project’s backend, model, plugin, compiler or account features.')
  primary=f'<a class="button primary-link" href="{e(target,quote=True)}">{e(label)}</a>'
  official=f'<a class="button ghost-link" href="{e(r["official"],quote=True)}" target="_blank" rel="noopener noreferrer">Visit official project ↗</a>' if r['official'] else ''
  study=f'<a class="launch-inline" href="{e(slug)}.html">Open local screen →</a>' if slug not in PUBLIC_ORIGINALS and slug!='landing-pages' else ''
  source=r['source'].rstrip('/')+(f'/tree/{r["revision"]}' if slug!='minicpm' else '')
- details=f'''<article><span>01 · AVAILABLE HERE</span><h2>System access</h2><p>{e(scope)}</p>{study}</article><article><span>02 · ORIGINAL SOURCE</span><h2>Project and scope</h2><p>{e(r['prior'])}</p><a class="launch-inline" href="{e(source,quote=True)}" target="_blank" rel="noopener noreferrer">Pinned source ↗</a></article>'''
+ details=f'''<article><span>01 · AVAILABLE HERE</span><h2>System access</h2><p>{e(scope)}</p>{study}</article><article><span>02 · ORIGINAL SOURCE</span><h2>Project and scope</h2><p>{e(r['prior'])} Next step: {e(STATES[slug][4])}.</p><a class="launch-inline" href="{e(source,quote=True)}" target="_blank" rel="noopener noreferrer">Pinned source ↗</a></article>'''
  launch_doc(r['title'],r['category'].upper(),status,r['description'],r['accent'],primary+official,details,'../index.html','Back to dashboard',slug)
 
 def launch_landing(idx,item):
