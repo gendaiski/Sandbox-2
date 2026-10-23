@@ -1,0 +1,4 @@
+:HL["/Sandbox-2/native/landing/umbra/_next/static/chunks/0uurrfp9msqy5.css","style"]
+2:[["children",{"s":"__PAGE__","h":160}]]
+1:[["children",{"s":"/_not-found","h":96,"c":"$Q2"}]]
+0:{"b":"b-eR-P9AJ7NvQx3mRZqTz","t":{"t":{"s":"","h":80,"c":"$Q1"}}}

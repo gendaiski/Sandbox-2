@@ -3,6 +3,15 @@
 @media(max-width:700px){.token-editor,.lobe-dashboard{grid-template-columns:1fr}.token-resources,.gradient-grid{grid-template-columns:1fr}.gradient-export button{margin-left:0}.hyper-preview{height:220px}}
 
 /* Recent additions on the Sandbox-2 dashboard. */
+.landing-native-card{display:flex;flex-direction:column;align-items:flex-start;min-height:190px;padding:20px;gap:7px}
+.landing-native-card h4{font-size:22px;margin:0;color:var(--ink)}
+.landing-native-card p{margin:0;color:var(--muted)}
+.landing-native-number{font-size:10px;font-weight:800;letter-spacing:.14em;color:var(--blue)}
+.landing-native-status{font-size:11px;color:var(--muted);margin-top:auto}
+.landing-native-card .landing-card-foot{width:100%;padding:10px 0 0}
+.landing-native-card .landing-card-foot a{font-size:12px}
+.landing-redirect{max-width:650px;margin:12vh auto;padding:28px}
+.landing-redirect a{color:var(--blue);font-weight:700}
 .latest-section{margin:0 0 32px;padding:23px;border:1px solid var(--line);border-radius:13px;background:var(--panel);box-shadow:var(--shadow)}
 .latest-heading{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:17px}
 .latest-heading h2{font-size:25px;margin:5px 0 6px}.latest-heading p{font-size:12px;margin:0;max-width:700px}

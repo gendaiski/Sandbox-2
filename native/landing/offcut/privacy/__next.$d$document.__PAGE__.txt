@@ -1,0 +1,36 @@
+1:"$Sreact.fragment"
+2:"/Sandbox-2/native/landing/offcut/_next/static/chunks/0kqnxirej3ycc.js"
+3:"/Sandbox-2/native/landing/offcut/_next/static/chunks/13yx7sedrz8bb.js"
+4:"/Sandbox-2/native/landing/offcut/_next/static/chunks/1rum-xk6ze148.js"
+5:"/Sandbox-2/native/landing/offcut/_next/static/chunks/0bzxtrm26a268.js"
+6:I[24203,["$2","$3","$4","$5"],"MotionProvider"]
+7:I[13293,["$2","$3","$4","$5"],"Header"]
+8:"/Sandbox-2/native/landing/offcut/_next/static/chunks/39h07px3ltdet.js"
+9:I[77763,["$8"],"default"]
+a:I[18508,["$8"],"default"]
+b:I[43926,["$2","$3","$4","$5"],"Button"]
+c:I[39254,["$2","$3","$4","$5"],""]
+d:I[76841,["$2","$3","$4","$5"],"Footer"]
+14:I[7826,["$8"],"OutletBoundary"]
+15:"$Sreact.suspense"
+18:"ViewportBoundary"
+19:I[7826,["$8"],"$18"]
+1a:"MetadataBoundary"
+1b:I[7826,["$8"],"$1a"]
+1c:I[23000,["$8"],"IconMark"]
+:HL["/Sandbox-2/native/landing/offcut/_next/static/chunks/1y0f4s0c1ygs0.css","style"]
+f:X
+12:X
+12:C
+13:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$1","c",{"children":[["$","article",null,{"className":"inner-page prose","children":[["$","p",null,{"className":"eyebrow","children":["offcut"," / Information"]}],["$","h1",null,{"children":"Your space, respected."}],[["$","section","A local demonstration",{"children":[["$","h2",null,{"children":"A local demonstration"}],["$","p",null,{"children":"Forms and interactive selections stay in this page’s memory. No backend receives them, and refreshing clears them. Please use sample information."}]]}],["$","section","No tracking",{"children":[["$","h2",null,{"children":"No tracking"}],["$","p",null,{"children":"This project includes no analytics, advertising cookies or embedded third-party media. Fonts and images are served locally. Your hosting provider may keep ordinary access logs."}]]}],["$","section","External links",{"children":[["$","h2",null,{"children":"External links"}],["$","p",null,{"children":"Links to LN, GitHub and the support page take you to other websites with their own privacy practices."}]]}]]]}],null,["$","$L14",null,{"children":["$","$15",null,{"name":"Next.MetadataOutlet","children":"$@16"}]}]]}],"p":"$@17","v":null,"s":"$f"}}]]
+10:[["children",{"s":{"n":"document","t":"d","k":"privacy","s":["commission","faq","fonts"]},"h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$L9",null,{"parallelRouterKey":"children","template":["$","$La",null,{}]}]]}],"p":"$@11","v":"$12","s":"$f"},"c":"$Q13"}]]
+0:{"t":{"t":{"s":"","h":80,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/Sandbox-2/native/landing/offcut/_next/static/chunks/1y0f4s0c1ygs0.css","precedence":"next"}],["$","script","script-0",{"src":"/Sandbox-2/native/landing/offcut/_next/static/chunks/0kqnxirej3ycc.js","async":true}],["$","script","script-1",{"src":"/Sandbox-2/native/landing/offcut/_next/static/chunks/13yx7sedrz8bb.js","async":true}],["$","script","script-2",{"src":"/Sandbox-2/native/landing/offcut/_next/static/chunks/1rum-xk6ze148.js","async":true}],["$","script","script-3",{"src":"/Sandbox-2/native/landing/offcut/_next/static/chunks/0bzxtrm26a268.js","async":true}]],["$","html",null,{"lang":"en","className":"LkKLoW_variable QvtEBG_variable","children":["$","body",null,{"children":["$","$L6",null,{"children":[["$","a",null,{"className":"skip-link","href":"#content","children":"Skip to content"}],["$","$L7",null,{}],["$","main",null,{"id":"content","children":["$","$L9",null,{"parallelRouterKey":"children","template":["$","$La",null,{}],"notFound":[["$","section",null,{"className":"inner-page not-found","children":[["$","p",null,{"className":"eyebrow","children":"404 / A small detour"}],["$","h1",null,{"children":["Somewhere",["$","br",null,{}],["$","em",null,{"children":"else entirely."}]]}],["$","p",null,{"children":"This page doesn’t exist. Let’s take you back."}],["$","$Lb",null,{"data-slot":"button","nativeButton":false,"role":"link","className":"ui-button button","render":["$","$Lc",null,{"href":"/"}],"children":"Back to the beginning ↗︎"}]]}],[]]}]}],["$","$Ld",null,{}]]}]}]}]]}],"p":"$@e","v":null,"s":"$f"},"c":"$Q10"},"h":{"r":["$","$1","h",{"children":[null,["$","$L19",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#f7f1df"}]]}],["$","$L1b",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$15",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Your space, respected. | offcut"}],["$","meta","1",{"name":"description","content":"An imagined furniture atelier turning overlooked wood into objects with a little more character. Explore the collection and make a piece your own."}],["$","meta","2",{"name":"robots","content":"noindex, follow"}],["$","meta","3",{"property":"og:title","content":"offcut"}],["$","meta","4",{"property":"og:description","content":"An imagined furniture atelier turning overlooked wood into objects with a little more character. Explore the collection and make a piece your own."}],["$","meta","5",{"property":"og:image","content":"http://localhost:3000/opengraph-image?c60eda4f5dd237e9"}],["$","meta","6",{"property":"og:image:type","content":"image/png"}],["$","meta","7",{"property":"og:image:width","content":"1200"}],["$","meta","8",{"property":"og:image:height","content":"630"}],["$","meta","9",{"property":"og:image:alt","content":"offcut — Good wood. New moods."}],["$","meta","10",{"property":"og:type","content":"website"}],["$","meta","11",{"name":"twitter:card","content":"summary_large_image"}],["$","meta","12",{"name":"twitter:title","content":"offcut"}],["$","meta","13",{"name":"twitter:description","content":"An imagined furniture atelier turning overlooked wood into objects with a little more character. Explore the collection and make a piece your own."}],["$","meta","14",{"name":"twitter:image","content":"http://localhost:3000/opengraph-image?c60eda4f5dd237e9"}],["$","meta","15",{"name":"twitter:image:alt","content":"offcut — Good wood. New moods."}],["$","meta","16",{"name":"twitter:image:type","content":"image/png"}],["$","meta","17",{"name":"twitter:image:width","content":"1200"}],["$","meta","18",{"name":"twitter:image:height","content":"630"}],["$","link","19",{"rel":"icon","href":"/Sandbox-2/native/landing/offcut/icon.svg?icon.2lcmphcjyhssb.svg","sizes":"any","type":"image/svg+xml"}],["$","$L1c","20",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@1d","v":null,"s":"$f"}},"a":"$@1e","u":"$@1f","b":"uFnSEniC05WYwCRVnS2EK"}
+16:null
+f:300
+1f:true
+f:C
+1e:0
+11:"$undefined"
+e:"$undefined"
+1d:"$undefined"
+17:"$undefined"

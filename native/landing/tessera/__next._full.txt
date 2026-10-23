@@ -1,0 +1,23 @@
+1:"$Sreact.fragment"
+2:"/Sandbox-2/native/landing/tessera/_next/static/chunks/2olj92cf_1kj1.js"
+3:I[77763,["$2"],"default"]
+4:I[18508,["$2"],"default"]
+6:"/Sandbox-2/native/landing/tessera/_next/static/chunks/0vae0o9lgfb9z.js"
+7:"/Sandbox-2/native/landing/tessera/_next/static/chunks/3zx7pm2s3c45p.js"
+8:I[66082,["$2","$6","$7"],"default"]
+9:I[7826,["$2"],"OutletBoundary"]
+a:"$Sreact.suspense"
+c:"ViewportBoundary"
+d:I[7826,["$2"],"$c"]
+f:"MetadataBoundary"
+10:I[7826,["$2"],"$f"]
+12:I[12496,["$2"],"default",1]
+:HL["/Sandbox-2/native/landing/tessera/_next/static/chunks/02456dd8fo_lm.css","style"]
+:HL["/Sandbox-2/native/landing/tessera/_next/static/media/Manrope-s.p.3rjk17h6oms_8.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+:HL["/Sandbox-2/native/landing/tessera/_next/static/media/Syne-s.p.2e-t4p6ws0hhz.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+5:[["children",{"s":"__PAGE__","h":512,"d":{"r":["$","$1","c",{"children":[["$","$L8",null,{}],[["$","script","script-0",{"src":"/Sandbox-2/native/landing/tessera/_next/static/chunks/0vae0o9lgfb9z.js","async":true,"nonce":"$undefined"}],["$","script","script-1",{"src":"/Sandbox-2/native/landing/tessera/_next/static/chunks/3zx7pm2s3c45p.js","async":true,"nonce":"$undefined"}]],["$","$L9",null,{"children":["$","$a",null,{"name":"Next.MetadataOutlet","children":"$@b"}]}]]}],"p":false,"v":null}}]]
+0:{"P":null,"c":["",""],"q":"","i":false,"t":{"t":{"s":"","h":528,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/Sandbox-2/native/landing/tessera/_next/static/chunks/02456dd8fo_lm.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}],["$","script","script-0",{"src":"/Sandbox-2/native/landing/tessera/_next/static/chunks/2olj92cf_1kj1.js","async":true,"nonce":"$undefined"}]],["$","html",null,{"lang":"en","className":"MMQNYa_variable NyrHYW_variable","children":["$","body",null,{"children":["$","$L3",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L4",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","main",null,{"style":{"minHeight":"100svh","display":"grid","placeContent":"center","padding":30,"textAlign":"center"},"children":[["$","p",null,{"children":"404 / A SMALL DETOUR"}],["$","h1",null,{"style":{"fontSize":48,"margin":"25px 0"},"children":"A little lost?"}],["$","a",null,{"href":"/","style":{"textDecoration":"underline","padding":20},"children":"Back to the atlas"}]]}],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],"p":false,"v":null},"c":"$Q5"},"h":{"r":["$","$1","h",{"children":[null,["$","$Ld",null,{"children":"$Le"}],["$","$L10",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$a",null,{"name":"Next.Metadata","children":"$L11"}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":false,"v":null}},"m":"$undefined","G":["$12",[["$","link","0",{"rel":"stylesheet","href":"/Sandbox-2/native/landing/tessera/_next/static/chunks/02456dd8fo_lm.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]]],"S":true,"r":"$undefined","s":"$undefined","a":"$undefined","l":"$undefined","p":"$undefined","d":"$undefined","b":"81mzYKLzYh9gFu2jFz0PK"}
+e:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
+13:I[23000,["$2"],"IconMark"]
+b:null
+11:[["$","title","0",{"children":"Tessera — Spaces for the wandering mind"}],["$","meta","1",{"name":"description","content":"Eight impossible spaces. One unhurried journey. An interactive architectural study."}],["$","link","2",{"rel":"icon","href":"/Sandbox-2/native/landing/tessera/icon.svg?icon.1fo9cncf324ou.svg","sizes":"any","type":"image/svg+xml"}],["$","$L13","3",{}]]

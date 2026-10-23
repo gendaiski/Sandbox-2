@@ -1,0 +1,21 @@
+1:"$Sreact.fragment"
+2:"/Sandbox-2/native/landing/veillee/_next/static/chunks/2olj92cf_1kj1.js"
+3:I[77763,["$2"],"default"]
+4:I[18508,["$2"],"default"]
+8:I[7826,["$2"],"OutletBoundary"]
+9:"$Sreact.suspense"
+b:"ViewportBoundary"
+c:I[7826,["$2"],"$b"]
+e:"MetadataBoundary"
+f:I[7826,["$2"],"$e"]
+11:I[12496,["$2"],"default",1]
+:HL["/Sandbox-2/native/landing/veillee/_next/static/chunks/3krkznihz_0on.css","style"]
+6:X
+7:[["children",{"s":"__PAGE__","h":512,"d":{"r":["$","$1","c",{"children":[["$","main",null,{"className":"not-found","children":[["$","span",null,{"children":"404 / A LITTLE LOST"}],["$","h1",null,{"children":"Another way."}],["$","a",null,{"href":"/","children":"Back to the beginning →"}]]}],null,["$","$L8",null,{"children":["$","$9",null,{"name":"Next.MetadataOutlet","children":"$@a"}]}]]}],"p":false,"v":null}}]]
+5:[["children",{"s":"/_not-found","h":512,"d":{"r":["$","$1","c",{"children":[null,["$","$L3",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L4",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],"p":false,"v":"$6"},"c":"$Q7"}]]
+0:{"P":null,"c":["","_not-found",""],"q":"","i":false,"t":{"t":{"s":"","h":528,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/Sandbox-2/native/landing/veillee/_next/static/chunks/3krkznihz_0on.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}],["$","script","script-0",{"src":"/Sandbox-2/native/landing/veillee/_next/static/chunks/2olj92cf_1kj1.js","async":true,"nonce":"$undefined"}]],["$","html",null,{"lang":"en","className":"f3fNpG_variable NyrHYW_variable","children":["$","body",null,{"children":["$","$L3",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L4",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","main",null,{"className":"not-found","children":[["$","span",null,{"children":"404 / A LITTLE LOST"}],["$","h1",null,{"children":"Another way."}],["$","a",null,{"href":"/","children":"Back to the beginning →"}]]}],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],"p":false,"v":null},"c":"$Q5"},"h":{"r":["$","$1","h",{"children":[["$","meta",null,{"name":"robots","content":"noindex"}],["$","$Lc",null,{"children":"$Ld"}],["$","$Lf",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$9",null,{"name":"Next.Metadata","children":"$L10"}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":false,"v":null}},"m":"$undefined","G":["$11",[["$","link","0",{"rel":"stylesheet","href":"/Sandbox-2/native/landing/veillee/_next/static/chunks/3krkznihz_0on.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]]],"S":true,"r":"$undefined","s":"$undefined","a":"$undefined","l":"$undefined","p":"$undefined","d":"$undefined","b":"5eTfJC904sS5gSGBIPs1J"}
+6:C
+d:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
+12:I[23000,["$2"],"IconMark"]
+a:null
+10:[["$","title","0",{"children":"Veillée — Trust no one. Play together."}],["$","meta","1",{"name":"description","content":"Enter a village of secrets. An immersive, original interpretation of the Werewolf party game."}],["$","link","2",{"rel":"icon","href":"/Sandbox-2/native/landing/veillee/icon.svg?icon.3whn7b-8yq7vh.svg","sizes":"any","type":"image/svg+xml"}],["$","$L12","3",{}]]

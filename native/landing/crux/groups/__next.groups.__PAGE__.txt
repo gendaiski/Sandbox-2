@@ -1,0 +1,51 @@
+1:"$Sreact.fragment"
+2:"/Sandbox-2/native/landing/crux/_next/static/chunks/0lau1hmdr8q0m.js"
+3:"/Sandbox-2/native/landing/crux/_next/static/chunks/10-26pmnrhlk9.js"
+4:"/Sandbox-2/native/landing/crux/_next/static/chunks/2ig3w1k3u80ec.js"
+5:I[13293,["$2","$3","$4"],"Header"]
+6:"/Sandbox-2/native/landing/crux/_next/static/chunks/2thbmgn1kze-3.js"
+7:I[77763,["$6"],"default"]
+8:I[63408,["$6"],"default"]
+9:"/Sandbox-2/native/landing/crux/_next/static/chunks/28t8q8jr0l_ws.js"
+a:"/Sandbox-2/native/landing/crux/_next/static/chunks/14ohgno3m5-8c.js"
+b:I[43926,["$2","$3","$4","$9","$a"],"Button"]
+c:I[39254,["$2","$3","$4"],""]
+d:I[24203,["$2","$3","$4"],"MotionSetup"]
+14:I[90333,["$2","$3","$4","$9","$a"],"Image"]
+1b:"ViewportBoundary"
+1c:I[7826,["$6"],"$1b"]
+1d:"MetadataBoundary"
+1e:I[7826,["$6"],"$1d"]
+1f:"$Sreact.suspense"
+:HL["/Sandbox-2/native/landing/crux/_next/static/chunks/1-ftvk7nedw0k.css","style"]
+f:X
+12:X
+12:C
+13:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$1","c",{"children":[["$","div",null,{"className":"inner-page","children":[["$","section",null,{"className":"group-intro","children":[["$","div",null,{"children":[["$","p",null,{"className":"eyebrow","children":"The best kind of team building"}],["$","h1",null,{"children":["GOOD PEOPLE.",["$","br",null,{}],"GREAT ",["$","span",null,{"children":"PROBLEMS."}]]}],["$","p",null,{"children":"Different strengths. One shared wall. Bring your friends or your team for a coached session that starts with a little encouragement and ends with a lot to talk about."}],["$","$Lb",null,{"data-slot":"button","nativeButton":false,"role":"link","className":"ui-button button","render":["$","a",null,{"href":"#enquiry"}],"children":["Make a crew plan",["$","span",null,{"aria-hidden":"true","children":"↗︎"}]]}]]}],["$","div",null,{"className":"group-photo","children":["$","$L14",null,{"src":{"src":"/Sandbox-2/native/landing/crux/_next/static/media/community.419v0qr0b10dj.jpg","width":1400,"height":935,"blurWidth":8,"blurHeight":5,"blurDataURL":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAAQABAAD/wAARCAAFAAgDAREAAhEBAxEB/9sAQwAKBwcIBwYKCAgICwoKCw4YEA4NDQ4dFRYRGCMfJSQiHyIhJis3LyYpNCkhIjBBMTQ5Oz4+PiUuRElDPEg3PT47/9sAQwEKCwsODQ4cEBAcOygiKDs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwBmg3uoSvPAbsbTndlM54+taWSM1c//2Q=="},"alt":"A climber on a colourful indoor bouldering wall","fill":true,"preload":true,"sizes":"(max-width:760px) 100vw, 45vw","placeholder":"blur"}]}]]}],"$L15","$L16"]}],["$L17","$L18"],"$L19"]}],"p":"$@1a","v":null,"s":"$f"}}]]
+10:[["children",{"s":"groups","h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$L7",null,{"parallelRouterKey":"children","template":["$","$L8",null,{}]}]]}],"p":"$@11","v":"$12","s":"$f"},"c":"$Q13"}]]
+0:{"t":{"t":{"s":"","h":80,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/Sandbox-2/native/landing/crux/_next/static/chunks/1-ftvk7nedw0k.css","precedence":"next"}],["$","script","script-0",{"src":"/Sandbox-2/native/landing/crux/_next/static/chunks/0lau1hmdr8q0m.js","async":true}],["$","script","script-1",{"src":"/Sandbox-2/native/landing/crux/_next/static/chunks/10-26pmnrhlk9.js","async":true}],["$","script","script-2",{"src":"/Sandbox-2/native/landing/crux/_next/static/chunks/2ig3w1k3u80ec.js","async":true}]],["$","html",null,{"lang":"en","className":"eiXHdq_variable HsyZ0W_variable","children":["$","body",null,{"children":[["$","a",null,{"className":"skip-link","href":"#content","children":"Skip to content"}],["$","$L5",null,{}],["$","main",null,{"id":"content","children":["$","$L7",null,{"parallelRouterKey":"children","template":["$","$L8",null,{}],"notFound":[["$","section",null,{"className":"not-found inner-page","children":[["$","p",null,{"className":"eyebrow","children":"404 · A little off the path"}],["$","h1",null,{"children":"Wrong route. Right attitude."}],["$","p",null,{"children":"This page isn’t here. Let’s take you back to somewhere familiar."}],["$","$Lb",null,{"data-slot":"button","nativeButton":false,"role":"link","className":"ui-button button","render":["$","$Lc",null,{"href":"/"}],"children":["Back to the beginning ",["$","span",null,{"aria-hidden":"true","children":"↗︎"}]]}]]}],[]]}]}],["$","footer",null,{"className":"site-footer","children":[["$","div",null,{"className":"footer-top","children":[["$","$Lc",null,{"className":"footer-wordmark","href":"/","children":["CRUX",["$","span",null,{"aria-hidden":"true","children":"↗︎"}]]}],["$","p",null,{"children":["Find your next move.",["$","br",null,{}],"Foundry Quarter, Northbridge"]}],["$","div",null,{"children":[["$","$Lc",null,{"href":"/visit","children":"Plan your first climb"}],["$","$Lc",null,{"href":"/groups","children":"Bring your crew"}],["$","$Lc",null,{"href":"/faq","children":"Questions & answers"}]]}]]}],["$","div",null,{"className":"footer-bottom","children":[["$","p",null,{"children":["©︎ 2026 ","CRUX"," · A fictional brand, thoughtfully imagined."]}],["$","nav",null,{"aria-label":"Information","children":[["$","$Lc",null,{"href":"/privacy","children":"Privacy"}],["$","$Lc",null,{"href":"/terms","children":"Terms"}],["$","$Lc",null,{"href":"/accessibility","children":"Accessibility"}],["$","$Lc",null,{"href":"/credits","children":"Credits"}]]}]]}],["$","div",null,{"className":"footer-project","children":[["$","p",null,{"children":["Developed by ",["$","a",null,{"href":"https://lndev.me","children":"LN"}],"."]}],["$","a",null,{"href":"https://github.com/ln-dev7/landing-pages","children":"Open-source code · MIT License"}],["$","a",null,{"href":"https://lndev.mychariow.shop/prd_3cu1s0","children":["Support the project ",["$","span",null,{"aria-hidden":"true","children":"↗︎"}]]}]]}]]}],["$","$Ld",null,{}]]}]}]]}],"p":"$@e","v":null,"s":"$f"},"c":"$Q10"},"h":{"r":["$","$1","h",{"children":[null,["$","$L1c",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#d9ef48"}]]}],["$","$L1e",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$1f",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Bring your crew | CRUX"}],["$","meta","1",{"name":"description","content":"Explore a coached group climb for 6–20 adults. Prepare an example group enquiry."}],["$","meta","2",{"name":"robots","content":"noindex, follow"}],["$","meta","3",{"property":"og:title","content":"CRUX — Find your next move."}],["$","meta","4",{"property":"og:description","content":"A fictional independent bouldering club. Fresh routes, good company, and room to find your own way up."}],["$","meta","5",{"property":"og:locale","content":"en_GB"}],["$","meta","6",{"property":"og:image","content":"http://localhost:3000/opengraph-image?1d92a5fc191f172e"}],["$","meta","7",{"property":"og:image:type","content":"image/png"}],["$","meta","8",{"property":"og:image:width","content":"1200"}],["$","meta","9",{"property":"og:image:height","content":"630"}],["$","meta","10",{"property":"og:image:alt","content":"CRUX — Find your next move"}],["$","meta","11",{"property":"og:type","content":"website"}],["$","meta","12",{"name":"twitter:card","content":"summary_large_image"}],["$","meta","13",{"name":"twitter:title","content":"CRUX — Find your next move."}],["$","meta","14",{"name":"twitter:description","content":"A fictional independent bouldering club. Fresh routes, good company, and room to find your own way up."}],"$L20","$L21","$L22","$L23","$L24","$L25","$L26"]}]}],null]}],"$L27"]}],"p":"$@28","v":null,"s":"$f"}},"a":"$@29","u":"$@2a","b":"XjpcUHo4kfsDtykRPslfF"}
+2b:I[44992,["$2","$3","$4","$9","$a"],"GroupInquiry"]
+2c:I[7826,["$6"],"OutletBoundary"]
+2e:I[23000,["$6"],"IconMark"]
+15:["$","div",null,{"className":"group-details","children":[["$","div",null,{"children":[["$","strong",null,{"children":"6–20"}],["$","span",null,{"children":"ADULT GUESTS"}]]}],["$","div",null,{"children":[["$","strong",null,{"children":"90 min"}],["$","span",null,{"children":"A COACH + A SHARED CHALLENGE"}]]}],["$","div",null,{"children":[["$","strong",null,{"children":"$$28"}],["$","span",null,{"children":"PER PERSON · SHOES INCLUDED"}]]}]]}]
+16:["$","$L2b",null,{}]
+17:["$","script","script-0",{"src":"/Sandbox-2/native/landing/crux/_next/static/chunks/28t8q8jr0l_ws.js","async":true}]
+18:["$","script","script-1",{"src":"/Sandbox-2/native/landing/crux/_next/static/chunks/14ohgno3m5-8c.js","async":true}]
+19:["$","$L2c",null,{"children":["$","$1f",null,{"name":"Next.MetadataOutlet","children":"$@2d"}]}]
+20:["$","meta","15",{"name":"twitter:image","content":"http://localhost:3000/opengraph-image?1d92a5fc191f172e"}]
+21:["$","meta","16",{"name":"twitter:image:alt","content":"CRUX — Find your next move"}]
+22:["$","meta","17",{"name":"twitter:image:type","content":"image/png"}]
+23:["$","meta","18",{"name":"twitter:image:width","content":"1200"}]
+24:["$","meta","19",{"name":"twitter:image:height","content":"630"}]
+25:["$","link","20",{"rel":"icon","href":"/Sandbox-2/native/landing/crux/icon.svg?icon.0-a9-5g4e-pid.svg","sizes":"any","type":"image/svg+xml"}]
+26:["$","$L2e","21",{}]
+27:["$","meta",null,{"name":"next-size-adjust","content":""}]
+f:300
+2d:null
+2a:true
+f:C
+29:0
+11:"$undefined"
+e:"$undefined"
+28:"$undefined"
+1a:"$undefined"

@@ -1,0 +1,94 @@
+{
+  "checkedAt": "2026-10-23T10:57:57.266620+00:00",
+  "passed": true,
+  "sourceRevision": "3e32b3c78697753e6024dc50d388a5ea06fb9a59",
+  "originalApplications": [
+    {
+      "slug": "aero",
+      "http": 200,
+      "title": "A\u00c9RO \u2014 A little paper. A lot of elsewhere.",
+      "buttons": 16,
+      "pageErrors": 0,
+      "missingLocalAssets": 0
+    },
+    {
+      "slug": "crux",
+      "http": 200,
+      "title": "CRUX \u2014 Find your next move.",
+      "buttons": 13,
+      "pageErrors": 0,
+      "missingLocalAssets": 0
+    },
+    {
+      "slug": "fallow",
+      "http": 200,
+      "title": "FALLOW \u2014 A small world, waiting",
+      "buttons": 10,
+      "pageErrors": 0,
+      "missingLocalAssets": 0
+    },
+    {
+      "slug": "maree",
+      "http": 200,
+      "title": "Mar\u00e9e \u2014 A little closer to yourself.",
+      "buttons": 14,
+      "pageErrors": 0,
+      "missingLocalAssets": 0
+    },
+    {
+      "slug": "oddpress",
+      "http": 200,
+      "title": "Oddpress \u2014 Perfectly off-register",
+      "buttons": 41,
+      "pageErrors": 0,
+      "missingLocalAssets": 0
+    },
+    {
+      "slug": "offcut",
+      "http": 200,
+      "title": "offcut \u2014 Good wood. New moods.",
+      "buttons": 10,
+      "pageErrors": 0,
+      "missingLocalAssets": 0
+    },
+    {
+      "slug": "tempo",
+      "http": 200,
+      "title": "Tempo \u2014 Make room for a better move.",
+      "buttons": 30,
+      "pageErrors": 0,
+      "missingLocalAssets": 0
+    },
+    {
+      "slug": "tessera",
+      "http": 200,
+      "title": "Tessera \u2014 Spaces for the wandering mind",
+      "buttons": 24,
+      "pageErrors": 0,
+      "missingLocalAssets": 0
+    },
+    {
+      "slug": "umbra",
+      "http": 200,
+      "title": "UMBRA \u2014 At the edge of light",
+      "buttons": 10,
+      "pageErrors": 0,
+      "missingLocalAssets": 0
+    },
+    {
+      "slug": "veillee",
+      "http": 200,
+      "title": "Veill\u00e9e \u2014 Trust no one. Play together.",
+      "buttons": 20,
+      "pageErrors": 0,
+      "missingLocalAssets": 0
+    }
+  ],
+  "queryRoutes": [
+    "crux/visit",
+    "maree/book",
+    "offcut/commission"
+  ],
+  "aeroDialog": true,
+  "serverActionApps": "Verified separately with scripts/check_native_landing_servers.py"
+}
