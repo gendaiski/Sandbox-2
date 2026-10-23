@@ -20,6 +20,6 @@ native/agentfield/.venv/bin/pip install agentfield==0.1.142
 native/agentfield/.venv/bin/python native/agentfield/demo_agent.py
 ```
 
-The demo node registers one deterministic `sandbox-demo.add` reasoner with the original control plane. While both processes are running, `python3 native/agentfield/verify.py` checks health, embedded UI, the registered node, and a real execution. Model-backed reasoning and multi-node fan-out need provider keys and additional agents.
+The demo node registers one deterministic `sandbox-demo.add` reasoner with the original control plane. While both processes are running, `python3 native/agentfield/verify.py` checks health, embedded UI, the registered node, and a real execution. The checked service was restarted with `run.sh`; its three earlier runs remained in SQLite, and a fresh execution succeeded after the demo node reconnected. Model-backed reasoning and multi-node fan-out need provider keys and additional agents.
 
 Source and licence: [pinned AgentField checkout](../../showcase/catalog.json), upstream `LICENSE` in `vendor/showcase/agentfield/`, and the official [v0.1.142 release](https://github.com/Agent-Field/agentfield/releases/tag/v0.1.142).
