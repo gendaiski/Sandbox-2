@@ -7,6 +7,14 @@
   document.documentElement.dataset.theme=savedTheme;
   const setTheme=(theme)=>{document.documentElement.dataset.theme=theme;try{localStorage.setItem(themeKey,theme)}catch{};$$('.theme-toggle').forEach(b=>{b.textContent=theme==='dark'?'☀':'☾';b.setAttribute('aria-label',theme==='dark'?'Switch to light mode':'Switch to dark mode')})};
   setTheme(savedTheme);
+  const hubMenu=$('[data-action="hub-menu"]');
+  const hubSidebar=$('#hub-sidebar');
+  const hubScrim=$('#hub-side-scrim');
+  function closeHubMenu(restoreFocus=false){if(!hubSidebar)return;hubSidebar.classList.remove('open');if(hubScrim)hubScrim.hidden=true;hubMenu?.setAttribute('aria-expanded','false');if(restoreFocus)hubMenu?.focus()}
+  hubMenu?.addEventListener('click',()=>{const open=!hubSidebar.classList.contains('open');hubSidebar.classList.toggle('open',open);if(hubScrim)hubScrim.hidden=!open;hubMenu.setAttribute('aria-expanded',String(open));if(open)hubSidebar.querySelector('a')?.focus()});
+  hubScrim?.addEventListener('click',()=>closeHubMenu(true));
+  $$('.hub-sidebar a').forEach(link=>link.addEventListener('click',()=>{if(link.dataset.hubFilter){$(`.filter-row button[data-filter="${link.dataset.hubFilter}"]`)?.click();$$('.hub-side-link').forEach(item=>item.classList.toggle('active',item===link))}closeHubMenu()}));
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&hubSidebar?.classList.contains('open'))closeHubMenu(true)});
   // Restore explicitly saved local editor drafts. No agent data is transmitted.
   $$('[data-draft]').forEach(el=>{try{const value=localStorage.getItem('sandbox2-draft-'+el.dataset.draft);if(value!==null)el.value=value}catch{}});
   const featureCopy={performance:'Built to handle ambitious work in a portable form.',display:'A vivid canvas for every detail and idea.',battery:'Keep creating while you move through the day.'};
