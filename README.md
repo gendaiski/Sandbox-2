@@ -2,7 +2,7 @@
 
 ## Systems showcase
 
-[Open the 17-system HTML hub](showcase/index.html). Each system has its own interactive HTML screen; the landing-page collection also has 14 individual visual previews. [Installation and provenance record](showcase/README.md) explains which original applications were built or run and which pages are browser-only studies.
+[Open the live 17-system HTML hub](https://gendaiski.github.io/Sandbox-2/showcase/) or [browse its source](showcase/index.html). Each system has its own interactive HTML screen; the landing-page collection also has 14 individual visual previews. [Installation and provenance record](showcase/README.md) explains which original applications were built or run and which pages are browser-only studies.
 
 Every system gets its own folder under `systems/`, its own environment
 (a uv virtualenv, a pnpm project or a Cargo crate), and its own test script.
