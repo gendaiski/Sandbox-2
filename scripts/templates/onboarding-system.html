@@ -6,9 +6,9 @@
   <meta name="color-scheme" content="light dark">
   <meta name="description" content="A transparent, interactive tracker for the 41 repository Onboarding System queue.">
   <title>Onboarding System · Sandbox 2</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=__STYLE_VERSION__">
   <script id="queue-data" type="application/json">__QUEUE_DATA__</script>
-  <script src="app.js" defer></script>
+  <script src="app.js?v=__APP_VERSION__" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#repository-list">Skip to repositories</a>
@@ -30,7 +30,7 @@
       <section class="notice" aria-label="Status explanation"><span class="notice-icon" aria-hidden="true">i</span><p><strong>This is a work tracker.</strong> A GitHub link opens the upstream source, not an installed app. “Complete” will appear only after the appropriate native setup and representative workflow are verified. The current Windows Docker task comes first.</p></section>
 
       <section id="repository-list" class="workspace" aria-labelledby="list-heading"><div class="section-heading"><div><p class="eyebrow">THE COLLECTION</p><h2 id="list-heading">Repository queue</h2><p>Search, filter, and inspect each system’s evidence.</p></div><button id="export-csv" class="export-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3h16v-3"/></svg> Export CSV</button></div>
-        <div class="toolbar"><label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><input id="search" type="search" placeholder="Search repository or owner…" autocomplete="off" aria-label="Search repositories"></label><div class="filter-group" role="group" aria-label="Queue filter"><button type="button" data-filter="all" aria-pressed="true">All <span id="filter-all-count">41</span></button><button type="button" data-filter="1-19" aria-pressed="false">01–19</button><button type="button" data-filter="20-25" aria-pressed="false">20–25</button><button type="button" data-filter="26-41" aria-pressed="false">26–41</button><button type="button" data-filter="builder" aria-pressed="false">Builder review</button></div></div>
+        <div class="toolbar"><label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><input id="search" type="search" placeholder="Search repository or owner…" autocomplete="off" aria-label="Search repositories"></label><div class="filter-group" role="group" aria-label="Queue filter"><button type="button" data-filter="all" aria-pressed="true">All <span id="filter-all-count">41</span></button><button type="button" data-filter="01-19" aria-pressed="false">01–19</button><button type="button" data-filter="20-25" aria-pressed="false">20–25</button><button type="button" data-filter="26-41" aria-pressed="false">26–41</button><button type="button" data-filter="builder" aria-pressed="false">Builder review</button></div></div>
         <div class="list-meta"><span id="result-count" aria-live="polite">Showing 41 of 41 repositories</span><span>Ordered by request <span aria-hidden="true">↓</span></span></div>
         <div class="table-scroll"><table><thead><tr><th scope="col">#</th><th scope="col">Repository</th><th scope="col">Batch</th><th scope="col">Status</th><th scope="col">Source</th><th scope="col">Review</th></tr></thead><tbody id="rows"></tbody></table></div><p id="empty-state" class="empty-state" hidden>No repositories match. Clear the search or choose another group.</p>
       </section>

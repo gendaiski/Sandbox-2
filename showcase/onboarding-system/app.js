@@ -39,7 +39,7 @@
     const query = search.value.trim().toLowerCase();
     if (query && !(`${record.repository} ${record.description}`.toLowerCase().includes(query))) return false;
     if (filter === 'builder') return builderReview.has(record.number);
-    if (filter !== 'all') return batch(record.number) === filter;
+    if (filter !== 'all') return batch(record.number).replace('–', '-') === filter;
     return true;
   }
   function render() {

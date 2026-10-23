@@ -2,6 +2,7 @@
 
 import json
 import re
+import hashlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -60,6 +61,9 @@ def main():
         )
     data = json.dumps(records, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     page = TEMPLATE.read_text().replace("__QUEUE_DATA__", data)
+    for asset, marker in (("style.css", "__STYLE_VERSION__"), ("app.js", "__APP_VERSION__")):
+        digest = hashlib.sha256((OUTPUT.parent / asset).read_bytes()).hexdigest()[:8]
+        page = page.replace(marker, digest)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(page)
     print(f"Built Onboarding System with {len(records)} tracked repositories")
