@@ -111,6 +111,9 @@ def data():
 SCENES={'landing-pages':gallery,'macbook':macbook,'swiftui-flx':components,'dify':dify,'minicpm':model,'anything-llm':anything,'kedro':pipeline,'datagen':data}
 
 def render(slug):
+ if slug in ('oh-my-design','awesome-design-md','panda','style-dictionary','design-extract','dembrandt','ux-ui-agent-skills','webgradients','design-tokens-spec','tokens-studio','awesome-design-tokens','diez','styleseed','hashicorp-design-system','lobehub','hyperframes'):
+  from design_scenes import render as render_design
+  return render_design(slug)
  if slug in SCENES:return SCENES[slug]()
  if slug=='agentfield':return agentfield()
  if slug in ('ruflo','swarms','multiagent-systems'):return swarm(slug)

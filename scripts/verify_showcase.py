@@ -26,8 +26,9 @@ class LocalLinks(HTMLParser):
             self.links.append(values[key])
 
 
-assert len(catalog) == 17, "Expected 17 sources"
-assert len(pages) == 32, f"Expected 32 HTML files, got {len(pages)}"
+assert len(catalog) == len({row['slug'] for row in catalog}), "Duplicate source entries"
+expected_pages = 1 + len(catalog) + 14
+assert len(pages) == expected_pages, f"Expected {expected_pages} HTML files, got {len(pages)}"
 missing = []
 for page in pages:
     assert "<h1" in page.read_text(), page
@@ -67,14 +68,18 @@ if __name__ == "__main__":
                         assert response.status == 200, path
                         assert page.locator("h1").count() == 1, path
                         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), f"Horizontal overflow: {path}"
-                        if page.locator(".source-interface img").count():
-                            assert page.locator(".source-interface img").evaluate("image => image.decode().then(() => image.naturalWidth > 0)"), f"Source image failed: {path}"
+                        if page.locator(".source-interface img:not([data-remote])").count():
+                            assert page.locator(".source-interface img:not([data-remote])").evaluate("image => image.decode().then(() => image.naturalWidth > 0)"), f"Source image failed: {path}"
                     page.goto(f"http://127.0.0.1:{port}/showcase/")
-                    assert page.locator(".catalog-card").count() == 17
-                    assert page.locator(".inventory-row").count() == 17
+                    assert page.locator(".catalog-card").count() == len(catalog)
+                    assert page.locator(".inventory-row").count() == len(catalog)
                     page.get_by_role("button", name="Landing", exact=True).click()
                     assert page.locator(".catalog-card:visible").count() == 2
                     assert page.locator(".inventory-row:visible").count() == 2
+                    page.get_by_role("button", name="Design Tokens", exact=True).click()
+                    assert page.locator(".catalog-card:visible").count() == sum(r['category'] == 'Design Tokens' for r in catalog)
+                    page.get_by_role("button", name="Design System Tokens", exact=True).click()
+                    assert page.locator(".inventory-row:visible").count() == sum(r['category'] == 'Design System Tokens' for r in catalog)
                     page.get_by_role("button", name="All", exact=True).click()
                     page.locator("#system-search").fill("dify")
                     assert page.locator(".catalog-card:visible").count() == 1
@@ -97,6 +102,20 @@ if __name__ == "__main__":
                     page.get_by_role("button", name="Agents", exact=True).click()
                     page.locator("#af-agent-search").fill("risk")
                     assert page.locator(".af-agent-list li:visible").count() == 1
+                    page.goto(f"http://127.0.0.1:{port}/showcase/pages/style-dictionary.html")
+                    page.locator('[data-token-color]').fill('#3377aa')
+                    page.get_by_role('button', name='Update export').click()
+                    assert '#3377aa' in page.locator('[data-token-output]').inner_text()
+                    page.goto(f"http://127.0.0.1:{port}/showcase/pages/webgradients.html")
+                    page.get_by_role('button', name='Night Fade').click()
+                    assert 'Night Fade' in page.locator('[data-gradient-name]').inner_text()
+                    page.goto(f"http://127.0.0.1:{port}/showcase/pages/lobehub.html")
+                    page.get_by_role('textbox', name='New agent name').fill('Planner')
+                    page.get_by_role('button', name='Add local agent').click()
+                    assert 'Planner' in page.locator('[data-lobe-agents]').inner_text()
+                    page.goto(f"http://127.0.0.1:{port}/showcase/pages/hyperframes.html")
+                    page.locator('[data-hyper-seek]').fill('5')
+                    assert page.locator('[data-hyper-time]').inner_text() == '00:05'
                     assert not errors, errors
                     page.close()
                 browser.close()
