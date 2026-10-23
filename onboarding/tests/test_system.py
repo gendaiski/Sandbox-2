@@ -14,6 +14,7 @@ from fastapi.testclient import TestClient
 
 from onboarding.core import InputError, classify, download_archive, make_plan, parse_reference, validate_ref
 from onboarding.happy_desktop import ASSET, SHA256, VERSION
+from onboarding.herdr import ASSET as HERDR_ASSET, SHA256 as HERDR_SHA256, VERSION as HERDR_VERSION
 from onboarding.server import create_app
 
 
@@ -53,6 +54,19 @@ class ReferenceTests(unittest.TestCase):
             self.assertEqual(plan["release"]["version"], VERSION)
             target["osFamily"] = "Linux"
             self.assertFalse(make_plan(discovery, target, Path(folder) / "happy")["supported"])
+
+    def test_herdr_plan_requires_windows_and_pins_original_binary(self):
+        discovery = fixture_discovery("herdrdev", "herdr", None)
+        discovery["type"] = "CLI or developer tool"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "herdr")
+            self.assertTrue(plan["supported"])
+            self.assertEqual(plan["methodKey"], "herdr-windows")
+            self.assertEqual(plan["release"]["sha256"], HERDR_SHA256)
+            self.assertEqual(plan["release"]["version"], HERDR_VERSION)
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "herdr")["supported"])
 
     def test_book_with_chapter_notebooks_is_learning_material(self):
         kind, explanation = classify(
@@ -228,6 +242,39 @@ class RunnerTests(unittest.TestCase):
         self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
         self.assertEqual(self.client.get(f"/api/onboardings/{record['id']}/report.json").json()["status"], "PARTIAL")
         self.assertEqual(self.client.post(f"/api/onboardings/{record['id']}/verify", headers=headers).json()["status"], "PARTIAL")
+
+    def test_herdr_cli_checks_do_not_claim_full_tui_workflow(self):
+        def herdr_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "CLI or developer tool"
+            return result
+        target = self.app.state.service.target()
+        target.update({"id": "windows-fixture", "osFamily": "Windows", "architecture": "AMD64"})
+        self.app.state.service.target = lambda: target
+        self.app.state.service.discover_fn = herdr_discovery
+
+        def approved_binary(destination, cancelled, log):
+            (destination / "app").mkdir(parents=True)
+            (destination / HERDR_ASSET).write_bytes(b"controlled archive fixture")
+            (destination / "app" / "herdr.exe").write_bytes(b"controlled binary fixture")
+            (destination / "START_HERE.md").write_text("Run app/herdr.exe")
+            log("Controlled Herdr fixture version and help checked")
+            return {"archive": HERDR_ASSET, "binary": "app/herdr.exe", "sha256": HERDR_SHA256,
+                    "version": HERDR_VERSION, "versionCheck": True, "helpCheck": True}
+
+        self.app.state.service.herdr_fn = approved_binary
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers, json={"reference": "herdrdev/herdr"}).json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers, json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
 
     def test_failed_verification_cannot_report_complete(self):
         def missing_readme(discovery, destination, cancelled, log):
