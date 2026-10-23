@@ -6,6 +6,8 @@ This folder records installation work for the 17 sources requested after the San
 
 The first native agent batch is also available locally: [PicoAgents](picoagents/README.md) runs its original React UI, FastAPI backend, SQLite persistence and upstream example workflow; [AgentField](agentfield/README.md) runs its official embedded dashboard and Go API with a registered deterministic agent. Their APIs and browser UIs were checked. They are not yet public services.
 
+[Kedro](kedro/README.md) is the next verified native system: its pinned 1.7.0 engine ran the nine-task Spaceflights starter, and Kedro-Viz 12.5.0 rendered the original pipeline graph locally. Its server is not hosted on GitHub Pages.
+
 ## What runs now
 
 | Original source | Direct local interface | Verified result |

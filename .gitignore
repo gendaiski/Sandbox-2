@@ -5,6 +5,7 @@ native/data/
 native/picoagents/data/
 native/agentfield/bin/
 native/agentfield/data/
+native/kedro/.venv
 native/.cache/
 
 # Per-system environments and outputs

@@ -16,6 +16,7 @@ PUBLIC_ORIGINALS={
 LOCAL_NATIVE={
  'multiagent-systems':'picoagents',
  'agentfield':'agentfield',
+ 'kedro':'kedro',
 }
 SOURCE_BRANCH='codex/native-landings-20261023'
 
@@ -160,7 +161,7 @@ STATES={
  'agentfield':('Built here','Official embedded UI ran','Go API + SQLite ran','Agent registered; real run returned 5','Deploy persistent, access-controlled runtime'),
  'openhands':('Prior review','Not run','Services unverified','Source checkout','Configure and start the native stack'),
  'autogpt':('Source inspected','Not run','Services unverified','Source checkout','Configure and start the native stack'),
- 'kedro':('Source inspected','Not run','Pipeline unverified','Source checkout','Install CLI and run a sample pipeline'),
+ 'kedro':('Built here','Original Kedro-Viz UI ran','Pinned Kedro pipeline ran','9 tasks; 15 datasets; graph API live','Deploy persistent visualisation service'),
  'datagen':('Source inspected','Not run','Generator unverified','Source checkout','Set up and test a sample dataset'),
  'astron-agent':('Source inspected','Not run','Services unverified','Source checkout','Configure and start the native stack'),
  'swarms':('Source inspected','Not run','Runtime unverified','Source checkout','Install and run a sample workflow'),
@@ -188,7 +189,11 @@ def launch_system(r):
   scope='The source-backed original interface is hosted in this repository and opens with its native browser controls.'
  elif slug in LOCAL_NATIVE:
   target=native_record(slug);label='Run original locally →';status='ORIGINAL UI + BACKEND VERIFIED LOCALLY'
-  scope=('The original React UI, FastAPI backend, SQLite storage, MCP routes and a deterministic streamed workflow were verified together. The public HTML is still a separate study; use the native installation record to run the real app.' if slug=='multiagent-systems' else 'The official embedded dashboard, Go API, SQLite backend, registered demo node and a completed execution were verified together. The public HTML is still a separate study; use the native installation record to run the real app.')
+  scope={
+   'multiagent-systems':'The original React UI, FastAPI backend, SQLite storage, MCP routes and a deterministic streamed workflow were verified together.',
+   'agentfield':'The official embedded dashboard, Go API, SQLite backend, registered demo node and a completed execution were verified together.',
+   'kedro':'The pinned Kedro engine completed its nine-task example pipeline; its original Kedro-Viz server rendered the graph, 15 datasets and 27 edges.',
+  }[slug]+' The public HTML is still a separate study; use the native installation record to run the real app.'
  else:
   target=f'{slug}.html';label='Open interactive study →';status='LOCAL STUDY · ORIGINAL RUNTIME SEPARATE'
   runtime_notes={
