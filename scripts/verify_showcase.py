@@ -58,7 +58,7 @@ if __name__ == "__main__":
             with sync_playwright() as playwright:
                 browser = playwright.chromium.launch(executable_path="/usr/bin/chromium", headless=True, args=["--no-sandbox"])
                 for width in (1440, 390):
-                    page = browser.new_page(viewport={"width": width, "height": 900})
+                    page = browser.new_page(viewport={"width": width, "height": 900}, accept_downloads=True)
                     errors = []
                     page.on("pageerror", lambda error: errors.append(str(error)))
                     for html in pages:
@@ -67,16 +67,36 @@ if __name__ == "__main__":
                         assert response.status == 200, path
                         assert page.locator("h1").count() == 1, path
                         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), f"Horizontal overflow: {path}"
+                        if page.locator(".source-interface img").count():
+                            assert page.locator(".source-interface img").evaluate("image => image.decode().then(() => image.naturalWidth > 0)"), f"Source image failed: {path}"
                     page.goto(f"http://127.0.0.1:{port}/showcase/")
                     assert page.locator(".catalog-card").count() == 17
+                    assert page.locator(".inventory-row").count() == 17
+                    page.get_by_role("button", name="Landing", exact=True).click()
+                    assert page.locator(".catalog-card:visible").count() == 2
+                    assert page.locator(".inventory-row:visible").count() == 2
+                    page.get_by_role("button", name="All", exact=True).click()
                     page.locator("#system-search").fill("dify")
                     assert page.locator(".catalog-card:visible").count() == 1
+                    assert page.locator(".inventory-row:visible").count() == 1
+                    with page.expect_download() as downloaded:
+                        page.locator("#inventory-export").click()
+                    assert downloaded.value.suggested_filename == "Sandbox-2-Systems-Inventory.csv"
                     page.locator(".theme-toggle").click()
                     assert page.locator("html").get_attribute("data-theme") == "dark"
                     page.goto(f"http://127.0.0.1:{port}/showcase/pages/dify.html")
                     page.locator("#dify-node").fill("Review")
                     page.get_by_role("button", name="Add node").click()
                     assert page.locator("#dify-nodes").inner_text() == "Review"
+                    page.goto(f"http://127.0.0.1:{port}/showcase/pages/agentfield.html")
+                    assert page.locator(".source-interface img").evaluate("image => image.complete && image.naturalWidth > 0")
+                    page.get_by_role("button", name="Executions", exact=True).click()
+                    assert page.locator("#af-executions.active").count() == 1
+                    page.locator("#af-execution-search").fill("risk")
+                    assert page.locator("#af-executions tbody tr:visible").count() == 1
+                    page.get_by_role("button", name="Agents", exact=True).click()
+                    page.locator("#af-agent-search").fill("risk")
+                    assert page.locator(".af-agent-list li:visible").count() == 1
                     assert not errors, errors
                     page.close()
                 browser.close()

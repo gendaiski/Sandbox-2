@@ -10,9 +10,15 @@
   // Restore explicitly saved local editor drafts. No agent data is transmitted.
   $$('[data-draft]').forEach(el=>{try{const value=localStorage.getItem('sandbox2-draft-'+el.dataset.draft);if(value!==null)el.value=value}catch{}});
   const featureCopy={performance:'Built to handle ambitious work in a portable form.',display:'A vivid canvas for every detail and idea.',battery:'Keep creating while you move through the day.'};
-  function filterDirectory(){const q=($('#system-search')?.value||'').trim().toLowerCase(),kind=$('.filter-row button.active')?.dataset.filter||'all';let count=0;$$('.catalog-card').forEach(card=>{const tag=card.dataset.kind||'';const category=kind==='all'||(kind==='landing'?tag.includes('landing'):(kind==='agent'?tag.includes('agent')||tag.includes('coding')||tag.includes('workspace'):tag.includes('data')||tag.includes('pipeline')));const visible=category&&card.dataset.search.includes(q);card.hidden=!visible;if(visible)count++});const label=$('#directory-count');if(label)label.textContent=`${count} system${count===1?'':'s'}`;const empty=$('.no-results');if(empty)empty.hidden=count!==0}
+  function categoryMatches(tag,kind){return kind==='all'||(kind==='landing'?tag.includes('landing'):(kind==='agent'?tag.includes('agent')||tag.includes('coding')||tag.includes('workspace'):tag.includes('data')||tag.includes('pipeline')))}
+  function filterDirectory(){const q=($('#system-search')?.value||'').trim().toLowerCase(),kind=$('.filter-row button.active')?.dataset.filter||'all';let count=0;$$('.catalog-card').forEach(card=>{const visible=categoryMatches(card.dataset.kind||'',kind)&&card.dataset.search.includes(q);card.hidden=!visible;if(visible)count++});$$('.inventory-row').forEach(row=>row.hidden=!(categoryMatches(row.dataset.kind||'',kind)&&row.dataset.search.includes(q)));const label=$('#directory-count');if(label)label.textContent=`${count} system${count===1?'':'s'}`;const tableCount=$('#inventory-visible');if(tableCount)tableCount.textContent=`Showing ${count} of 17 systems`;const empty=$('.no-results');if(empty)empty.hidden=count!==0}
   $('#system-search')?.addEventListener('input',filterDirectory);
+  $('#inventory-export')?.addEventListener('click',()=>{const rows=[$$('.inventory-table thead th').map(x=>x.textContent.trim()),...$$('.inventory-row:not([hidden])').map(row=>$$('td',row).map(cell=>cell.textContent.trim().replace(/\s+/g,' ')))];const safe=value=>{const text=String(value).replace(/^[=+@-]/,"'$&");return '"'+text.replace(/"/g,'""')+'"'};const blob=new Blob(['\ufeff'+rows.map(row=>row.map(safe).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='Sandbox-2-Systems-Inventory.csv';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
   $('#landing-search')?.addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();$$('.landing-card').forEach(card=>card.hidden=!card.dataset.search.includes(q))});
+  function filterAgentfieldExecutions(){const q=($('#af-execution-search')?.value||'').trim().toLowerCase(),status=$('#af-status-filter')?.value||'All';$$('#af-executions tbody tr').forEach(row=>row.hidden=!(row.dataset.search.includes(q)&&(status==='All'||row.dataset.status===status)))}
+  $('#af-execution-search')?.addEventListener('input',filterAgentfieldExecutions);
+  $('#af-status-filter')?.addEventListener('change',filterAgentfieldExecutions);
+  $('#af-agent-search')?.addEventListener('input',event=>{const q=event.target.value.trim().toLowerCase();$$('.af-agent-list li').forEach(row=>row.hidden=!row.textContent.toLowerCase().includes(q))});
   $$('[data-file-label]').forEach(input=>input.addEventListener('change',()=>{const label=document.getElementById(input.dataset.fileLabel);if(label)label.textContent=input.files?.[0]?.name||'No file chosen'}));
   document.addEventListener('submit',event=>{
     const form=event.target,action=form.dataset.action;
@@ -29,6 +35,7 @@
     const action=button.dataset.action;
     if(action==='theme')setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
     if(action==='menu')$('.site-sidebar')?.classList.toggle('open');
+    if(action==='af-tab'){const ui=button.closest('.af-ui');if(!ui)return;$$('.af-tab',ui).forEach(tab=>tab.classList.toggle('active',tab===button));$$('.af-view',ui).forEach(view=>view.classList.toggle('active',view.id===button.dataset.target))}
     if(action==='pane'){
       const frame=button.closest('.appframe');if(!frame)return;
       $$('.frame-nav-item',frame).forEach(x=>x.classList.toggle('active',x===button));
