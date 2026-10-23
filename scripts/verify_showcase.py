@@ -156,6 +156,8 @@ if __name__ == "__main__":
                     page.goto(f"{base}/showcase/onboarding-system/workspace.html")
                     page.locator('#runner-banner.offline').wait_for(timeout=10000)
                     assert page.locator('#product-content:visible').count() == 0
+                    assert page.locator('#offline-setup:visible').count() == 1
+                    assert 'python.exe -m onboarding.server' in page.locator('#setup-commands').inner_text()
                     assert page.locator('#runner-guide:visible').count() == 1
                     page.locator('#theme-toggle').click()
                     assert page.locator('html').get_attribute('data-theme') == 'dark'

@@ -202,7 +202,13 @@ class Service:
         catalog = json.loads((ROOT / "showcase/catalog.json").read_text())
         for row in catalog:
             if row["repo"].lower() == canonical:
-                evidence.append(f"Existing Sandbox-2 source inventory: {row['title']}. This is not proof of a new installation.")
+                evidence.append(
+                    f"Existing Sandbox-2 source inventory: {row['title']} at recorded revision {row.get('revision', 'not recorded')}. "
+                    f"Earlier audit note: {row.get('prior', 'No audit note recorded')} "
+                    "This is historical evidence, not proof that an application is running now."
+                )
+                if row.get("priorEvidence"):
+                    evidence.append(f"Earlier audit source: {row['priorEvidence']}")
         queue = (ROOT / "native/PENDING-BATCH-19.md").read_text()
         if re.search(rf"^\d{{2}}\. `{re.escape(canonical)}`$", queue, re.I | re.M):
             evidence.append("Existing Onboarding queue entry. Its status must be checked separately; no duplicate installation was created.")

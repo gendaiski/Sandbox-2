@@ -29,6 +29,20 @@ Only one runner may use a given data folder at a time. A process lock prevents a
 
 Application, CLI, library, plugin, monorepo, private-repository and remote-runner installations are **not yet implemented**. Their discovery record can be opened, but the setup plan is marked `BLOCKED`. A GitHub source inventory entry or old queue row is never treated as proof of installation. No UI is invented for repositories that lack one. No public app endpoint, remote tunnel, hosted credential integration, app migrations, or managed isolation is configured. This feature is therefore **PARTIAL** against the broader multi-type onboarding specification.
 
+### Saved statuses
+
+| From | Action | To |
+| --- | --- | --- |
+| New reference | Live discovery and plan | `AWAITING_APPROVAL` for supported content, otherwise `BLOCKED` |
+| `AWAITING_APPROVAL` | Approve the unchanged plan hash | `READY` |
+| `READY` | Start the exclusive worker job | `INSTALLING` |
+| `INSTALLING` | Verification passes / a check fails / job errors / cancellation | `COMPLETE` / `PARTIAL` / `FAILED` / `CANCELLED` |
+| `COMPLETE` or `PARTIAL` | Re-run file verification | `VERIFYING`, then `COMPLETE` or `PARTIAL` |
+| `FAILED`, `CANCELLED`, or `PARTIAL` | Create a new isolated retry plan | `AWAITING_APPROVAL` and a new approval is required |
+| `INSTALLING` on runner restart | Mark the interrupted job | `PARTIAL` pending review and retry |
+
+Discovery currently runs during the submission request; it is not yet a separately persisted `ANALYSING` job. Archiving marks a record without changing its work status or deleting its files. The runner's own records prevent duplicate setups within its data folder. Existing Sandbox-2 catalog entries and queue rows are surfaced as historical evidence only; they do not certify a currently running installation.
+
 ### Execution target and persistence
 
 The only supported target is the machine running this Python process. It is your computer only when you start the runner there. A runner started in a temporary Codex cloud workspace is a different machine, with no guaranteed persistent storage or browser-accessible app preview. The runner shows its actual OS and storage path; it does not claim a remote `localhost` URL is reachable from your computer.

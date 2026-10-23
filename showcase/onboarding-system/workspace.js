@@ -56,10 +56,10 @@
       state.csrf = session.csrf;
       if (!session.authenticated) {
         banner('Runner connected · access code required', 'Use the private code printed in the runner terminal to unlock repository setup.', 'connected');
-        $('#access-panel').hidden = false; $('#product-content').hidden = true;
+        $('#offline-setup').hidden = true; $('#access-panel').hidden = false; $('#product-content').hidden = true;
         return;
       }
-      $('#access-panel').hidden = true; $('#product-content').hidden = false;
+      $('#offline-setup').hidden = true; $('#access-panel').hidden = true; $('#product-content').hidden = false;
       state.target = await api('/target');
       banner('Local runner connected', `Work runs on ${state.target.name}. ${state.target.persistenceNote}.`, 'connected');
       renderTarget();
@@ -68,10 +68,18 @@
       if (selected && state.records.some(record => record.id === selected)) await openRecord(selected);
     } catch (error) {
       $('#access-panel').hidden = true; $('#product-content').hidden = true;
+      $('#offline-setup').hidden = false;
       $('#runner-guide').hidden = false;
       banner('No execution runner connected', 'This public page cannot install software. Start the authenticated local runner on the computer where you want work to happen, then open its local address.', 'offline');
     }
   }
+
+  $('#copy-setup').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText($('#setup-commands').textContent);
+      $('#copy-setup').textContent = 'Copied';
+    } catch { $('#copy-setup').textContent = 'Select the commands to copy'; }
+  });
 
   function renderTarget() {
     const facts = $('#target-facts'); facts.replaceChildren();
