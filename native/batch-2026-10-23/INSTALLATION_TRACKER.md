@@ -1,6 +1,6 @@
 # Installation tracker
 
-All 25 repositories are `QUEUED`. `NOT VERIFIED` means the current GitHub About field and website have not yet been captured for an individual report. A previous inventory mention or clone is not a completed setup. The report column becomes a link when that repository is investigated.
+All 38 unique repositories are `QUEUED`. `NOT VERIFIED` means the current GitHub About field and website have not yet been captured for an individual report. A previous inventory mention or clone is not a completed setup. The report column becomes a link when that repository is investigated. `nocodb/nocodb` was requested again and remains item 20, with no duplicate row.
 
 | # | Repository | Status | GitHub description | Website listed on GitHub | Verified official website | Individual report |
 | ---: | --- | --- | --- | --- | --- | --- |
@@ -29,5 +29,20 @@ All 25 repositories are `QUEUED`. `NOT VERIFIED` means the current GitHub About 
 | 23 | [KomalSrinivasan/ai-universe](https://github.com/KomalSrinivasan/ai-universe) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
 | 24 | [oceanbase/seekdb](https://github.com/oceanbase/seekdb) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
 | 25 | [djpapzin/LangChain-VectorDB-Learning](https://github.com/djpapzin/LangChain-VectorDB-Learning) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
+| 26 | [ToolJet/ToolJet](https://github.com/ToolJet/ToolJet) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
+| 27 | [directus/directus](https://github.com/directus/directus) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
+| 28 | [pathwaycom/serviette](https://github.com/pathwaycom/serviette) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
+| 29 | [Budibase/budibase](https://github.com/Budibase/budibase) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
+| 30 | [4ian/GDevelop](https://github.com/4ian/GDevelop) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
+| 31 | [GrapesJS/grapesjs](https://github.com/GrapesJS/grapesjs) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
+| 32 | [nocobase/nocobase](https://github.com/nocobase/nocobase) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
+| 33 | [teableio/teable](https://github.com/teableio/teable) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
+| 34 | [datawhalechina/easy-vibe](https://github.com/datawhalechina/easy-vibe) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
+| 35 | [puckeditor/puck](https://github.com/puckeditor/puck) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
+| 36 | [givanz/VvvebJs](https://github.com/givanz/VvvebJs) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
+| 37 | [YaoApp/yao](https://github.com/YaoApp/yao) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
+| 38 | [simstudioai/sim](https://github.com/simstudioai/sim) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
 
 After completing each item, replace `Pending` with its report link, update status and metadata from verified sources, and record version, usable command or address, and representative workflow evidence in the report and `START_HERE.md`.
+
+**Builder comparison:** Pending evidence-based ranking of relevant builder items, with special attention to Puck and VvvebJs. No rank or score has been assigned before investigation. **Sim deployment:** Cloud or local service usable from Windows is acceptable; no desktop application package is requested.
