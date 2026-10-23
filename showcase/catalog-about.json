@@ -1,0 +1,200 @@
+{
+  "landing-pages": {
+    "githubDescription": "Open-source landing pages with a personality of their own.",
+    "websiteListedOnGitHub": "https://lp.lndev.me",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/ln-dev7/landing-pages"
+  },
+  "macbook": {
+    "githubDescription": " Apple-style 3D Website — Built with React, Three.js, GSAP, and TailwindCSS. Experience immersive 3D product showcases with realistic lighting, scroll-triggered animations, masking effects, and buttery-smooth transitions.",
+    "websiteListedOnGitHub": "https://macbook-landing-page-ten.vercel.app",
+    "websiteType": "Official demo",
+    "aboutSource": "https://github.com/Itssanthoshhere/Macbook-Landing-Page"
+  },
+  "dify": {
+    "githubDescription": "Build Agentic workflows, RAG pipelines, with rich AI model and tool support on one collaborative workspace. Deploy on cloud, VPC, or self-hosted, so teams move from prototype to production without rebuilding the stack.",
+    "websiteListedOnGitHub": "https://dify.ai",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/langgenius/dify"
+  },
+  "swiftui-flx": {
+    "githubDescription": "shadcn/ui for SwiftUI. Beautiful copy-paste components for iPhone, iPad and Mac that you own. Native controls, themes, dark mode, Dynamic Type.",
+    "websiteListedOnGitHub": "https://swiftui.flexnative.com",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/felipemenezes098/swiftui-flx"
+  },
+  "minicpm": {
+    "githubDescription": "Not a GitHub repository; this source is a Hugging Face Space.",
+    "websiteListedOnGitHub": "https://huggingface.co/spaces/openbmb/MiniCPM-V-4.7-Demo",
+    "websiteType": "Official demo",
+    "aboutSource": "https://huggingface.co/spaces/openbmb/MiniCPM-V-4.7-Demo"
+  },
+  "anything-llm": {
+    "githubDescription": "Stop renting your intelligence. Own it with AnythingLLM. Everything you need for a powerful local-first agent experience ",
+    "websiteListedOnGitHub": "https://anythingllm.com",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/Mintplex-Labs/anything-llm"
+  },
+  "ruflo": {
+    "githubDescription": "🌊 The original agent harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning intelligence, federation, vector RAG integration, and native Claude Code / Codex / Hermes and many more Integrated",
+    "websiteListedOnGitHub": "https://Cognitum.One",
+    "websiteType": "Other link listed on GitHub",
+    "aboutSource": "https://github.com/ruvnet/ruflo"
+  },
+  "open-agent": {
+    "githubDescription": "Open-source alternative to Claude Agent SDK, ChatGPT Agents, and Manus.",
+    "websiteListedOnGitHub": "https://open-agent.io/",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/AFK-surf/open-agent"
+  },
+  "multiagent-systems": {
+    "githubDescription": "Building LLM-Enabled Multi Agent Applications from Scratch",
+    "websiteListedOnGitHub": "https://buy.multiagentbook.com/",
+    "websiteType": "Book / course link",
+    "aboutSource": "https://github.com/victordibia/designing-multiagent-systems"
+  },
+  "agentfield": {
+    "githubDescription": "Build, run and scale AI agents like API and microservices",
+    "websiteListedOnGitHub": "http://www.agentfield.ai",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/Agent-Field/agentfield"
+  },
+  "openhands": {
+    "githubDescription": "🙌 OpenHands: AI-Driven Development",
+    "websiteListedOnGitHub": "https://openhands.dev",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/OpenHands/OpenHands"
+  },
+  "autogpt": {
+    "githubDescription": "AutoGPT is the vision of accessible AI for everyone, to use and to build on. Our mission is to provide the tools, so that you can focus on what matters.",
+    "websiteListedOnGitHub": "https://agpt.co",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/Significant-Gravitas/AutoGPT"
+  },
+  "kedro": {
+    "githubDescription": "Kedro is a toolbox for production-ready data science. It uses software engineering best practices to help you create data engineering and data science pipelines that are reproducible, maintainable, and modular.",
+    "websiteListedOnGitHub": "https://kedro.org",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/kedro-org/kedro"
+  },
+  "datagen": {
+    "githubDescription": "DATAGEN: AI-driven multi-agent research assistant automating hypothesis generation, data analysis, and report writing. ",
+    "websiteListedOnGitHub": null,
+    "websiteType": "No verified website",
+    "aboutSource": "https://github.com/zi-yue-1129/DATAGEN"
+  },
+  "astron-agent": {
+    "githubDescription": "Enterprise-grade, commercial-friendly agentic workflow platform for building next-generation SuperAgents.",
+    "websiteListedOnGitHub": "http://astron.ai/",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/iflytek/astron-agent"
+  },
+  "swarms": {
+    "githubDescription": "The Enterprise-Grade Multi-Agent Orchestration Framework. Website: https://swarms.ai",
+    "websiteListedOnGitHub": "https://docs.swarms.world",
+    "websiteType": "Official documentation",
+    "aboutSource": "https://github.com/kyegomez/swarms"
+  },
+  "kun": {
+    "githubDescription": "Local-first AI agent workspace for coding, writing, design, research, and automation — one runtime for desktop GUI and TUI.",
+    "websiteListedOnGitHub": "https://www.kun-agent.com",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/KunAgent/Kun"
+  },
+  "oh-my-design": {
+    "githubDescription": "Give your AI coding agent a design system. One command installs 500+ quality-graded company DESIGN.md references + skills into Claude Code, Codex, Cursor, and OpenCode. Free, MIT, zero AI calls.",
+    "websiteListedOnGitHub": "https://oh-my-design.kr",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/kwakseongjae/oh-my-design"
+  },
+  "awesome-design-md": {
+    "githubDescription": "A collection of DESIGN.md files analysis by popular brand design systems. Drop one into your project and let coding agents generate a matching UI.",
+    "websiteListedOnGitHub": "https://getdesign.md/",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/VoltAgent/awesome-design-md"
+  },
+  "panda": {
+    "githubDescription": "🐼 Universal, Type-Safe, CSS-in-JS Framework for Design Systems ⚡️",
+    "websiteListedOnGitHub": "https://panda-css.com",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/chakra-ui/panda"
+  },
+  "style-dictionary": {
+    "githubDescription": "A build system for creating cross-platform styles.",
+    "websiteListedOnGitHub": "https://styledictionary.com",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/style-dictionary/style-dictionary"
+  },
+  "design-extract": {
+    "githubDescription": "Extract any website's complete design system with one command. DTCG tokens, semantic+primitive+composite, MCP server for Claude Code/Cursor/Windsurf, multi-platform emitters (iOS SwiftUI, Android Compose, Flutter, WordPress), Tailwind v4, Figma variables, shadcn/ui, CSS health audit, WCAG remediation, Chrome extension. MIT, Playwright, Node 20+.",
+    "websiteListedOnGitHub": "https://www.designlang.app",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/Manavarya09/design-extract"
+  },
+  "dembrandt": {
+    "githubDescription": "Extract any website’s design system into tokens in seconds: logo, colors, typography, borders & more. One command.",
+    "websiteListedOnGitHub": "http://dembrandt.com/",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/dembrandt/dembrandt"
+  },
+  "ux-ui-agent-skills": {
+    "githubDescription": "Turn Claude into a senior design architect: DTCG tokens, 52 components, WCAG 2.2 AA-AAA, 138 design systems, any-framework code, and 50 objective gates that fail the build instead of faking success.",
+    "websiteListedOnGitHub": "https://plugin87.github.io/ux-ui-agent-skills/",
+    "websiteType": "Official documentation",
+    "aboutSource": "https://github.com/plugin87/ux-ui-agent-skills"
+  },
+  "webgradients": {
+    "githubDescription": "180 free CSS3, Figma, Sketch & PSD gradients — plus a JSON dataset for design tools, generators, and AI agents.",
+    "websiteListedOnGitHub": "https://webgradients.com",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/itmeo/webgradients"
+  },
+  "design-tokens-spec": {
+    "githubDescription": "This is the official DTCG repository for the design tokens site and specification.",
+    "websiteListedOnGitHub": "https://www.designtokens.org/TR/drafts/",
+    "websiteType": "Official documentation",
+    "aboutSource": "https://github.com/design-tokens/community-group"
+  },
+  "tokens-studio": {
+    "githubDescription": "Official repository of the plugin 'Tokens Studio for Figma' (Figma Tokens)",
+    "websiteListedOnGitHub": "https://www.figma.com/community/plugin/843461159747178978",
+    "websiteType": "Official plugin listing",
+    "aboutSource": "https://github.com/tokens-studio/figma-plugin"
+  },
+  "awesome-design-tokens": {
+    "githubDescription": "A list of resources on all things to do with Design Tokens",
+    "websiteListedOnGitHub": null,
+    "websiteType": "No verified website",
+    "aboutSource": "https://github.com/sturobson/Awesome-Design-Tokens"
+  },
+  "diez": {
+    "githubDescription": "The Design Token Framework — Adopt a unified design language across platforms, codebases, and teams",
+    "websiteListedOnGitHub": "https://diez.org",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/diez/diez"
+  },
+  "styleseed": {
+    "githubDescription": "Open-source design-method engine for Claude Code, Codex & Cursor. 23 agent skills for fixed design judgment, multiple grammars, semantic palettes, reference compilation, and evidence-verified UI. MIT.",
+    "websiteListedOnGitHub": "https://styleseed-demo.vercel.app",
+    "websiteType": "Official demo",
+    "aboutSource": "https://github.com/bitjaru/styleseed"
+  },
+  "hashicorp-design-system": {
+    "githubDescription": "Helios Design System",
+    "websiteListedOnGitHub": "https://helios.hashicorp.design",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/hashicorp/design-system"
+  },
+  "lobehub": {
+    "githubDescription": "🤯 LobeHub is your Chief Agent Operator, organizing your agents into 7×24 operations by hiring, scheduling, and reporting on your entire AI team.",
+    "websiteListedOnGitHub": "https://lobehub.com",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/lobehub/lobehub"
+  },
+  "hyperframes": {
+    "githubDescription": "Write HTML. Render video. Built for agents.",
+    "websiteListedOnGitHub": "https://hyperframes.dev",
+    "websiteType": "Official website",
+    "aboutSource": "https://github.com/heygen-com/hyperframes"
+  }
+}

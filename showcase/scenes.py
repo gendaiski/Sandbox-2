@@ -21,6 +21,15 @@ LANDINGS = [
  ('aparte','Aparté','Editorial gifting','https://aparte-lndev.vercel.app','jpg'),
  ('ecrin','Écrin','Animated gift box','https://ecrin-lndev.vercel.app','jpg'),
 ]
+NATIVE_LANDINGS = frozenset({
+ 'aero','crux','fallow','maree','oddpress','offcut','tempo','tessera','umbra','veillee',
+})
+DEPLOYED_LANDINGS = {
+ 'aparte': 'https://sandbox-2-aparte.vercel.app/',
+ 'ecrin': 'https://sandbox-2-ecrin.vercel.app/',
+ 'ficelle': 'https://sandbox-2-ficelle.vercel.app/',
+ 'passeline': 'https://sandbox-2-passeline.vercel.app/',
+}
 
 def btn(text, action=None, cls='soft', **attrs):
  extra=' '.join(f'data-{k.replace("_","-")}="{escape(str(v),quote=True)}"' for k,v in attrs.items())
@@ -36,8 +45,9 @@ def card(title,copy,extra=''):return f'<article class="mini-card"><h4>{title}</h
 def flow(names):return '<div class="flowline">'+''.join(f'<div class="flow-node"><span>{i+1:02}</span><strong>{escape(x)}</strong></div>' for i,x in enumerate(names))+'</div>'
 
 def gallery():
- cards=''.join(f'''<article class="landing-card" data-search="{slug} {escape(name.lower())} {escape(tag.lower())}"><a href="landing-{slug}.html" aria-label="Open {escape(name)} preview"><img src="../assets/landing/{slug}.{ext}" alt="Original {escape(name)} landing page preview" loading="lazy"></a><div class="landing-card-foot"><div><b>{escape(name)}</b><small>{escape(tag)}</small></div><a href="landing-{slug}.html">Inspect →</a></div></article>''' for slug,name,tag,url,ext in LANDINGS)
- return f'''<div class="gallery-intro"><span>01 / 14</span><h3>Fourteen independent landing experiences</h3><p>These are the original preview frames from the MIT repository. Open any local page to inspect the frame, then launch the original interactive site.</p><label class="searchbox"><span>⌕</span><input id="landing-search" type="search" placeholder="Find a landing page or theme" aria-label="Search landing pages"></label></div><div class="landing-grid">{cards}</div><p class="demo-note">Original thumbnails: ln-dev7/landing-pages, MIT. Full 3D and motion interactions run on the linked upstream sites.</p>'''
+ cards=''.join(f'''<article class="landing-card landing-native-card" data-search="{slug} {escape(name.lower())} {escape(tag.lower())}"><span class="landing-native-number">{i+1:02} / 14</span><h4>{escape(name)}</h4><p>{escape(tag)}</p><span class="landing-native-status">{'● Original app running as a static build' if slug in NATIVE_LANDINGS else '● Original server app live on Vercel' if slug in DEPLOYED_LANDINGS else '◐ Original server app tested; Vercel pending'}</span><div class="landing-card-foot"><a href="launch-landing-{slug}.html">Launch page →</a><a href="{'../../native/landing/'+slug+'/' if slug in NATIVE_LANDINGS else DEPLOYED_LANDINGS.get(slug, 'landing-'+slug+'.html')}">{'Open app ↗' if slug in NATIVE_LANDINGS or slug in DEPLOYED_LANDINGS else 'Deployment status ↗'}</a></div></article>''' for i,(slug,name,tag,url,ext) in enumerate(LANDINGS))
+ status=f'Ten original static builds and all four original server apps are public.' if len(DEPLOYED_LANDINGS)==4 else f'Ten original static builds are public. {len(DEPLOYED_LANDINGS)} original server apps are public on Vercel; {4-len(DEPLOYED_LANDINGS)} passed local server-action tests and await deployment.'
+ return f'''<div class="gallery-intro"><span>ORIGINAL SOURCE APPLICATIONS</span><h3>Fourteen independent landing experiences</h3><p>{status}</p><label class="searchbox"><span>⌕</span><input id="landing-search" type="search" placeholder="Find a landing page or theme" aria-label="Search landing pages"></label></div><div class="landing-grid">{cards}</div><p class="demo-note">These fictional demos do not provide real booking, payment or merchant delivery services without their own integrations.</p>'''
 
 def macbook():
  return '''<div class="product-screen mac-screen"><nav class="product-nav"><b>MacBook Pro</b><span>Store　Mac　iPhone　Watch　Vision　AirPods</span><a href="https://macbook-landing-page-ten.vercel.app" target="_blank" rel="noopener">Original →</a></nav><div class="product-hero"><div class="mac-hero-copy"><span>MacBook Pro</span><h3>Built for Apple Intelligence.</h3><p>This CSS study follows the source page's opening composition. Open the original for its animation and product media.</p></div><div class="macbook-shut"><div class="macbook-light"></div></div><div class="mac-buy"><a href="https://macbook-landing-page-ten.vercel.app" target="_blank" rel="noopener" class="button primary-link">View original</a><span>Choose a finish below</span></div></div><div class="product-highlights"><div class="choice-row" aria-label="Choose finish"><button class="choice active" data-action="choice" data-value="Silver">Silver</button><button class="choice" data-action="choice" data-value="Space Black">Space Black</button><button class="choice" data-action="choice" data-value="Midnight">Midnight</button></div><span class="choice-status">Finish: <strong data-choice-result>Silver</strong></span><div class="feature-picks"><button class="highlight active" data-action="feature" data-feature="performance">Performance</button><button class="highlight" data-action="feature" data-feature="display">Display</button><button class="highlight" data-action="feature" data-feature="battery">Battery</button></div><p data-feature-copy>Built to handle ambitious work in a portable form.</p></div></div>'''
