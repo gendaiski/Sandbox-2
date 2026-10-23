@@ -1,0 +1,559 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/*
+ * Ficelle, maquette « Univers du colis cadeau ».
+ * Le fond est du papier kraft (teinte brune tirée de l'or #C59940) ; les
+ * contenus sont des étiquettes, tickets, fiches et enveloppes posés dessus.
+ */
+:root {
+  /* Marque (imposé) */
+  --teal: #1a7971;
+  --teal-deep: #123f3b;
+  --gold: #c59940;
+  --gold-light: #e3be6b;
+  --ink: #0f2324;
+  --cream: #f9f6ed;
+
+  /* Kraft, dérivé de l'or : même famille de teinte, désaturé et assombri */
+  --kraft: #c39c68;
+  --kraft-shade: #b08853;
+  --kraft-deep: #7c5a30;
+  --kraft-pale: #dcc49c;
+  --box-inside: #4f3820;
+  --paper: #fffdf7;
+  --gold-edge: #94701f;
+  --ink-soft: #2b3b39;
+
+  --background: var(--kraft);
+  --foreground: var(--ink);
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--teal);
+  --primary-foreground: #ffffff;
+  --secondary: var(--paper);
+  --secondary-foreground: var(--ink);
+  --muted: var(--kraft-pale);
+  --muted-foreground: var(--ink-soft);
+  --accent: var(--kraft-pale);
+  --accent-foreground: var(--ink);
+  --destructive: #a3341f;
+  --border: rgb(15 35 36 / 0.22);
+  --input: rgb(15 35 36 / 0.3);
+  --ring: var(--ink);
+  --radius: 0.25rem;
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* Fibres et grain du kraft, générés en SVG (pas d'image) */
+  --kraft-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.29 0 0 0 0 0.19 0 0 0 0 0.07 0 0 0 1.1 -0.42'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  --kraft-fibers: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04 0.5' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.97 0 0 0 0 0.88 0 0 0 0 0.68 0 0 0 2.2 -1.28'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.55'/%3E%3C/svg%3E");
+  --kraft-fibers-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05 0.6' numOctaves='3' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.36 0 0 0 0 0.24 0 0 0 0 0.1 0 0 0 2.2 -1.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23d)' opacity='0.5'/%3E%3C/svg%3E");
+  --kraft-mottle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1000' height='1000'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.004' numOctaves='2' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.29 0 0 0 0 0.12 0 0 0 0.5 -0.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E");
+  /* Usure de l'encre des tampons : masque troué */
+  --ink-wear: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='3' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4 0 0 0 -0.95'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E");
+}
+
+@theme inline {
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex), ui-monospace, monospace;
+
+  --color-teal: var(--teal);
+  --color-teal-deep: var(--teal-deep);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-edge: var(--gold-edge);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-cream: var(--cream);
+  --color-kraft: var(--kraft);
+  --color-kraft-shade: var(--kraft-shade);
+  --color-kraft-deep: var(--kraft-deep);
+  --color-kraft-pale: var(--kraft-pale);
+  --color-box-inside: var(--box-inside);
+  --color-paper: var(--paper);
+
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background-color: var(--kraft);
+    background-image:
+      var(--kraft-fibers), var(--kraft-fibers-dark), var(--kraft-grain),
+      var(--kraft-mottle);
+    background-size: 400px, 400px, 240px, 1000px;
+    color: var(--ink);
+    overflow-x: clip;
+    font-feature-settings: "kern", "liga";
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+  }
+  ::selection {
+    background: var(--gold-light);
+    color: var(--ink);
+  }
+}
+
+/* ——— Typographie ——— */
+
+/* Titres : Archivo très condensé et très gras, comme imprimé sur un carton */
+@utility type-display {
+  font-family: var(--font-archivo), ui-sans-serif, sans-serif;
+  font-weight: 900;
+  font-stretch: 62%;
+  line-height: 0.84;
+  letter-spacing: -0.005em;
+}
+@utility type-title {
+  font-family: var(--font-archivo), ui-sans-serif, sans-serif;
+  font-weight: 850;
+  font-stretch: 66%;
+  line-height: 0.9;
+}
+@utility type-heading {
+  font-family: var(--font-archivo), ui-sans-serif, sans-serif;
+  font-weight: 800;
+  font-stretch: 78%;
+  line-height: 1.02;
+}
+/* Champs d'étiquette (DE, POUR, MODE…), le vocabulaire d'un bordereau */
+@utility type-field {
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-weight: 500;
+  font-size: 0.6875rem;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ——— Matières ——— */
+
+@utility kraft {
+  background-color: var(--kraft);
+  background-image:
+    var(--kraft-fibers), var(--kraft-fibers-dark), var(--kraft-grain),
+    var(--kraft-mottle);
+  background-size: 400px, 400px, 240px, 1000px;
+}
+@utility kraft-pale {
+  background-color: var(--kraft-pale);
+  background-image: var(--kraft-fibers), var(--kraft-grain);
+  background-size: 400px, 240px;
+}
+@utility box-inside {
+  background-color: var(--box-inside);
+  background-image: var(--kraft-fibers-dark), var(--kraft-grain), var(--kraft-mottle);
+  background-size: 400px, 240px, 1000px;
+}
+
+/* Papier d'étiquette : blanc, posé avec une ombre basse */
+@utility paper {
+  background-color: var(--paper);
+  color: var(--ink);
+  box-shadow:
+    0 1px 0 rgb(90 62 26 / 0.18),
+    0 12px 26px -12px rgb(60 38 12 / 0.5),
+    0 2px 4px rgb(60 38 12 / 0.12);
+}
+
+/* Ruban adhésif or clair, bords dentelés */
+@utility tape {
+  position: absolute;
+  z-index: 3;
+  height: 1.9rem;
+  width: 6.5rem;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.3), transparent 40%, rgb(255 255 255 / 0.12)),
+    color-mix(in oklab, var(--gold-light) 72%, transparent);
+  clip-path: polygon(3% 0, 97% 0, 100% 14%, 97% 30%, 100% 47%, 97% 64%, 100% 80%, 97% 100%, 3% 100%, 0 84%, 3% 67%, 0 50%, 3% 34%, 0 17%);
+  pointer-events: none;
+}
+
+/* Tampon encreur : encre irrégulière (bords tremblés et usure) */
+@utility stamp {
+  color: var(--teal);
+  mix-blend-mode: multiply;
+  filter: url(#ink-rough);
+  mask-image: var(--ink-wear);
+  mask-size: 160px;
+  rotate: var(--r, -6deg);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Bords en dents de scie d'un ticket de caisse (haut et bas) */
+@utility zigzag {
+  --s: 9px;
+  mask:
+    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / calc(2 * var(--s)) 51% repeat-x,
+    conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / calc(2 * var(--s)) 51% repeat-x;
+}
+
+/* Ruban or satiné */
+@utility ribbon-band {
+  background: linear-gradient(
+    180deg,
+    var(--gold-edge) 0 2px,
+    #b88a35 2px,
+    var(--gold) 18%,
+    var(--gold-light) 42%,
+    #ecd08f 50%,
+    var(--gold) 70%,
+    #a97e2e calc(100% - 2px),
+    var(--gold-edge) 0
+  );
+  box-shadow: 0 10px 16px -8px rgb(70 44 10 / 0.5);
+}
+
+/* Tranche de carton ondulé (parements + cannelure) */
+@utility cardboard-edge {
+  background-color: #2f2010;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='20'%3E%3Crect width='22' height='3.5' fill='%23a98250'/%3E%3Crect y='16.5' width='22' height='3.5' fill='%23a98250'/%3E%3Cpath d='M0 16 C 5.5 16 5.5 4 11 4 S 16.5 16 22 16' fill='none' stroke='%23b8915c' stroke-width='2.4'/%3E%3C/svg%3E");
+  background-size: 22px 20px;
+  background-repeat: repeat-x;
+}
+
+/* Timbre-poste : bords dentelés */
+@utility postage {
+  --p: 4px;
+  padding: calc(var(--p) * 2.2);
+  mask:
+    radial-gradient(circle var(--p) at var(--p) var(--p), #0000 96%, #000) calc(var(--p) * -1) calc(var(--p) * -1) / calc(var(--p) * 3) calc(var(--p) * 3) round,
+    linear-gradient(#000 0 0) content-box;
+}
+
+/* Ligne de découpe pointillée */
+@utility cut-line {
+  background-image: linear-gradient(90deg, currentColor 0 55%, transparent 55% 100%);
+  background-size: 12px 2px;
+  background-repeat: repeat-x;
+  background-position: left center;
+  height: 2px;
+}
+
+/* Texte courant des documents légaux */
+@utility legal-prose {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--ink-soft);
+
+  & h2 {
+    font-family: var(--font-archivo), ui-sans-serif, sans-serif;
+    font-weight: 800;
+    font-stretch: 78%;
+    font-size: 1.75rem;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-top: 3rem;
+    margin-bottom: 0.875rem;
+    padding-top: 1.25rem;
+    border-top: 1.5px dashed rgb(15 35 36 / 0.3);
+    scroll-margin-top: 2rem;
+  }
+  & h2:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+  & p {
+    margin-block: 0.875rem;
+    max-width: 68ch;
+  }
+  & ul {
+    margin-block: 0.875rem;
+    padding-left: 1.4rem;
+    list-style: square;
+    max-width: 66ch;
+  }
+  & li {
+    margin-block: 0.4rem;
+    padding-left: 0.25rem;
+  }
+  & li::marker {
+    color: var(--teal);
+  }
+  & strong {
+    font-weight: 700;
+    color: var(--ink);
+  }
+  & a {
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--teal);
+    text-underline-offset: 4px;
+  }
+  & table {
+    width: 100%;
+    min-width: 32rem;
+    margin-block: 1.5rem;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+  }
+  & th {
+    text-align: left;
+    font-family: var(--font-plex), ui-monospace, monospace;
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ink);
+    padding: 0.75rem 1rem 0.75rem 0;
+    border-bottom: 2px solid var(--ink);
+  }
+  & td {
+    vertical-align: top;
+    padding: 0.875rem 1rem 0.875rem 0;
+    border-bottom: 1px dashed rgb(15 35 36 / 0.3);
+  }
+}
+
+/* ——— Une seule animation orchestrée : l'étiquette se pose, on la scotche, on tamponne ——— */
+
+@keyframes label-drop {
+  0% {
+    opacity: 0;
+    translate: 0 -56px;
+    rotate: -7deg;
+    scale: 1.05;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    translate: 0 0;
+    rotate: var(--label-rot, -1.5deg);
+    scale: 1;
+  }
+}
+@keyframes tape-press {
+  from {
+    opacity: 0;
+    scale: 1.3;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+@keyframes stamp-thump {
+  0% {
+    opacity: 0;
+    scale: 1.9;
+  }
+  55% {
+    opacity: 0.95;
+    scale: 0.93;
+  }
+  75% {
+    scale: 1.03;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+@keyframes label-jolt {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  40% {
+    translate: 0 4px;
+  }
+}
+
+.anim-label {
+  rotate: var(--label-rot, -1.5deg);
+  animation: label-drop 760ms var(--ease-out) 120ms both;
+}
+.anim-tape {
+  animation: tape-press 260ms var(--ease-out) both;
+  animation-delay: var(--d, 820ms);
+}
+.anim-stamp {
+  animation: stamp-thump 520ms cubic-bezier(0.3, 0.7, 0.3, 1) both;
+  animation-delay: var(--d, 1150ms);
+}
+.anim-jolt {
+  animation: label-jolt 240ms ease-out 1430ms both;
+}
+
+/* ——— Code tapé touche par touche, puis le lecteur passe sur le code-barres ——— */
+
+@keyframes key-in {
+  0% {
+    opacity: 0;
+    scale: 1.7;
+  }
+  55% {
+    opacity: 1;
+    scale: 0.88;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+.anim-key {
+  display: inline-block;
+  animation: key-in 200ms var(--ease-out) both;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes scan-sweep {
+  0% {
+    opacity: 0;
+    translate: -1rem 0;
+  }
+  10%,
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    translate: calc(100cqw + 1rem) 0;
+  }
+}
+.scan-line {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 4px;
+  pointer-events: none;
+  /* Le faisceau du lecteur : teal éclairci pour rester lisible sur les barres */
+  background: #7ee0d4;
+  box-shadow:
+    0 0 0 1px rgb(255 253 247 / 0.8),
+    0 0 18px 7px rgb(94 205 191 / 0.6);
+  animation: scan-sweep 620ms cubic-bezier(0.45, 0, 0.4, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* Le total du ticket se réimprime quand l'estimation change */
+@keyframes ticket-tick {
+  from {
+    opacity: 0;
+    translate: 0 -0.35em;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+.anim-tick {
+  display: inline-block;
+  animation: ticket-tick 160ms var(--ease-out) both;
+}
+
+/* ——— Révélations au défilement (attributs posés par RevealOnScroll) ——— */
+
+@keyframes sticker-slap {
+  0% {
+    opacity: 0;
+    scale: 1.35;
+    translate: 0 -10px;
+  }
+  60% {
+    opacity: 1;
+    scale: 0.95;
+    translate: 0 0;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
+}
+/* Le ticket sort de l'imprimante, par à-coups */
+@keyframes print-out {
+  from {
+    translate: 0 -100%;
+    clip-path: inset(100% -2rem -2rem -2rem);
+  }
+  to {
+    translate: 0 0;
+    clip-path: inset(0 -2rem -2rem -2rem);
+  }
+}
+
+[data-reveal][data-armed] {
+  opacity: 0;
+}
+[data-reveal="stamp"][data-shown] {
+  animation: stamp-thump 440ms cubic-bezier(0.3, 0.7, 0.3, 1) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + var(--reveal-stagger, 0ms));
+}
+[data-reveal="sticker"][data-shown] {
+  animation: sticker-slap 360ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + var(--reveal-stagger, 0ms));
+}
+[data-reveal="print"][data-shown] {
+  animation: print-out 1100ms steps(14, end) backwards;
+}
+
+/* ——— Adhésif qui se soulève quand on survole ce qu'il retient ——— */
+
+.tape-lift .tape {
+  transition: transform 160ms var(--ease-out);
+}
+.tape-lift:hover .tape {
+  transform: translateY(-3px) rotate(-2deg) scale(1.05, 1.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  ::before,
+  ::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+  .scan-line {
+    display: none;
+  }
+}
