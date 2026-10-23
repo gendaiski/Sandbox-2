@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunk_ember_auto_import_=globalThis.webpackChunk_ember_auto_import_||[]).push([[43782],{43782(a,o,e){e.r(o),e.d(o,{default:()=>h})
+const h='<symbol id="hds-icon-carbon-headphones" viewBox="0 0 32 32"><path d="M25,16V15A9,9,0,0,0,7,15v1A5,5,0,0,0,7,26H9V15a7,7,0,0,1,14,0V26h2a5,5,0,0,0,0-10ZM4,21a3,3,0,0,1,3-3v6A3,3,0,0,1,4,21Zm21,3V18a3,3,0,0,1,0,6Z"/></symbol>'}}])

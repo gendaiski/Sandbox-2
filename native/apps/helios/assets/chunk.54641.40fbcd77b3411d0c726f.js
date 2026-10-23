@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunk_ember_auto_import_=globalThis.webpackChunk_ember_auto_import_||[]).push([[54641],{54641(l,o,t){t.r(o),t.d(o,{default:()=>e})
+const e='<symbol id="hds-icon-flight-terraform-24" viewBox="0 0 24 24"><g><path d="M2 .6v7.197l6.212 3.6V4.199zM15.107 8.215 8.893 4.617v7.198l6.214 3.6zM15.788 15.414V8.215L22 4.617v7.198zM15.105 23.4l-6.212-3.6v-7.197l6.212 3.6z"/></g></symbol>'}}])

@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunk_ember_auto_import_=globalThis.webpackChunk_ember_auto_import_||[]).push([[8754],{8754(a,h,o){o.r(h),o.d(h,{default:()=>t})
+const t='<symbol id="hds-icon-flight-credit-card-16" viewBox="0 0 16 16"><path d="M13.75 2A2.25 2.25 0 0 1 16 4.25v7.5A2.25 2.25 0 0 1 13.75 14H2.25A2.25 2.25 0 0 1 0 11.75v-7.5A2.25 2.25 0 0 1 2.25 2zM1.5 11.75c0 .414.336.75.75.75h11.5a.75.75 0 0 0 .75-.75V7h-13zM5.25 9a.75.75 0 0 1 0 1.5h-1.5a.75.75 0 0 1 0-1.5zm-3-5.5a.75.75 0 0 0-.75.75V5h13v-.75a.75.75 0 0 0-.75-.75z"/></symbol>'}}])

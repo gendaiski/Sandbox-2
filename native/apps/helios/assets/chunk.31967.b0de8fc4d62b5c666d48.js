@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunk_ember_auto_import_=globalThis.webpackChunk_ember_auto_import_||[]).push([[31967],{31967(o,a,c){c.r(a),c.d(a,{default:()=>h})
+const h='<symbol id="hds-icon-carbon-film" viewBox="0 0 32 32"><path d="M13 11 13 21 21 16 13 11z"/><path d="m28,6H4c-1.103,0-2,.8975-2,2v16c0,1.1025.897,2,2,2h24c1.103,0,2-.8975,2-2V8c0-1.1025-.897-2-2-2Zm0,18H4V8h24v16Z"/></symbol>'}}])
