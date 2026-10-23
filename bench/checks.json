@@ -12,7 +12,7 @@
   "system": "ChunkNorris",
   "check": "html: parse + chunk service_agreement.html",
   "status": "Pass",
-  "seconds": 0.05,
+  "seconds": 0.06,
   "detail": "8 chunks, word counts [40, 82, 110, 46, 52, 57, 81, 42]; '# Master Services Agreement\\n\\nThis Master Services Agreement (\"Agreement\") is entered into '"
  },
  {
@@ -20,7 +20,7 @@
   "system": "ChunkNorris",
   "check": "pdf: parse + chunk service_agreement.pdf",
   "status": "Pass",
-  "seconds": 0.01,
+  "seconds": 0.02,
   "detail": "8 chunks, word counts [43, 82, 109, 46, 52, 57, 81, 42]; '# Master Services Agreement\\n\\n## **Master Services Agreement**\\nThis Master Services Agreeme'"
  },
  {
@@ -44,7 +44,7 @@
   "system": "ChunkNorris",
   "check": "markdown: token cap with tiktoken",
   "status": "Pass",
-  "seconds": 1.03,
+  "seconds": 0.86,
   "detail": "token counts with cap 120: [57, 114, 81, 73, 27, 69, 67, 75, 115, 55]"
  },
  {
@@ -85,7 +85,7 @@
   "check": "fixed_size: chunk the sample agreement",
   "status": "Pass",
   "seconds": 0.0,
-  "detail": "10 chunks, chars min/max 142/400, 0.3 ms"
+  "detail": "10 chunks, chars min/max 142/400, 0.2 ms"
  },
  {
   "id": "chunckerflow-full:recursive: chunk the sample agreement",
@@ -101,7 +101,7 @@
   "check": "markdown: chunk the sample agreement",
   "status": "Pass",
   "seconds": 0.0,
-  "detail": "14 chunks, chars min/max 15/363, 0.3 ms"
+  "detail": "14 chunks, chars min/max 15/363, 0.2 ms"
  },
  {
   "id": "chunckerflow-full:fixed_size: overlap repeats text across boundaries",
@@ -156,7 +156,7 @@
   "system": "ChunckerFlow (with semantic chunker)",
   "check": "FastAPI app: /health, /strategies, /chunk",
   "status": "Pass",
-  "seconds": 1.04,
+  "seconds": 1.03,
   "detail": "/chunk -> 10 chunks"
  },
  {
@@ -164,7 +164,7 @@
   "system": "ChunckerFlow (with semantic chunker)",
   "check": "semantic chunker (sentence-transformers)",
   "status": "Pass",
-  "seconds": 3.94,
+  "seconds": 4.34,
   "detail": "5 semantic chunks"
  },
  {
@@ -180,7 +180,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "base-tier extractors are available",
   "status": "Pass",
-  "seconds": 15.56,
+  "seconds": 15.82,
   "detail": "available: ['pymupdf4llm', 'markitdown'];   marker: Unavailable"
  },
  {
@@ -188,7 +188,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "pymupdf4llm: PDF -> markdown",
   "status": "Pass",
-  "seconds": 0.55,
+  "seconds": 0.5,
   "detail": "3342 chars, 33 '#' heading marks"
  },
  {
@@ -196,7 +196,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "markitdown: PDF -> markdown",
   "status": "Pass",
-  "seconds": 0.22,
+  "seconds": 0.23,
   "detail": "3179 chars, 0 '#' heading marks"
  },
  {
@@ -204,7 +204,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "pymupdf4llm: text and json output formats",
   "status": "Pass",
-  "seconds": 0.9,
+  "seconds": 0.84,
   "detail": ""
  },
  {
@@ -220,7 +220,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "chunker token {'chunk_size': 256, 'chunk_overlap': 20}",
   "status": "Pass",
-  "seconds": 1.2,
+  "seconds": 1.25,
   "detail": "15 chunks, 3622 tokens, largest 256"
  },
  {
@@ -244,7 +244,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "convert_chunk one-step pipeline",
   "status": "Pass",
-  "seconds": 0.42,
+  "seconds": 0.44,
   "detail": ""
  },
  {
@@ -252,7 +252,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "batch_convert over a directory",
   "status": "Pass",
-  "seconds": 0.37,
+  "seconds": 0.36,
   "detail": ""
  },
  {
@@ -260,7 +260,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "CLI: pdfstract convert",
   "status": "Pass",
-  "seconds": 7.23,
+  "seconds": 7.49,
   "detail": "exit 0, files: ['out.md']"
  },
  {
@@ -268,7 +268,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "web backend: /health, /libraries, /convert, /chunk",
   "status": "Pass",
-  "seconds": 0.72,
+  "seconds": 0.74,
   "detail": ""
  },
  {
@@ -276,7 +276,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "semantic chunker + sentence-transformers embeddings (downloads model)",
   "status": "Pass",
-  "seconds": 14.92,
+  "seconds": 6.47,
   "detail": "10 semantic chunks, embedding dim 384"
  },
  {
@@ -284,15 +284,15 @@
   "system": "OXR",
   "check": "offline E2E: /v1/parse/sync with fake models",
   "status": "Pass",
-  "seconds": 0.37,
-  "detail": "output keys: ['json', 'markdown']; metadata: {'page_num': 2, 'file_type': '.pdf', 'processing_time_ms': 366}; fake service calls: {'layout_pages': 2, 'chat': 8, 'reading_order': 2}"
+  "seconds": 0.29,
+  "detail": "output keys: ['json', 'markdown']; metadata: {'page_num': 2, 'file_type': '.pdf', 'processing_time_ms': 288}; fake service calls: {'layout_pages': 2, 'chat': 8, 'reading_order': 2}"
  },
  {
   "id": "oxr:offline E2E: JSON output carries typed blocks with bboxes",
   "system": "OXR",
   "check": "offline E2E: JSON output carries typed blocks with bboxes",
   "status": "Pass",
-  "seconds": 0.19,
+  "seconds": 0.15,
   "detail": ""
  },
  {
@@ -300,7 +300,7 @@
   "system": "OXR",
   "check": "offline E2E: /v1/parse/async + /v1/parse/async_check",
   "status": "Pass",
-  "seconds": 0.19,
+  "seconds": 0.15,
   "detail": ""
  },
  {
@@ -316,7 +316,7 @@
   "system": "OXR",
   "check": "layout service failure surfaces as an API error",
   "status": "Pass",
-  "seconds": 0.62,
+  "seconds": 0.59,
   "detail": "code 1137: Unable to process this document. Please try again later."
  },
  {
@@ -324,7 +324,7 @@
   "system": "OXR",
   "check": "upstream unit tests (vendor/oxr/tests/unit)",
   "status": "Fail",
-  "seconds": 7.36,
+  "seconds": 6.27,
   "detail": "CheckFailed: upstream tests failing (see FAILED lines)"
  },
  {
@@ -340,7 +340,7 @@
   "system": "RAG-Anything",
   "check": "offline E2E: insert_content_list with fake LLM + embeddings",
   "status": "Pass",
-  "seconds": 0.61,
+  "seconds": 0.55,
   "detail": "content list: 27 items (1 table, 1 equation); storage files: ['graph_chunk_entity_relation.graphml', 'kv_store_doc_status.json', 'kv_store_entity_chunks.json', 'kv_store_full_docs.json', 'kv_store_full_entities.json', 'kv_store_full_relations.json', 'kv_store_llm_response_cache.json', 'kv_store_relation_chunks.json', 'kv_store_text_chunks.json', 'vdb_chunks.json', 'vdb_entities.json', 'vdb_relationships.json']"
  },
  {
@@ -372,7 +372,7 @@
   "system": "RAG-Anything",
   "check": "hybrid query returns an answer through the LLM",
   "status": "Pass",
-  "seconds": 0.01,
+  "seconds": 0.0,
   "detail": ""
  },
  {
@@ -388,8 +388,8 @@
   "system": "RAG-Anything",
   "check": "upstream unit tests (vendor/rag-anything/tests)",
   "status": "Pass",
-  "seconds": 9.42,
-  "detail": "898 passed in 8.10s"
+  "seconds": 9.11,
+  "detail": "898 passed in 7.32s"
  },
  {
   "id": "rag-anything:live: OpenAI models answer from the ingested agreement",
@@ -412,7 +412,7 @@
   "system": "RAG-Anything (with MinerU parser)",
   "check": "offline E2E: insert_content_list with fake LLM + embeddings",
   "status": "Pass",
-  "seconds": 0.62,
+  "seconds": 0.86,
   "detail": "content list: 27 items (1 table, 1 equation); storage files: ['graph_chunk_entity_relation.graphml', 'kv_store_doc_status.json', 'kv_store_entity_chunks.json', 'kv_store_full_docs.json', 'kv_store_full_entities.json', 'kv_store_full_relations.json', 'kv_store_llm_response_cache.json', 'kv_store_relation_chunks.json', 'kv_store_text_chunks.json', 'vdb_chunks.json', 'vdb_entities.json', 'vdb_relationships.json']"
  },
  {
@@ -444,7 +444,7 @@
   "system": "RAG-Anything (with MinerU parser)",
   "check": "hybrid query returns an answer through the LLM",
   "status": "Pass",
-  "seconds": 0.0,
+  "seconds": 0.02,
   "detail": ""
  },
  {
@@ -452,7 +452,7 @@
   "system": "RAG-Anything (with MinerU parser)",
   "check": "re-inserting the same doc_id is idempotent",
   "status": "Pass",
-  "seconds": 0.0,
+  "seconds": 0.02,
   "detail": ""
  },
  {
@@ -460,8 +460,8 @@
   "system": "RAG-Anything (with MinerU parser)",
   "check": "upstream unit tests (vendor/rag-anything/tests)",
   "status": "Pass",
-  "seconds": 10.38,
-  "detail": "898 passed in 9.15s"
+  "seconds": 10.01,
+  "detail": "898 passed in 8.29s"
  },
  {
   "id": "rag-anything-full:live: OpenAI models answer from the ingested agreement",
@@ -476,7 +476,7 @@
   "system": "RAG-Anything (with MinerU parser)",
   "check": "parser: MinerU parses the sample PDF (setup.sh --full)",
   "status": "Pass",
-  "seconds": 43.54,
+  "seconds": 52.62,
   "detail": "4 json files from MinerU"
  },
  {
@@ -484,7 +484,7 @@
   "system": "OpenFlow (with orchestration E2E)",
   "check": "build the engine probe (cargo build --release)",
   "status": "Pass",
-  "seconds": 0.08,
+  "seconds": 0.07,
   "detail": ""
  },
  {
@@ -524,7 +524,7 @@
   "system": "OpenFlow (with orchestration E2E)",
   "check": "upstream engine unit tests (cargo test -p engine)",
   "status": "Pass",
-  "seconds": 40.85,
+  "seconds": 33.23,
   "detail": "2 test binaries, 221 tests passed"
  },
  {
@@ -532,15 +532,15 @@
   "system": "OpenFlow (with orchestration E2E)",
   "check": "orchestration headless E2E (workflow_e2e, MockAiStack)",
   "status": "Pass",
-  "seconds": 103.98,
-  "detail": "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.82s"
+  "seconds": 98.01,
+  "detail": "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.79s"
  },
  {
   "id": "prism-ui:pnpm install (frozen lockfile)",
   "system": "Prism UI",
   "check": "pnpm install (frozen lockfile)",
   "status": "Pass",
-  "seconds": 0.6,
+  "seconds": 0.94,
   "detail": "@nanisoft/prism-ui ?"
  },
  {
@@ -548,7 +548,7 @@
   "system": "Prism UI",
   "check": "typecheck against Prism's published types (tsc --noEmit)",
   "status": "Pass",
-  "seconds": 0.39,
+  "seconds": 0.56,
   "detail": ""
  },
  {
@@ -556,7 +556,7 @@
   "system": "Prism UI",
   "check": "component tests (vitest + Testing Library)",
   "status": "Pass",
-  "seconds": 2.73,
+  "seconds": 3.86,
   "detail": "14 passed (14)"
  },
  {
@@ -564,7 +564,7 @@
   "system": "Prism UI",
   "check": "production build (vite build)",
   "status": "Pass",
-  "seconds": 0.63,
+  "seconds": 1.15,
   "detail": "css bundle 105 KB"
  },
  {
@@ -572,7 +572,7 @@
   "system": "Langfuse (self-hosted)",
   "check": "health endpoint http://localhost:3000/api/public/health",
   "status": "Pass",
-  "seconds": 0.63,
+  "seconds": 0.51,
   "detail": "{'status': 'OK', 'version': '4.68.0'}"
  },
  {
@@ -588,8 +588,8 @@
   "system": "Langfuse (self-hosted)",
   "check": "ingest a nested RAG trace (span > retriever + generation)",
   "status": "Pass",
-  "seconds": 0.06,
-  "detail": "trace 1bf19bfc64d7da5467e19ba8fe0ed7be"
+  "seconds": 0.07,
+  "detail": "trace eb05b7e974e01028a63ad46a3f112b0c"
  },
  {
   "id": "langfuse:trace is queryable with its three observations",
@@ -612,7 +612,7 @@
   "system": "Langfuse (self-hosted)",
   "check": "prompt management: versions, labels, compile",
   "status": "Pass",
-  "seconds": 0.1,
+  "seconds": 0.11,
   "detail": ""
  },
  {
@@ -620,7 +620,7 @@
   "system": "Langfuse (self-hosted)",
   "check": "datasets: create, add items, read back",
   "status": "Pass",
-  "seconds": 0.08,
+  "seconds": 0.09,
   "detail": ""
  },
  {
