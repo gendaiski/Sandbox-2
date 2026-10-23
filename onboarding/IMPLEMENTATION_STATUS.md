@@ -1,6 +1,6 @@
 # Onboarding System implementation status
 
-Overall: **PARTIAL**. A real authenticated local runner, persistent records, GitHub metadata discovery, exact plan approval, bounded documentation preparation, verification, and reports are implemented. The public GitHub Pages deployment remains a connection page until the runner is started on the intended machine.
+Overall: **PARTIAL**. A real authenticated local runner, persistent records, GitHub metadata discovery, exact plan approval, bounded documentation preparation, one pinned Windows Happy Desktop installer adapter, verification, and reports are implemented. The public GitHub Pages deployment remains a connection page until the runner is started on the intended machine.
 
 | Area | Status | Evidence or limit |
 | --- | --- | --- |
@@ -11,7 +11,7 @@ Overall: **PARTIAL**. A real authenticated local runner, persistent records, Git
 | Persistent jobs and cancellation | PASS within supported scope | SQLite jobs, logs, audit, cancellation request, retry plan; interrupted-job recovery tested. Cancellation during a network read can wait until its next safe checkpoint. |
 | Content-only execution adapter | PASS | Live `octocat/Hello-World` pinned archive prepared and README verified; no repository code executed. Archive path and size bounds apply. |
 | Original browser UI and persistence after refresh | PASS within supported scope | Chromium completed login, GitHub analysis, approval, preparation, README preview and dark mode; mobile reload restored the session without horizontal overflow. This is the first-party Onboarding UI, not an upstream application UI. |
-| App, CLI, plugin, SDK adapters | NOT IMPLEMENTED | These types show a blocker rather than a simulated install. |
+| App, CLI, plugin, SDK adapters | PARTIAL | Only `slopus/happy` has a reviewed Windows x64 installer adapter. It downloads the original signed Happy Desktop 0.0.101 `.exe`, validates the pinned digest and Windows signature, then opens its installer after approval. The job remains PARTIAL until the original UI and an agent session are verified on Windows. Other app, CLI, plugin and SDK types show a blocker. |
 | Verification and reports | PASS within supported scope | Live result reported COMPLETE with 3 PASS and 2 NOT APPLICABLE checks; Markdown, JSON and PDF opened. Test confirms a missing README results in PARTIAL rather than false COMPLETE. |
 | Public execution host | NOT IMPLEMENTED | GitHub Pages cannot run this server; local runner only. |
 

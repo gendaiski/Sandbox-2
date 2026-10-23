@@ -25,6 +25,7 @@ from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, Red
 from pydantic import BaseModel, Field
 
 from .core import Cancelled, DiscoveryError, InputError, discover, download_archive, make_plan, parse_reference, validate_ref
+from .happy_desktop import prepare_and_launch as prepare_happy_desktop
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -54,7 +55,7 @@ class Approval(BaseModel):
 
 
 class Service:
-    def __init__(self, data_dir: Path, access_code: str, discover_fn: Callable = discover, download_fn: Callable = download_archive):
+    def __init__(self, data_dir: Path, access_code: str, discover_fn: Callable = discover, download_fn: Callable = download_archive, happy_fn: Callable = prepare_happy_desktop):
         self.data_dir = data_dir.resolve()
         self.data_dir.mkdir(parents=True, exist_ok=True)
         lock_path = self.data_dir / ".runner.lock"
@@ -83,6 +84,7 @@ class Service:
         self.lock = threading.RLock()
         self.discover_fn = discover_fn
         self.download_fn = download_fn
+        self.happy_fn = happy_fn
         self._init_db()
         self._recover()
 
@@ -143,13 +145,15 @@ class Service:
     def target(self) -> dict:
         usage = shutil.disk_usage(self.data_dir)
         in_cloud = bool(os.environ.get("CODEX_ENVIRONMENT_ID")) or str(self.data_dir).startswith("/workspace/")
+        windows_x64 = platform.system() == "Windows" and platform.machine().lower() in {"amd64", "x86_64"}
         return {
             "id": hashlib.sha256(str(self.data_dir).encode()).hexdigest()[:12],
             "name": f"{platform.node() or 'Local machine'} · Sandbox-2 runner",
             "kind": "Temporary cloud workspace" if in_cloud else "Connected local runner",
             "machine": "Runner host; this is your computer only if you started the runner on it",
             "os": f"{platform.system()} {platform.release()}",
-            "connected": True, "capabilities": ["Public GitHub discovery", "Bounded documentation preparation", "Local file verification", "Markdown, JSON and PDF reports"],
+            "osFamily": platform.system(), "architecture": platform.machine(),
+            "connected": True, "capabilities": ["Public GitHub discovery", "Bounded documentation preparation", "Local file verification", "Markdown, JSON and PDF reports"] + (["Original Happy Desktop installer preparation and launch"] if windows_x64 else []),
             "unsupported": ["Remote runner connection", "Private GitHub repositories", "Generic app, CLI or library installation", "Public service exposure"],
             "storage": str(self.data_dir), "freeBytes": usage.free,
             "persistent": False if in_cloud else None,
@@ -296,21 +300,35 @@ class Service:
         record = self.get_record(record_id)
         destination = Path(record["workspace"])
         try:
-            result = self.download_fn(record["discovery"], destination, cancelled, lambda message: self.log(job_id, message))
+            if record["plan"].get("methodKey") == "happy-desktop-windows":
+                if self.target()["osFamily"] != "Windows":
+                    raise RuntimeError("The approved Windows target is no longer available.")
+                if shutil.disk_usage(self.data_dir).free < 500_000_000:
+                    raise RuntimeError("At least 500 MB of free disk space is needed before downloading this installer.")
+                result = self.happy_fn(destination, cancelled, lambda message: self.log(job_id, message))
+                checks = [
+                    ("Pinned original installer and signature", "PASS" if result.get("sha256") == record["plan"]["release"]["sha256"] and (destination / result.get("installer", "")).is_file() else "FAIL", result.get("publisher", "No verified publisher")),
+                    ("Original installer opened", "PASS" if result.get("installerLaunched") else "FAIL", "Happy Desktop installer launched on the connected Windows runner"),
+                    ("Happy installed and original UI visible", "NOT VERIFIED", "Complete the installer and open Happy on this Windows computer"),
+                    ("Real agent session works", "NOT VERIFIED", "Requires a provider sign-in and an on-device session test"),
+                ]
+                final = "PARTIAL"
+            else:
+                result = self.download_fn(record["discovery"], destination, cancelled, lambda message: self.log(job_id, message))
+                readme = destination / result["readme"]
+                checks = [
+                    ("Pinned archive prepared", "PASS" if destination.is_dir() else "FAIL", f"{record['discovery']['commit']} at {destination}"),
+                    ("README readable", "PASS" if readme.is_file() and readme.stat().st_size > 0 else "FAIL", str(readme)),
+                    ("Files within reviewed limits", "PASS" if result["fileCount"] <= 3000 and result["bytes"] <= 50 * 1024 * 1024 else "FAIL", f"{result['fileCount']} files, {result['bytes']} bytes"),
+                    ("Application UI", "NOT APPLICABLE", f"{record['discovery']['type']} has no application UI in this adapter"),
+                    ("Repository code executed", "NOT APPLICABLE", "No repository scripts or binaries were run"),
+                ]
+                final = "COMPLETE" if all(status != "FAIL" for _, status, _ in checks) else "PARTIAL"
             if cancelled.is_set():
                 raise Cancelled("Cancellation requested")
-            readme = destination / result["readme"]
-            checks = [
-                ("Pinned archive prepared", "PASS" if destination.is_dir() else "FAIL", f"{record['discovery']['commit']} at {destination}"),
-                ("README readable", "PASS" if readme.is_file() and readme.stat().st_size > 0 else "FAIL", str(readme)),
-                ("Files within reviewed limits", "PASS" if result["fileCount"] <= 3000 and result["bytes"] <= 50 * 1024 * 1024 else "FAIL", f"{result['fileCount']} files, {result['bytes']} bytes"),
-                ("Application UI", "NOT APPLICABLE", f"{record['discovery']['type']} has no application UI in this adapter"),
-                ("Repository code executed", "NOT APPLICABLE", "No repository scripts or binaries were run"),
-            ]
             with self.connect() as db:
                 for name, status, evidence in checks:
                     db.execute("INSERT INTO checks(record_id,job_id,name,status,evidence,at) VALUES(?,?,?,?,?,?)", (record_id, job_id, name, status, evidence, now()))
-                final = "COMPLETE" if all(status != "FAIL" for _, status, _ in checks) else "PARTIAL"
                 db.execute("UPDATE jobs SET status=?,ended_at=?,result=? WHERE id=?", (final, now(), json.dumps(result), job_id))
                 db.execute("UPDATE records SET status=?,updated_at=? WHERE id=?", (final, now(), record_id))
             self.log(job_id, f"Verification finished: {final}")
@@ -353,13 +371,28 @@ class Service:
             db.execute("INSERT INTO jobs(id,record_id,kind,status,started_at) VALUES(?,?,'VERIFY','RUNNING',?)", (job_id, record_id, now()))
             db.execute("UPDATE records SET status='VERIFYING',updated_at=? WHERE id=?", (now(), record_id))
         workspace = Path(row["workspace"])
-        readme = next((file for file in workspace.glob("README*") if file.is_file()), None) if workspace.is_dir() else None
-        checks = [
-            ("Prepared workspace present", "PASS" if workspace.is_dir() else "FAIL", str(workspace)),
-            ("README readable", "PASS" if readme and readme.stat().st_size else "FAIL", str(readme) if readme else "No README found"),
-            ("Application UI", "NOT APPLICABLE", "Content-only adapter"),
-        ]
-        final = "COMPLETE" if all(status != "FAIL" for _, status, _ in checks) else "PARTIAL"
+        plan = json.loads(row["plan"])
+        if plan.get("methodKey") == "happy-desktop-windows":
+            from .happy_desktop import ASSET, SHA256
+            installer = workspace / ASSET
+            digest = None
+            if installer.is_file():
+                with installer.open("rb") as source:
+                    digest = hashlib.file_digest(source, "sha256").hexdigest()
+            checks = [
+                ("Original installer retained and hash valid", "PASS" if digest == SHA256 else "FAIL", str(installer)),
+                ("Happy installed and original UI visible", "NOT VERIFIED", "Runner cannot certify an interactive desktop window"),
+                ("Real agent session works", "NOT VERIFIED", "Requires an on-device session test"),
+            ]
+            final = "PARTIAL"
+        else:
+            readme = next((file for file in workspace.glob("README*") if file.is_file()), None) if workspace.is_dir() else None
+            checks = [
+                ("Prepared workspace present", "PASS" if workspace.is_dir() else "FAIL", str(workspace)),
+                ("README readable", "PASS" if readme and readme.stat().st_size else "FAIL", str(readme) if readme else "No README found"),
+                ("Application UI", "NOT APPLICABLE", "Content-only adapter"),
+            ]
+            final = "COMPLETE" if all(status != "FAIL" for _, status, _ in checks) else "PARTIAL"
         with self.connect() as db:
             for name, status, evidence in checks:
                 db.execute("INSERT INTO checks(record_id,job_id,name,status,evidence,at) VALUES(?,?,?,?,?,?)", (record_id, job_id, name, status, evidence, now()))
@@ -389,8 +422,8 @@ class Service:
             "target": self.target(), "installationMethod": record["plan"]["method"],
             "workspace": record["workspace"], "status": record["status"], "planHash": record["plan_hash"],
             "approvedAt": record["approved_at"], "job": record["latestJob"], "checks": record["checks"],
-            "usage": f"Read {record['workspace']}/START_HERE.md" if record["status"] == "COMPLETE" else "Resume or resolve the blocker shown in this record",
-            "startStopRestart": "No service was started; prepared files remain on the runner until removed after review.",
+            "usage": f"Read {record['workspace']}/START_HERE.md" if record["status"] in {"COMPLETE", "PARTIAL"} and Path(record["workspace"]).is_dir() else "Resume or resolve the blocker shown in this record",
+            "startStopRestart": "Close Happy to stop; open it from the Windows Start menu to restart. Complete the installer screens first." if record["plan"].get("methodKey") == "happy-desktop-windows" else "No service was started; prepared files remain on the runner until removed after review.",
             "persistence": self.target()["persistenceNote"], "limitations": record["plan"]["limitations"],
             "sources": discovery["sources"], "lastUpdated": record["updated_at"],
         }

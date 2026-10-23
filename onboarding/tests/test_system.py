@@ -12,7 +12,8 @@ from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
-from onboarding.core import InputError, classify, download_archive, parse_reference, validate_ref
+from onboarding.core import InputError, classify, download_archive, make_plan, parse_reference, validate_ref
+from onboarding.happy_desktop import ASSET, SHA256, VERSION
 from onboarding.server import create_app
 
 
@@ -40,6 +41,19 @@ def fixture_download(discovery, destination, cancelled, log):
 
 
 class ReferenceTests(unittest.TestCase):
+    def test_happy_desktop_plan_is_pinned_to_windows_and_signed_release(self):
+        discovery = fixture_discovery("slopus", "happy", None)
+        discovery["type"] = "Monorepo"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "happy")
+            self.assertTrue(plan["supported"])
+            self.assertEqual(plan["methodKey"], "happy-desktop-windows")
+            self.assertEqual(plan["release"]["sha256"], SHA256)
+            self.assertEqual(plan["release"]["version"], VERSION)
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "happy")["supported"])
+
     def test_book_with_chapter_notebooks_is_learning_material(self):
         kind, explanation = classify(
             "Agentic-Design-Patterns",
@@ -179,6 +193,41 @@ class RunnerTests(unittest.TestCase):
         self.assertFalse(record["plan"]["supported"])
         self.assertEqual(self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers).status_code, 409)
         self.assertFalse(Path(record["workspace"]).exists())
+
+    def test_happy_installer_open_is_partial_until_original_workflow_verified(self):
+        def happy_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "Monorepo"
+            return result
+        target = self.app.state.service.target()
+        target.update({"id": "windows-fixture", "osFamily": "Windows", "architecture": "AMD64"})
+        self.app.state.service.target = lambda: target
+        self.app.state.service.discover_fn = happy_discovery
+
+        def approved_installer(destination, cancelled, log):
+            destination.mkdir()
+            (destination / ASSET).write_bytes(b"controlled fixture")
+            (destination / "START_HERE.md").write_text("Open the original installer")
+            log("Controlled installer fixture opened")
+            return {"installer": ASSET, "sha256": SHA256, "publisher": "Test Publisher", "installerLaunched": True}
+
+        self.app.state.service.happy_fn = approved_installer
+        headers = self.login()
+        response = self.client.post("/api/onboardings", headers=headers, json={"reference": "slopus/happy"})
+        record = response.json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.assertEqual(self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers).status_code, 409)
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers, json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
+        self.assertEqual(self.client.get(f"/api/onboardings/{record['id']}/report.json").json()["status"], "PARTIAL")
+        self.assertEqual(self.client.post(f"/api/onboardings/{record['id']}/verify", headers=headers).json()["status"], "PARTIAL")
 
     def test_failed_verification_cannot_report_complete(self):
         def missing_readme(discovery, destination, cancelled, log):
