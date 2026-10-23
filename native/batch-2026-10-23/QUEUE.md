@@ -1,6 +1,6 @@
 # Native installation queue
 
-The authoritative numbered list is [PENDING-BATCH-19.md](../PENDING-BATCH-19.md), which now contains 39 unique repositories. Items 20–25 were appended on 2026-10-23. The next request contained fourteen entries: thirteen unique repositories became items 26–38, while `nocodb/nocodb` was already item 20 and was not duplicated. `buildship-ai/rowy` was appended as item 39. Preserve the numbers and process in order.
+The authoritative numbered list is [PENDING-BATCH-19.md](../PENDING-BATCH-19.md), which now contains 40 unique repositories. Items 20–25 were appended on 2026-10-23. The next request contained fourteen entries: thirteen unique repositories became items 26–38, while `nocodb/nocodb` was already item 20 and was not duplicated. `buildship-ai/rowy` was appended as item 39. `clientIO/joint` was requested twice in one message and appended once as item 40. Preserve the numbers and process in order.
 
 Work is **deferred** until the current Docker Desktop startup issue is handed over and the user explicitly says to resume this batch. No background execution is scheduled.
 

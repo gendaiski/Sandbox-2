@@ -1,6 +1,6 @@
 # Installation tracker
 
-All 39 unique repositories are `QUEUED`. `NOT VERIFIED` means the current GitHub About field and website have not yet been captured for an individual report. A previous inventory mention or clone is not a completed setup. The report column becomes a link when that repository is investigated. `nocodb/nocodb` was requested again and remains item 20, with no duplicate row.
+All 40 unique repositories are `QUEUED`. `NOT VERIFIED` means the current GitHub About field and website have not yet been captured for an individual report. A previous inventory mention or clone is not a completed setup. The report column becomes a link when that repository is investigated. `nocodb/nocodb` was requested again and remains item 20, with no duplicate row; `clientIO/joint` appears once as item 40.
 
 | # | Repository | Status | GitHub description | Website listed on GitHub | Verified official website | Individual report |
 | ---: | --- | --- | --- | --- | --- | --- |
@@ -43,6 +43,7 @@ All 39 unique repositories are `QUEUED`. `NOT VERIFIED` means the current GitHub
 | 37 | [YaoApp/yao](https://github.com/YaoApp/yao) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
 | 38 | [simstudioai/sim](https://github.com/simstudioai/sim) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
 | 39 | [buildship-ai/rowy](https://github.com/buildship-ai/rowy) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
+| 40 | [clientIO/joint](https://github.com/clientIO/joint) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
 
 After completing each item, replace `Pending` with its report link, update status and metadata from verified sources, and record version, usable command or address, and representative workflow evidence in the report and `START_HERE.md`.
 
