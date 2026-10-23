@@ -27,6 +27,7 @@ from pydantic import BaseModel, Field
 from .core import Cancelled, DiscoveryError, InputError, discover, download_archive, make_plan, parse_reference, validate_ref
 from .happy_desktop import prepare_and_launch as prepare_happy_desktop
 from .herdr import prepare as prepare_herdr
+from .orchestrator_desktop import prepare as prepare_orchestrator
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -56,7 +57,7 @@ class Approval(BaseModel):
 
 
 class Service:
-    def __init__(self, data_dir: Path, access_code: str, discover_fn: Callable = discover, download_fn: Callable = download_archive, happy_fn: Callable = prepare_happy_desktop, herdr_fn: Callable = prepare_herdr):
+    def __init__(self, data_dir: Path, access_code: str, discover_fn: Callable = discover, download_fn: Callable = download_archive, happy_fn: Callable = prepare_happy_desktop, herdr_fn: Callable = prepare_herdr, orchestrator_fn: Callable = prepare_orchestrator):
         self.data_dir = data_dir.resolve()
         self.data_dir.mkdir(parents=True, exist_ok=True)
         lock_path = self.data_dir / ".runner.lock"
@@ -87,6 +88,7 @@ class Service:
         self.download_fn = download_fn
         self.happy_fn = happy_fn
         self.herdr_fn = herdr_fn
+        self.orchestrator_fn = orchestrator_fn
         self._init_db()
         self._recover()
 
@@ -155,7 +157,7 @@ class Service:
             "machine": "Runner host; this is your computer only if you started the runner on it",
             "os": f"{platform.system()} {platform.release()}",
             "osFamily": platform.system(), "architecture": platform.machine(),
-            "connected": True, "capabilities": ["Public GitHub discovery", "Bounded documentation preparation", "Local file verification", "Markdown, JSON and PDF reports"] + (["Original Happy Desktop installer preparation and launch", "Original Herdr Windows terminal binary preparation"] if windows_x64 else []),
+            "connected": True, "capabilities": ["Public GitHub discovery", "Bounded documentation preparation", "Local file verification", "Markdown, JSON and PDF reports"] + (["Original Happy Desktop installer preparation and launch", "Original Herdr Windows terminal binary preparation", "Original Orchestrator.inc Windows installer preparation without launch"] if windows_x64 else []),
             "unsupported": ["Remote runner connection", "Private GitHub repositories", "Generic app, CLI or library installation", "Public service exposure"],
             "storage": str(self.data_dir), "freeBytes": usage.free,
             "persistent": False if in_cloud else None,
@@ -328,6 +330,18 @@ class Service:
                     ("Session persistence", "NOT VERIFIED", "Detach, reattach, and restart on the user's Windows computer"),
                 ]
                 final = "PARTIAL"
+            elif record["plan"].get("methodKey") == "orchestrator-windows":
+                if self.target()["osFamily"] != "Windows":
+                    raise RuntimeError("The approved Windows target is no longer available.")
+                if shutil.disk_usage(self.data_dir).free < 400_000_000:
+                    raise RuntimeError("At least 400 MB of free disk space is needed before downloading Orchestrator.inc.")
+                result = self.orchestrator_fn(destination, cancelled, lambda message: self.log(job_id, message))
+                checks = [
+                    ("Pinned original installer and digest", "PASS" if result.get("sha256") == record["plan"]["release"]["sha256"] and (destination / result.get("installer", "")).is_file() else "FAIL", f"Orchestrator.inc {result.get('version', 'unknown')} in {destination}"),
+                    ("Installer execution", "NOT APPLICABLE", "Unsigned release was deliberately prepared without automatic execution"),
+                    ("Original UI and real agent task", "NOT VERIFIED", "Requires separate review and installation on this Windows computer"),
+                ]
+                final = "PARTIAL"
             else:
                 result = self.download_fn(record["discovery"], destination, cancelled, lambda message: self.log(job_id, message))
                 readme = destination / result["readme"]
@@ -387,11 +401,13 @@ class Service:
             db.execute("UPDATE records SET status='VERIFYING',updated_at=? WHERE id=?", (now(), record_id))
         workspace = Path(row["workspace"])
         plan = json.loads(row["plan"])
-        if plan.get("methodKey") in {"happy-desktop-windows", "herdr-windows"}:
+        if plan.get("methodKey") in {"happy-desktop-windows", "herdr-windows", "orchestrator-windows"}:
             if plan["methodKey"] == "happy-desktop-windows":
                 from .happy_desktop import ASSET, SHA256
-            else:
+            elif plan["methodKey"] == "herdr-windows":
                 from .herdr import ASSET, SHA256
+            else:
+                from .orchestrator_desktop import ASSET, SHA256
             installer = workspace / ASSET
             digest = None
             if installer.is_file():
@@ -440,7 +456,7 @@ class Service:
             "workspace": record["workspace"], "status": record["status"], "planHash": record["plan_hash"],
             "approvedAt": record["approved_at"], "job": record["latestJob"], "checks": record["checks"],
             "usage": f"Read {record['workspace']}/START_HERE.md" if record["status"] in {"COMPLETE", "PARTIAL"} and Path(record["workspace"]).is_dir() else "Resume or resolve the blocker shown in this record",
-            "startStopRestart": "Close Happy to stop; open it from the Windows Start menu to restart. Complete the installer screens first." if record["plan"].get("methodKey") == "happy-desktop-windows" else "Use Ctrl+B then Q to detach the Herdr terminal UI, rerun herdr.exe to reattach, and herdr.exe server stop to stop its background server." if record["plan"].get("methodKey") == "herdr-windows" else "No service was started; prepared files remain on the runner until removed after review.",
+            "startStopRestart": "Close Happy to stop; open it from the Windows Start menu to restart. Complete the installer screens first." if record["plan"].get("methodKey") == "happy-desktop-windows" else "Use Ctrl+B then Q to detach the Herdr terminal UI, rerun herdr.exe to reattach, and herdr.exe server stop to stop its background server." if record["plan"].get("methodKey") == "herdr-windows" else "No application was started. If you choose to install the unsigned release, close and reopen it from the Windows Start menu." if record["plan"].get("methodKey") == "orchestrator-windows" else "No service was started; prepared files remain on the runner until removed after review.",
             "persistence": self.target()["persistenceNote"], "limitations": record["plan"]["limitations"],
             "sources": discovery["sources"], "lastUpdated": record["updated_at"],
         }

@@ -15,6 +15,7 @@ from fastapi.testclient import TestClient
 from onboarding.core import InputError, classify, download_archive, make_plan, parse_reference, validate_ref
 from onboarding.happy_desktop import ASSET, SHA256, VERSION
 from onboarding.herdr import ASSET as HERDR_ASSET, SHA256 as HERDR_SHA256, VERSION as HERDR_VERSION
+from onboarding.orchestrator_desktop import ASSET as ORCHESTRATOR_ASSET, SHA256 as ORCHESTRATOR_SHA256, VERSION as ORCHESTRATOR_VERSION
 from onboarding.server import create_app
 
 
@@ -67,6 +68,20 @@ class ReferenceTests(unittest.TestCase):
             self.assertEqual(plan["release"]["version"], HERDR_VERSION)
             target["osFamily"] = "Linux"
             self.assertFalse(make_plan(discovery, target, Path(folder) / "herdr")["supported"])
+
+    def test_unsigned_orchestrator_plan_never_promises_auto_launch(self):
+        discovery = fixture_discovery("OrchestratorInc", "agent-orchestrator", None)
+        discovery["type"] = "Application"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "orchestrator")
+            self.assertTrue(plan["supported"])
+            self.assertEqual(plan["methodKey"], "orchestrator-windows")
+            self.assertEqual(plan["release"]["sha256"], ORCHESTRATOR_SHA256)
+            self.assertEqual(plan["release"]["version"], ORCHESTRATOR_VERSION)
+            self.assertIn("do not execute", plan["method"].lower())
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "orchestrator")["supported"])
 
     def test_book_with_chapter_notebooks_is_learning_material(self):
         kind, explanation = classify(
@@ -274,6 +289,41 @@ class RunnerTests(unittest.TestCase):
                 break
             time.sleep(.02)
         self.assertEqual(current["status"], "PARTIAL")
+        self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
+
+    def test_unsigned_orchestrator_preparation_is_never_complete(self):
+        def app_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "Application"
+            return result
+        target = self.app.state.service.target()
+        target.update({"id": "windows-fixture", "osFamily": "Windows", "architecture": "AMD64"})
+        self.app.state.service.target = lambda: target
+        self.app.state.service.discover_fn = app_discovery
+
+        def unsigned_release(destination, cancelled, log):
+            destination.mkdir()
+            (destination / ORCHESTRATOR_ASSET).write_bytes(b"controlled fixture")
+            (destination / "START_HERE.md").write_text("Review original release before running")
+            log("Unsigned release prepared without launch")
+            return {"installer": ORCHESTRATOR_ASSET, "sha256": ORCHESTRATOR_SHA256,
+                    "version": ORCHESTRATOR_VERSION, "executed": False}
+
+        self.app.state.service.orchestrator_fn = unsigned_release
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers,
+                                  json={"reference": "OrchestratorInc/agent-orchestrator"}).json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
+                         json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertEqual(current["latestJob"]["status"], "PARTIAL")
         self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
 
     def test_failed_verification_cannot_report_complete(self):
