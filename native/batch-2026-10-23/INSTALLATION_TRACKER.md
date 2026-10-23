@@ -1,6 +1,6 @@
 # Onboarding System — installation tracker
 
-All 41 unique repositories are `QUEUED`. `NOT VERIFIED` means the current GitHub About field and website have not yet been captured for an individual report. A previous inventory mention or clone is not a completed setup. The report column becomes a link when that repository is investigated. `nocodb/nocodb` was requested again and remains item 20, with no duplicate row; `clientIO/joint` appears once as item 40.
+All 43 unique repositories are `QUEUED`. `NOT VERIFIED` means the current GitHub About field and website have not yet been captured for an individual report. A previous inventory mention or clone is not a completed setup. The report column becomes a link when that repository is investigated. `nocodb/nocodb` was requested again and remains item 20, with no duplicate row; `clientIO/joint` appears once as item 40. Metadata for items 42–43 was checked on 2026-10-24; neither project has been installed.
 
 | # | Repository | Status | GitHub description | Website listed on GitHub | Verified official website | Individual report |
 | ---: | --- | --- | --- | --- | --- | --- |
@@ -45,6 +45,8 @@ All 41 unique repositories are `QUEUED`. `NOT VERIFIED` means the current GitHub
 | 39 | [buildship-ai/rowy](https://github.com/buildship-ai/rowy) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
 | 40 | [clientIO/joint](https://github.com/clientIO/joint) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
 | 41 | [Pixeler5diti/system-architecture-generator](https://github.com/Pixeler5diti/system-architecture-generator) | QUEUED | NOT VERIFIED | NOT VERIFIED | NOT VERIFIED | Pending |
+| 42 | [pymc-labs/decision-hub](https://github.com/pymc-labs/decision-hub) | QUEUED | No GitHub About description provided. | None listed. | https://hub.decision.ai (official public registry identified in README; reachability NOT VERIFIED) | Pending |
+| 43 | [ProAmineOfficial/GitArchitectureDiagram](https://github.com/ProAmineOfficial/GitArchitectureDiagram) | QUEUED | Make Any Product with Genius AI & Reverse Engineer Any Product-REP & Turn GitHub repos into interactive engineering workspaces with system maps, architecture diagrams, code hierarchies, mind maps, source-grounded AI, project extraction, prompts, skills and build-ready packs. | https://gitarchitecturediagram.com (official website) | https://gitarchitecturediagram.com (identified as official in README; reachability NOT VERIFIED) | Pending |
 
 After completing each item, replace `Pending` with its report link, update status and metadata from verified sources, and record version, usable command or address, and representative workflow evidence in the report and `START_HERE.md`.
 

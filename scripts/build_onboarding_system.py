@@ -14,8 +14,8 @@ OUTPUT = ROOT / "showcase/onboarding-system/index.html"
 
 def read_queue():
     entries = re.findall(r"^(\d{2})\. `([^`]+)`$", QUEUE.read_text(), re.M)
-    assert len(entries) == 41, f"Expected 41 ordered queue entries, got {len(entries)}"
-    assert [int(number) for number, _ in entries] == list(range(1, 42))
+    assert entries, "The ordered queue is empty"
+    assert [int(number) for number, _ in entries] == list(range(1, len(entries) + 1))
     assert len({repository.lower() for _, repository in entries}) == len(entries)
     return entries
 
@@ -60,7 +60,10 @@ def main():
             number, repository, record
         )
     data = json.dumps(records, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
-    page = TEMPLATE.read_text().replace("__QUEUE_DATA__", data)
+    page = (TEMPLATE.read_text()
+            .replace("__QUEUE_DATA__", data)
+            .replace("__QUEUE_COUNT__", str(len(records)))
+            .replace("__QUEUE_END__", str(len(records)).zfill(3)))
     for asset, marker in (("style.css", "__STYLE_VERSION__"), ("app.js", "__APP_VERSION__")):
         digest = hashlib.sha256((OUTPUT.parent / asset).read_bytes()).hexdigest()[:8]
         page = page.replace(marker, digest)

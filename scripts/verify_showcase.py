@@ -107,7 +107,8 @@ if __name__ == "__main__":
                     page.goto(f"{base}/showcase/")
                     assert page.locator(".catalog-card").count() == len(catalog)
                     assert page.locator(".inventory-row").count() == len(catalog)
-                    assert page.locator('.hub-hero + .hub-directory').count() == 1
+                    assert page.locator('.hub-hero + .hub-onboarding + .hub-directory').count() == 1
+                    assert page.locator('#hub-sidebar').count() == 1
                     assert page.locator('.inventory-panel').count() == 1
                     assert page.locator('.latest-card, .inventory-metrics').count() == 0
                     page.get_by_role("button", name="Landing", exact=True).click()

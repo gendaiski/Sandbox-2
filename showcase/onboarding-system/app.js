@@ -7,7 +7,7 @@
   const search = $('#search');
   const drawer = $('#detail-drawer');
   const backdrop = $('#drawer-backdrop');
-  const builderReview = new Set([26, 27, 29, 30, 31, 32, 33, 35, 36, 37, 38, 39, 40, 41]);
+  const builderReview = new Set([26, 27, 29, 30, 31, 32, 33, 35, 36, 37, 38, 39, 40, 41, 43]);
   let filter = 'all';
   let previousFocus;
 
@@ -18,7 +18,7 @@
     return node;
   }
   function statusClass(status) { return status.toLowerCase().replaceAll(' ', '-'); }
-  function batch(number) { return number <= 19 ? '01–19' : number <= 25 ? '20–25' : '26–41'; }
+  function batch(number) { return number <= 19 ? '01–19' : number <= 25 ? '20–25' : `26–${records.length}`; }
   function verified(value) { return value !== 'NOT VERIFIED' && value !== 'Pending'; }
   function makeStatus(status) {
     const node = element('span', `status ${statusClass(status)}`, status);
@@ -37,8 +37,9 @@
 
   function visible(record) {
     const query = search.value.trim().toLowerCase();
-    if (query && !(`${record.repository} ${record.description}`.toLowerCase().includes(query))) return false;
+    if (query && !(`${record.repository} ${record.description} ${record.officialWebsite}`.toLowerCase().includes(query))) return false;
     if (filter === 'builder') return builderReview.has(record.number);
+    if (filter === '26-plus') return record.number >= 26;
     if (filter !== 'all') return batch(record.number).replace('–', '-') === filter;
     return true;
   }
@@ -52,20 +53,39 @@
       const title = element('span', 'repo-title');
       title.append(element('strong', '', record.repository.split('/')[1]), element('small', '', record.repository.split('/')[0]));
       repository.append(title);
-      const group = element('td'); group.append(element('span', 'batch-label', batch(record.number)));
-      const status = element('td'); status.append(makeStatus(record.status));
       const source = element('td');
-      const sourceLink = element('a', 'source-link', 'GitHub ↗');
+      const sourceLink = element('a', 'source-link', 'GitHub source ↗');
       sourceLink.href = record.github; sourceLink.target = '_blank'; sourceLink.rel = 'noopener noreferrer';
-      source.append(sourceLink);
+      source.append(sourceLink, element('small', 'table-subline', 'Revision not recorded'));
+      const description = element('td');
+      const descriptionText = verified(record.description) ? record.description : 'Not verified';
+      const descriptionSpan = element('span', 'table-description', descriptionText);
+      descriptionSpan.title = descriptionText;
+      description.append(descriptionSpan);
+      const website = element('td');
+      if (verified(record.officialWebsite) && /^https:\/\/[^\s]+/.test(record.officialWebsite)) {
+        const url = record.officialWebsite.match(/^https:\/\/[^\s]+/)[0];
+        const siteLink = element('a', 'source-link', new URL(url).hostname + ' ↗');
+        siteLink.href = url; siteLink.target = '_blank'; siteLink.rel = 'noopener noreferrer';
+        website.append(siteLink);
+        if (record.officialWebsite.includes('NOT VERIFIED')) website.append(element('small', 'table-subline', 'Reachability not verified'));
+      } else website.append(element('span', 'table-muted', 'Not verified'));
+      const setup = element('td');
+      setup.append(element('strong', 'table-setup', record.status === 'QUEUED' ? 'Not started' : 'Check report'));
+      setup.append(element('small', 'table-subline', record.status === 'QUEUED' ? 'No download or install' : 'See installation evidence'));
+      const verification = element('td'); verification.append(element('span', 'table-muted', record.report === 'Pending' ? 'Not verified' : 'See report'));
+      const status = element('td'); status.append(makeStatus(record.status));
+      const reportCell = element('td');
+      const report = reportLink(record);
+      if (report) reportCell.append(report); else reportCell.append(element('span', 'table-muted', 'Pending'));
       const review = element('td');
       const button = element('button', 'review-button', 'Details →');
       button.type = 'button'; button.setAttribute('aria-label', `View details for ${record.repository}`);
       button.addEventListener('click', () => openDetails(record)); review.append(button);
-      [number, repository, group, status, source, review].forEach((cell, index) => {
-        cell.dataset.label = ['Number', 'Repository', 'Batch', 'Status', 'Source', 'Review'][index];
+      [number, repository, source, description, website, setup, verification, status, reportCell, review].forEach((cell, index) => {
+        cell.dataset.label = ['Number', 'Project', 'Source', 'GitHub description', 'Official website', 'Setup / download', 'Verification', 'Status', 'Report', 'Open / review'][index];
       });
-      tr.append(number, repository, group, status, source, review);
+      tr.append(number, repository, source, description, website, setup, verification, status, reportCell, review);
       list.append(tr);
     }
     $('#result-count').textContent = `Showing ${shown.length} of ${records.length} repositories`;
@@ -75,13 +95,21 @@
   function fact(parent, label, value) {
     const cell = element('div'); cell.append(element('small', '', label), element('strong', '', value)); parent.append(cell);
   }
+  function reportLink(record) {
+    const match = record.report.match(/^\[([^]]+)\]\(([^)]+)\)$/);
+    if (!match) return null;
+    const link = element('a', 'source-link', `${match[1]} ↗`);
+    link.href = match[2].startsWith('http') ? match[2] : `https://github.com/gendaiski/Sandbox-2/blob/codex/native-landings-20261023/native/batch-2026-10-23/${match[2]}`;
+    link.target = '_blank'; link.rel = 'noopener noreferrer';
+    return link;
+  }
   function section(parent, heading, content) {
     const node = element('section', 'detail-section'); node.append(element('h3', '', heading), content); parent.append(node);
   }
   function openDetails(record) {
     previousFocus = document.activeElement;
     const content = $('#drawer-content'); content.replaceChildren();
-    content.append(element('p', 'drawer-number', `QUEUE ITEM ${String(record.number).padStart(2, '0')} / 41`));
+    content.append(element('p', 'drawer-number', `QUEUE ITEM ${String(record.number).padStart(2, '0')} / ${records.length}`));
     const title = element('h2', '', record.repository); title.id = 'detail-title'; content.append(title, makeStatus(record.status));
     const facts = element('div', 'detail-facts');
     fact(facts, 'Requested batch', batch(record.number));
@@ -102,10 +130,7 @@
       catch (_) { copy.textContent = 'Copy unavailable here'; setTimeout(() => copy.textContent = 'Copy clone command', 2300); }
     });
     actions.append(github, copy);
-    if (record.report !== 'Pending' && /^\[.*\]\(.*\)$/.test(record.report)) {
-      const [, label, href] = record.report.match(/^\[(.*)\]\((.*)\)$/);
-      const report = element('a', '', label); report.href = href; actions.append(report);
-    }
+    const report = reportLink(record); if (report) actions.append(report);
     content.append(actions);
     const footnote = element('p', '', 'A source repository link is not a live installation. Completion depends on the tested setup recorded in its report.');
     section(content, 'Current evidence', footnote);
