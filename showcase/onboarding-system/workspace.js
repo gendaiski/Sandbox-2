@@ -238,7 +238,8 @@
   function renderHandover(record) {
     const parent = $('#result-content'); parent.replaceChildren();
     const nativeHappy = record.plan?.methodKey === 'happy-desktop-windows';
-    parent.append(node('p', 'result-note', nativeHappy && record.status === 'PARTIAL' ? 'The original signed Windows installer was opened. Finish its screens, launch Happy, and try a real agent session. Those steps are not yet verified.' : record.status === 'COMPLETE' ? 'Prepared files and a START_HERE.md are available on the runner. No application server was started for this content repository.' : `Status: ${record.status}. Read the plan, job logs, and checks before trying again.`));
+    const nativeHerdr = record.plan?.methodKey === 'herdr-windows';
+    parent.append(node('p', 'result-note', nativeHappy && record.status === 'PARTIAL' ? 'The original signed Windows installer was opened. Finish its screens, launch Happy, and try a real agent session. Those steps are not yet verified.' : nativeHerdr && record.status === 'PARTIAL' ? 'The original Herdr Windows binary passed version and help checks. Open it from PowerShell using the command in START_HERE.md, then test its terminal UI, an agent pane, and session reattachment.' : record.status === 'COMPLETE' ? 'Prepared files and a START_HERE.md are available on the runner. No application server was started for this content repository.' : `Status: ${record.status}. Read the plan, job logs, and checks before trying again.`));
     parent.append(node('p', 'result-note', `Execution target: ${state.target.name}. Workspace: ${record.workspace}. Persistence: ${state.target.persistenceNote}.`));
     $('#files-button').hidden = !['COMPLETE', 'PARTIAL'].includes(record.status) || !record.latestJob;
     for (const [id, ext] of [['#report-md', 'md'], ['#report-json', 'json'], ['#report-pdf', 'pdf']]) {
