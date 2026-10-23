@@ -1,0 +1,6 @@
+:HL["/Sandbox-2/native/landing/fallow/_next/static/chunks/2ki36_froh62o.css","style"]
+:HL["/Sandbox-2/native/landing/fallow/_next/static/media/CormorantGaramond-s.p.0vov1dgqurkav.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+:HL["/Sandbox-2/native/landing/fallow/_next/static/media/CormorantGaramond_Italic-s.p.0khak5iretomm.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+:HL["/Sandbox-2/native/landing/fallow/_next/static/media/Manrope-s.p.3rjk17h6oms_8.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+1:[["children",{"s":"__PAGE__","h":160}]]
+0:{"b":"A6SPupMEAQY2RdGC36xek","t":{"t":{"s":"","h":80,"c":"$Q1"}}}

@@ -1,0 +1,6 @@
+:HL["/Sandbox-2/native/landing/crux/_next/static/chunks/1-ftvk7nedw0k.css","style"]
+:HL["/Sandbox-2/native/landing/crux/_next/static/media/BarlowCondensed_BlackItalic-s.p.0f6alg77yg3um.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+:HL["/Sandbox-2/native/landing/crux/_next/static/media/SpaceGrotesk%5Bwght%5D-s.p.3bk34495xijiu.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+2:[["children",{"s":"__PAGE__","h":160}]]
+1:[["children",{"s":"groups","h":96,"c":"$Q2"}]]
+0:{"b":"XjpcUHo4kfsDtykRPslfF","t":{"t":{"s":"","h":80,"c":"$Q1"}}}

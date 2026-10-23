@@ -1,0 +1,5 @@
+:HL["/Sandbox-2/native/landing/umbra/_next/static/chunks/0uurrfp9msqy5.css","style"]
+:HL["/Sandbox-2/native/landing/umbra/_next/static/media/GeistMono_Variable-s.p.3ms9vq719j3f8.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/Sandbox-2/native/landing/umbra/_next/static/media/SpaceGrotesk_Variable-s.p.3bk34495xijiu.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+1:[["children",{"s":"__PAGE__","h":160}]]
+0:{"b":"b-eR-P9AJ7NvQx3mRZqTz","t":{"t":{"s":"","h":80,"c":"$Q1"}}}

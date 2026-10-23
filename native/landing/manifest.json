@@ -1,0 +1,104 @@
+{
+  "sourceRepository": "https://github.com/ln-dev7/landing-pages",
+  "sourceRevision": "3e32b3c78697753e6024dc50d388a5ea06fb9a59",
+  "sourceLicense": "MIT",
+  "staticExports": [
+    {
+      "slug": "aero",
+      "source": "https://github.com/ln-dev7/landing-pages/tree/3e32b3c78697753e6024dc50d388a5ea06fb9a59/landing-pages/aero",
+      "localPath": "native/landing/aero/",
+      "publicUrl": "https://gendaiski.github.io/Sandbox-2/native/landing/aero/",
+      "type": "original static Next.js export",
+      "files": 36,
+      "bytes": 2017157
+    },
+    {
+      "slug": "crux",
+      "source": "https://github.com/ln-dev7/landing-pages/tree/3e32b3c78697753e6024dc50d388a5ea06fb9a59/landing-pages/crux",
+      "localPath": "native/landing/crux/",
+      "publicUrl": "https://gendaiski.github.io/Sandbox-2/native/landing/crux/",
+      "type": "original static Next.js export",
+      "files": 79,
+      "bytes": 3826483
+    },
+    {
+      "slug": "fallow",
+      "source": "https://github.com/ln-dev7/landing-pages/tree/3e32b3c78697753e6024dc50d388a5ea06fb9a59/landing-pages/fallow",
+      "localPath": "native/landing/fallow/",
+      "publicUrl": "https://gendaiski.github.io/Sandbox-2/native/landing/fallow/",
+      "type": "original static Next.js export",
+      "files": 40,
+      "bytes": 3771737
+    },
+    {
+      "slug": "maree",
+      "source": "https://github.com/ln-dev7/landing-pages/tree/3e32b3c78697753e6024dc50d388a5ea06fb9a59/landing-pages/maree",
+      "localPath": "native/landing/maree/",
+      "publicUrl": "https://gendaiski.github.io/Sandbox-2/native/landing/maree/",
+      "type": "original static Next.js export",
+      "files": 79,
+      "bytes": 4126499
+    },
+    {
+      "slug": "oddpress",
+      "source": "https://github.com/ln-dev7/landing-pages/tree/3e32b3c78697753e6024dc50d388a5ea06fb9a59/landing-pages/oddpress",
+      "localPath": "native/landing/oddpress/",
+      "publicUrl": "https://gendaiski.github.io/Sandbox-2/native/landing/oddpress/",
+      "type": "original static Next.js export",
+      "files": 27,
+      "bytes": 1095122
+    },
+    {
+      "slug": "offcut",
+      "source": "https://github.com/ln-dev7/landing-pages/tree/3e32b3c78697753e6024dc50d388a5ea06fb9a59/landing-pages/offcut",
+      "localPath": "native/landing/offcut/",
+      "publicUrl": "https://gendaiski.github.io/Sandbox-2/native/landing/offcut/",
+      "type": "original static Next.js export",
+      "files": 71,
+      "bytes": 2653279
+    },
+    {
+      "slug": "tempo",
+      "source": "https://github.com/ln-dev7/landing-pages/tree/3e32b3c78697753e6024dc50d388a5ea06fb9a59/landing-pages/tempo",
+      "localPath": "native/landing/tempo/",
+      "publicUrl": "https://gendaiski.github.io/Sandbox-2/native/landing/tempo/",
+      "type": "original static Next.js export",
+      "files": 30,
+      "bytes": 1705009
+    },
+    {
+      "slug": "tessera",
+      "source": "https://github.com/ln-dev7/landing-pages/tree/3e32b3c78697753e6024dc50d388a5ea06fb9a59/landing-pages/tessera",
+      "localPath": "native/landing/tessera/",
+      "publicUrl": "https://gendaiski.github.io/Sandbox-2/native/landing/tessera/",
+      "type": "original static Next.js export",
+      "files": 29,
+      "bytes": 1685186
+    },
+    {
+      "slug": "umbra",
+      "source": "https://github.com/ln-dev7/landing-pages/tree/3e32b3c78697753e6024dc50d388a5ea06fb9a59/landing-pages/umbra",
+      "localPath": "native/landing/umbra/",
+      "publicUrl": "https://gendaiski.github.io/Sandbox-2/native/landing/umbra/",
+      "type": "original static Next.js export",
+      "files": 38,
+      "bytes": 1951135
+    },
+    {
+      "slug": "veillee",
+      "source": "https://github.com/ln-dev7/landing-pages/tree/3e32b3c78697753e6024dc50d388a5ea06fb9a59/landing-pages/veillee",
+      "localPath": "native/landing/veillee/",
+      "publicUrl": "https://gendaiski.github.io/Sandbox-2/native/landing/veillee/",
+      "type": "original static Next.js export",
+      "files": 30,
+      "bytes": 1700122
+    }
+  ],
+  "requiresNodeServer": [
+    "aparte",
+    "ecrin",
+    "ficelle",
+    "passeline"
+  ],
+  "buildErrors": []
+}

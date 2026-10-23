@@ -1,0 +1,44 @@
+1:"$Sreact.fragment"
+2:"/Sandbox-2/native/landing/crux/_next/static/chunks/0lau1hmdr8q0m.js"
+3:"/Sandbox-2/native/landing/crux/_next/static/chunks/10-26pmnrhlk9.js"
+4:"/Sandbox-2/native/landing/crux/_next/static/chunks/2ig3w1k3u80ec.js"
+5:I[13293,["$2","$3","$4"],"Header"]
+6:"/Sandbox-2/native/landing/crux/_next/static/chunks/2thbmgn1kze-3.js"
+7:I[77763,["$6"],"default"]
+8:I[63408,["$6"],"default"]
+9:I[43926,["$2","$3","$4"],"Button"]
+a:I[39254,["$2","$3","$4"],""]
+b:I[24203,["$2","$3","$4"],"MotionSetup"]
+15:"ViewportBoundary"
+16:I[7826,["$6"],"$15"]
+17:"MetadataBoundary"
+18:I[7826,["$6"],"$17"]
+19:"$Sreact.suspense"
+:HL["/Sandbox-2/native/landing/crux/_next/static/chunks/1-ftvk7nedw0k.css","style"]
+d:X
+10:X
+10:C
+11:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$1","c",{"children":[["$","article",null,{"className":"inner-page legal-page","children":[["$","header",null,{"className":"page-intro","children":[["$","p",null,{"className":"eyebrow","children":"The details matter"}],["$","h1",null,{"children":"A note about this place"}],["$","p",null,{"children":"An imagined brand. A complete design experience."}]]}],[["$","section","A fictional concept",{"children":[["$","h2",null,{"children":"A fictional concept"}],["$","p",null,{"children":"CRUX, its venue, programmes, address, availability, and prices are invented for a design portfolio. The site is not an offer from an operating business."}]]}],["$","section","No real bookings",{"children":[["$","h2",null,{"children":"No real bookings"}],["$","p",null,{"children":"All planning and enquiry journeys are demonstrations. No reservation is created, no payment is requested, and no confirmation email is sent. Completing a form does not create a contract."}]]}],["$","section","Reference imagery",{"children":[["$","h2",null,{"children":"Reference imagery"}],["$","p",null,{"children":"Stock photographs illustrate the intended atmosphere. People pictured are not represented as staff, customers, or endorsers. Images do not depict an actual venue belonging to this fictional brand."}]]}],["$","section","Responsible reuse",{"children":[["$","h2",null,{"children":"Responsible reuse"}],"$L12"]}]],false]}],null,"$L13"]}],"p":"$@14","v":null,"s":"$d"}}]]
+e:[["children",{"s":{"n":"document","t":"d","k":"terms","s":["faq","fonts","groups","visit"]},"h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$L7",null,{"parallelRouterKey":"children","template":["$","$L8",null,{}]}]]}],"p":"$@f","v":"$10","s":"$d"},"c":"$Q11"}]]
+0:{"t":{"t":{"s":"","h":80,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/Sandbox-2/native/landing/crux/_next/static/chunks/1-ftvk7nedw0k.css","precedence":"next"}],["$","script","script-0",{"src":"/Sandbox-2/native/landing/crux/_next/static/chunks/0lau1hmdr8q0m.js","async":true}],["$","script","script-1",{"src":"/Sandbox-2/native/landing/crux/_next/static/chunks/10-26pmnrhlk9.js","async":true}],["$","script","script-2",{"src":"/Sandbox-2/native/landing/crux/_next/static/chunks/2ig3w1k3u80ec.js","async":true}]],["$","html",null,{"lang":"en","className":"eiXHdq_variable HsyZ0W_variable","children":["$","body",null,{"children":[["$","a",null,{"className":"skip-link","href":"#content","children":"Skip to content"}],["$","$L5",null,{}],["$","main",null,{"id":"content","children":["$","$L7",null,{"parallelRouterKey":"children","template":["$","$L8",null,{}],"notFound":[["$","section",null,{"className":"not-found inner-page","children":[["$","p",null,{"className":"eyebrow","children":"404 · A little off the path"}],["$","h1",null,{"children":"Wrong route. Right attitude."}],["$","p",null,{"children":"This page isn’t here. Let’s take you back to somewhere familiar."}],["$","$L9",null,{"data-slot":"button","nativeButton":false,"role":"link","className":"ui-button button","render":["$","$La",null,{"href":"/"}],"children":["Back to the beginning ",["$","span",null,{"aria-hidden":"true","children":"↗︎"}]]}]]}],[]]}]}],["$","footer",null,{"className":"site-footer","children":[["$","div",null,{"className":"footer-top","children":[["$","$La",null,{"className":"footer-wordmark","href":"/","children":["CRUX",["$","span",null,{"aria-hidden":"true","children":"↗︎"}]]}],["$","p",null,{"children":["Find your next move.",["$","br",null,{}],"Foundry Quarter, Northbridge"]}],["$","div",null,{"children":[["$","$La",null,{"href":"/visit","children":"Plan your first climb"}],["$","$La",null,{"href":"/groups","children":"Bring your crew"}],["$","$La",null,{"href":"/faq","children":"Questions & answers"}]]}]]}],["$","div",null,{"className":"footer-bottom","children":[["$","p",null,{"children":["©︎ 2026 ","CRUX"," · A fictional brand, thoughtfully imagined."]}],["$","nav",null,{"aria-label":"Information","children":[["$","$La",null,{"href":"/privacy","children":"Privacy"}],["$","$La",null,{"href":"/terms","children":"Terms"}],["$","$La",null,{"href":"/accessibility","children":"Accessibility"}],["$","$La",null,{"href":"/credits","children":"Credits"}]]}]]}],["$","div",null,{"className":"footer-project","children":[["$","p",null,{"children":["Developed by ",["$","a",null,{"href":"https://lndev.me","children":"LN"}],"."]}],["$","a",null,{"href":"https://github.com/ln-dev7/landing-pages","children":"Open-source code · MIT License"}],["$","a",null,{"href":"https://lndev.mychariow.shop/prd_3cu1s0","children":["Support the project ",["$","span",null,{"aria-hidden":"true","children":"↗︎"}]]}]]}]]}],["$","$Lb",null,{}]]}]}]]}],"p":"$@c","v":null,"s":"$d"},"c":"$Qe"},"h":{"r":["$","$1","h",{"children":[null,["$","$L16",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#d9ef48"}]]}],["$","$L18",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$19",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"A note about this place | CRUX"}],["$","meta","1",{"name":"description","content":"A fictional independent bouldering club. Fresh routes, good company, and room to find your own way up."}],["$","meta","2",{"name":"robots","content":"noindex, follow"}],["$","meta","3",{"property":"og:title","content":"CRUX — Find your next move."}],["$","meta","4",{"property":"og:description","content":"A fictional independent bouldering club. Fresh routes, good company, and room to find your own way up."}],["$","meta","5",{"property":"og:locale","content":"en_GB"}],["$","meta","6",{"property":"og:image","content":"http://localhost:3000/opengraph-image?1d92a5fc191f172e"}],["$","meta","7",{"property":"og:image:type","content":"image/png"}],["$","meta","8",{"property":"og:image:width","content":"1200"}],["$","meta","9",{"property":"og:image:height","content":"630"}],["$","meta","10",{"property":"og:image:alt","content":"CRUX — Find your next move"}],["$","meta","11",{"property":"og:type","content":"website"}],["$","meta","12",{"name":"twitter:card","content":"summary_large_image"}],["$","meta","13",{"name":"twitter:title","content":"CRUX — Find your next move."}],["$","meta","14",{"name":"twitter:description","content":"A fictional independent bouldering club. Fresh routes, good company, and room to find your own way up."}],"$L1a","$L1b","$L1c","$L1d","$L1e","$L1f","$L20"]}]}],null]}],"$L21"]}],"p":"$@22","v":null,"s":"$d"}},"a":"$@23","u":"$@24","b":"XjpcUHo4kfsDtykRPslfF"}
+25:I[7826,["$6"],"OutletBoundary"]
+27:I[23000,["$6"],"IconMark"]
+12:["$","p",null,{"children":"The application source is available under the repository’s MIT License. Photography and fonts retain their own licences, listed in Credits and the bundled font licence files. Replace fictional business information and obtain appropriate professional review before adapting this concept for a real venue."}]
+13:["$","$L25",null,{"children":["$","$19",null,{"name":"Next.MetadataOutlet","children":"$@26"}]}]
+1a:["$","meta","15",{"name":"twitter:image","content":"http://localhost:3000/opengraph-image?1d92a5fc191f172e"}]
+1b:["$","meta","16",{"name":"twitter:image:alt","content":"CRUX — Find your next move"}]
+1c:["$","meta","17",{"name":"twitter:image:type","content":"image/png"}]
+1d:["$","meta","18",{"name":"twitter:image:width","content":"1200"}]
+1e:["$","meta","19",{"name":"twitter:image:height","content":"630"}]
+1f:["$","link","20",{"rel":"icon","href":"/Sandbox-2/native/landing/crux/icon.svg?icon.0-a9-5g4e-pid.svg","sizes":"any","type":"image/svg+xml"}]
+20:["$","$L27","21",{}]
+21:["$","meta",null,{"name":"next-size-adjust","content":""}]
+d:300
+26:null
+24:true
+d:C
+23:0
+f:"$undefined"
+c:"$undefined"
+22:"$undefined"
+14:"$undefined"

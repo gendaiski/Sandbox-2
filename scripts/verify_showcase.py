@@ -12,6 +12,8 @@ root = Path(__file__).resolve().parents[1]
 site = root / "showcase"
 pages = sorted(site.glob("*.html")) + sorted((site / "pages").glob("*.html"))
 catalog = json.loads((site / "catalog.json").read_text())
+landings = json.loads((root / "native/landing/manifest.json").read_text())
+exported_landings = {row["slug"] for row in landings["staticExports"]}
 
 
 class LocalLinks(HTMLParser):
@@ -53,24 +55,30 @@ if __name__ == "__main__":
         with socket.socket() as sock:
             sock.bind(("127.0.0.1", 0))
             port = sock.getsockname()[1]
-        server = subprocess.Popen(["python3", "-m", "http.server", str(port), "--bind", "127.0.0.1", "--directory", str(root)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        server = subprocess.Popen(["python3", "-m", "http.server", str(port), "--bind", "127.0.0.1", "--directory", str(root.parent)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         try:
             time.sleep(0.5)
             with sync_playwright() as playwright:
                 browser = playwright.chromium.launch(executable_path="/usr/bin/chromium", headless=True, args=["--no-sandbox"])
+                base = f"http://127.0.0.1:{port}/Sandbox-2"
                 for width in (1440, 390):
                     page = browser.new_page(viewport={"width": width, "height": 900}, accept_downloads=True)
                     errors = []
                     page.on("pageerror", lambda error: errors.append(str(error)))
                     for html in pages:
                         path = html.relative_to(root).as_posix()
-                        response = page.goto(f"http://127.0.0.1:{port}/{path}", wait_until="domcontentloaded")
+                        response = page.goto(f"{base}/{path}", wait_until="domcontentloaded")
                         assert response.status == 200, path
+                        if path.startswith("showcase/pages/landing-"):
+                            slug = html.stem.removeprefix("landing-")
+                            if slug in exported_landings:
+                                page.wait_for_url(f"{base}/native/landing/{slug}/", timeout=10000)
+                        page.locator("h1").first.wait_for(state="visible", timeout=10000)
                         assert page.locator("h1").count() == 1, path
                         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), f"Horizontal overflow: {path}"
                         if page.locator(".source-interface img:not([data-remote])").count():
                             assert page.locator(".source-interface img:not([data-remote])").evaluate("image => image.decode().then(() => image.naturalWidth > 0)"), f"Source image failed: {path}"
-                    page.goto(f"http://127.0.0.1:{port}/showcase/")
+                    page.goto(f"{base}/showcase/")
                     assert page.locator(".catalog-card").count() == len(catalog)
                     assert page.locator(".inventory-row").count() == len(catalog)
                     assert page.locator('#latest-heading').inner_text() == 'New in the systems dashboard'
@@ -94,11 +102,11 @@ if __name__ == "__main__":
                     assert downloaded.value.suggested_filename == "Sandbox-2-Systems-Inventory.csv"
                     page.locator(".theme-toggle").click()
                     assert page.locator("html").get_attribute("data-theme") == "dark"
-                    page.goto(f"http://127.0.0.1:{port}/showcase/pages/dify.html")
+                    page.goto(f"{base}/showcase/pages/dify.html")
                     page.locator("#dify-node").fill("Review")
                     page.get_by_role("button", name="Add node").click()
                     assert page.locator("#dify-nodes").inner_text() == "Review"
-                    page.goto(f"http://127.0.0.1:{port}/showcase/pages/agentfield.html")
+                    page.goto(f"{base}/showcase/pages/agentfield.html")
                     assert page.locator(".source-interface img").evaluate("image => image.complete && image.naturalWidth > 0")
                     page.get_by_role("button", name="Executions", exact=True).click()
                     assert page.locator("#af-executions.active").count() == 1
@@ -107,18 +115,18 @@ if __name__ == "__main__":
                     page.get_by_role("button", name="Agents", exact=True).click()
                     page.locator("#af-agent-search").fill("risk")
                     assert page.locator(".af-agent-list li:visible").count() == 1
-                    page.goto(f"http://127.0.0.1:{port}/showcase/pages/style-dictionary.html")
+                    page.goto(f"{base}/showcase/pages/style-dictionary.html")
                     page.locator('[data-token-color]').fill('#3377aa')
                     page.get_by_role('button', name='Update export').click()
                     assert '#3377aa' in page.locator('[data-token-output]').inner_text()
-                    page.goto(f"http://127.0.0.1:{port}/showcase/pages/webgradients.html")
+                    page.goto(f"{base}/showcase/pages/webgradients.html")
                     page.get_by_role('button', name='Night Fade').click()
                     assert 'Night Fade' in page.locator('[data-gradient-name]').inner_text()
-                    page.goto(f"http://127.0.0.1:{port}/showcase/pages/lobehub.html")
+                    page.goto(f"{base}/showcase/pages/lobehub.html")
                     page.get_by_role('textbox', name='New agent name').fill('Planner')
                     page.get_by_role('button', name='Add local agent').click()
                     assert 'Planner' in page.locator('[data-lobe-agents]').inner_text()
-                    page.goto(f"http://127.0.0.1:{port}/showcase/pages/hyperframes.html")
+                    page.goto(f"{base}/showcase/pages/hyperframes.html")
                     page.locator('[data-hyper-seek]').fill('5')
                     assert page.locator('[data-hyper-time]').inner_text() == '00:05'
                     assert not errors, errors

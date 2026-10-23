@@ -5,7 +5,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 SITE=ROOT/'showcase'
 sys.path.insert(0,str(SITE))
-from scenes import LANDINGS,render
+from scenes import LANDINGS,NATIVE_LANDINGS,render
 rows=json.loads((SITE/'catalog.json').read_text())
 assert rows and len({x['slug'] for x in rows})==len(rows)
 
@@ -85,15 +85,22 @@ def page(r):
 def landing_page(idx,item):
  slug,name,tag,url,ext=item
  prev=LANDINGS[(idx-1)%len(LANDINGS)][0];nxt=LANDINGS[(idx+1)%len(LANDINGS)][0]
- body=f'''<div class="landing-review"><header><a href="landing-pages.html">← All 14 pages</a><span>ln-dev7 / landing-pages</span><button class="theme-toggle" data-action="theme" aria-label="Switch theme">☾</button></header><main><div class="landing-review-head"><div><span class="eyebrow">ORIGINAL SOURCE FRAME · {idx+1:02}/14</span><h1>{e(name)}</h1><p>{e(tag)}. The screen below is the repository's original preview image; open the live site for its complete motion and interaction.</p></div><div class="review-actions"><a class="button primary-link" href="{e(url,quote=True)}" target="_blank" rel="noopener noreferrer">Open original →</a><button class="button ghost-link" data-action="zoom">Fit / enlarge</button></div></div><div class="review-frame"><img src="../assets/landing/{slug}.{ext}" alt="Original {e(name)} landing page screen"></div><nav class="review-pagination"><a href="landing-{prev}.html">← Previous</a><span>MIT preview image · ln-dev7/landing-pages</span><a href="landing-{nxt}.html">Next →</a></nav></main></div>'''
- (SITE/'pages'/f'landing-{slug}.html').write_text(doc(name,body,1,'landing',slug))
+ if slug in NATIVE_LANDINGS:
+  target=f'../../native/landing/{slug}/'
+  body=f'''<main class="landing-redirect"><h1>{e(name)} original application</h1><p>Opening the installed Next.js static build. Its interactive controls run in your browser.</p><a href="{target}">Open {e(name)} now →</a></main>'''
+  output=doc(name,body,1,'landing',slug).replace('<head>','<head><meta http-equiv="refresh" content="0;url='+target+'">',1)
+ else:
+  source=f'https://github.com/ln-dev7/landing-pages/tree/{rows[0]["revision"]}/landing-pages/{slug}'
+  body=f'''<div class="landing-review"><header><a href="landing-pages.html">← All 14 applications</a><span>ln-dev7 / landing-pages</span><button class="theme-toggle" data-action="theme" aria-label="Switch theme">☾</button></header><main><div class="landing-review-head"><div><span class="eyebrow">NODE SERVER REQUIRED · {idx+1:02}/14</span><h1>{e(name)}</h1><p>{e(tag)}. This original application was installed and built locally, but its forms use Next.js server actions. GitHub Pages cannot run those actions, so there is no public installation on this host yet.</p></div><div class="review-actions"><a class="button primary-link" href="{e(url,quote=True)}" target="_blank" rel="noopener noreferrer">Try upstream live site →</a><a class="button ghost-link" href="{e(source,quote=True)}" target="_blank" rel="noopener noreferrer">Pinned source →</a></div></div><nav class="review-pagination"><a href="landing-{prev}.html">← Previous</a><span>Original MIT Next.js application · needs Node hosting</span><a href="landing-{nxt}.html">Next →</a></nav></main></div>'''
+  output=doc(name,body,1,'landing',slug)
+ (SITE/'pages'/f'landing-{slug}.html').write_text(output)
 
 for r in rows:page(r)
 for i,item in enumerate(LANDINGS):landing_page(i,item)
 
 # Evidence is deliberately explicit: an interactive HTML screen is not a native install.
 STATES={
- 'landing-pages':('Built here','14 original apps built','Static frontends','Served and checked','Select a page for deeper cloning'),
+ 'landing-pages':('Built here','10 original apps published; 4 need Node','Four server-action forms need Node','Ten static builds verified in browser','Deploy four remaining apps to a Node host'),
  'macbook':('Built here','Original app built','Static frontend','3D canvas checked','Review original motion and mobile UI'),
  'dify':('Prior review','Stack not started','Services unverified','Compose validated','Configure and start the native stack'),
  'swiftui-flx':('Source inspected','Not run','No backend in scope','Source checkout','Run on a supported Apple target'),
@@ -126,8 +133,9 @@ def inventory_row(r):
  search=' '.join((r['title'],r['category'],r['repo'],r['description'],stage,native,backend,next_step)).lower()
  source=f'{r["source"].rstrip("/")}/tree/{r["revision"]}' if r['slug']!='minicpm' else r['source']
  evidence=f'<a href="{e(r["priorEvidence"],quote=True)}" target="_blank" rel="noopener noreferrer">Atlas record →</a>' if r['priorEvidence'] else 'No prior Atlas record'
- visual='Original screen image' if r['slug'] in SOURCE_SCREENS or r['slug']=='landing-pages' else 'Original Python usage' if r['slug'] in SOURCE_USAGE else 'Source link; no image'
- return f'''<tr class="inventory-row" data-kind="{e(r['category'].lower(),quote=True)}" data-search="{e(search,quote=True)}"><td><div class="inventory-project"><span class="inventory-icon" style="--accent:{r['accent']}">{e(r['title'][:1])}</span><span><a class="inventory-title" href="pages/{e(r['slug'])}.html">{e(r['title'])}</a><small>{e(r['category'])} · {e(r['license'])}</small></span></div></td><td><a href="{e(source,quote=True)}" target="_blank" rel="noopener noreferrer">{e(r['repo'])} →</a><small>Revision {e(r['revision'][:12])}</small></td><td>{status_badge(stage)}<small>{e(r['prior'])}</small></td><td>{status_badge(native)}</td><td><span class="inventory-plain">{e(backend)}</span></td><td><span class="inventory-plain">{e(readiness)}</span></td><td>{status_badge('HTML preview live')}<small>{visual}; native app separate</small></td><td>{e(next_step)}</td><td class="inventory-actions"><a href="pages/{e(r['slug'])}.html">Open UI →</a><small>{evidence}</small></td></tr>'''
+ visual='Original app installs' if r['slug']=='landing-pages' else 'Original screen image' if r['slug'] in SOURCE_SCREENS else 'Original Python usage' if r['slug'] in SOURCE_USAGE else 'Source link; no image'
+ public='10 original apps live' if r['slug']=='landing-pages' else 'HTML preview live'
+ return f'''<tr class="inventory-row" data-kind="{e(r['category'].lower(),quote=True)}" data-search="{e(search,quote=True)}"><td><div class="inventory-project"><span class="inventory-icon" style="--accent:{r['accent']}">{e(r['title'][:1])}</span><span><a class="inventory-title" href="pages/{e(r['slug'])}.html">{e(r['title'])}</a><small>{e(r['category'])} · {e(r['license'])}</small></span></div></td><td><a href="{e(source,quote=True)}" target="_blank" rel="noopener noreferrer">{e(r['repo'])} →</a><small>Revision {e(r['revision'][:12])}</small></td><td>{status_badge(stage)}<small>{e(r['prior'])}</small></td><td>{status_badge(native)}</td><td><span class="inventory-plain">{e(backend)}</span></td><td><span class="inventory-plain">{e(readiness)}</span></td><td>{status_badge(public)}<small>{visual}; {"four apps need Node" if r['slug']=='landing-pages' else 'native app separate'}</small></td><td>{e(next_step)}</td><td class="inventory-actions"><a href="pages/{e(r['slug'])}.html">Open UI →</a><small>{evidence}</small></td></tr>'''
 
 table_rows=''.join(inventory_row(r) for r in rows)
 cards=''.join(f'''<article class="catalog-card" data-search="{e((' '.join((r['title'],r['category'],r['repo'],r['description'],*STATES[r['slug']])).lower()),quote=True)}" data-kind="{e(r['category'].lower(),quote=True)}"><div class="catalog-card-art" style="--accent:{r['accent']}"><span>{e(r['title'][:1])}</span><small>{e(r['category'])}</small></div><div class="catalog-card-body"><div class="card-meta">{e(r['category'])}</div><h3>{e(r['title'])}</h3><p>{e(r['description'])}</p><div class="catalog-card-actions"><a href="pages/{e(r['slug'])}.html">Open HTML preview <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" fill="none" stroke="currentColor" stroke-width="1.7"/></svg></a><span>{'Prior work' if r['priorEvidence'] else 'New study'}</span></div></div></article>''' for r in rows)
