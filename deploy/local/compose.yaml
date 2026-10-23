@@ -27,6 +27,18 @@ services:
       - agentfield-data:/app/native/agentfield/data
     restart: unless-stopped
 
+  kedro:
+    image: sandbox2/kedro:local
+    build:
+      context: ../..
+      dockerfile: deploy/local/kedro/Dockerfile
+    ports:
+      - 127.0.0.1:${KEDRO_HOST_PORT:-8794}:10000
+    volumes:
+      - kedro-projects:/app/native/data/kedro-projects
+    restart: unless-stopped
+
 volumes:
   picoagents-data:
   agentfield-data:
+  kedro-projects:

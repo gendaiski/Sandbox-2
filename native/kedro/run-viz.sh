@@ -14,4 +14,4 @@ export MPLCONFIGDIR="$kedro_cache/matplotlib"
 export XDG_CACHE_HOME="$kedro_cache/xdg"
 cd "$kedro_project"
 exec "$kedro_root/native/kedro/.venv/bin/kedro" viz run \
-  --host 127.0.0.1 --port "${1:-8794}" --no-browser
+  --host "${KEDRO_VIZ_HOST:-127.0.0.1}" --port "${1:-8794}" --no-browser

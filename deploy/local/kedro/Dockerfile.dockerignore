@@ -1,0 +1,10 @@
+**
+!native/
+!native/kedro/
+!native/kedro/setup.sh
+!native/kedro/run-pipeline.sh
+!native/kedro/run-viz.sh
+!deploy/
+!deploy/local/
+!deploy/local/kedro/
+!deploy/local/kedro/start.sh

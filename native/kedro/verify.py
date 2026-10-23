@@ -1,12 +1,13 @@
 """Smoke-check Kedro-Viz against the executed original starter pipeline."""
 
 import json
+import os
 from pathlib import Path
 from urllib.request import urlopen
 
 ROOT = Path(__file__).resolve().parents[2]
-PROJECT = ROOT / "native/data/kedro-projects/sandbox-pipeline"
-BASE = "http://127.0.0.1:8794"
+PROJECT = Path(os.environ.get("KEDRO_PROJECT_PATH", ROOT / "native/data/kedro-projects/sandbox-pipeline"))
+BASE = os.environ.get("KEDRO_URL", "http://127.0.0.1:8794").rstrip("/")
 
 
 def main():
