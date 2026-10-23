@@ -45,9 +45,10 @@ this cloud workspace, while GitHub tracks the pinned source and launch scripts.
 The four [Vercel project roots](../../deploy/vercel/README.md) now commit their
 original source to this repository. Fresh installs and builds passed, and each
 five-step partner form was submitted through its server action in Chromium.
-[Aparté](https://sandbox-2-aparte.vercel.app/) and [Écrin](https://sandbox-2-ecrin.vercel.app/) are now public on Vercel. Their home,
-merchant and FAQ routes respond with the original apps. Ficelle and Passeline
-still await separate Vercel deployments.
+[Aparté](https://sandbox-2-aparte.vercel.app/), [Écrin](https://sandbox-2-ecrin.vercel.app/),
+[Ficelle](https://sandbox-2-ficelle.vercel.app/) and [Passeline](https://sandbox-2-passeline.vercel.app/)
+are now public on Vercel as separate projects. Their home, merchant and FAQ
+routes respond with the original apps.
 
 Run one locally after installing its pinned dependencies:
 

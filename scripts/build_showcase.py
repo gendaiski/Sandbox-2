@@ -115,7 +115,7 @@ for i,item in enumerate(LANDINGS):landing_page(i,item)
 
 # Evidence is deliberately explicit: an interactive HTML screen is not a native install.
 STATES={
- 'landing-pages':('Built here',f'{len(NATIVE_LANDINGS)+len(DEPLOYED_LANDINGS)} public; {4-len(DEPLOYED_LANDINGS)} Vercel projects prepared','Four server actions tested locally','All 14 apps built; four forms submitted',f'Deploy the {4-len(DEPLOYED_LANDINGS)} remaining Vercel projects'),
+ 'landing-pages':('Built here',f'{len(NATIVE_LANDINGS)+len(DEPLOYED_LANDINGS)} public; '+('all Vercel apps live' if len(DEPLOYED_LANDINGS)==4 else f'{4-len(DEPLOYED_LANDINGS)} Vercel projects prepared'),'Four server actions tested locally','All 14 apps built; four forms submitted','Review public app routes' if len(DEPLOYED_LANDINGS)==4 else f'Deploy the {4-len(DEPLOYED_LANDINGS)} remaining Vercel projects'),
  'macbook':('Built here','Original app built','Static frontend','3D canvas checked','Review original motion and mobile UI'),
  'dify':('Prior review','Stack not started','Services unverified','Compose validated','Configure and start the native stack'),
  'swiftui-flx':('Source inspected','Not run','No backend in scope','Source checkout','Run on a supported Apple target'),
@@ -152,7 +152,7 @@ def inventory_row(r):
  evidence=f'<a href="{e(r["priorEvidence"],quote=True)}" target="_blank" rel="noopener noreferrer">Atlas record →</a>' if r['priorEvidence'] else 'No prior Atlas record'
  visual='Original app installs' if r['slug']=='landing-pages' else 'Original interface' if r['slug'] in PUBLIC_ORIGINALS else 'Original screen image' if r['slug'] in SOURCE_SCREENS else 'Original Python usage' if r['slug'] in SOURCE_USAGE else 'Source link; no image'
  public=f'{len(NATIVE_LANDINGS)+len(DEPLOYED_LANDINGS)} original apps live' if r['slug']=='landing-pages' else 'Original app live' if r['slug'] in PUBLIC_ORIGINALS else 'HTML preview live'
- public_note=f'{4-len(DEPLOYED_LANDINGS)} Vercel projects remain' if r['slug']=='landing-pages' else 'original static build' if r['slug'] in PUBLIC_ORIGINALS else 'native app separate'
+ public_note=('All Vercel apps live' if len(DEPLOYED_LANDINGS)==4 else f'{4-len(DEPLOYED_LANDINGS)} Vercel projects remain') if r['slug']=='landing-pages' else 'original static build' if r['slug'] in PUBLIC_ORIGINALS else 'native app separate'
  return f'''<tr class="inventory-row" data-kind="{e(r['category'].lower(),quote=True)}" data-search="{e(search,quote=True)}"><td><div class="inventory-project"><span class="inventory-icon" style="--accent:{r['accent']}">{e(r['title'][:1])}</span><span><a class="inventory-title" href="pages/{e(r['slug'])}.html">{e(r['title'])}</a><small>{e(r['category'])} · {e(r['license'])}</small></span></div></td><td><a href="{e(source,quote=True)}" target="_blank" rel="noopener noreferrer">{e(r['repo'])} →</a><small>Revision {e(r['revision'][:12])}</small></td><td>{status_badge(stage)}<small>{e(r['prior'])}</small></td><td>{status_badge(native)}</td><td><span class="inventory-plain">{e(backend)}</span></td><td><span class="inventory-plain">{e(readiness)}</span></td><td>{status_badge(public)}<small>{visual}; {public_note}</small></td><td>{e(next_step)}</td><td class="inventory-actions"><a href="pages/{e(r['slug'])}.html">Open UI →</a><small>{evidence}</small></td></tr>'''
 
 table_rows=''.join(inventory_row(r) for r in rows)
