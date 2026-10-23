@@ -1,0 +1,38 @@
+{
+  "source": "https://github.com/ln-dev7/landing-pages",
+  "license": "MIT",
+  "projects": [
+    {
+      "slug": "aparte",
+      "rootDirectory": "deploy/vercel/aparte",
+      "framework": "nextjs",
+      "sourceRevision": "3e32b3c78697753e6024dc50d388a5ea06fb9a59",
+      "sourceFiles": 105,
+      "optionalDeliveryEnv": "PARTNER_WEBHOOK_URL"
+    },
+    {
+      "slug": "ecrin",
+      "rootDirectory": "deploy/vercel/ecrin",
+      "framework": "nextjs",
+      "sourceRevision": "3e32b3c78697753e6024dc50d388a5ea06fb9a59",
+      "sourceFiles": 97,
+      "optionalDeliveryEnv": "PARTNER_WEBHOOK_URL"
+    },
+    {
+      "slug": "ficelle",
+      "rootDirectory": "deploy/vercel/ficelle",
+      "framework": "nextjs",
+      "sourceRevision": "3e32b3c78697753e6024dc50d388a5ea06fb9a59",
+      "sourceFiles": 104,
+      "optionalDeliveryEnv": "PARTNER_WEBHOOK_URL"
+    },
+    {
+      "slug": "passeline",
+      "rootDirectory": "deploy/vercel/passeline",
+      "framework": "nextjs",
+      "sourceRevision": "3e32b3c78697753e6024dc50d388a5ea06fb9a59",
+      "sourceFiles": 102,
+      "optionalDeliveryEnv": "PARTNER_WEBHOOK_URL"
+    }
+  ]
+}
