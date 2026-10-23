@@ -2,7 +2,7 @@
 
 This folder records installation work for the 17 sources requested after the Sandbox-2 showcase. The [status file](status.json) distinguishes an original application, an installed CLI or skill, a source-only reference, and a browser study. The checked source revisions and licences are in [the catalogue](../showcase/catalog.json). Upstream checkouts are ignored under `vendor/showcase/`; dependency trees, local app data, generated tokens and reports are ignored under `native/data/` and `native/node_modules/`.
 
-**These ports are local to the Codex cloud workspace.** GitHub Pages serves the HTML studies only. It cannot host AnythingLLM, LobeHub, Hyperframes Studio, the Tokens Studio WebSocket preview, or the Panda Studio connection. A permanent public deployment needs a runtime host, storage and credentials. No model key or Figma session is configured here.
+**These ports are local to the Codex cloud workspace.** GitHub Pages serves ten [original landing apps](landing/README.md) and three [original static design interfaces](apps/README.md), alongside the HTML studies. It cannot host AnythingLLM, LobeHub, Hyperframes Studio, the Tokens Studio WebSocket preview, or the Panda Studio connection. A permanent public deployment of those services needs a runtime host, storage and credentials. No model key or Figma session is configured here.
 
 ## What runs now
 

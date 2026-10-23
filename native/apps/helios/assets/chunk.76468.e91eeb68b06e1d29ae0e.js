@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunk_ember_auto_import_=globalThis.webpackChunk_ember_auto_import_||[]).push([[76468],{76468(e,l,o){o.r(l),o.d(l,{default:()=>h})
+const h='<symbol id="hds-icon-flight-google-slides-16" viewBox="0 0 16 16"><g><path d="M10.344 7.315H5.656v2.753h4.688z"/><path fill-rule="evenodd" d="M3.938 15.25h8.124c.516 0 .938-.437.938-.972V4.563L9.563 1H3.937C3.423 1 3 1.437 3 1.972v12.306c0 .535.422.972.938.972m7.187-8.744h-6.25v4.372h6.25z" clip-rule="evenodd"/></g></symbol>'}}])

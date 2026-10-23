@@ -14,6 +14,9 @@ pages = sorted(site.glob("*.html")) + sorted((site / "pages").glob("*.html"))
 catalog = json.loads((site / "catalog.json").read_text())
 landings = json.loads((root / "native/landing/manifest.json").read_text())
 exported_landings = {row["slug"] for row in landings["staticExports"]}
+original_apps = {"design-tokens-spec": "design-tokens-spec",
+                 "hashicorp-design-system": "helios",
+                 "ux-ui-agent-skills": "ux-ui-agent-skills"}
 
 
 class LocalLinks(HTMLParser):
@@ -73,9 +76,14 @@ if __name__ == "__main__":
                             slug = html.stem.removeprefix("landing-")
                             if slug in exported_landings:
                                 page.wait_for_url(f"{base}/native/landing/{slug}/", timeout=10000)
-                        page.locator("h1").first.wait_for(state="visible", timeout=10000)
-                        assert page.locator("h1").count() == 1, path
-                        assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), f"Horizontal overflow: {path}"
+                        if html.stem in original_apps and path.startswith("showcase/pages/"):
+                            page.wait_for_url(f"{base}/native/apps/{original_apps[html.stem]}/", timeout=10000)
+                            assert page.title(), path
+                            assert page.locator("body").inner_text().strip(), path
+                        else:
+                            page.locator("h1").first.wait_for(state="visible", timeout=10000)
+                            assert page.locator("h1").count() == 1, path
+                            assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), f"Horizontal overflow: {path}"
                         if page.locator(".source-interface img:not([data-remote])").count():
                             assert page.locator(".source-interface img:not([data-remote])").evaluate("image => image.decode().then(() => image.naturalWidth > 0)"), f"Source image failed: {path}"
                     page.goto(f"{base}/showcase/")

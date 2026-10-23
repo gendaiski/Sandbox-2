@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://gendaiski.github.io/Sandbox-2/native/apps/design-tokens-spec/sitemap-index.xml
