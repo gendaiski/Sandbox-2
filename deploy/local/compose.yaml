@@ -7,8 +7,7 @@ services:
     ports:
       - 127.0.0.1:${PICOAGENTS_HOST_PORT:-8790}:10000
     environment:
-      PICOAGENTS_HTTP_USER: ${PICOAGENTS_HTTP_USER:-reviewer}
-      PICOAGENTS_HTTP_PASSWORD: ${PICOAGENTS_HTTP_PASSWORD:?Set PICOAGENTS_HTTP_PASSWORD in deploy/local/.env}
+      PICOAGENTS_REQUIRE_AUTH: "0"
     volumes:
       - picoagents-data:/app/native/picoagents/data
     restart: unless-stopped
@@ -21,10 +20,10 @@ services:
     ports:
       - 127.0.0.1:${AGENTFIELD_HOST_PORT:-8791}:10000
     environment:
-      AGENTFIELD_HTTP_USER: ${AGENTFIELD_HTTP_USER:-reviewer}
-      AGENTFIELD_HTTP_PASSWORD: ${AGENTFIELD_HTTP_PASSWORD:?Set AGENTFIELD_HTTP_PASSWORD in deploy/local/.env}
+      AGENTFIELD_REQUIRE_AUTH: "0"
     volumes:
       - agentfield-data:/app/native/agentfield/data
+      - ./agentfield/nginx.local.conf:/etc/nginx/conf.d/default.conf:ro
     restart: unless-stopped
 
   kedro:

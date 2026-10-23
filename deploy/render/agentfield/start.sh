@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
-: "${AGENTFIELD_HTTP_PASSWORD:?Set AGENTFIELD_HTTP_PASSWORD in the host secret store}"
-agentfield_user="${AGENTFIELD_HTTP_USER:-reviewer}"
 mkdir -p "$AGENTFIELD_HOME"
-password_hash="$(printf '%s' "$AGENTFIELD_HTTP_PASSWORD" | openssl passwd -apr1 -stdin)"
-printf '%s:%s\n' "$agentfield_user" "$password_hash" > /tmp/agentfield.htpasswd
-unset AGENTFIELD_HTTP_PASSWORD password_hash
+if [[ "${AGENTFIELD_REQUIRE_AUTH:-1}" != "0" ]]; then
+  : "${AGENTFIELD_HTTP_PASSWORD:?Set AGENTFIELD_HTTP_PASSWORD in the host secret store}"
+  agentfield_user="${AGENTFIELD_HTTP_USER:-reviewer}"
+  password_hash="$(printf '%s' "$AGENTFIELD_HTTP_PASSWORD" | openssl passwd -apr1 -stdin)"
+  printf '%s:%s\n' "$agentfield_user" "$password_hash" > /tmp/agentfield.htpasswd
+  unset AGENTFIELD_HTTP_PASSWORD password_hash
+fi
 
 /usr/local/bin/af server --port 8791 --open=false &
 server_pid=$!

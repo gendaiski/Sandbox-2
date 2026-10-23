@@ -28,6 +28,8 @@ DATA_DIR = Path(os.environ.get("PICOAGENTS_DATA_DIR", Path(__file__).resolve().p
 
 def add_http_auth(app) -> None:
     """Protect the original UI and API when a public host is configured."""
+    if os.environ.get("PICOAGENTS_REQUIRE_AUTH") == "0":
+        return
     username = os.environ.get("PICOAGENTS_HTTP_USER", "")
     password = os.environ.get("PICOAGENTS_HTTP_PASSWORD", "")
     if os.environ.get("PICOAGENTS_REQUIRE_AUTH") == "1" and not (username and password):
