@@ -1,6 +1,6 @@
 # PicoAgents native batch
 
-This runs the **original** PicoAgents 0.5.0 React WebUI and FastAPI backend from the pinned `victordibia/designing-multiagent-systems` checkout. The wrapper changes only PicoAgents' default SQLite and run-data directory to the ignored `native/picoagents/data/` folder. It scans the upstream's own example workflows. This is a local native installation, not the hand-authored HTML study in `showcase/pages/multiagent-systems.html`.
+This runs the **original** PicoAgents 0.5.0 React WebUI and FastAPI backend from the pinned `victordibia/designing-multiagent-systems` checkout. The wrapper changes the default SQLite and run-data directory to the ignored `native/picoagents/data/` folder and uses PicoAgents' built-in cached file session store so conversations survive restarts. It scans the upstream's own example workflows. This is a local native installation, not the hand-authored HTML study in `showcase/pages/multiagent-systems.html`.
 
 ## Install and run
 

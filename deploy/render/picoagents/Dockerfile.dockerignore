@@ -1,0 +1,8 @@
+**
+!native/
+!native/picoagents/
+!native/picoagents/run.py
+!deploy/
+!deploy/render/
+!deploy/render/picoagents/
+!deploy/render/picoagents/package-lock.json

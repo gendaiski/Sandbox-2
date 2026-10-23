@@ -1,19 +1,31 @@
 """Smoke-check the real PicoAgents API and upstream deterministic workflow."""
 
 import json
+import os
+from base64 import b64encode
 from urllib.request import Request, urlopen
 
-BASE = "http://127.0.0.1:8790"
+BASE = os.environ.get("PICOAGENTS_URL", "http://127.0.0.1:8790").rstrip("/")
+
+
+def request(path, **kwargs):
+    headers = kwargs.pop("headers", {})
+    username = os.environ.get("PICOAGENTS_HTTP_USER")
+    password = os.environ.get("PICOAGENTS_HTTP_PASSWORD")
+    if username and password:
+        token = b64encode(f"{username}:{password}".encode()).decode()
+        headers["Authorization"] = f"Basic {token}"
+    return Request(BASE + path, headers=headers, **kwargs)
 
 
 def get(path):
-    with urlopen(BASE + path, timeout=15) as response:
+    with urlopen(request(path), timeout=15) as response:
         assert response.status == 200, (path, response.status)
         return json.load(response)
 
 
 def main():
-    with urlopen(BASE, timeout=15) as response:
+    with urlopen(request("/"), timeout=15) as response:
         assert response.status == 200
         assert b"PicoAgents WebUI" in response.read()
     health = get("/api/health")
@@ -25,14 +37,14 @@ def main():
     assert isinstance(get("/api/eval/datasets"), list)
     assert isinstance(get("/api/mcp/servers"), list)
 
-    request = Request(
-        BASE + "/api/entities/sequential.workflow/run/stream",
+    stream_request = request(
+        "/api/entities/sequential.workflow/run/stream",
         data=json.dumps({"input_data": {"value": 3}}).encode(),
         headers={"Content-Type": "application/json", "Accept": "text/event-stream"},
         method="POST",
     )
     events = []
-    with urlopen(request, timeout=30) as response:
+    with urlopen(stream_request, timeout=30) as response:
         assert response.status == 200
         assert response.headers["Content-Type"].startswith("text/event-stream")
         for line in response:
