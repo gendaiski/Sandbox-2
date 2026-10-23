@@ -1,5 +1,8 @@
 # Upstream repos are cloned here by scripts/clone_all.sh, not committed
 vendor/
+native/node_modules/
+native/data/
+native/.cache/
 
 # Per-system environments and outputs
 .venv/
@@ -11,3 +14,6 @@ systems/*/rag_storage/
 __pycache__/
 *.pyc
 .env
+
+# Panda
+styled-system
