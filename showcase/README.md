@@ -2,7 +2,7 @@
 
 Open [the published hub](https://gendaiski.github.io/Sandbox-2/showcase/) or serve [the local HTML](index.html) through a web server. For a local server, run `python3 -m http.server 8899` at the repository root and open `http://127.0.0.1:8899/showcase/`. Each card opens a separate HTML UI. All controls in these pages run locally in the browser; they do not claim to perform native inference, cloud orchestration or account operations.
 
-Visual checks: [hub](evidence/hub.png), [14-page gallery](evidence/landing-gallery.png), [Dify screen](evidence/dify-workspace.png), [MacBook screen](evidence/macbook.png).
+Visual checks: [dashboard inventory](evidence/inventory-desktop.png), [dark inventory](evidence/inventory-dark.png), [mobile inventory](evidence/inventory-mobile.png), [AgentField source](evidence/agentfield-original.png), [AgentField interactive screen](evidence/agentfield-interactive.png), [14-page gallery](evidence/landing-gallery.png).
 
 ## Source audit
 
@@ -29,6 +29,8 @@ The source register in [catalog.json](catalog.json) records exact Git revisions,
 | KunAgent/Kun | None found | Source checkout only | [Kun](pages/kun.html) |
 
 Native installation of the remaining server and agent stacks requires their own services, credentials, hardware or platform support. This static deployment presents their independently interactive UI studies, not hosted original applications. These studies are hand-authored from publicly visible project information. The 14 landing thumbnails are from the MIT-licensed ln-dev7 repository. The AnythingLLM and PicoAgents reference screenshots retain their upstream attribution in the HTML. No source is redistributed from projects where a licence was not identified.
+
+The dashboard now includes a Project Atlas style evidence table. Its search and the original **All, Landing, Agents, Data** filters control both table rows and visual cards; CSV export includes the visible rows. Eleven system pages put an original interface image ahead of the local interactive study. Dify, SwiftUI FLX, AgentField, OpenHands, AutoGPT, Kedro, Ruflo and Kun images came from pinned source paths recorded in `scripts/build_showcase.py`. The MacBook image was captured from the original app built here; AnythingLLM and PicoAgents use their source screenshots. The original images are visual references, with full-size and source links; the controls in them are not live. The AgentField local study is coded to follow its source dashboard, executions list, agents and workflow graph; its labels and metric values are marked as source sample data. For sources with no suitable original screen, the page links to the original app or repository and labels the local study as such.
 
 ## Rebuild and verify
 
