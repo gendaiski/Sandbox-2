@@ -1,5 +1,9 @@
 # Sandbox-2: test each system separately
 
+## Onboarding System
+
+[Open the Onboarding System interface](https://gendaiski.github.io/Sandbox-2/showcase/onboarding-system/workspace.html) or [read the local runner guide](onboarding/README.md). The public page is a connection and review entry point; approved work runs only through the authenticated loopback runner started on the target machine. The runner currently supports bounded preparation of public documentation, curated lists, and learning repositories, with persistent job records and verification reports. Application, CLI, library, private-repository, and remote-runner installations remain **unsupported**, so this feature is **PARTIAL** against the full onboarding specification. The [existing repository queue](https://gendaiski.github.io/Sandbox-2/showcase/onboarding-system/) remains separately available.
+
 ## Systems showcase
 
 [Open the live 33-system HTML hub](https://gendaiski.github.io/Sandbox-2/showcase/) or [browse its source](showcase/index.html). Each system has its own interactive HTML screen; the landing-page collection also has 14 individual visual previews. The hub includes Design Tokens and Design System Tokens filters. [Installation and provenance record](showcase/README.md) explains which original applications were built or run and which pages are browser-only studies.

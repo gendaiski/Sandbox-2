@@ -13,7 +13,7 @@ root = Path(__file__).resolve().parents[1]
 site = root / "showcase"
 sys.path.insert(0, str(site))
 from scenes import DEPLOYED_LANDINGS
-pages = sorted(site.glob("*.html")) + sorted((site / "pages").glob("*.html")) + [site / "onboarding-system/index.html"]
+pages = sorted(site.glob("*.html")) + sorted((site / "pages").glob("*.html")) + [site / "onboarding-system/index.html", site / "onboarding-system/workspace.html"]
 catalog = json.loads((site / "catalog.json").read_text())
 landings = json.loads((root / "native/landing/manifest.json").read_text())
 exported_landings = {row["slug"] for row in landings["staticExports"]}
@@ -35,7 +35,7 @@ class LocalLinks(HTMLParser):
 
 
 assert len(catalog) == len({row['slug'] for row in catalog}), "Duplicate source entries"
-expected_pages = 2 + 2 * len(catalog) + 2 * 14
+expected_pages = 3 + 2 * len(catalog) + 2 * 14
 assert len(pages) == expected_pages, f"Expected {expected_pages} HTML files, got {len(pages)}"
 for row in catalog:
     assert (site / "pages" / f"{row['slug']}.html").exists()
@@ -153,6 +153,12 @@ if __name__ == "__main__":
                     assert page.locator('#rows tr').count() == 10
                     assert page.locator('#detail-drawer:visible').count() == 1
                     assert 'Database Architecture Learning' in page.locator('#drawer-content').inner_text()
+                    page.goto(f"{base}/showcase/onboarding-system/workspace.html")
+                    page.locator('#runner-banner.offline').wait_for(timeout=10000)
+                    assert page.locator('#product-content:visible').count() == 0
+                    assert page.locator('#runner-guide:visible').count() == 1
+                    page.locator('#theme-toggle').click()
+                    assert page.locator('html').get_attribute('data-theme') == 'dark'
                     page.goto(f"{base}/showcase/pages/dify.html")
                     page.locator("#dify-node").fill("Review")
                     page.get_by_role("button", name="Add node").click()

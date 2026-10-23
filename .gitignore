@@ -18,6 +18,8 @@ systems/*/rag_storage/
 __pycache__/
 *.pyc
 .env
+onboarding-data/
+.venv-onboarding/
 
 # Panda
 styled-system
