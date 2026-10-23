@@ -12,7 +12,7 @@ from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
-from onboarding.core import InputError, download_archive, parse_reference, validate_ref
+from onboarding.core import InputError, classify, download_archive, parse_reference, validate_ref
 from onboarding.server import create_app
 
 
@@ -40,6 +40,15 @@ def fixture_download(discovery, destination, cancelled, log):
 
 
 class ReferenceTests(unittest.TestCase):
+    def test_book_with_chapter_notebooks_is_learning_material(self):
+        kind, explanation = classify(
+            "Agentic-Design-Patterns",
+            ["README.md", "Agentic_Design_Patterns_Complete.pdf", "chapter_notebooks"],
+            "A hands-on guide with notebook examples", "",
+        )
+        self.assertEqual(kind, "Learning materials")
+        self.assertIn("credentials", explanation)
+
     def test_equivalent_formats(self):
         formats = (
             "https://github.com/Example/Docs", "https://github.com/Example/Docs.git",

@@ -115,6 +115,8 @@ def classify(name: str, files: list[str], readme: str, description: str) -> tupl
     low = f"{name} {description} {readme[:12000]}".lower()
     if name.lower().startswith("awesome-") or "curated list" in low or "curated collection" in low:
         return "Curated resource list", "Based on repository naming and README wording; inspect the source before relying on it."
+    if "chapter_notebooks" in names and any(file.endswith(".pdf") for file in names):
+        return "Learning materials", "Chapter notebooks and a book PDF appear at the root; individual notebooks may still need separate dependencies or credentials."
     if "course" in low or "learning journey" in low or "tutorial" in low:
         return "Learning materials", "Based on GitHub About and README wording; inspect the source before relying on it."
     if names <= {"readme.md", "readme", "license", "license.md", ".gitignore", "index.md"} and names:
