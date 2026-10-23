@@ -4,6 +4,8 @@ This folder records installation work for the 17 sources requested after the San
 
 **These ports are local to the Codex cloud workspace.** GitHub Pages serves ten [original landing apps](landing/README.md) and three [original static design interfaces](apps/README.md), alongside the HTML studies. It cannot host AnythingLLM, LobeHub, Hyperframes Studio, the Tokens Studio WebSocket preview, or the Panda Studio connection. A permanent public deployment of those services needs a runtime host, storage and credentials. No model key or Figma session is configured here.
 
+The first native agent batch is also available locally: [PicoAgents](picoagents/README.md) runs its original React UI, FastAPI backend, SQLite persistence and upstream example workflow; [AgentField](agentfield/README.md) runs its official embedded dashboard and Go API with a registered deterministic agent. Their APIs and browser UIs were checked. They are not yet public services.
+
 ## What runs now
 
 | Original source | Direct local interface | Verified result |

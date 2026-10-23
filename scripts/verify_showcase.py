@@ -107,11 +107,9 @@ if __name__ == "__main__":
                     page.goto(f"{base}/showcase/")
                     assert page.locator(".catalog-card").count() == len(catalog)
                     assert page.locator(".inventory-row").count() == len(catalog)
-                    assert page.locator('#latest-heading').inner_text() == 'New in the systems dashboard'
-                    assert page.locator('.latest-links a').count() == 16
-                    assert page.locator('.inventory-metrics>div').nth(2).locator('strong').inner_text() == str(sum(bool(r['priorEvidence']) for r in catalog))
-                    page.get_by_role('button', name='Show in inventory').first.click()
-                    assert page.locator('.inventory-row:visible').count() == 8
+                    assert page.locator('.hub-hero + .hub-directory').count() == 1
+                    assert page.locator('.inventory-panel').count() == 1
+                    assert page.locator('.latest-card, .inventory-metrics').count() == 0
                     page.get_by_role("button", name="Landing", exact=True).click()
                     assert page.locator(".catalog-card:visible").count() == 2
                     assert page.locator(".inventory-row:visible").count() == 2
