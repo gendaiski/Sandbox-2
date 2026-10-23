@@ -56,9 +56,23 @@ def doc(title,body,depth=0,page='system',slug=''):
  js_version=hashlib.sha256((SITE/'app.js').read_bytes()).hexdigest()[:8]
  return f'''<!doctype html><html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light dark"><title>{e(title)} · Sandbox-2 Showcase</title><meta name="description" content="Interactive, source-backed local UI preview in Sandbox-2"><link rel="stylesheet" href="{prefix}style.css?v={css_version}"><link rel="stylesheet" href="{prefix}design.css?v={design_version}"><script defer src="{prefix}app.js?v={js_version}"></script></head><body data-page="{page}" data-slug="{e(slug,quote=True)}">{body}</body></html>'''
 
+NAV_GROUPS=(
+ ('Landing & Product',('landing-pages','macbook')),
+ ('Agents & Workspaces',('dify','minicpm','anything-llm','ruflo','open-agent','multiagent-systems','agentfield','openhands','autogpt','astron-agent','swarms','kun','lobehub')),
+ ('Data & Pipelines',('kedro','datagen')),
+ ('Design Tokens',('style-dictionary','design-extract','dembrandt','webgradients','design-tokens-spec','tokens-studio','awesome-design-tokens','diez')),
+ ('Design System Tokens',('oh-my-design','awesome-design-md','panda','ux-ui-agent-skills','styleseed','hashicorp-design-system')),
+ ('Components & Video',('swiftui-flx','hyperframes')),
+)
+assert sorted(slug for _,group in NAV_GROUPS for slug in group)==sorted(r['slug'] for r in rows)
+
 def side_nav(active):
- items=''.join(f'<a href="{e(r["slug"])}.html" class="side-item {"active" if r["slug"]==active else ""}"><span class="side-monogram" style="--accent:{r["accent"]}">{e(r["title"][:1])}</span><span>{e(r["title"])}</span></a>' for r in rows)
- return f'<aside class="site-sidebar"><a class="site-brand" href="../index.html"><span class="brand-mark">S²</span><span>Sandbox <b>2</b><small>Systems showcase</small></span></a><div class="side-label">Explore</div><a class="side-item" href="../index.html"><span class="side-monogram">⌂</span><span>All systems</span></a><div class="side-label">Source-backed previews</div><nav aria-label="Systems">{items}</nav><a class="bench-link" href="../../bench/index.html">Existing test bench →</a></aside>'
+ by_slug={r['slug']:r for r in rows}
+ groups=[]
+ for name,slugs in NAV_GROUPS:
+  items=''.join(f'<a href="{e(slug)}.html" class="side-item {"active" if slug==active else ""}" {"aria-current=page" if slug==active else ""}><span class="side-monogram" style="--accent:{by_slug[slug]["accent"]}">{e(by_slug[slug]["title"][:1])}</span><span>{e(by_slug[slug]["title"])}</span></a>' for slug in slugs)
+  groups.append(f'<details class="side-group" {"open" if active in slugs else ""}><summary><span>{e(name)}</span><b>{len(slugs)}</b></summary><div class="side-group-items">{items}</div></details>')
+ return f'<aside class="site-sidebar"><a class="site-brand" href="../index.html"><span class="brand-mark">S²</span><span>Sandbox <b>2</b><small>Systems showcase</small></span></a><div class="side-label">Explore</div><a class="side-item" href="../index.html"><span class="side-monogram">⌂</span><span>All systems</span></a><a class="side-item" href="landing-pages.html"><span class="side-monogram">↗</span><span>Landing apps</span></a><div class="side-label">Browse by category</div><nav aria-label="Systems by category">{"".join(groups)}</nav><a class="bench-link" href="../../bench/index.html">Existing test bench →</a></aside>'
 
 def topbar(crumb,slug='',status_label='Local HTML preview'):
  launch_link=f'<a class="top-launch" href="launch-{e(slug)}.html">Launch page ↗</a>' if slug else ''
