@@ -13,7 +13,7 @@ root = Path(__file__).resolve().parents[1]
 site = root / "showcase"
 sys.path.insert(0, str(site))
 from scenes import DEPLOYED_LANDINGS
-pages = sorted(site.glob("*.html")) + sorted((site / "pages").glob("*.html"))
+pages = sorted(site.glob("*.html")) + sorted((site / "pages").glob("*.html")) + [site / "onboarding-system/index.html"]
 catalog = json.loads((site / "catalog.json").read_text())
 landings = json.loads((root / "native/landing/manifest.json").read_text())
 exported_landings = {row["slug"] for row in landings["staticExports"]}
@@ -35,7 +35,7 @@ class LocalLinks(HTMLParser):
 
 
 assert len(catalog) == len({row['slug'] for row in catalog}), "Duplicate source entries"
-expected_pages = 1 + 2 * len(catalog) + 2 * 14
+expected_pages = 2 + 2 * len(catalog) + 2 * 14
 assert len(pages) == expected_pages, f"Expected {expected_pages} HTML files, got {len(pages)}"
 for row in catalog:
     assert (site / "pages" / f"{row['slug']}.html").exists()

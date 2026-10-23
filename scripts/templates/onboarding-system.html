@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="A transparent, interactive tracker for the 41 repository Onboarding System queue.">
+  <title>Onboarding System · Sandbox 2</title>
+  <link rel="stylesheet" href="style.css">
+  <script id="queue-data" type="application/json">__QUEUE_DATA__</script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#repository-list">Skip to repositories</a>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="../index.html" aria-label="Sandbox 2 showcase home"><span class="brand-symbol">S<span>²</span></span><span class="brand-text">Sandbox <strong>2</strong><small>Onboarding System</small></span></a>
+      <nav aria-label="Main navigation"><a href="../index.html">Showcase</a><a class="selected" href="index.html" aria-current="page">Onboarding</a><a href="https://github.com/gendaiski/Sandbox-2/blob/codex/native-landings-20261023/native/PENDING-BATCH-19.md" target="_blank" rel="noopener noreferrer">Source queue <span aria-hidden="true">↗</span></a></nav>
+      <button id="theme-toggle" class="icon-button" type="button" aria-label="Switch to dark theme" title="Switch theme"><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.6A8.6 8.6 0 0 1 8.4 3.8 8.7 8.7 0 1 0 20.2 15.6Z"/></svg><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4m0-14.2-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg></button>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-copy"><p class="eyebrow"><span class="signal"></span> SANDBOX 2 / WORK QUEUE</p><h1 id="page-title">Every repository.<br><em>One clear path forward.</em></h1><p class="hero-lead">Track the 41 systems you asked to onboard, in their original order. Open a repository, inspect its record, and see exactly what has been verified.</p><div class="hero-actions"><a class="primary-action" href="#repository-list">Explore the queue <span aria-hidden="true">↘</span></a><a class="secondary-action" href="https://github.com/gendaiski/Sandbox-2/blob/codex/native-landings-20261023/native/batch-2026-10-23/QUEUE.md" target="_blank" rel="noopener noreferrer">Read the work plan <span aria-hidden="true">↗</span></a></div></div>
+        <div class="hero-art" aria-hidden="true"><span class="art-caption">WORKFLOW / 001—041</span><div class="art-path"><i></i><i></i><i></i><i></i><i></i></div><div class="art-cards"><div class="art-card art-card-one"><small>01 / DISCOVER</small><b>Source & type</b><span>▰▰▰▰▰▰</span></div><div class="art-card art-card-two"><small>02 / INSTALL</small><b>Original runtime</b><span>▰▰▰▰</span></div><div class="art-card art-card-three"><small>03 / VERIFY</small><b>Real workflow</b><span>▰▰</span></div></div><span class="art-footer">QUEUED · EVIDENCE REQUIRED</span></div>
+      </section>
+
+      <section class="overview" aria-label="Queue overview"><div class="stat"><span>Total repositories</span><strong id="total-count">41</strong><small>Unique, in requested order</small></div><div class="stat"><span>Queued</span><strong id="queued-count">41</strong><small>Awaiting investigation</small></div><div class="stat"><span>Verified complete</span><strong id="complete-count">0</strong><small>Requires a real workflow test</small></div><div class="stat stat-next"><span>Next in order</span><strong id="next-name">#01</strong><small id="next-repo">Agentic-AI-Workflows</small></div></section>
+
+      <section class="notice" aria-label="Status explanation"><span class="notice-icon" aria-hidden="true">i</span><p><strong>This is a work tracker.</strong> A GitHub link opens the upstream source, not an installed app. “Complete” will appear only after the appropriate native setup and representative workflow are verified. The current Windows Docker task comes first.</p></section>
+
+      <section id="repository-list" class="workspace" aria-labelledby="list-heading"><div class="section-heading"><div><p class="eyebrow">THE COLLECTION</p><h2 id="list-heading">Repository queue</h2><p>Search, filter, and inspect each system’s evidence.</p></div><button id="export-csv" class="export-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3h16v-3"/></svg> Export CSV</button></div>
+        <div class="toolbar"><label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><input id="search" type="search" placeholder="Search repository or owner…" autocomplete="off" aria-label="Search repositories"></label><div class="filter-group" role="group" aria-label="Queue filter"><button type="button" data-filter="all" aria-pressed="true">All <span id="filter-all-count">41</span></button><button type="button" data-filter="1-19" aria-pressed="false">01–19</button><button type="button" data-filter="20-25" aria-pressed="false">20–25</button><button type="button" data-filter="26-41" aria-pressed="false">26–41</button><button type="button" data-filter="builder" aria-pressed="false">Builder review</button></div></div>
+        <div class="list-meta"><span id="result-count" aria-live="polite">Showing 41 of 41 repositories</span><span>Ordered by request <span aria-hidden="true">↓</span></span></div>
+        <div class="table-scroll"><table><thead><tr><th scope="col">#</th><th scope="col">Repository</th><th scope="col">Batch</th><th scope="col">Status</th><th scope="col">Source</th><th scope="col">Review</th></tr></thead><tbody id="rows"></tbody></table></div><p id="empty-state" class="empty-state" hidden>No repositories match. Clear the search or choose another group.</p>
+      </section>
+
+      <section class="closing"><div><p class="eyebrow">HOW COMPLETION IS DECIDED</p><h2>Proof before progress.</h2><p>Every project receives its own report with the GitHub description, official website, actual setup, usable address or command, and a tested main workflow. A screenshot or cloned folder is not a completed installation.</p></div><div class="closing-links"><a href="https://github.com/gendaiski/Sandbox-2/blob/codex/native-landings-20261023/native/batch-2026-10-23/INSTALLATION_TRACKER.md" target="_blank" rel="noopener noreferrer">Installation tracker <span>↗</span></a><a href="https://github.com/gendaiski/Sandbox-2/blob/codex/native-landings-20261023/native/batch-2026-10-23/BATCH_HANDOVER.md" target="_blank" rel="noopener noreferrer">Handover checkpoint <span>↗</span></a></div></section>
+    </main><footer><span>Sandbox 2 <b>·</b> Onboarding System</span><span>Source-backed queue · Statuses update from the tracker</span></footer>
+  </div>
+
+  <div id="drawer-backdrop" class="drawer-backdrop" hidden></div><aside id="detail-drawer" class="drawer" role="dialog" aria-modal="true" aria-labelledby="detail-title" hidden><div class="drawer-head"><span class="drawer-kicker">REPOSITORY RECORD</span><button id="close-drawer" class="icon-button" type="button" aria-label="Close details">×</button></div><div id="drawer-content"></div></aside>
+</body></html>
