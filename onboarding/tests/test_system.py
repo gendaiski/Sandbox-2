@@ -16,6 +16,7 @@ from onboarding.core import InputError, classify, download_archive, make_plan, p
 from onboarding.happy_desktop import ASSET, SHA256, VERSION
 from onboarding.herdr import ASSET as HERDR_ASSET, SHA256 as HERDR_SHA256, VERSION as HERDR_VERSION
 from onboarding.orchestrator_desktop import ASSET as ORCHESTRATOR_ASSET, SHA256 as ORCHESTRATOR_SHA256, VERSION as ORCHESTRATOR_VERSION
+from onboarding.ekko_web import INTEGRITY as EKKO_INTEGRITY, PACKAGE as EKKO_PACKAGE, VERSION as EKKO_VERSION
 from onboarding.server import create_app
 
 
@@ -82,6 +83,20 @@ class ReferenceTests(unittest.TestCase):
             self.assertIn("do not execute", plan["method"].lower())
             target["osFamily"] = "Linux"
             self.assertFalse(make_plan(discovery, target, Path(folder) / "orchestrator")["supported"])
+
+    def test_ekko_plan_pins_original_web_package_and_local_port(self):
+        discovery = fixture_discovery("EKKOLearnAI", "ekko-studio", None)
+        discovery["type"] = "Application"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "ekko")
+            self.assertEqual(plan["methodKey"], "ekko-web-windows")
+            self.assertEqual(plan["release"]["integrity"], EKKO_INTEGRITY)
+            self.assertEqual(plan["release"]["asset"], EKKO_PACKAGE)
+            self.assertEqual(plan["ports"], ["127.0.0.1:18848 (runner-local only)"])
+            self.assertFalse(plan["publicExposure"])
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "ekko")["supported"])
 
     def test_book_with_chapter_notebooks_is_learning_material(self):
         kind, explanation = classify(
@@ -313,6 +328,40 @@ class RunnerTests(unittest.TestCase):
         headers = self.login()
         record = self.client.post("/api/onboardings", headers=headers,
                                   json={"reference": "OrchestratorInc/agent-orchestrator"}).json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
+                         json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertEqual(current["latestJob"]["status"], "PARTIAL")
+        self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
+
+    def test_ekko_backend_health_does_not_claim_agent_workflow(self):
+        def app_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "Application"
+            return result
+        target = self.app.state.service.target()
+        target.update({"id": "windows-fixture", "osFamily": "Windows", "architecture": "AMD64"})
+        self.app.state.service.target = lambda: target
+        self.app.state.service.discover_fn = app_discovery
+
+        def original_fixture(destination, cancelled, log):
+            destination.mkdir()
+            (destination / "START_HERE.md").write_text("Original app fixture")
+            log("Controlled original backend fixture responded")
+            return {"package": EKKO_PACKAGE, "version": EKKO_VERSION,
+                    "serverHealth": True, "originalLoginShell": True, "url": "http://127.0.0.1:18848/"}
+
+        self.app.state.service.ekko_fn = original_fixture
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers,
+                                  json={"reference": "EKKOLearnAI/ekko-studio"}).json()["record"]
         self.assertEqual(record["status"], "AWAITING_APPROVAL")
         self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
                          json={"planHash": record["plan_hash"]})

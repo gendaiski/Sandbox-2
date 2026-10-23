@@ -28,6 +28,7 @@ from .core import Cancelled, DiscoveryError, InputError, discover, download_arch
 from .happy_desktop import prepare_and_launch as prepare_happy_desktop
 from .herdr import prepare as prepare_herdr
 from .orchestrator_desktop import prepare as prepare_orchestrator
+from .ekko_web import prepare_and_start as prepare_ekko_web
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -57,7 +58,7 @@ class Approval(BaseModel):
 
 
 class Service:
-    def __init__(self, data_dir: Path, access_code: str, discover_fn: Callable = discover, download_fn: Callable = download_archive, happy_fn: Callable = prepare_happy_desktop, herdr_fn: Callable = prepare_herdr, orchestrator_fn: Callable = prepare_orchestrator):
+    def __init__(self, data_dir: Path, access_code: str, discover_fn: Callable = discover, download_fn: Callable = download_archive, happy_fn: Callable = prepare_happy_desktop, herdr_fn: Callable = prepare_herdr, orchestrator_fn: Callable = prepare_orchestrator, ekko_fn: Callable = prepare_ekko_web):
         self.data_dir = data_dir.resolve()
         self.data_dir.mkdir(parents=True, exist_ok=True)
         lock_path = self.data_dir / ".runner.lock"
@@ -89,6 +90,7 @@ class Service:
         self.happy_fn = happy_fn
         self.herdr_fn = herdr_fn
         self.orchestrator_fn = orchestrator_fn
+        self.ekko_fn = ekko_fn
         self._init_db()
         self._recover()
 
@@ -157,7 +159,7 @@ class Service:
             "machine": "Runner host; this is your computer only if you started the runner on it",
             "os": f"{platform.system()} {platform.release()}",
             "osFamily": platform.system(), "architecture": platform.machine(),
-            "connected": True, "capabilities": ["Public GitHub discovery", "Bounded documentation preparation", "Local file verification", "Markdown, JSON and PDF reports"] + (["Original Happy Desktop installer preparation and launch", "Original Herdr Windows terminal binary preparation", "Original Orchestrator.inc Windows installer preparation without launch"] if windows_x64 else []),
+            "connected": True, "capabilities": ["Public GitHub discovery", "Bounded documentation preparation", "Local file verification", "Markdown, JSON and PDF reports"] + (["Original Happy Desktop installer preparation and launch", "Original Herdr Windows terminal binary preparation", "Original Orchestrator.inc Windows installer preparation without launch", "Original Ekko Studio npm web app preparation and loopback launch (Node.js 23+ required)"] if windows_x64 else []),
             "unsupported": ["Remote runner connection", "Private GitHub repositories", "Generic app, CLI or library installation", "Public service exposure"],
             "storage": str(self.data_dir), "freeBytes": usage.free,
             "persistent": False if in_cloud else None,
@@ -342,6 +344,20 @@ class Service:
                     ("Original UI and real agent task", "NOT VERIFIED", "Requires separate review and installation on this Windows computer"),
                 ]
                 final = "PARTIAL"
+            elif record["plan"].get("methodKey") == "ekko-web-windows":
+                if self.target()["osFamily"] != "Windows":
+                    raise RuntimeError("The approved Windows target is no longer available.")
+                if shutil.disk_usage(self.data_dir).free < 1_000_000_000:
+                    raise RuntimeError("At least 1 GB of free disk space is needed before installing Ekko Studio.")
+                result = self.ekko_fn(destination, cancelled, lambda message: self.log(job_id, message))
+                checks = [
+                    ("Original npm distribution and integrity", "PASS" if result.get("package") == record["plan"]["release"]["asset"] else "FAIL", f"Ekko Studio {result.get('version', 'unknown')} in {destination}"),
+                    ("Original backend health on loopback", "PASS" if result.get("serverHealth") else "FAIL", result.get("url", "No address returned")),
+                    ("Original login shell responds", "PASS" if result.get("originalLoginShell") else "FAIL", "HTML served by the upstream backend"),
+                    ("Authenticated original UI", "NOT VERIFIED", "Open on the connected Windows computer, change the upstream default password, and inspect the UI"),
+                    ("Agent conversation", "NOT VERIFIED", "Requires a configured provider or Hermes runtime and an on-device workflow check"),
+                ]
+                final = "PARTIAL"
             else:
                 result = self.download_fn(record["discovery"], destination, cancelled, lambda message: self.log(job_id, message))
                 readme = destination / result["readme"]
@@ -401,7 +417,30 @@ class Service:
             db.execute("UPDATE records SET status='VERIFYING',updated_at=? WHERE id=?", (now(), record_id))
         workspace = Path(row["workspace"])
         plan = json.loads(row["plan"])
-        if plan.get("methodKey") in {"happy-desktop-windows", "herdr-windows", "orchestrator-windows"}:
+        if plan.get("methodKey") == "ekko-web-windows":
+            import urllib.request
+            from .ekko_web import INTEGRITY, URL, VERSION
+            lock = workspace / "package-lock.json"
+            valid_package = False
+            if lock.is_file():
+                try:
+                    package = json.loads(lock.read_text(encoding="utf-8")).get("packages", {}).get("node_modules/ekko-studio", {})
+                    valid_package = package.get("version") == VERSION and package.get("integrity") == INTEGRITY
+                except (OSError, ValueError):
+                    pass
+            healthy = False
+            try:
+                with urllib.request.urlopen(URL + "health", timeout=3) as response:
+                    healthy = json.loads(response.read(32_000)).get("status") == "ok"
+            except (OSError, ValueError):
+                pass
+            checks = [
+                ("Pinned original npm package retained", "PASS" if valid_package else "FAIL", str(lock)),
+                ("Original backend still healthy on loopback", "PASS" if healthy else "FAIL", URL),
+                ("Authenticated UI and agent workflow", "NOT VERIFIED", "Requires on-device interaction and a configured provider"),
+            ]
+            final = "PARTIAL"
+        elif plan.get("methodKey") in {"happy-desktop-windows", "herdr-windows", "orchestrator-windows"}:
             if plan["methodKey"] == "happy-desktop-windows":
                 from .happy_desktop import ASSET, SHA256
             elif plan["methodKey"] == "herdr-windows":
@@ -456,7 +495,7 @@ class Service:
             "workspace": record["workspace"], "status": record["status"], "planHash": record["plan_hash"],
             "approvedAt": record["approved_at"], "job": record["latestJob"], "checks": record["checks"],
             "usage": f"Read {record['workspace']}/START_HERE.md" if record["status"] in {"COMPLETE", "PARTIAL"} and Path(record["workspace"]).is_dir() else "Resume or resolve the blocker shown in this record",
-            "startStopRestart": "Close Happy to stop; open it from the Windows Start menu to restart. Complete the installer screens first." if record["plan"].get("methodKey") == "happy-desktop-windows" else "Use Ctrl+B then Q to detach the Herdr terminal UI, rerun herdr.exe to reattach, and herdr.exe server stop to stop its background server." if record["plan"].get("methodKey") == "herdr-windows" else "No application was started. If you choose to install the unsigned release, close and reopen it from the Windows Start menu." if record["plan"].get("methodKey") == "orchestrator-windows" else "No service was started; prepared files remain on the runner until removed after review.",
+            "startStopRestart": "Close Happy to stop; open it from the Windows Start menu to restart. Complete the installer screens first." if record["plan"].get("methodKey") == "happy-desktop-windows" else "Use Ctrl+B then Q to detach the Herdr terminal UI, rerun herdr.exe to reattach, and herdr.exe server stop to stop its background server." if record["plan"].get("methodKey") == "herdr-windows" else "No application was started. If you choose to install the unsigned release, close and reopen it from the Windows Start menu." if record["plan"].get("methodKey") == "orchestrator-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_EKKO.ps1 after checking its target and START_EKKO.cmd to restart; closing the browser does not stop the server." if record["plan"].get("methodKey") == "ekko-web-windows" else "No service was started; prepared files remain on the runner until removed after review.",
             "persistence": self.target()["persistenceNote"], "limitations": record["plan"]["limitations"],
             "sources": discovery["sources"], "lastUpdated": record["updated_at"],
         }

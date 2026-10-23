@@ -153,6 +153,8 @@ def discover(owner: str, name: str, requested_ref: str | None = None) -> dict:
     readme = readme_text(owner, name, sha)
     description = metadata.get("description") or "No GitHub About description provided."
     project_type, explanation = classify(name, files, readme, description)
+    if f"{owner.lower()}/{name.lower()}" == "ekkolearnai/ekko-studio":
+        project_type, explanation = "Application", "Reviewed upstream npm web distribution runs the original Ekko Studio frontend and backend; agent features need a provider."
     listed = (metadata.get("homepage") or "").strip()
     website_type = "None listed"
     official = "No official website verified."
@@ -207,7 +209,13 @@ def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
         and target.get("architecture", "").lower() in {"amd64", "x86_64"}
         and not discovery["archived"] and not discovery["private"]
     )
-    supported = (discovery["type"] in SUPPORTED_TYPES and not discovery["archived"] and not discovery["private"]) or happy_windows or herdr_windows or orchestrator_windows
+    ekko_windows = (
+        discovery["canonical"] == "ekkolearnai/ekko-studio"
+        and target.get("osFamily") == "Windows"
+        and target.get("architecture", "").lower() in {"amd64", "x86_64"}
+        and not discovery["archived"] and not discovery["private"]
+    )
+    supported = (discovery["type"] in SUPPORTED_TYPES and not discovery["archived"] and not discovery["private"]) or happy_windows or herdr_windows or orchestrator_windows or ekko_windows
     plan = {
         "repository": discovery["canonical"], "commit": discovery["commit"], "targetId": target["id"],
         "targetName": target["name"], "projectType": discovery["type"], "supported": supported,
@@ -235,6 +243,24 @@ def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
         plan["release"] = {"version": VERSION, "asset": ASSET, "url": URL, "sha256": SHA256, "bytes": SIZE,
                            "publisherSignature": "Absent in inspected v0.14.5 asset",
                            "source": f"https://github.com/OrchestratorInc/agent-orchestrator/releases/tag/v{VERSION}"}
+    elif ekko_windows:
+        from .ekko_web import INTEGRITY, PACKAGE, PORT, URL, VERSION
+        plan.update({
+            "methodKey": "ekko-web-windows",
+            "method": f"Install the pinned original {PACKAGE} npm web distribution in an isolated folder, start its real backend on Windows loopback, and check backend health and login shell",
+            "release": {"version": VERSION, "asset": PACKAGE, "integrity": INTEGRITY,
+                        "url": f"https://registry.npmjs.org/ekko-studio/-/ekko-studio-{VERSION}.tgz",
+                        "source": f"https://github.com/EKKOLearnAI/ekko-studio/releases/tag/v{VERSION}"},
+            "services": ["Original Ekko Studio web and backend; provider or Hermes runtime may be needed for agent chat"],
+            "ports": [f"127.0.0.1:{PORT} (runner-local only)"],
+            "resources": "Node.js 23 or newer and npm already installed; approximately 500 MB for npm dependencies and state; at least 1 GB free disk space",
+            "changes": ["Install the pinned upstream npm package and dependencies only inside this onboarding folder; package scripts are disabled during install", "Create a private local state directory and start the original Ekko server on Windows loopback", "Create local start, stop and START_HERE instructions"],
+            "permissions": ["Run only the reviewed original Ekko Studio npm web entry point after exact-plan approval", "Use only 127.0.0.1; do not publish the app or use provider credentials without separate setup"],
+            "cost": "No paid service is used for installation; real model providers or hosted services may charge separately",
+            "credentialNeeds": ["Change the upstream default account password immediately in the original UI before entering any provider credentials"],
+            "verification": ["npm package version and published SHA-512 integrity", "Original backend /health and login HTML on loopback", "Original authenticated UI and a real agent conversation require on-device review and a configured provider"],
+            "limitations": "Backend and login shell can be checked automatically. The default local account must be secured before any broader access. Provider integration, original authenticated UI, and a real agent workflow are not automatically verified; result remains PARTIAL.",
+        })
     plan["hash"] = hashlib.sha256(json.dumps(plan, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     return plan
 
