@@ -211,10 +211,10 @@
     const plan = record.plan;
     const parent = $('#plan-content'); parent.replaceChildren();
     if (!plan) { parent.append(node('p', 'plan-note', 'No reviewed plan has been prepared.')); return; }
-    parent.append(node('p', 'plan-note', plan.supported ? 'This bounded plan prepares source content without running repository code. Approval applies only to this revision, target, location and set of actions.' : 'Automated execution is unavailable for this project type. Its source summary and handover record remain usable.'));
+    parent.append(node('p', 'plan-note', plan.supported ? `Approval applies only to this revision, target, location and exact method: ${plan.method}.` : 'Automated execution is unavailable for this project type. Its source summary and handover record remain usable.'));
     const grid = node('div', 'plan-grid');
     for (const [label, value] of [
-      ['Project type', plan.projectType], ['Pinned version', plan.commit], ['Execution target', plan.targetName], ['Location', plan.location],
+      ['Project type', plan.projectType], ['Inspected source', plan.commit], ...(plan.release ? [['Pinned original release', `${plan.release.version} · ${plan.release.asset} · SHA-256 ${plan.release.sha256}`]] : []), ['Execution target', plan.targetName], ['Location', plan.location],
       ['Method', plan.method], ['Resources', plan.resources], ['Ports / exposure', plan.publicExposure ? plan.ports.join(', ') : 'No ports or public exposure'],
       ['External costs', plan.cost], ['Supporting services', plan.services.join(', ') || 'None'], ['Recovery', plan.recovery]
     ]) fact(grid, label, value);
@@ -237,9 +237,10 @@
   }
   function renderHandover(record) {
     const parent = $('#result-content'); parent.replaceChildren();
-    parent.append(node('p', 'result-note', record.status === 'COMPLETE' ? 'Prepared files and a START_HERE.md are available on the runner. No application server was started for this content repository.' : `Status: ${record.status}. Read the plan, job logs, and checks before trying again.`));
+    const nativeHappy = record.plan?.methodKey === 'happy-desktop-windows';
+    parent.append(node('p', 'result-note', nativeHappy && record.status === 'PARTIAL' ? 'The original signed Windows installer was opened. Finish its screens, launch Happy, and try a real agent session. Those steps are not yet verified.' : record.status === 'COMPLETE' ? 'Prepared files and a START_HERE.md are available on the runner. No application server was started for this content repository.' : `Status: ${record.status}. Read the plan, job logs, and checks before trying again.`));
     parent.append(node('p', 'result-note', `Execution target: ${state.target.name}. Workspace: ${record.workspace}. Persistence: ${state.target.persistenceNote}.`));
-    $('#files-button').hidden = record.status !== 'COMPLETE';
+    $('#files-button').hidden = !['COMPLETE', 'PARTIAL'].includes(record.status) || !record.latestJob;
     for (const [id, ext] of [['#report-md', 'md'], ['#report-json', 'json'], ['#report-pdf', 'pdf']]) {
       const link = $(id); link.hidden = false; link.href = `/api/onboardings/${encodeURIComponent(record.id)}/report.${ext}`;
     }
