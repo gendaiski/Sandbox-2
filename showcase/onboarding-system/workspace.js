@@ -214,7 +214,7 @@
     parent.append(node('p', 'plan-note', plan.supported ? `Approval applies only to this revision, target, location and exact method: ${plan.method}.` : 'Automated execution is unavailable for this project type. Its source summary and handover record remain usable.'));
     const grid = node('div', 'plan-grid');
     for (const [label, value] of [
-      ['Project type', plan.projectType], ['Inspected source', plan.commit], ...(plan.release ? [['Pinned original release', `${plan.release.version} · ${plan.release.asset} · SHA-256 ${plan.release.sha256}`]] : []), ['Execution target', plan.targetName], ['Location', plan.location],
+      ['Project type', plan.projectType], ['Inspected source', plan.commit], ...(plan.release ? [['Pinned original release', `${plan.release.version} · ${plan.release.asset} · ${plan.release.sha256 ? `SHA-256 ${plan.release.sha256}` : `SHA-512 ${plan.release.integrity || 'NOT VERIFIED'}`}`]] : []), ['Execution target', plan.targetName], ['Location', plan.location],
       ['Method', plan.method], ['Resources', plan.resources], ['Ports / exposure', plan.publicExposure ? plan.ports.join(', ') : 'No ports or public exposure'],
       ['External costs', plan.cost], ['Supporting services', plan.services.join(', ') || 'None'], ['Recovery', plan.recovery]
     ]) fact(grid, label, value);
@@ -240,7 +240,13 @@
     const nativeHappy = record.plan?.methodKey === 'happy-desktop-windows';
     const nativeHerdr = record.plan?.methodKey === 'herdr-windows';
     const nativeOrchestrator = record.plan?.methodKey === 'orchestrator-windows';
-    parent.append(node('p', 'result-note', nativeHappy && record.status === 'PARTIAL' ? 'The original signed Windows installer was opened. Finish its screens, launch Happy, and try a real agent session. Those steps are not yet verified.' : nativeHerdr && record.status === 'PARTIAL' ? 'The original Herdr Windows binary passed version and help checks. Open it from PowerShell using the command in START_HERE.md, then test its terminal UI, an agent pane, and session reattachment.' : nativeOrchestrator && record.status === 'PARTIAL' ? 'The original Orchestrator.inc installer matched its published digest. This release is unsigned, so the runner did not open it. Read START_HERE.md and decide whether to install it on this computer; its UI and agent tasks remain unverified.' : record.status === 'COMPLETE' ? 'Prepared files and a START_HERE.md are available on the runner. No application server was started for this content repository.' : `Status: ${record.status}. Read the plan, job logs, and checks before trying again.`));
+    const nativeEkko = record.plan?.methodKey === 'ekko-web-windows';
+    parent.append(node('p', 'result-note', nativeHappy && record.status === 'PARTIAL' ? 'The original signed Windows installer was opened. Finish its screens, launch Happy, and try a real agent session. Those steps are not yet verified.' : nativeHerdr && record.status === 'PARTIAL' ? 'The original Herdr Windows binary passed version and help checks. Open it from PowerShell using the command in START_HERE.md, then test its terminal UI, an agent pane, and session reattachment.' : nativeOrchestrator && record.status === 'PARTIAL' ? 'The original Orchestrator.inc installer matched its published digest. This release is unsigned, so the runner did not open it. Read START_HERE.md and decide whether to install it on this computer; its UI and agent tasks remain unverified.' : nativeEkko && record.status === 'PARTIAL' ? 'The original Ekko web server and login page responded on this Windows runner. Change the upstream default account password immediately. The authenticated UI and a real agent conversation still need on-device testing.' : record.status === 'COMPLETE' ? 'Prepared files and a START_HERE.md are available on the runner. No application server was started for this content repository.' : `Status: ${record.status}. Read the plan, job logs, and checks before trying again.`));
+    if (nativeEkko && record.status === 'PARTIAL' && record.checks.some(check => check.name === 'Original backend health on loopback' && check.status === 'PASS')) {
+      const link = node('a', 'result-link', 'Open original Ekko Studio on this computer ↗');
+      link.href = 'http://127.0.0.1:18848/'; link.target = '_blank'; link.rel = 'noopener noreferrer';
+      parent.append(link);
+    }
     parent.append(node('p', 'result-note', `Execution target: ${state.target.name}. Workspace: ${record.workspace}. Persistence: ${state.target.persistenceNote}.`));
     $('#files-button').hidden = !['COMPLETE', 'PARTIAL'].includes(record.status) || !record.latestJob;
     for (const [id, ext] of [['#report-md', 'md'], ['#report-json', 'json'], ['#report-pdf', 'pdf']]) {
