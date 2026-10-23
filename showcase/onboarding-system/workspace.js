@@ -74,13 +74,6 @@
     }
   }
 
-  $('#copy-setup').addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText($('#setup-commands').textContent);
-      $('#copy-setup').textContent = 'Copied';
-    } catch { $('#copy-setup').textContent = 'Select the commands to copy'; }
-  });
-
   function renderTarget() {
     const facts = $('#target-facts'); facts.replaceChildren();
     for (const [label, value] of [

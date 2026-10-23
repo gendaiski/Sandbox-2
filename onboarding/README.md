@@ -4,16 +4,17 @@ This is the working local runner behind [Onboarding System](../showcase/onboardi
 
 ## Start it on your Windows computer
 
-In PowerShell, from your existing `Sandbox-2-working-20261023` checkout:
+In PowerShell, from your existing `Sandbox-2-working-20261023` checkout, run **one step at a time**. Stop if any step fails.
 
-```powershell
-git pull --ff-only
-py -3.12 -m venv .venv-onboarding
-.\.venv-onboarding\Scripts\python.exe -m pip install -r onboarding\requirements.txt
-.\.venv-onboarding\Scripts\python.exe -m onboarding.server
-```
+1. Check Python: `python --version`. Python 3.11 or newer is needed; 3.12 is the tested version. If this command fails or opens the Microsoft Store, install Python 3.12 from the [official Windows downloads](https://www.python.org/downloads/windows/), enable **Add python.exe to PATH**, then close and reopen PowerShell. The Windows `py` launcher is optional.
+2. Update the checkout: `git pull --ff-only`.
+3. Create the virtual environment: `python -m venv .venv-onboarding`. Continue only when it succeeds. You can confirm with `Test-Path .\.venv-onboarding\Scripts\python.exe`; it should print `True`.
+4. Install dependencies: `.\.venv-onboarding\Scripts\python.exe -m pip install -r onboarding\requirements.txt`.
+5. Start the runner: `.\.venv-onboarding\Scripts\python.exe -m onboarding.server`.
 
-Open the printed `http://127.0.0.1:8795/` address in a browser **on that computer**. Enter the access code printed in the same terminal. Keep the terminal running while preparing repositories. Press Ctrl+C to stop; run the last command again to restart. Saved records and prepared files remain in `onboarding-data/` unless that directory is removed. If `py -3.12` is unavailable, install Python 3.12 from python.org first. Docker is not required for this bounded content adapter.
+If `python` is missing but `py -3.12 --version` works, use `py -3.12 -m venv .venv-onboarding` in step 3.
+
+The virtual environment must be created successfully before running either `.venv-onboarding\Scripts\python.exe` command. Open the printed `http://127.0.0.1:8795/` address in a browser **on that computer**. Enter the access code printed in the same terminal. Keep the terminal running while preparing repositories. Press Ctrl+C to stop; run the last command again to restart. Saved records and prepared files remain in `onboarding-data/` unless that directory is removed. Docker is not required for this bounded content adapter.
 
 The runner binds to `127.0.0.1` only. Its access code is generated anew at each start unless `ONBOARDING_ACCESS_CODE` is supplied privately as an environment variable. Do not paste the code into chat or commit it. A code change and restart revoke old sessions. The API requires an HttpOnly same-site cookie, a CSRF token for changes, and the matching loopback Host/Origin. It never exposes an arbitrary shell route.
 
