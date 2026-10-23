@@ -8,6 +8,10 @@
   const drawer = $('#detail-drawer');
   const backdrop = $('#drawer-backdrop');
   const builderReview = new Set([26, 27, 29, 30, 31, 32, 33, 35, 36, 37, 38, 39, 40, 41, 43]);
+  const engineering = {
+    architecture: new Set([4, 40, 41, 43, 44, 45, 46, 47, 48, 49]),
+    database: new Set([20, 21, 22, 24, 25, 27, 32, 33, 39, 50])
+  };
   let filter = 'all';
   let previousFocus;
 
@@ -37,8 +41,9 @@
 
   function visible(record) {
     const query = search.value.trim().toLowerCase();
-    if (query && !(`${record.repository} ${record.description} ${record.officialWebsite}`.toLowerCase().includes(query))) return false;
+    if (query && !(`${record.repository} ${record.category} ${record.description} ${record.officialWebsite}`.toLowerCase().includes(query))) return false;
     if (filter === 'builder') return builderReview.has(record.number);
+    if (engineering[filter]) return engineering[filter].has(record.number);
     if (filter === '26-plus') return record.number >= 26;
     if (filter !== 'all') return batch(record.number).replace('–', '-') === filter;
     return true;
@@ -53,6 +58,7 @@
       const title = element('span', 'repo-title');
       title.append(element('strong', '', record.repository.split('/')[1]), element('small', '', record.repository.split('/')[0]));
       repository.append(title);
+      const category = element('td'); category.append(element('span', 'category-tag', record.category));
       const source = element('td');
       const sourceLink = element('a', 'source-link', 'GitHub source ↗');
       sourceLink.href = record.github; sourceLink.target = '_blank'; sourceLink.rel = 'noopener noreferrer';
@@ -82,10 +88,10 @@
       const button = element('button', 'review-button', 'Details →');
       button.type = 'button'; button.setAttribute('aria-label', `View details for ${record.repository}`);
       button.addEventListener('click', () => openDetails(record)); review.append(button);
-      [number, repository, source, description, website, setup, verification, status, reportCell, review].forEach((cell, index) => {
-        cell.dataset.label = ['Number', 'Project', 'Source', 'GitHub description', 'Official website', 'Setup / download', 'Verification', 'Status', 'Report', 'Open / review'][index];
+      [number, repository, category, source, description, website, setup, verification, status, reportCell, review].forEach((cell, index) => {
+        cell.dataset.label = ['Number', 'Project', 'Repo category', 'Source', 'GitHub description', 'Official website', 'Setup / download', 'Verification', 'Status', 'Report', 'Open / review'][index];
       });
-      tr.append(number, repository, source, description, website, setup, verification, status, reportCell, review);
+      tr.append(number, repository, category, source, description, website, setup, verification, status, reportCell, review);
       list.append(tr);
     }
     $('#result-count').textContent = `Showing ${shown.length} of ${records.length} repositories`;
@@ -113,6 +119,7 @@
     const title = element('h2', '', record.repository); title.id = 'detail-title'; content.append(title, makeStatus(record.status));
     const facts = element('div', 'detail-facts');
     fact(facts, 'Requested batch', batch(record.number));
+    fact(facts, 'Repo category', record.category);
     fact(facts, 'Builder comparison', builderReview.has(record.number) ? 'Review candidate' : 'Not preselected');
     section(content, 'At a glance', facts);
     const description = element('p', '', verified(record.description) ? record.description : 'GitHub About description has not been verified yet. It will be recorded verbatim during investigation.');
@@ -154,13 +161,20 @@
     }
   });
   search.addEventListener('input', render);
-  document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => {
-    filter = button.dataset.filter;
-    document.querySelectorAll('[data-filter]').forEach(option => option.setAttribute('aria-pressed', String(option === button)));
+  function selectFilter(next) {
+    filter = next;
+    document.querySelectorAll('[data-filter]').forEach(option => option.setAttribute('aria-pressed', String(option.dataset.filter === next)));
     render();
+  }
+  document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => selectFilter(button.dataset.filter)));
+  document.querySelectorAll('[data-collection]').forEach(card => card.addEventListener('click', event => {
+    event.preventDefault();
+    selectFilter(card.dataset.collection);
+    history.replaceState(null, '', `?focus=${card.dataset.collection}#repository-list`);
+    $('#repository-list').scrollIntoView({ behavior: 'smooth' });
   }));
   $('#export-csv').addEventListener('click', () => {
-    const columns = ['number', 'repository', 'github', 'status', 'description', 'listedWebsite', 'officialWebsite', 'report'];
+    const columns = ['number', 'repository', 'category', 'github', 'status', 'description', 'listedWebsite', 'officialWebsite', 'report'];
     const quote = value => `"${String(value).replaceAll('"', '""')}"`;
     const csv = [columns.join(','), ...records.filter(visible).map(record => columns.map(column => quote(record[column])).join(','))].join('\r\n');
     const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
@@ -174,5 +188,9 @@
   const next = records.find(record => record.status !== 'COMPLETE');
   if (next) { $('#next-name').textContent = `#${String(next.number).padStart(2, '0')}`; $('#next-repo').textContent = next.repository.split('/')[1]; }
   else { $('#next-name').textContent = 'Done'; $('#next-repo').textContent = 'All records complete'; }
-  render();
+  const focus = new URLSearchParams(location.search).get('focus');
+  selectFilter(engineering[focus] ? focus : 'all');
+  const requestedItem = Number(new URLSearchParams(location.search).get('item'));
+  const requestedRecord = records.find(record => record.number === requestedItem);
+  if (requestedRecord) openDetails(requestedRecord);
 })();

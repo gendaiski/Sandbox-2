@@ -8,6 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TRACKER = ROOT / "native/batch-2026-10-23/INSTALLATION_TRACKER.md"
 QUEUE = ROOT / "native/PENDING-BATCH-19.md"
+CATEGORIES = ROOT / "native/batch-2026-10-23/REPO_CATEGORIES.json"
 TEMPLATE = ROOT / "scripts/templates/onboarding-system.html"
 OUTPUT = ROOT / "showcase/onboarding-system/index.html"
 
@@ -22,6 +23,7 @@ def read_queue():
 
 def read_tracker():
     records = []
+    categories = json.loads(CATEGORIES.read_text())
     for line in TRACKER.read_text().splitlines():
         match = re.match(
             r"\| (\d{2}) \| \[([^]]+)\]\((https://github\.com/[^)]+)\) \| "
@@ -41,6 +43,7 @@ def read_tracker():
         records.append({
             "number": int(number),
             "repository": repository,
+            "category": categories[repository],
             "github": url,
             "status": status,
             "description": description,
@@ -48,6 +51,7 @@ def read_tracker():
             "officialWebsite": official,
             "report": report,
         })
+    assert set(categories) == {record["repository"] for record in records}, "Category map and tracker differ"
     return records
 
 

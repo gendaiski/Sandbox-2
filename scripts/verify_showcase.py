@@ -87,12 +87,12 @@ if __name__ == "__main__":
                         if path.startswith("showcase/pages/landing-"):
                             slug = html.stem.removeprefix("landing-")
                             if slug in exported_landings:
-                                page.wait_for_url(f"{base}/native/landing/{slug}/", timeout=10000)
+                                page.wait_for_url(f"{base}/native/landing/{slug}/", wait_until="domcontentloaded", timeout=10000)
                                 assert page.title(), path
                                 assert page.locator("body").inner_text().strip(), path
                                 continue
                         if html.stem in original_apps and path.startswith("showcase/pages/"):
-                            page.wait_for_url(f"{base}/native/apps/{original_apps[html.stem]}/", timeout=10000)
+                            page.wait_for_url(f"{base}/native/apps/{original_apps[html.stem]}/", wait_until="domcontentloaded", timeout=10000)
                             assert page.title(), path
                             assert page.locator("body").inner_text().strip(), path
                         else:
@@ -111,6 +111,21 @@ if __name__ == "__main__":
                     assert page.locator('#hub-sidebar').count() == 1
                     assert page.locator('.inventory-panel').count() == 1
                     assert page.locator('.latest-card, .inventory-metrics').count() == 0
+                    assert [th.text_content().strip() for th in page.locator('.inventory-table thead th').all()][:4] == ['Project / system', 'Repo category', 'GitHub description', 'Official website']
+                    assert page.locator('.inventory-row').first.locator('td').count() == 12
+                    assert [link.text_content().strip() for link in page.locator('header#top nav a').all()][:3] == ['Systems', 'Onboarding System', 'Landing apps']
+                    if width == 390:
+                        page.locator('[data-action="hub-menu"]').click()
+                    page.locator('#hub-side-search').fill('Terravision')
+                    assert page.locator('.hub-side-link:visible').count() == 1
+                    assert 'Terravision' in page.locator('.hub-side-link:visible').inner_text()
+                    page.locator('#hub-side-search').fill('')
+                    page.get_by_role('button', name='Collapse all').click()
+                    assert page.locator('.hub-side-group[open]').count() == 0
+                    page.get_by_role('button', name='Expand all').click()
+                    assert page.locator('.hub-side-group[open]').count() == 4
+                    if width == 390:
+                        page.locator('#hub-side-scrim').click(position={'x': 340, 'y': 450})
                     page.get_by_role("button", name="Landing", exact=True).click()
                     assert page.locator(".catalog-card:visible").count() == 2
                     assert page.locator(".inventory-row:visible").count() == 2
@@ -127,6 +142,17 @@ if __name__ == "__main__":
                     assert downloaded.value.suggested_filename == "Sandbox-2-Systems-Inventory.csv"
                     page.locator(".theme-toggle").click()
                     assert page.locator("html").get_attribute("data-theme") == "dark"
+                    page.goto(f"{base}/showcase/onboarding-system/")
+                    assert page.locator('#rows tr').count() == 50
+                    assert [th.text_content().strip() for th in page.locator('table thead th').all()][1:6] == ['Project / system', 'Repo category', 'Source / revision', 'GitHub description', 'Official website']
+                    assert page.locator('#rows tr').first.locator('td').count() == 11
+                    if width == 390:
+                        assert page.locator('#rows tr').first.locator('td:nth-child(5)').is_visible()
+                        assert page.locator('#rows tr').first.locator('td:nth-child(6)').is_visible()
+                    page.goto(f"{base}/showcase/onboarding-system/?focus=database&item=50#repository-list")
+                    assert page.locator('#rows tr').count() == 10
+                    assert page.locator('#detail-drawer:visible').count() == 1
+                    assert 'Database Architecture Learning' in page.locator('#drawer-content').inner_text()
                     page.goto(f"{base}/showcase/pages/dify.html")
                     page.locator("#dify-node").fill("Review")
                     page.get_by_role("button", name="Add node").click()

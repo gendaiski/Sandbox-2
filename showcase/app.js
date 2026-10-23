@@ -11,9 +11,30 @@
   const hubSidebar=$('#hub-sidebar');
   const hubScrim=$('#hub-side-scrim');
   function closeHubMenu(restoreFocus=false){if(!hubSidebar)return;hubSidebar.classList.remove('open');if(hubScrim)hubScrim.hidden=true;hubMenu?.setAttribute('aria-expanded','false');if(restoreFocus)hubMenu?.focus()}
-  hubMenu?.addEventListener('click',()=>{const open=!hubSidebar.classList.contains('open');hubSidebar.classList.toggle('open',open);if(hubScrim)hubScrim.hidden=!open;hubMenu.setAttribute('aria-expanded',String(open));if(open)hubSidebar.querySelector('a')?.focus()});
+  hubMenu?.addEventListener('click',()=>{const open=!hubSidebar.classList.contains('open');hubSidebar.classList.toggle('open',open);if(hubScrim)hubScrim.hidden=!open;hubMenu.setAttribute('aria-expanded',String(open));if(open)hubSidebar.querySelector('#hub-side-search')?.focus()});
   hubScrim?.addEventListener('click',()=>closeHubMenu(true));
   $$('.hub-sidebar a').forEach(link=>link.addEventListener('click',()=>{if(link.dataset.hubFilter){$(`.filter-row button[data-filter="${link.dataset.hubFilter}"]`)?.click();$$('.hub-side-link').forEach(item=>item.classList.toggle('active',item===link))}closeHubMenu()}));
+  function filterHubSidebar(){
+    const query=($('#hub-side-search')?.value||'').trim().toLowerCase();let visibleGroups=0;
+    $$('.hub-side-group',hubSidebar).forEach(group=>{
+      const groupLabel=$(':scope > summary span',group)?.textContent.toLowerCase()||'';
+      const groupMatch=!!query&&groupLabel.includes(query);let shown=0;
+      $$(':scope > .hub-side-children > .hub-side-link',group).forEach(link=>{link.hidden=!!query&&!groupMatch&&!link.textContent.toLowerCase().includes(query);if(!link.hidden)shown++});
+      $$('.hub-side-subgroup',group).forEach(sub=>{
+        const subLabel=$(':scope > summary span',sub)?.textContent.toLowerCase()||'';
+        const subMatch=groupMatch||!!query&&subLabel.includes(query);let subShown=0;
+        $$('.hub-side-link',sub).forEach(link=>{link.hidden=!!query&&!subMatch&&!link.textContent.toLowerCase().includes(query);if(!link.hidden)subShown++});
+        sub.hidden=!!query&&!subMatch&&!subShown;if(!sub.hidden)shown++;
+        if(query&&!sub.hidden)sub.open=true;
+      });
+      group.hidden=!!query&&!groupMatch&&!shown;if(!group.hidden)visibleGroups++;
+      if(query&&!group.hidden)group.open=true;
+    });
+    const empty=$('.hub-side-no-results',hubSidebar);if(empty)empty.hidden=visibleGroups!==0;
+  }
+  $('#hub-side-search')?.addEventListener('input',filterHubSidebar);
+  hubSidebar?.querySelector('[data-action="hub-expand"]')?.addEventListener('click',()=>$$('.hub-side-group,.hub-side-subgroup',hubSidebar).forEach(group=>group.open=true));
+  hubSidebar?.querySelector('[data-action="hub-collapse"]')?.addEventListener('click',()=>$$('.hub-side-group,.hub-side-subgroup',hubSidebar).forEach(group=>group.open=false));
   document.addEventListener('keydown',event=>{if(event.key==='Escape'&&hubSidebar?.classList.contains('open'))closeHubMenu(true)});
   // Restore explicitly saved local editor drafts. No agent data is transmitted.
   $$('[data-draft]').forEach(el=>{try{const value=localStorage.getItem('sandbox2-draft-'+el.dataset.draft);if(value!==null)el.value=value}catch{}});
