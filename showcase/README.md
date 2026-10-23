@@ -1,6 +1,6 @@
 # Systems showcase: installation and provenance record
 
-Open [the hub](index.html) through a web server, or use the published GitHub Pages link in the repository description. For a local server, run `python3 -m http.server 8899` at the repository root and open `http://127.0.0.1:8899/showcase/`. Each card opens a separate HTML UI. All controls in these pages run locally in the browser; they do not claim to perform native inference, cloud orchestration or account operations.
+Open [the published hub](https://gendaiski.github.io/Sandbox-2/showcase/) or serve [the local HTML](index.html) through a web server. For a local server, run `python3 -m http.server 8899` at the repository root and open `http://127.0.0.1:8899/showcase/`. Each card opens a separate HTML UI. All controls in these pages run locally in the browser; they do not claim to perform native inference, cloud orchestration or account operations.
 
 Visual checks: [hub](evidence/hub.png), [14-page gallery](evidence/landing-gallery.png), [Dify screen](evidence/dify-workspace.png), [MacBook screen](evidence/macbook.png).
 
@@ -35,3 +35,5 @@ Native installation of the remaining server and agent stacks requires their own 
 Run `python3 scripts/build_showcase.py` to regenerate the hub, 17 system pages and 14 landing detail pages from `showcase/catalog.json` and `showcase/scenes.py`. Run `python3 scripts/verify_showcase.py` to check links and assets; add `--browser` after installing Playwright and Chromium for responsive rendering and interactive control checks.
 
 To reproduce the original MacBook app build, run `npm ci` inside `vendor/showcase/macbook`, then `python3 scripts/prepare_macbook_native.py` from the repository root, then `npm run build` inside the app. The preparation script copies the already installed Three.js Draco decoder into the ignored checkout and sets the original model loaders to use it locally. It does not modify the committed showcase.
+
+For the 14 original landing applications, expand the sparse checkout with `git -C vendor/showcase/landing-pages sparse-checkout set landing-pages`, then run `pnpm install --frozen-lockfile`, `pnpm build` and `pnpm typecheck` in each folder under `vendor/showcase/landing-pages/landing-pages/`. Build before type checking Aparté so Next.js generates its type declarations. Native apps need a server such as `pnpm start` to view; the published showcase is static and needs none.
