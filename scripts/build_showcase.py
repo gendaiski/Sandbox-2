@@ -1,5 +1,5 @@
 """Build offline-capable interactive HTML previews under showcase/ (stdlib only)."""
-import json,sys
+import hashlib,json,sys
 from html import escape as e
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
@@ -30,7 +30,9 @@ def link(label,url,cls=''):
 
 def doc(title,body,depth=0,page='system',slug=''):
  prefix='../' if depth else ''
- return f'''<!doctype html><html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light dark"><title>{e(title)} · Sandbox-2 Showcase</title><meta name="description" content="Interactive, source-backed local UI preview in Sandbox-2"><link rel="stylesheet" href="{prefix}style.css"><script defer src="{prefix}app.js"></script></head><body data-page="{page}" data-slug="{e(slug,quote=True)}">{body}</body></html>'''
+ css_version=hashlib.sha256((SITE/'style.css').read_bytes()).hexdigest()[:8]
+ js_version=hashlib.sha256((SITE/'app.js').read_bytes()).hexdigest()[:8]
+ return f'''<!doctype html><html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light dark"><title>{e(title)} · Sandbox-2 Showcase</title><meta name="description" content="Interactive, source-backed local UI preview in Sandbox-2"><link rel="stylesheet" href="{prefix}style.css?v={css_version}"><script defer src="{prefix}app.js?v={js_version}"></script></head><body data-page="{page}" data-slug="{e(slug,quote=True)}">{body}</body></html>'''
 
 def side_nav(active):
  items=''.join(f'<a href="{e(r["slug"])}.html" class="side-item {"active" if r["slug"]==active else ""}"><span class="side-monogram" style="--accent:{r["accent"]}">{e(r["title"][:1])}</span><span>{e(r["title"])}</span></a>' for r in rows)
