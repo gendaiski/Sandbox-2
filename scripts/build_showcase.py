@@ -24,6 +24,10 @@ SOURCE_SCREENS={
  'kedro':('kedro-viz.png','docs/meta/images/pipeline_visualisation.png','Original Kedro-Viz pipeline screen'),
  'kun':('kun-workbench.webp','docs/assets/readme/hero-light.webp','Original Kun desktop workbench image'),
 }
+SOURCE_USAGE={
+ 'datagen':('Python script','README.md',"user_input = '''\ndatapath:YourDataName.csv\nUse machine learning to perform data analysis and write complete graphical reports\n'''\n\npython main.py"),
+ 'swarms':('Python SDK','README.md','from swarms import Agent\n\nagent = Agent(model_name="gpt-5.4", max_loops="auto", interactive=True)\nagent.run("What are the key benefits of using a multi-agent system?")'),
+}
 
 def link(label,url,cls=''):
  return f'<a class="{cls}" href="{e(url,quote=True)}" target="_blank" rel="noopener noreferrer">{e(label)} →</a>' if url else ''
@@ -48,6 +52,12 @@ def page(r):
   image_name,source_path,caption=SOURCE_SCREENS[r['slug']]
   original_url=r['source'].rstrip('/')+(f'/blob/{r["revision"]}/{source_path}' if source_path else '')
   screen=f'''<section class="source-interface" aria-label="Original {e(r['title'])} interface"><div class="source-interface-head"><div><span class="eyebrow">ORIGINAL SOURCE INTERFACE</span><h2>{e(r['title'])} as shown by its source</h2><p>{e(caption)}. The image is a reference; the local controls are in the interactive study below.</p></div><div class="source-interface-links"><a href="../assets/references/{e(image_name,quote=True)}" target="_blank" rel="noopener noreferrer">Open full-size image →</a><a href="{e(original_url,quote=True)}" target="_blank" rel="noopener noreferrer">View original source →</a></div></div><div class="source-image-frame"><img src="../assets/references/{e(image_name,quote=True)}" alt="{e(caption,quote=True)}"></div></section><div class="interactive-heading"><span class="eyebrow">INTERACTIVE LOCAL STUDY</span><h2>Explore the controls</h2></div>'''
+  body=body.replace('<section class="stage"',screen+'<section class="stage"',1)
+  body=body.replace('● LOCAL INTERACTIVE SCREEN','● ORIGINAL SOURCE + LOCAL STUDY',1)
+ elif r['slug'] in SOURCE_USAGE:
+  label,path,example=SOURCE_USAGE[r['slug']]
+  original_url=f'{r["source"].rstrip("/")}/blob/{r["revision"]}/{path}'
+  screen=f'''<section class="source-interface" aria-label="Original {e(r['title'])} usage"><div class="source-interface-head"><div><span class="eyebrow">ORIGINAL SOURCE INTERFACE · {e(label.upper())}</span><h2>{e(r['title'])} is used from code</h2><p>This is the usage form documented by the source. The interactive visual study below is a separate browser preview.</p></div><div class="source-interface-links"><a href="{e(original_url,quote=True)}" target="_blank" rel="noopener noreferrer">View original README →</a></div></div><pre class="source-code-frame"><code>{e(example)}</code></pre></section><div class="interactive-heading"><span class="eyebrow">INTERACTIVE LOCAL STUDY</span><h2>Explore the controls</h2></div>'''
   body=body.replace('<section class="stage"',screen+'<section class="stage"',1)
   body=body.replace('● LOCAL INTERACTIVE SCREEN','● ORIGINAL SOURCE + LOCAL STUDY',1)
  (SITE/'pages'/f'{r["slug"]}.html').write_text(doc(r['title'],body,1,'system',r['slug']))
@@ -91,7 +101,7 @@ def inventory_row(r):
  search=' '.join((r['title'],r['category'],r['repo'],r['description'],stage,native,backend,next_step)).lower()
  source=f'{r["source"].rstrip("/")}/tree/{r["revision"]}' if r['slug']!='minicpm' else r['source']
  evidence=f'<a href="{e(r["priorEvidence"],quote=True)}" target="_blank" rel="noopener noreferrer">Atlas record →</a>' if r['priorEvidence'] else 'No prior Atlas record'
- visual='Original screen image' if r['slug'] in SOURCE_SCREENS or r['slug']=='landing-pages' else 'Source link; no image'
+ visual='Original screen image' if r['slug'] in SOURCE_SCREENS or r['slug']=='landing-pages' else 'Original Python usage' if r['slug'] in SOURCE_USAGE else 'Source link; no image'
  return f'''<tr class="inventory-row" data-kind="{e(r['category'].lower(),quote=True)}" data-search="{e(search,quote=True)}"><td><div class="inventory-project"><span class="inventory-icon" style="--accent:{r['accent']}">{e(r['title'][:1])}</span><span><a class="inventory-title" href="pages/{e(r['slug'])}.html">{e(r['title'])}</a><small>{e(r['category'])} · {e(r['license'])}</small></span></div></td><td><a href="{e(source,quote=True)}" target="_blank" rel="noopener noreferrer">{e(r['repo'])} →</a><small>Revision {e(r['revision'][:12])}</small></td><td>{status_badge(stage)}<small>{e(r['prior'])}</small></td><td>{status_badge(native)}</td><td><span class="inventory-plain">{e(backend)}</span></td><td><span class="inventory-plain">{e(readiness)}</span></td><td>{status_badge('HTML preview live')}<small>{visual}; native app separate</small></td><td>{e(next_step)}</td><td class="inventory-actions"><a href="pages/{e(r['slug'])}.html">Open UI →</a><small>{evidence}</small></td></tr>'''
 
 table_rows=''.join(inventory_row(r) for r in rows)
