@@ -42,6 +42,11 @@ page errors. GitHub Pages cannot host their server actions. They require a Node
 host for a public installation; the source checkout and its server build are in
 this cloud workspace, while GitHub tracks the pinned source and launch scripts.
 
+The four [Vercel project roots](../../deploy/vercel/README.md) now commit their
+original source to this repository. Fresh installs and builds passed, and each
+five-step partner form was submitted through its server action in Chromium.
+Actual Vercel URLs will follow once account access is connected.
+
 Run one locally after installing its pinned dependencies:
 
 ```bash
