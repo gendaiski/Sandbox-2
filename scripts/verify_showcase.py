@@ -6,10 +6,13 @@ from urllib.parse import urlsplit, unquote
 import json
 import socket
 import subprocess
+import sys
 import time
 
 root = Path(__file__).resolve().parents[1]
 site = root / "showcase"
+sys.path.insert(0, str(site))
+from scenes import DEPLOYED_LANDINGS
 pages = sorted(site.glob("*.html")) + sorted((site / "pages").glob("*.html"))
 catalog = json.loads((site / "catalog.json").read_text())
 landings = json.loads((root / "native/landing/manifest.json").read_text())
@@ -32,8 +35,14 @@ class LocalLinks(HTMLParser):
 
 
 assert len(catalog) == len({row['slug'] for row in catalog}), "Duplicate source entries"
-expected_pages = 1 + len(catalog) + 14
+expected_pages = 1 + 2 * len(catalog) + 2 * 14
 assert len(pages) == expected_pages, f"Expected {expected_pages} HTML files, got {len(pages)}"
+for row in catalog:
+    assert (site / "pages" / f"{row['slug']}.html").exists()
+    assert (site / "pages" / f"launch-{row['slug']}.html").exists()
+for slug in ("veillee", "tempo", "tessera", "oddpress", "fallow", "offcut", "crux", "maree", "aero", "passeline", "ficelle", "umbra", "aparte", "ecrin"):
+    assert (site / "pages" / f"landing-{slug}.html").exists()
+    assert (site / "pages" / f"launch-landing-{slug}.html").exists()
 missing = []
 for page in pages:
     assert "<h1" in page.read_text(), page
@@ -70,18 +79,27 @@ if __name__ == "__main__":
                     page.on("pageerror", lambda error: errors.append(str(error)))
                     for html in pages:
                         path = html.relative_to(root).as_posix()
+                        if path.startswith("showcase/pages/landing-") and html.stem.removeprefix("landing-") in DEPLOYED_LANDINGS:
+                            assert DEPLOYED_LANDINGS[html.stem.removeprefix("landing-")] in html.read_text(), path
+                            continue  # Public Vercel routes are checked separately; this page immediately redirects.
                         response = page.goto(f"{base}/{path}", wait_until="domcontentloaded")
                         assert response.status == 200, path
                         if path.startswith("showcase/pages/landing-"):
                             slug = html.stem.removeprefix("landing-")
                             if slug in exported_landings:
                                 page.wait_for_url(f"{base}/native/landing/{slug}/", timeout=10000)
+                                assert page.title(), path
+                                assert page.locator("body").inner_text().strip(), path
+                                continue
                         if html.stem in original_apps and path.startswith("showcase/pages/"):
                             page.wait_for_url(f"{base}/native/apps/{original_apps[html.stem]}/", timeout=10000)
                             assert page.title(), path
                             assert page.locator("body").inner_text().strip(), path
                         else:
-                            page.locator("h1").first.wait_for(state="visible", timeout=10000)
+                            try:
+                                page.locator("h1").first.wait_for(state="visible", timeout=10000)
+                            except Exception as error:
+                                raise AssertionError(f"No visible heading on {path}: {page.url}") from error
                             assert page.locator("h1").count() == 1, path
                             assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), f"Horizontal overflow: {path}"
                         if page.locator(".source-interface img:not([data-remote])").count():
