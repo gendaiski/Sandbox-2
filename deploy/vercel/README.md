@@ -11,7 +11,7 @@ These are independent Vercel project roots packaged from the pinned MIT source a
 
 For each project, select **Next.js**, keep the app directory as the Root Directory, and use the lockfile's pnpm install and `pnpm build`. Do not set a static export. The four apps have server actions and dynamic routes that need Vercel Functions. The `PARTNER_WEBHOOK_URL` environment variable is optional for the original demo: without it, the server action validates the application, logs its details and returns a success receipt, but it **does not deliver** the application to an inbox. To use the form for real submissions, supply a receiving webhook for each project before accepting applications.
 
-Aparté is deployed publicly at [sandbox-2-aparte.vercel.app](https://sandbox-2-aparte.vercel.app/). Its `/`, `/for-merchants` and `/faq` routes returned the original app on Vercel. The five-step merchant form was submitted in the local test; a public submission has not been tested. Deploy Écrin, Ficelle and Passeline as separate Vercel projects, verify their public routes, and add their actual URLs to the Sandbox-2 dashboard.
+[Aparté](https://sandbox-2-aparte.vercel.app/) and [Écrin](https://sandbox-2-ecrin.vercel.app/) are deployed publicly. Their `/`, `/for-merchants` and `/faq` routes returned the original apps on Vercel. The five-step merchant forms were submitted in local tests; public submissions have not been tested. Deploy Ficelle and Passeline as separate Vercel projects, verify their public routes, and add their actual URLs to the Sandbox-2 dashboard.
 
 ## Verification performed here
 

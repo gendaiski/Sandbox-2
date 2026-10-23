@@ -26,6 +26,7 @@ NATIVE_LANDINGS = frozenset({
 })
 DEPLOYED_LANDINGS = {
  'aparte': 'https://sandbox-2-aparte.vercel.app/',
+ 'ecrin': 'https://sandbox-2-ecrin.vercel.app/',
 }
 
 def btn(text, action=None, cls='soft', **attrs):
