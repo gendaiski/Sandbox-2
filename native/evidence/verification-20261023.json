@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "sourceCount": 17,
+  "artifactChecks": 10,
+  "originalInterfaces": {
+    "Hyperframes Studio": {
+      "title": "HyperFrames Studio",
+      "http": 200
+    },
+    "DTCG original site": {
+      "title": "Design Tokens Community Group",
+      "http": 200
+    },
+    "Helios showcase": {
+      "title": "HDS Showcase",
+      "http": 200
+    },
+    "UX/UI reference app": {
+      "title": "UX/UI Agent Skills",
+      "http": 200
+    },
+    "oh-my-design book": {
+      "title": "Upbit \u2014 Design Reference \u2014 omd book",
+      "http": 200
+    }
+  },
+  "hyperframesMp4Seconds": 1.0,
+  "note": "Local native checks; AnythingLLM, LobeHub, Tokens Studio in Figma and Panda Studio remain unverified."
+}

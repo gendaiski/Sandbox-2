@@ -1,0 +1,134 @@
+{
+  "checkedAt": "2026-10-23",
+  "sourceCatalog": "../showcase/catalog.json",
+  "environment": "Codex cloud workspace",
+  "publicNativeDeployment": false,
+  "scope": "Fourteen design sources plus AnythingLLM, LobeHub and Hyperframes",
+  "installations": [
+    {
+      "slug": "anything-llm",
+      "type": "application",
+      "status": "partial",
+      "nativeReady": false,
+      "result": "Original frontend built; server and collector are not installed. Docker image failed to unpack within this workspace's Docker storage; package registry returned HTTP 503 during the source server install."
+    },
+    {
+      "slug": "oh-my-design",
+      "type": "agent skills and CLI",
+      "status": "installed",
+      "nativeReady": true,
+      "result": "CLI 2.0.5 installed; 31 Codex skills and 20 specialist agents installed in an isolated project; doctor reports ready. Book HTML generated and opened locally.",
+      "localUrl": "http://127.0.0.1:51623/"
+    },
+    {
+      "slug": "awesome-design-md",
+      "type": "reference collection",
+      "status": "source available",
+      "nativeReady": null,
+      "result": "Pinned DESIGN.md examples checked out. This repository has no application process or installer."
+    },
+    {
+      "slug": "panda",
+      "type": "token compiler and studio",
+      "status": "partial",
+      "nativeReady": false,
+      "result": "Panda CLI 2.4.0 installed; a custom-token project generated 127 files and 25,115 bytes of CSS. Local Studio server starts, but its UI iframe requires studio.panda-css.com, which was not reachable here."
+    },
+    {
+      "slug": "style-dictionary",
+      "type": "token compiler",
+      "status": "installed",
+      "nativeReady": true,
+      "result": "CLI 5.7.0 generated CSS variables from DTCG tokens."
+    },
+    {
+      "slug": "design-extract",
+      "type": "website extractor",
+      "status": "installed",
+      "nativeReady": true,
+      "result": "designlang 13.3.2 extracted 162 elements and wrote a DTCG token report using system Chromium."
+    },
+    {
+      "slug": "dembrandt",
+      "type": "website extractor",
+      "status": "installed",
+      "nativeReady": true,
+      "result": "Dembrandt 0.39.2 extracted JSON, DTCG tokens and an HTML report through a local Chromium CDP session."
+    },
+    {
+      "slug": "ux-ui-agent-skills",
+      "type": "skill kit and reference app",
+      "status": "installed",
+      "nativeReady": true,
+      "result": "Codex skill kit installed in an isolated project; its original 97-file reference app renders without browser errors.",
+      "localUrl": "http://127.0.0.1:51622/"
+    },
+    {
+      "slug": "webgradients",
+      "type": "CSS asset collection",
+      "status": "source available",
+      "nativeReady": null,
+      "result": "Pinned source CSS and gradient JSON are checked out. This repository has no application process."
+    },
+    {
+      "slug": "design-tokens-spec",
+      "type": "specification website",
+      "status": "installed",
+      "nativeReady": true,
+      "result": "Original Astro site built 22 pages with no broken links; Chromium rendered its local homepage without page errors.",
+      "localUrl": "http://127.0.0.1:51618/"
+    },
+    {
+      "slug": "tokens-studio",
+      "type": "Figma plugin",
+      "status": "partial",
+      "nativeReady": false,
+      "result": "Original plugin browser bundle compiled, browser preview and WebSocket server connected. Preview remains on its loading screen; Figma plugin runtime cannot be verified without Figma.",
+      "localUrl": "http://127.0.0.1:51619/"
+    },
+    {
+      "slug": "awesome-design-tokens",
+      "type": "reference collection",
+      "status": "source available",
+      "nativeReady": null,
+      "result": "Pinned repository checked out. Its README points to the moved collection; it has no application process or installer."
+    },
+    {
+      "slug": "diez",
+      "type": "token compiler",
+      "status": "installed",
+      "nativeReady": true,
+      "result": "Published Diez CLI 10.6.0 installed; a bare project was created and compiled to web output. Compatibility adjustment: omit auto-loaded ambient types for its old TypeScript parser."
+    },
+    {
+      "slug": "styleseed",
+      "type": "agent skill",
+      "status": "installed",
+      "nativeReady": true,
+      "result": "Pinned local StyleSeed source installed as one Codex skill using the official skills installer."
+    },
+    {
+      "slug": "hashicorp-design-system",
+      "type": "component showcase",
+      "status": "installed",
+      "nativeReady": true,
+      "result": "Original component package and Ember showcase built; Chromium rendered the local showcase without page errors.",
+      "localUrl": "http://127.0.0.1:51621/"
+    },
+    {
+      "slug": "lobehub",
+      "type": "application",
+      "status": "source only",
+      "nativeReady": false,
+      "result": "Pinned source and official Compose definition inspected. The full application requires PostgreSQL, Redis, RustFS, local secrets and a host with sufficient container storage; it is not running."
+    },
+    {
+      "slug": "hyperframes",
+      "type": "video studio",
+      "status": "installed",
+      "nativeReady": true,
+      "result": "Original Hyperframes Studio 0.8.186 rendered in Chromium without page errors and exported a verified one-second MP4 through FFmpeg.",
+      "localUrl": "http://127.0.0.1:51614/#project/hyperframes-demo"
+    }
+  ]
+}

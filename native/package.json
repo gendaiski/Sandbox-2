@@ -1,0 +1,24 @@
+{
+  "name": "sandbox-2-native-tools",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Pinned native CLI and browser tooling alongside the Sandbox-2 HTML studies",
+  "dependencies": {
+    "@hashicorp/design-system-components": "7.0.0",
+    "@pandacss/dev": "2.4.0",
+    "@pandacss/preset-base": "2.4.0",
+    "@pandacss/preset-panda": "2.4.0",
+    "dembrandt": "0.39.2",
+    "designlang": "13.3.2",
+    "diez": "10.6.0",
+    "gsap": "3.14.2",
+    "hyperframes": "0.8.186",
+    "oh-my-design-cli": "2.0.5",
+    "style-dictionary": "5.7.0",
+    "ux-ui-agent-skills": "2.10.0"
+  },
+  "devDependencies": {
+    "pnpm": "10.11.0",
+    "yarn": "1.22.19"
+  }
+}
