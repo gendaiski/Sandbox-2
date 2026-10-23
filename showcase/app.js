@@ -63,6 +63,7 @@
       const result=$('#data-result');if(result)result.textContent='Sample result: Product C has the highest revenue ($450) across the three bundled rows.';
     }
     if(action==='zoom')$('.review-frame')?.classList.toggle('enlarged');
+    if(action==='latest-filter'){$(`.filter-row button[data-filter="${button.dataset.filter}"]`)?.click();document.getElementById('systems')?.scrollIntoView({behavior:'smooth',block:'start'})}
     if(action==='filter'){$$('.filter-row button').forEach(x=>x.classList.toggle('active',x===button));filterDirectory()}
     if(action==='token-export'){updateTokenStudy();button.closest('.appframe')?.querySelector('[data-action="pane"][data-target="pane-2"]')?.click();toast('Sample token JSON updated.')}
     if(action==='token-copy')copyText($('[data-token-output]')?.textContent||'');
