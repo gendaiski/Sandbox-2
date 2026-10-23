@@ -1,0 +1,32 @@
+services:
+  picoagents:
+    image: sandbox2/picoagents:local
+    build:
+      context: ../..
+      dockerfile: deploy/render/picoagents/Dockerfile
+    ports:
+      - 127.0.0.1:${PICOAGENTS_HOST_PORT:-8790}:10000
+    environment:
+      PICOAGENTS_HTTP_USER: ${PICOAGENTS_HTTP_USER:-reviewer}
+      PICOAGENTS_HTTP_PASSWORD: ${PICOAGENTS_HTTP_PASSWORD:?Set PICOAGENTS_HTTP_PASSWORD in deploy/local/.env}
+    volumes:
+      - picoagents-data:/app/native/picoagents/data
+    restart: unless-stopped
+
+  agentfield:
+    image: sandbox2/agentfield:local
+    build:
+      context: ../..
+      dockerfile: deploy/render/agentfield/Dockerfile
+    ports:
+      - 127.0.0.1:${AGENTFIELD_HOST_PORT:-8791}:10000
+    environment:
+      AGENTFIELD_HTTP_USER: ${AGENTFIELD_HTTP_USER:-reviewer}
+      AGENTFIELD_HTTP_PASSWORD: ${AGENTFIELD_HTTP_PASSWORD:?Set AGENTFIELD_HTTP_PASSWORD in deploy/local/.env}
+    volumes:
+      - agentfield-data:/app/native/agentfield/data
+    restart: unless-stopped
+
+volumes:
+  picoagents-data:
+  agentfield-data:

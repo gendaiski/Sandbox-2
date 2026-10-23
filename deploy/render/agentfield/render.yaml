@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: sandbox2-agentfield
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./deploy/render/agentfield/Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    disk:
+      name: agentfield-data
+      mountPath: /app/native/agentfield/data
+      sizeGB: 1
+    envVars:
+      - key: AGENTFIELD_HTTP_USER
+        value: reviewer
+      - key: AGENTFIELD_HTTP_PASSWORD
+        sync: false

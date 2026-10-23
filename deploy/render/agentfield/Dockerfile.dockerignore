@@ -1,0 +1,9 @@
+**
+!native/
+!native/agentfield/
+!native/agentfield/demo_agent.py
+!deploy/
+!deploy/render/
+!deploy/render/agentfield/
+!deploy/render/agentfield/start.sh
+!deploy/render/agentfield/nginx.conf
