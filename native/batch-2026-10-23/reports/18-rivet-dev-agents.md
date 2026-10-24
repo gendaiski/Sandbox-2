@@ -38,6 +38,7 @@ Verification:
 - PASS — Verbatim GitHub About description and About documentation URL, root README, component docs, Apache-2.0 licence and published npm release metadata inspected.
 - PASS — Original CLI v0.5.3 and SDK installed in an isolated temporary cloud folder; original binary version/server-help checks passed.
 - PASS — Original server `/v1/health` returned `{"status":"ok"}` on cloud loopback; `/ui/` returned the original Inspector HTML; Chromium rendered it with title “Sandbox Agent” and no page errors.
+- PASS — [Actual Inspector screenshot](../evidence/18-rivet-sandbox-agent-inspector.png) captured at 1280×800 in temporary Codex cloud Chromium on 2026-10-24. It shows the upstream UI on cloud loopback before any real agent session. It is evidence, not an installed Windows address.
 - PASS — The original built-in mock adapter installed; `listAgents` reported it installed, the official SDK created a session and read two events. This is only a local integration smoke check.
 - FAIL — In the temporary cloud check, a mock `prompt()` did not finish. A later Inspector mock session generated repeated `session/new`/response events. This does not verify a usable agent conversation; the cause was not resolved.
 - NOT VERIFIED — Windows installation/startup, Inspector workflow on the user's machine, any real model-backed agent session, Rivet Actor durability, database-backed persistence or cloud deployment.

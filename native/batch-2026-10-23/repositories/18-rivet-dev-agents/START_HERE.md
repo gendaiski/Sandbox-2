@@ -8,7 +8,7 @@
 
 **Start/stop/restart:** use `START_RIVET.cmd` in the generated job folder to start the original binary, and `STOP_RIVET.ps1` to stop only the verified saved PID. Closing the browser does not stop the server. The original Inspector stores browser-created sessions in that browser's IndexedDB; SDK sessions are separate.
 
-**Verification:** original server health, Inspector HTML and Chromium render PASS in temporary cloud storage; official mock adapter install, SDK session creation and event read PASS. Mock `prompt()` completion FAIL in that cloud check. Windows setup, real agent conversation and Rivet Actor durability NOT VERIFIED. The Windows adapter will report PARTIAL until those workflows pass.
+**Verification:** original server health, Inspector HTML and Chromium render PASS in temporary cloud storage; [actual Inspector screenshot](../../evidence/18-rivet-sandbox-agent-inspector.png). Official mock adapter install, SDK session creation and event read PASS. Mock `prompt()` completion FAIL in that cloud check. Windows setup, real agent conversation and Rivet Actor durability NOT VERIFIED. The Windows adapter will report PARTIAL until those workflows pass.
 
 **Limits:** a mock agent is for integration testing, not a real agent. Real agents need separately configured coding CLIs, provider access, secure sandbox execution and a persistence plan. No model call, external sandbox or paid resource was used.
 

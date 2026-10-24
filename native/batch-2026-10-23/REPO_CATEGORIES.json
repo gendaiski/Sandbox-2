@@ -48,5 +48,21 @@
   "Raja0sama/vibex": "Architecture & Diagrams",
   "csthink/dashmotion": "Architecture & Diagrams",
   "supermax92/qgraphflow": "Architecture & Diagrams",
-  "mehmetozkaya/Design-Microservices-Architecture-with-Patterns-Principles": "Database Architecture Learning"
+  "mehmetozkaya/Design-Microservices-Architecture-with-Patterns-Principles": "Database Architecture Learning",
+  "PacktPublishing/Designing-Information-Architecture": "Information Architecture",
+  "albegosu/second-brain": "Knowledge & Documents",
+  "MindSculpt/design-tokens": "Design Systems & Tokens",
+  "paperclipai/paperclip": "Agent Workspaces",
+  "superdocsapp/superdocs-builds": "Knowledge & Documents",
+  "eikek/docspell": "Document Management",
+  "mayan-edms/Mayan-EDMS": "Document Management",
+  "RS-labhub/rs-docmanager": "Document Management",
+  "AH3laly/Egypt-ETA-E-Invoice-Signer": "Egypt ETA & Invoicing",
+  "mrkindy/ETAHttpSignature": "Egypt ETA & Invoicing",
+  "AhmedSuror/ASET": "Egypt ETA & Invoicing",
+  "zoharbabin/due-diligence-agents": "M&A & Due Diligence",
+  "evolsb/claude-legal-skill": "M&A & Due Diligence",
+  "iamtorgo/awesome-private-equity": "M&A & Due Diligence",
+  "mmmihaeel/deal-room-api": "M&A & Due Diligence",
+  "RINDOGATAN/deal-room": "M&A & Due Diligence"
 }
