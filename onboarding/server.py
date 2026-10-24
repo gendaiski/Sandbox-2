@@ -29,6 +29,7 @@ from .happy_desktop import prepare_and_launch as prepare_happy_desktop
 from .herdr import prepare as prepare_herdr
 from .orchestrator_desktop import prepare as prepare_orchestrator
 from .ekko_web import prepare_and_start as prepare_ekko_web
+from .html_anything import prepare_and_start as prepare_html_anything
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -58,7 +59,7 @@ class Approval(BaseModel):
 
 
 class Service:
-    def __init__(self, data_dir: Path, access_code: str, discover_fn: Callable = discover, download_fn: Callable = download_archive, happy_fn: Callable = prepare_happy_desktop, herdr_fn: Callable = prepare_herdr, orchestrator_fn: Callable = prepare_orchestrator, ekko_fn: Callable = prepare_ekko_web):
+    def __init__(self, data_dir: Path, access_code: str, discover_fn: Callable = discover, download_fn: Callable = download_archive, happy_fn: Callable = prepare_happy_desktop, herdr_fn: Callable = prepare_herdr, orchestrator_fn: Callable = prepare_orchestrator, ekko_fn: Callable = prepare_ekko_web, html_fn: Callable = prepare_html_anything):
         self.data_dir = data_dir.resolve()
         self.data_dir.mkdir(parents=True, exist_ok=True)
         lock_path = self.data_dir / ".runner.lock"
@@ -91,6 +92,7 @@ class Service:
         self.herdr_fn = herdr_fn
         self.orchestrator_fn = orchestrator_fn
         self.ekko_fn = ekko_fn
+        self.html_fn = html_fn
         self._init_db()
         self._recover()
 
@@ -159,7 +161,7 @@ class Service:
             "machine": "Runner host; this is your computer only if you started the runner on it",
             "os": f"{platform.system()} {platform.release()}",
             "osFamily": platform.system(), "architecture": platform.machine(),
-            "connected": True, "capabilities": ["Public GitHub discovery", "Bounded documentation preparation", "Local file verification", "Markdown, JSON and PDF reports"] + (["Original Happy Desktop installer preparation and launch", "Original Herdr Windows terminal binary preparation", "Original Orchestrator.inc Windows installer preparation without launch", "Original Ekko Studio npm web app preparation and loopback launch (Node.js 23+ required)"] if windows_x64 else []),
+            "connected": True, "capabilities": ["Public GitHub discovery", "Bounded documentation preparation", "Local file verification", "Markdown, JSON and PDF reports"] + (["Original Happy Desktop installer preparation and launch", "Original Herdr Windows terminal binary preparation", "Original Orchestrator.inc Windows installer preparation without launch", "Original Ekko Studio npm web app preparation and loopback launch (Node.js 23+ required)", "Original HTML Anything Next.js editor preparation and loopback launch (Node.js 20.9+ and pnpm required)"] if windows_x64 else []),
             "unsupported": ["Remote runner connection", "Private GitHub repositories", "Generic app, CLI or library installation", "Public service exposure"],
             "storage": str(self.data_dir), "freeBytes": usage.free,
             "persistent": False if in_cloud else None,
@@ -358,6 +360,20 @@ class Service:
                     ("Agent conversation", "NOT VERIFIED", "Requires a configured provider or Hermes runtime and an on-device workflow check"),
                 ]
                 final = "PARTIAL"
+            elif record["plan"].get("methodKey") == "html-anything-windows":
+                if self.target()["osFamily"] != "Windows":
+                    raise RuntimeError("The approved Windows target is no longer available.")
+                if shutil.disk_usage(self.data_dir).free < 2_000_000_000:
+                    raise RuntimeError("At least 2 GB of free disk space is needed before building HTML Anything.")
+                result = self.html_fn(record["discovery"], destination, cancelled, lambda message: self.log(job_id, message))
+                checks = [
+                    ("Original source and production build", "PASS" if result.get("commit") == record["discovery"]["commit"] and (destination / "next" / ".next" / "BUILD_ID").is_file() else "FAIL", str(destination)),
+                    ("Original frontend on loopback", "PASS" if result.get("serverHealth") and result.get("originalFrontend") else "FAIL", result.get("url", "No address returned")),
+                    ("Original templates and agent detection APIs", "PASS" if result.get("templateCount", 0) > 0 and result.get("agentDetection") else "FAIL", f"{result.get('templateCount', 0)} templates"),
+                    ("Sample preview and HTML export in Windows browser", "NOT VERIFIED", "Test in the original editor on this Windows computer"),
+                    ("Local agent generation", "NOT VERIFIED", "Requires a chosen signed-in CLI; upstream invocation may grant broad file and command access"),
+                ]
+                final = "PARTIAL"
             else:
                 result = self.download_fn(record["discovery"], destination, cancelled, lambda message: self.log(job_id, message))
                 readme = destination / result["readme"]
@@ -417,7 +433,26 @@ class Service:
             db.execute("UPDATE records SET status='VERIFYING',updated_at=? WHERE id=?", (now(), record_id))
         workspace = Path(row["workspace"])
         plan = json.loads(row["plan"])
-        if plan.get("methodKey") == "ekko-web-windows":
+        if plan.get("methodKey") == "html-anything-windows":
+            import urllib.request
+            from .html_anything import URL
+            built = (workspace / "next" / ".next" / "BUILD_ID").is_file()
+            healthy = False
+            try:
+                with urllib.request.urlopen(URL, timeout=3) as response:
+                    html = response.read(100_000).decode("utf-8", "replace")
+                with urllib.request.urlopen(URL + "api/templates", timeout=3) as response:
+                    templates = json.loads(response.read(1_000_000)).get("templates", [])
+                healthy = "HTML Anything" in html and len(templates) > 0
+            except (OSError, ValueError, KeyError):
+                pass
+            checks = [
+                ("Original production build retained", "PASS" if built else "FAIL", str(workspace)),
+                ("Original editor and template API still respond", "PASS" if healthy else "FAIL", URL),
+                ("Browser sample, export, and agent generation", "NOT VERIFIED", "Requires on-device browser interaction; no agent invoked automatically"),
+            ]
+            final = "PARTIAL"
+        elif plan.get("methodKey") == "ekko-web-windows":
             import urllib.request
             from .ekko_web import INTEGRITY, URL, VERSION
             lock = workspace / "package-lock.json"
@@ -495,7 +530,7 @@ class Service:
             "workspace": record["workspace"], "status": record["status"], "planHash": record["plan_hash"],
             "approvedAt": record["approved_at"], "job": record["latestJob"], "checks": record["checks"],
             "usage": f"Read {record['workspace']}/START_HERE.md" if record["status"] in {"COMPLETE", "PARTIAL"} and Path(record["workspace"]).is_dir() else "Resume or resolve the blocker shown in this record",
-            "startStopRestart": "Close Happy to stop; open it from the Windows Start menu to restart. Complete the installer screens first." if record["plan"].get("methodKey") == "happy-desktop-windows" else "Use Ctrl+B then Q to detach the Herdr terminal UI, rerun herdr.exe to reattach, and herdr.exe server stop to stop its background server." if record["plan"].get("methodKey") == "herdr-windows" else "No application was started. If you choose to install the unsigned release, close and reopen it from the Windows Start menu." if record["plan"].get("methodKey") == "orchestrator-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_EKKO.ps1 after checking its target and START_EKKO.cmd to restart; closing the browser does not stop the server." if record["plan"].get("methodKey") == "ekko-web-windows" else "No service was started; prepared files remain on the runner until removed after review.",
+            "startStopRestart": "Close Happy to stop; open it from the Windows Start menu to restart. Complete the installer screens first." if record["plan"].get("methodKey") == "happy-desktop-windows" else "Use Ctrl+B then Q to detach the Herdr terminal UI, rerun herdr.exe to reattach, and herdr.exe server stop to stop its background server." if record["plan"].get("methodKey") == "herdr-windows" else "No application was started. If you choose to install the unsigned release, close and reopen it from the Windows Start menu." if record["plan"].get("methodKey") == "orchestrator-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_EKKO.ps1 after checking its target and START_EKKO.cmd to restart; closing the browser does not stop the server." if record["plan"].get("methodKey") == "ekko-web-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_HTML_ANYTHING.ps1 and START_HTML_ANYTHING.cmd in the job folder to stop and restart the original Next.js server." if record["plan"].get("methodKey") == "html-anything-windows" else "No service was started; prepared files remain on the runner until removed after review.",
             "persistence": self.target()["persistenceNote"], "limitations": record["plan"]["limitations"],
             "sources": discovery["sources"], "lastUpdated": record["updated_at"],
         }

@@ -155,6 +155,8 @@ def discover(owner: str, name: str, requested_ref: str | None = None) -> dict:
     project_type, explanation = classify(name, files, readme, description)
     if f"{owner.lower()}/{name.lower()}" == "ekkolearnai/ekko-studio":
         project_type, explanation = "Application", "Reviewed upstream npm web distribution runs the original Ekko Studio frontend and backend; agent features need a provider."
+    if f"{owner.lower()}/{name.lower()}" == "nexu-io/html-anything":
+        project_type, explanation = "Application", "Reviewed upstream pnpm workspace contains the original Next.js editor and agent-invocation API."
     listed = (metadata.get("homepage") or "").strip()
     website_type = "None listed"
     official = "No official website verified."
@@ -215,7 +217,13 @@ def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
         and target.get("architecture", "").lower() in {"amd64", "x86_64"}
         and not discovery["archived"] and not discovery["private"]
     )
-    supported = (discovery["type"] in SUPPORTED_TYPES and not discovery["archived"] and not discovery["private"]) or happy_windows or herdr_windows or orchestrator_windows or ekko_windows
+    html_windows = (
+        discovery["canonical"] == "nexu-io/html-anything"
+        and target.get("osFamily") == "Windows"
+        and target.get("architecture", "").lower() in {"amd64", "x86_64"}
+        and not discovery["archived"] and not discovery["private"]
+    )
+    supported = (discovery["type"] in SUPPORTED_TYPES and not discovery["archived"] and not discovery["private"]) or happy_windows or herdr_windows or orchestrator_windows or ekko_windows or html_windows
     plan = {
         "repository": discovery["canonical"], "commit": discovery["commit"], "targetId": target["id"],
         "targetName": target["name"], "projectType": discovery["type"], "supported": supported,
@@ -260,6 +268,21 @@ def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
             "credentialNeeds": ["Change the upstream default account password immediately in the original UI before entering any provider credentials"],
             "verification": ["npm package version and published SHA-512 integrity", "Original backend /health and login HTML on loopback", "Original authenticated UI and a real agent conversation require on-device review and a configured provider"],
             "limitations": "Backend and login shell can be checked automatically. The default local account must be secured before any broader access. Provider integration, original authenticated UI, and a real agent workflow are not automatically verified; result remains PARTIAL.",
+        })
+    elif html_windows:
+        from .html_anything import NEXT_VERSION, PNPM_VERSION, PORT
+        plan.update({
+            "methodKey": "html-anything-windows",
+            "method": "Download the inspected original source commit, use its pinned pnpm workspace to build the original Next.js editor, and start it on Windows loopback",
+            "services": ["Original Next.js editor and API; a separately installed coding-agent CLI is needed only for AI generation"],
+            "ports": [f"127.0.0.1:{PORT} (runner-local only)"],
+            "resources": f"Node.js 20.9+ and Corepack or pnpm {PNPM_VERSION}; approximately 1 GB install/build disk, at least 2 GB free recommended",
+            "changes": ["Extract the pinned source archive into an isolated onboarding folder", "Install pnpm lockfile dependencies with lifecycle scripts disabled", f"Build the original Next.js {NEXT_VERSION} app and start it on Windows loopback", "Create local start, stop and START_HERE instructions"],
+            "permissions": ["Run only the reviewed upstream pnpm install and Next.js build/start commands after exact-plan approval", "Do not automatically invoke a local coding-agent CLI or expose the server publicly"],
+            "cost": "The editor and sample/export checks have no charge; a connected coding-agent subscription may have its own costs",
+            "credentialNeeds": ["A local signed-in coding-agent CLI is needed only if the user chooses to generate new HTML"],
+            "verification": ["Pinned source, pnpm workspace, and original production build", "Original frontend, template API, and agent detection API on loopback", "Sample preview, HTML export, and agent generation need on-device browser review"],
+            "limitations": "The runner checks the original frontend and APIs, but cannot certify on-device browser export or an agent generation. Upstream agent adapters may run with broad file/command permissions; no generation is triggered automatically. Result remains PARTIAL.",
         })
     plan["hash"] = hashlib.sha256(json.dumps(plan, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     return plan

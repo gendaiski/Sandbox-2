@@ -79,11 +79,11 @@ def prepare_and_start(destination: Path, cancelled: Event, log: Callable[[str], 
         state = destination / "state"
         entry_after = destination / "node_modules" / "ekko-studio" / "bin" / "hermes-web-ui.mjs"
         hermes_home = destination / "hermes"
-        common = (f'set "HERMES_WEB_UI_HOME={state}"\r\n'
-                  f'set "HERMES_HOME={hermes_home}"\r\n'
-                  'set "BIND_HOST=127.0.0.1"\r\n')
+        common = (f'set "HERMES_WEB_UI_HOME={state}"\n'
+                  f'set "HERMES_HOME={hermes_home}"\n'
+                  'set "BIND_HOST=127.0.0.1"\n')
         (temporary / "START_EKKO.cmd").write_text(
-            "@echo off\r\n" + common + f'"{node}" "{entry_after}" start {PORT} --no-open\r\n', encoding="utf-8"
+            "@echo off\n" + common + f'"{node}" "{entry_after}" start {PORT} --no-open\n', encoding="utf-8"
         )
         server_entry = destination / "node_modules" / "ekko-studio" / "dist" / "server" / "index.js"
         (temporary / "STOP_EKKO.ps1").write_text(

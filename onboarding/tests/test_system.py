@@ -17,6 +17,7 @@ from onboarding.happy_desktop import ASSET, SHA256, VERSION
 from onboarding.herdr import ASSET as HERDR_ASSET, SHA256 as HERDR_SHA256, VERSION as HERDR_VERSION
 from onboarding.orchestrator_desktop import ASSET as ORCHESTRATOR_ASSET, SHA256 as ORCHESTRATOR_SHA256, VERSION as ORCHESTRATOR_VERSION
 from onboarding.ekko_web import INTEGRITY as EKKO_INTEGRITY, PACKAGE as EKKO_PACKAGE, VERSION as EKKO_VERSION
+from onboarding.html_anything import NEXT_VERSION as HTML_NEXT_VERSION, PNPM_VERSION as HTML_PNPM_VERSION
 from onboarding.server import create_app
 
 
@@ -98,6 +99,20 @@ class ReferenceTests(unittest.TestCase):
             target["osFamily"] = "Linux"
             self.assertFalse(make_plan(discovery, target, Path(folder) / "ekko")["supported"])
 
+    def test_html_anything_plan_uses_original_next_workspace_without_agent_run(self):
+        discovery = fixture_discovery("nexu-io", "html-anything", None)
+        discovery["type"] = "Application"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "html")
+            self.assertEqual(plan["methodKey"], "html-anything-windows")
+            self.assertIn(HTML_PNPM_VERSION, plan["resources"])
+            self.assertIn(HTML_NEXT_VERSION, " ".join(plan["changes"]))
+            self.assertFalse(plan["publicExposure"])
+            self.assertIn("Do not automatically invoke", " ".join(plan["permissions"]))
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "html")["supported"])
+
     def test_book_with_chapter_notebooks_is_learning_material(self):
         kind, explanation = classify(
             "Agentic-Design-Patterns",
@@ -157,6 +172,10 @@ class RunnerTests(unittest.TestCase):
         self.client = TestClient(self.app)
 
     def tearDown(self):
+        for _ in range(100):
+            if not self.app.state.service.cancel_events:
+                break
+            time.sleep(.02)
         self.client.close()
         self.app.state.service.close()
         self.temp.cleanup()
@@ -362,6 +381,42 @@ class RunnerTests(unittest.TestCase):
         headers = self.login()
         record = self.client.post("/api/onboardings", headers=headers,
                                   json={"reference": "EKKOLearnAI/ekko-studio"}).json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
+                         json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertEqual(current["latestJob"]["status"], "PARTIAL")
+        self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
+
+    def test_html_anything_server_checks_do_not_claim_agent_generation(self):
+        def app_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "Application"
+            return result
+        target = self.app.state.service.target()
+        target.update({"id": "windows-fixture", "osFamily": "Windows", "architecture": "AMD64"})
+        self.app.state.service.target = lambda: target
+        self.app.state.service.discover_fn = app_discovery
+
+        def original_fixture(discovery, destination, cancelled, log):
+            (destination / "next" / ".next").mkdir(parents=True)
+            (destination / "next" / ".next" / "BUILD_ID").write_text("controlled build fixture")
+            (destination / "START_HERE.md").write_text("Original app fixture")
+            log("Controlled original editor fixture responded")
+            return {"commit": discovery["commit"], "url": "http://127.0.0.1:18849/",
+                    "serverHealth": True, "originalFrontend": True,
+                    "templateCount": 81, "agentDetection": True}
+
+        self.app.state.service.html_fn = original_fixture
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers,
+                                  json={"reference": "nexu-io/html-anything"}).json()["record"]
         self.assertEqual(record["status"], "AWAITING_APPROVAL")
         self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
                          json={"planHash": record["plan_hash"]})
