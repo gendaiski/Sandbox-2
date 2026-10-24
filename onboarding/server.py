@@ -31,6 +31,7 @@ from .orchestrator_desktop import prepare as prepare_orchestrator
 from .ekko_web import prepare_and_start as prepare_ekko_web
 from .html_anything import prepare_and_start as prepare_html_anything
 from .gentle_ai import prepare as prepare_gentle_ai
+from .qualitylayer_desktop import prepare_and_launch as prepare_qualitylayer_desktop
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -60,7 +61,7 @@ class Approval(BaseModel):
 
 
 class Service:
-    def __init__(self, data_dir: Path, access_code: str, discover_fn: Callable = discover, download_fn: Callable = download_archive, happy_fn: Callable = prepare_happy_desktop, herdr_fn: Callable = prepare_herdr, orchestrator_fn: Callable = prepare_orchestrator, ekko_fn: Callable = prepare_ekko_web, html_fn: Callable = prepare_html_anything, gentle_fn: Callable = prepare_gentle_ai):
+    def __init__(self, data_dir: Path, access_code: str, discover_fn: Callable = discover, download_fn: Callable = download_archive, happy_fn: Callable = prepare_happy_desktop, herdr_fn: Callable = prepare_herdr, orchestrator_fn: Callable = prepare_orchestrator, ekko_fn: Callable = prepare_ekko_web, html_fn: Callable = prepare_html_anything, gentle_fn: Callable = prepare_gentle_ai, qualitylayer_fn: Callable = prepare_qualitylayer_desktop):
         self.data_dir = data_dir.resolve()
         self.data_dir.mkdir(parents=True, exist_ok=True)
         lock_path = self.data_dir / ".runner.lock"
@@ -95,6 +96,7 @@ class Service:
         self.ekko_fn = ekko_fn
         self.html_fn = html_fn
         self.gentle_fn = gentle_fn
+        self.qualitylayer_fn = qualitylayer_fn
         self._init_db()
         self._recover()
 
@@ -163,7 +165,7 @@ class Service:
             "machine": "Runner host; this is your computer only if you started the runner on it",
             "os": f"{platform.system()} {platform.release()}",
             "osFamily": platform.system(), "architecture": platform.machine(),
-            "connected": True, "capabilities": ["Public GitHub discovery", "Bounded documentation preparation", "Local file verification", "Markdown, JSON and PDF reports"] + (["Original Happy Desktop installer preparation and launch", "Original Herdr Windows terminal binary preparation", "Original Orchestrator.inc Windows installer preparation without launch", "Original Ekko Studio npm web app preparation and loopback launch (Node.js 23+ required)", "Original HTML Anything Next.js editor preparation and loopback launch (Node.js 20.9+ and pnpm required)", "Original Gentle-AI CLI source build (Go 1.25.10+ required; global agent config untouched)"] if windows_x64 else []),
+            "connected": True, "capabilities": ["Public GitHub discovery", "Bounded documentation preparation", "Local file verification", "Markdown, JSON and PDF reports"] + (["Original Happy Desktop installer preparation and launch", "Original Herdr Windows terminal binary preparation", "Original Orchestrator.inc Windows installer preparation without launch", "Original Ekko Studio npm web app preparation and loopback launch (Node.js 23+ required)", "Original HTML Anything Next.js editor preparation and loopback launch (Node.js 20.9+ and pnpm required)", "Original Gentle-AI CLI source build (Go 1.25.10+ required; global agent config untouched)", "Original QualityLayer Windows App signed installer launch (seven-day trial; user completes setup)"] if windows_x64 else []),
             "unsupported": ["Remote runner connection", "Private GitHub repositories", "Generic app, CLI or library installation", "Public service exposure"],
             "storage": str(self.data_dir), "freeBytes": usage.free,
             "persistent": False if in_cloud else None,
@@ -388,6 +390,18 @@ class Service:
                     ("Real agent integration", "NOT VERIFIED", "Requires a separate review and approved configuration on this Windows machine"),
                 ]
                 final = "PARTIAL"
+            elif record["plan"].get("methodKey") == "qualitylayer-desktop-windows":
+                if self.target()["osFamily"] != "Windows":
+                    raise RuntimeError("The approved Windows target is no longer available.")
+                if shutil.disk_usage(self.data_dir).free < 500_000_000:
+                    raise RuntimeError("At least 500 MB of free disk space is needed before downloading QualityLayer.")
+                result = self.qualitylayer_fn(destination, cancelled, lambda message: self.log(job_id, message))
+                checks = [
+                    ("Original signed installer and digest", "PASS" if result.get("sha256") == record["plan"]["release"]["sha256"] and bool(result.get("publisher")) and (destination / result.get("installer", "")).is_file() else "FAIL", f"QualityLayer {result.get('version', 'unknown')} in {destination}"),
+                    ("Installer opened", "PASS" if result.get("installerLaunched") else "FAIL", "Interactive original setup still needs completion"),
+                    ("Original App, trial and agent workflow", "NOT VERIFIED", "Complete the original setup and a representative task on this Windows computer"),
+                ]
+                final = "PARTIAL"
             else:
                 result = self.download_fn(record["discovery"], destination, cancelled, lambda message: self.log(job_id, message))
                 readme = destination / result["readme"]
@@ -505,11 +519,13 @@ class Service:
                 ("Authenticated UI and agent workflow", "NOT VERIFIED", "Requires on-device interaction and a configured provider"),
             ]
             final = "PARTIAL"
-        elif plan.get("methodKey") in {"happy-desktop-windows", "herdr-windows", "orchestrator-windows"}:
+        elif plan.get("methodKey") in {"happy-desktop-windows", "herdr-windows", "orchestrator-windows", "qualitylayer-desktop-windows"}:
             if plan["methodKey"] == "happy-desktop-windows":
                 from .happy_desktop import ASSET, SHA256
             elif plan["methodKey"] == "herdr-windows":
                 from .herdr import ASSET, SHA256
+            elif plan["methodKey"] == "qualitylayer-desktop-windows":
+                from .qualitylayer_desktop import ASSET, SHA256
             else:
                 from .orchestrator_desktop import ASSET, SHA256
             installer = workspace / ASSET
@@ -560,7 +576,7 @@ class Service:
             "workspace": record["workspace"], "status": record["status"], "planHash": record["plan_hash"],
             "approvedAt": record["approved_at"], "job": record["latestJob"], "checks": record["checks"],
             "usage": f"Read {record['workspace']}/START_HERE.md" if record["status"] in {"COMPLETE", "PARTIAL"} and Path(record["workspace"]).is_dir() else "Resume or resolve the blocker shown in this record",
-            "startStopRestart": "Close Happy to stop; open it from the Windows Start menu to restart. Complete the installer screens first." if record["plan"].get("methodKey") == "happy-desktop-windows" else "Use Ctrl+B then Q to detach the Herdr terminal UI, rerun herdr.exe to reattach, and herdr.exe server stop to stop its background server." if record["plan"].get("methodKey") == "herdr-windows" else "No application was started. If you choose to install the unsigned release, close and reopen it from the Windows Start menu." if record["plan"].get("methodKey") == "orchestrator-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_EKKO.ps1 after checking its target and START_EKKO.cmd to restart; closing the browser does not stop the server." if record["plan"].get("methodKey") == "ekko-web-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_HTML_ANYTHING.ps1 and START_HTML_ANYTHING.cmd in the job folder to stop and restart the original Next.js server." if record["plan"].get("methodKey") == "html-anything-windows" else "No service runs for the Gentle-AI CLI. Run bin/gentle-ai.exe from the job folder as needed; configure existing agents only after a separate plan." if record["plan"].get("methodKey") == "gentle-ai-windows" else "No service was started; prepared files remain on the runner until removed after review.",
+            "startStopRestart": "Close Happy to stop; open it from the Windows Start menu to restart. Complete the installer screens first." if record["plan"].get("methodKey") == "happy-desktop-windows" else "Use Ctrl+B then Q to detach the Herdr terminal UI, rerun herdr.exe to reattach, and herdr.exe server stop to stop its background server." if record["plan"].get("methodKey") == "herdr-windows" else "No application was started. If you choose to install the unsigned release, close and reopen it from the Windows Start menu." if record["plan"].get("methodKey") == "orchestrator-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_EKKO.ps1 after checking its target and START_EKKO.cmd to restart; closing the browser does not stop the server." if record["plan"].get("methodKey") == "ekko-web-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_HTML_ANYTHING.ps1 and START_HTML_ANYTHING.cmd in the job folder to stop and restart the original Next.js server." if record["plan"].get("methodKey") == "html-anything-windows" else "No service runs for the Gentle-AI CLI. Run bin/gentle-ai.exe from the job folder as needed; configure existing agents only after a separate plan." if record["plan"].get("methodKey") == "gentle-ai-windows" else "Complete QualityLayer's original interactive setup first. Close the App to stop it and reopen it from the Windows Start menu to restart; the CLI may retain user-level agent settings." if record["plan"].get("methodKey") == "qualitylayer-desktop-windows" else "No service was started; prepared files remain on the runner until removed after review.",
             "persistence": self.target()["persistenceNote"], "limitations": record["plan"]["limitations"],
             "sources": discovery["sources"], "lastUpdated": record["updated_at"],
         }

@@ -159,6 +159,8 @@ def discover(owner: str, name: str, requested_ref: str | None = None) -> dict:
         project_type, explanation = "Application", "Reviewed upstream pnpm workspace contains the original Next.js editor and agent-invocation API."
     if f"{owner.lower()}/{name.lower()}" == "gentleman-programming/gentle-ai":
         project_type, explanation = "CLI or developer tool", "Reviewed upstream Go CLI configures supported coding agents; there is no standalone web UI."
+    if f"{owner.lower()}/{name.lower()}" == "maxritter/qualitylayer":
+        project_type, explanation = "Application", "Reviewed upstream release provides its original signed Windows desktop App and CLI, with a seven-day trial and licence terms."
     listed = (metadata.get("homepage") or "").strip()
     website_type = "None listed"
     official = "No official website verified."
@@ -231,7 +233,13 @@ def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
         and target.get("architecture", "").lower() in {"amd64", "x86_64"}
         and not discovery["archived"] and not discovery["private"]
     )
-    supported = (discovery["type"] in SUPPORTED_TYPES and not discovery["archived"] and not discovery["private"]) or happy_windows or herdr_windows or orchestrator_windows or ekko_windows or html_windows or gentle_windows
+    qualitylayer_windows = (
+        discovery["canonical"] == "maxritter/qualitylayer"
+        and target.get("osFamily") == "Windows"
+        and target.get("architecture", "").lower() in {"amd64", "x86_64"}
+        and not discovery["archived"] and not discovery["private"]
+    )
+    supported = (discovery["type"] in SUPPORTED_TYPES and not discovery["archived"] and not discovery["private"]) or happy_windows or herdr_windows or orchestrator_windows or ekko_windows or html_windows or gentle_windows or qualitylayer_windows
     plan = {
         "repository": discovery["canonical"], "commit": discovery["commit"], "targetId": target["id"],
         "targetName": target["name"], "projectType": discovery["type"], "supported": supported,
@@ -307,6 +315,22 @@ def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
             "limitations": "The Windows release has no prebuilt asset, so a suitable Go compiler is required. This path prepares the real CLI but does not run its installer/TUI against existing agents; result remains PARTIAL.",
             "release": {"version": VERSION, "asset": MODULE,
                         "source": f"https://github.com/Gentleman-Programming/gentle-ai/releases/tag/v{VERSION}"},
+        })
+    elif qualitylayer_windows:
+        from .qualitylayer_desktop import ASSET, SHA256, SIZE, URL, VERSION
+        plan.update({
+            "methodKey": "qualitylayer-desktop-windows",
+            "method": "Download the pinned original QualityLayer Windows App, verify SHA-256 and Maximilian Ritter's Windows publisher signature, then open its interactive installer",
+            "release": {"version": VERSION, "asset": ASSET, "sha256": SHA256, "bytes": SIZE,
+                        "url": URL, "source": f"https://github.com/maxritter/qualitylayer/releases/tag/v{VERSION}"},
+            "services": ["Original QualityLayer desktop App and CLI; a separately installed coding agent is needed for an agent workflow"],
+            "resources": "73 MB installer download; allow at least 500 MB free disk space, with more space for the installed App and agent state",
+            "changes": ["Save the hash-verified installer in this onboarding job folder", "Open the original interactive Windows installer; it may add the App, CLI, skills, hooks and settings under your user profile"],
+            "permissions": ["Open only the pinned, Windows-signed upstream installer after exact-plan approval", "You review the licence and complete its own screens; no silent account activation, agent setup or payment is performed by this runner"],
+            "cost": "The official licence starts a seven-day trial on first use without payment. Continued use after the trial requires a paid subscription. Existing coding-agent subscriptions may have separate costs.",
+            "credentialNeeds": ["An existing signed-in coding agent is needed for a real workflow; enter any licence or account details only in the original App"],
+            "verification": ["Official installer size, SHA-256 and Windows publisher signature", "Original installer opened", "Original UI, trial activation and a real agent task need on-device review"],
+            "limitations": "Opening the signed original installer is not proof of installation. The App's licence acceptance, trial activation, original UI, added agent settings, and a real workflow remain for on-device verification; result stays PARTIAL.",
         })
     plan["hash"] = hashlib.sha256(json.dumps(plan, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     return plan

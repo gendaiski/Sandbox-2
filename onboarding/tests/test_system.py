@@ -19,6 +19,7 @@ from onboarding.orchestrator_desktop import ASSET as ORCHESTRATOR_ASSET, SHA256 
 from onboarding.ekko_web import INTEGRITY as EKKO_INTEGRITY, PACKAGE as EKKO_PACKAGE, VERSION as EKKO_VERSION
 from onboarding.html_anything import NEXT_VERSION as HTML_NEXT_VERSION, PNPM_VERSION as HTML_PNPM_VERSION
 from onboarding.gentle_ai import MODULE as GENTLE_MODULE, VERSION as GENTLE_VERSION
+from onboarding.qualitylayer_desktop import ASSET as QL_ASSET, SHA256 as QL_SHA256, VERSION as QL_VERSION
 from onboarding.server import create_app
 
 
@@ -127,6 +128,22 @@ class ReferenceTests(unittest.TestCase):
             self.assertIn("do not install, sync or uninstall", " ".join(plan["changes"]))
             target["osFamily"] = "Linux"
             self.assertFalse(make_plan(discovery, target, Path(folder) / "gentle")["supported"])
+
+    def test_qualitylayer_plan_discloses_trial_and_original_signed_app(self):
+        discovery = fixture_discovery("maxritter", "qualitylayer", None)
+        discovery["type"] = "Application"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "qualitylayer")
+            self.assertTrue(plan["supported"])
+            self.assertEqual(plan["methodKey"], "qualitylayer-desktop-windows")
+            self.assertEqual(plan["release"]["asset"], QL_ASSET)
+            self.assertEqual(plan["release"]["sha256"], QL_SHA256)
+            self.assertEqual(plan["release"]["version"], QL_VERSION)
+            self.assertIn("seven-day trial", plan["cost"])
+            self.assertIn("skills, hooks and settings", " ".join(plan["changes"]))
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "qualitylayer")["supported"])
 
     def test_book_with_chapter_notebooks_is_learning_material(self):
         kind, explanation = classify(
@@ -480,6 +497,41 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(current["status"], "PARTIAL")
         self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
         self.assertEqual(self.client.get(f"/api/onboardings/{record['id']}/report.json").json()["status"], "PARTIAL")
+
+    def test_qualitylayer_installer_open_is_not_a_verified_app(self):
+        def app_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "Application"
+            return result
+        target = self.app.state.service.target()
+        target.update({"id": "windows-fixture", "osFamily": "Windows", "architecture": "AMD64"})
+        self.app.state.service.target = lambda: target
+        self.app.state.service.discover_fn = app_discovery
+
+        def signed_fixture(destination, cancelled, log):
+            destination.mkdir()
+            (destination / QL_ASSET).write_bytes(b"controlled original installer fixture")
+            (destination / "START_HERE.md").write_text("Complete original setup after reading the licence")
+            log("Controlled signed installer fixture opened")
+            return {"installer": QL_ASSET, "version": QL_VERSION,
+                    "sha256": QL_SHA256, "publisher": "CN=Maximilian Ritter", "installerLaunched": True}
+
+        self.app.state.service.qualitylayer_fn = signed_fixture
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers,
+                                  json={"reference": "maxritter/qualitylayer"}).json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.assertEqual(self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers).status_code, 409)
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
+                         json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
 
     def test_failed_verification_cannot_report_complete(self):
         def missing_readme(discovery, destination, cancelled, log):
