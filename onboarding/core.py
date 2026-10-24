@@ -157,6 +157,8 @@ def discover(owner: str, name: str, requested_ref: str | None = None) -> dict:
         project_type, explanation = "Application", "Reviewed upstream npm web distribution runs the original Ekko Studio frontend and backend; agent features need a provider."
     if f"{owner.lower()}/{name.lower()}" == "nexu-io/html-anything":
         project_type, explanation = "Application", "Reviewed upstream pnpm workspace contains the original Next.js editor and agent-invocation API."
+    if f"{owner.lower()}/{name.lower()}" == "gentleman-programming/gentle-ai":
+        project_type, explanation = "CLI or developer tool", "Reviewed upstream Go CLI configures supported coding agents; there is no standalone web UI."
     listed = (metadata.get("homepage") or "").strip()
     website_type = "None listed"
     official = "No official website verified."
@@ -223,7 +225,13 @@ def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
         and target.get("architecture", "").lower() in {"amd64", "x86_64"}
         and not discovery["archived"] and not discovery["private"]
     )
-    supported = (discovery["type"] in SUPPORTED_TYPES and not discovery["archived"] and not discovery["private"]) or happy_windows or herdr_windows or orchestrator_windows or ekko_windows or html_windows
+    gentle_windows = (
+        discovery["canonical"] == "gentleman-programming/gentle-ai"
+        and target.get("osFamily") == "Windows"
+        and target.get("architecture", "").lower() in {"amd64", "x86_64"}
+        and not discovery["archived"] and not discovery["private"]
+    )
+    supported = (discovery["type"] in SUPPORTED_TYPES and not discovery["archived"] and not discovery["private"]) or happy_windows or herdr_windows or orchestrator_windows or ekko_windows or html_windows or gentle_windows
     plan = {
         "repository": discovery["canonical"], "commit": discovery["commit"], "targetId": target["id"],
         "targetName": target["name"], "projectType": discovery["type"], "supported": supported,
@@ -283,6 +291,22 @@ def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
             "credentialNeeds": ["A local signed-in coding-agent CLI is needed only if the user chooses to generate new HTML"],
             "verification": ["Pinned source, pnpm workspace, and original production build", "Original frontend, template API, and agent detection API on loopback", "Sample preview, HTML export, and agent generation need on-device browser review"],
             "limitations": "The runner checks the original frontend and APIs, but cannot certify on-device browser export or an agent generation. Upstream agent adapters may run with broad file/command permissions; no generation is triggered automatically. Result remains PARTIAL.",
+        })
+    elif gentle_windows:
+        from .gentle_ai import MIN_GO, MODULE, VERSION
+        plan.update({
+            "methodKey": "gentle-ai-windows",
+            "method": f"Build the original {MODULE} Go CLI into an isolated job folder, then verify its version and help without changing any installed coding agent",
+            "services": ["Existing coding agents are optional for later configuration; no server is started"],
+            "resources": f"Go {'.'.join(map(str, MIN_GO))} or newer already installed; allow at least 1 GB for an isolated module/build cache",
+            "changes": ["Download Go modules and compile only the pinned original Gentle-AI CLI into this onboarding folder", "Write START_HERE.md; do not install, sync or uninstall any global agent configuration"],
+            "permissions": ["Run the reviewed upstream Go install and its --version/--help commands after exact-plan approval", "A separate reviewed plan is required before configuring real coding agents"],
+            "cost": "No paid service used for the CLI build; existing agent subscriptions may have their own charges",
+            "credentialNeeds": [],
+            "verification": ["Original executable reports the pinned version and help", "No global coding-agent settings are modified", "Interactive configuration of a real agent remains separate and unverified"],
+            "limitations": "The Windows release has no prebuilt asset, so a suitable Go compiler is required. This path prepares the real CLI but does not run its installer/TUI against existing agents; result remains PARTIAL.",
+            "release": {"version": VERSION, "asset": MODULE,
+                        "source": f"https://github.com/Gentleman-Programming/gentle-ai/releases/tag/v{VERSION}"},
         })
     plan["hash"] = hashlib.sha256(json.dumps(plan, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     return plan

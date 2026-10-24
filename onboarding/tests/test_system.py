@@ -18,6 +18,7 @@ from onboarding.herdr import ASSET as HERDR_ASSET, SHA256 as HERDR_SHA256, VERSI
 from onboarding.orchestrator_desktop import ASSET as ORCHESTRATOR_ASSET, SHA256 as ORCHESTRATOR_SHA256, VERSION as ORCHESTRATOR_VERSION
 from onboarding.ekko_web import INTEGRITY as EKKO_INTEGRITY, PACKAGE as EKKO_PACKAGE, VERSION as EKKO_VERSION
 from onboarding.html_anything import NEXT_VERSION as HTML_NEXT_VERSION, PNPM_VERSION as HTML_PNPM_VERSION
+from onboarding.gentle_ai import MODULE as GENTLE_MODULE, VERSION as GENTLE_VERSION
 from onboarding.server import create_app
 
 
@@ -112,6 +113,20 @@ class ReferenceTests(unittest.TestCase):
             self.assertIn("Do not automatically invoke", " ".join(plan["permissions"]))
             target["osFamily"] = "Linux"
             self.assertFalse(make_plan(discovery, target, Path(folder) / "html")["supported"])
+
+    def test_gentle_ai_plan_uses_original_cli_without_agent_changes(self):
+        discovery = fixture_discovery("Gentleman-Programming", "gentle-ai", None)
+        discovery["type"] = "CLI or developer tool"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "gentle")
+            self.assertTrue(plan["supported"])
+            self.assertEqual(plan["methodKey"], "gentle-ai-windows")
+            self.assertEqual(plan["release"]["asset"], GENTLE_MODULE)
+            self.assertEqual(plan["release"]["version"], GENTLE_VERSION)
+            self.assertIn("do not install, sync or uninstall", " ".join(plan["changes"]))
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "gentle")["supported"])
 
     def test_book_with_chapter_notebooks_is_learning_material(self):
         kind, explanation = classify(
@@ -429,6 +444,42 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(current["status"], "PARTIAL")
         self.assertEqual(current["latestJob"]["status"], "PARTIAL")
         self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
+
+    def test_gentle_ai_cli_checks_do_not_claim_agent_configuration(self):
+        def cli_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "CLI or developer tool"
+            return result
+        target = self.app.state.service.target()
+        target.update({"id": "windows-fixture", "osFamily": "Windows", "architecture": "AMD64"})
+        self.app.state.service.target = lambda: target
+        self.app.state.service.discover_fn = cli_discovery
+
+        def original_fixture(destination, cancelled, log):
+            (destination / "bin").mkdir(parents=True)
+            (destination / "bin" / "gentle-ai.exe").write_bytes(b"controlled binary fixture")
+            (destination / "START_HERE.md").write_text("Review original CLI before configuring agents")
+            log("Controlled original CLI fixture version and help checked")
+            return {"binary": "bin/gentle-ai.exe", "version": GENTLE_VERSION,
+                    "versionCheck": True, "helpCheck": True, "agentConfigured": False}
+
+        self.app.state.service.gentle_fn = original_fixture
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers,
+                                  json={"reference": "Gentleman-Programming/gentle-ai"}).json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.assertEqual(self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers).status_code, 409)
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
+                         json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
+        self.assertEqual(self.client.get(f"/api/onboardings/{record['id']}/report.json").json()["status"], "PARTIAL")
 
     def test_failed_verification_cannot_report_complete(self):
         def missing_readme(discovery, destination, cancelled, log):
