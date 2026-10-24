@@ -10,6 +10,10 @@
 
 The hub includes a Project Atlas style evidence table with shared filters, source revisions, native/backend status, next actions and CSV export. Original source interface images are shown on supported system pages, alongside clearly labelled local interaction studies.
 
+## Meridian M&A Diligence System
+
+[Meridian](systems/meridian-ma-diligence/README.md) is a standalone local application, independent of the Fattura Egypt repository and its accounts. It has its own Node server, deal-room UI, database, encrypted document storage and workflow tests. Start it from `systems/meridian-ma-diligence/` with `npm ci` and `npm start`, then open `http://127.0.0.1:8797/` on the computer running it. The [handover](systems/meridian-ma-diligence/docs/HANDOVER.md) records what was verified and why public hosting remains unverified. This app uses its own npm setup rather than the Python-oriented `run.sh` harness below.
+
 Every system gets its own folder under `systems/`, its own environment
 (a uv virtualenv, a pnpm project or a Cargo crate), and its own test script.
 Each test runs on its own: one system's dependencies never touch another's.
