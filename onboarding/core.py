@@ -161,6 +161,8 @@ def discover(owner: str, name: str, requested_ref: str | None = None) -> dict:
         project_type, explanation = "CLI or developer tool", "Reviewed upstream Go CLI configures supported coding agents; there is no standalone web UI."
     if f"{owner.lower()}/{name.lower()}" == "maxritter/qualitylayer":
         project_type, explanation = "Application", "Reviewed upstream release provides its original signed Windows desktop App and CLI, with a seven-day trial and licence terms."
+    if f"{owner.lower()}/{name.lower()}" == "coldteadotai/pr-lens":
+        project_type, explanation = "Monorepo", "Reviewed upstream monorepo provides a GitHub App, Action, npm CLI, coding-agent skill, renderer, and canvas; this plan selects its original local CLI."
     listed = (metadata.get("homepage") or "").strip()
     website_type = "None listed"
     official = "No official website verified."
@@ -239,7 +241,13 @@ def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
         and target.get("architecture", "").lower() in {"amd64", "x86_64"}
         and not discovery["archived"] and not discovery["private"]
     )
-    supported = (discovery["type"] in SUPPORTED_TYPES and not discovery["archived"] and not discovery["private"]) or happy_windows or herdr_windows or orchestrator_windows or ekko_windows or html_windows or gentle_windows or qualitylayer_windows
+    pr_lens_windows = (
+        discovery["canonical"] == "coldteadotai/pr-lens"
+        and target.get("osFamily") == "Windows"
+        and target.get("architecture", "").lower() in {"amd64", "x86_64"}
+        and not discovery["archived"] and not discovery["private"]
+    )
+    supported = (discovery["type"] in SUPPORTED_TYPES and not discovery["archived"] and not discovery["private"]) or happy_windows or herdr_windows or orchestrator_windows or ekko_windows or html_windows or gentle_windows or qualitylayer_windows or pr_lens_windows
     plan = {
         "repository": discovery["canonical"], "commit": discovery["commit"], "targetId": target["id"],
         "targetName": target["name"], "projectType": discovery["type"], "supported": supported,
@@ -331,6 +339,23 @@ def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
             "credentialNeeds": ["An existing signed-in coding agent is needed for a real workflow; enter any licence or account details only in the original App"],
             "verification": ["Official installer size, SHA-256 and Windows publisher signature", "Original installer opened", "Original UI, trial activation and a real agent task need on-device review"],
             "limitations": "Opening the signed original installer is not proof of installation. The App's licence acceptance, trial activation, original UI, added agent settings, and a real workflow remain for on-device verification; result stays PARTIAL.",
+        })
+    elif pr_lens_windows:
+        from .pr_lens import INTEGRITY, PACKAGE, SOURCE_COMMIT, VERSION
+        plan.update({
+            "methodKey": "pr-lens-cli-windows",
+            "method": "Install the pinned original PR Lens npm CLI into an isolated folder, then validate and render its inspected upstream example without contacting a model or posting to GitHub",
+            "release": {"version": VERSION, "asset": PACKAGE, "integrity": INTEGRITY,
+                        "sourceCommit": SOURCE_COMMIT,
+                        "source": f"https://github.com/coldteadotai/pr-lens/tree/{SOURCE_COMMIT}"},
+            "services": ["No background service for local CLI validation/rendering; GitHub App and hosted canvas are separate integrations"],
+            "resources": "Node.js 20.11+ and npm already installed; at least 500 MB free disk space for the isolated npm package and upstream example",
+            "changes": ["Download only inspected upstream example files at the pinned commit", "Install the original npm CLI with package scripts disabled inside this onboarding job folder", "Validate and render the official example to light/dark SVGs and a manifest inside this folder"],
+            "permissions": ["Execute the pinned original PR Lens CLI only for version, local validation and local rendering after exact-plan approval", "Do not invoke a model, connect the GitHub App, push a canvas or post a PR comment automatically"],
+            "cost": "Local validation and rendering use no paid service. Model-powered analysis or private hosted integrations may have their own costs.",
+            "credentialNeeds": ["A model provider key is needed only if you later choose to analyze a real diff; never enter it in chat"],
+            "verification": ["Published npm name, version and SHA-512 integrity", "Original CLI version and upstream example validation", "Original renderer produces light/dark SVGs and manifest", "Real model analysis, hosted canvas, and PR comment remain separate"],
+            "limitations": "The local CLI renderer can be checked automatically, but no model-backed analysis, GitHub App connection, hosted canvas, or real pull-request comment is performed; result stays PARTIAL.",
         })
     plan["hash"] = hashlib.sha256(json.dumps(plan, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     return plan

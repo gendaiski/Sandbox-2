@@ -32,6 +32,7 @@ from .ekko_web import prepare_and_start as prepare_ekko_web
 from .html_anything import prepare_and_start as prepare_html_anything
 from .gentle_ai import prepare as prepare_gentle_ai
 from .qualitylayer_desktop import prepare_and_launch as prepare_qualitylayer_desktop
+from .pr_lens import prepare as prepare_pr_lens
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -61,7 +62,7 @@ class Approval(BaseModel):
 
 
 class Service:
-    def __init__(self, data_dir: Path, access_code: str, discover_fn: Callable = discover, download_fn: Callable = download_archive, happy_fn: Callable = prepare_happy_desktop, herdr_fn: Callable = prepare_herdr, orchestrator_fn: Callable = prepare_orchestrator, ekko_fn: Callable = prepare_ekko_web, html_fn: Callable = prepare_html_anything, gentle_fn: Callable = prepare_gentle_ai, qualitylayer_fn: Callable = prepare_qualitylayer_desktop):
+    def __init__(self, data_dir: Path, access_code: str, discover_fn: Callable = discover, download_fn: Callable = download_archive, happy_fn: Callable = prepare_happy_desktop, herdr_fn: Callable = prepare_herdr, orchestrator_fn: Callable = prepare_orchestrator, ekko_fn: Callable = prepare_ekko_web, html_fn: Callable = prepare_html_anything, gentle_fn: Callable = prepare_gentle_ai, qualitylayer_fn: Callable = prepare_qualitylayer_desktop, pr_lens_fn: Callable = prepare_pr_lens):
         self.data_dir = data_dir.resolve()
         self.data_dir.mkdir(parents=True, exist_ok=True)
         lock_path = self.data_dir / ".runner.lock"
@@ -97,6 +98,7 @@ class Service:
         self.html_fn = html_fn
         self.gentle_fn = gentle_fn
         self.qualitylayer_fn = qualitylayer_fn
+        self.pr_lens_fn = pr_lens_fn
         self._init_db()
         self._recover()
 
@@ -165,7 +167,7 @@ class Service:
             "machine": "Runner host; this is your computer only if you started the runner on it",
             "os": f"{platform.system()} {platform.release()}",
             "osFamily": platform.system(), "architecture": platform.machine(),
-            "connected": True, "capabilities": ["Public GitHub discovery", "Bounded documentation preparation", "Local file verification", "Markdown, JSON and PDF reports"] + (["Original Happy Desktop installer preparation and launch", "Original Herdr Windows terminal binary preparation", "Original Orchestrator.inc Windows installer preparation without launch", "Original Ekko Studio npm web app preparation and loopback launch (Node.js 23+ required)", "Original HTML Anything Next.js editor preparation and loopback launch (Node.js 20.9+ and pnpm required)", "Original Gentle-AI CLI source build (Go 1.25.10+ required; global agent config untouched)", "Original QualityLayer Windows App signed installer launch (seven-day trial; user completes setup)"] if windows_x64 else []),
+            "connected": True, "capabilities": ["Public GitHub discovery", "Bounded documentation preparation", "Local file verification", "Markdown, JSON and PDF reports"] + (["Original Happy Desktop installer preparation and launch", "Original Herdr Windows terminal binary preparation", "Original Orchestrator.inc Windows installer preparation without launch", "Original Ekko Studio npm web app preparation and loopback launch (Node.js 23+ required)", "Original HTML Anything Next.js editor preparation and loopback launch (Node.js 20.9+ and pnpm required)", "Original Gentle-AI CLI source build (Go 1.25.10+ required; global agent config untouched)", "Original QualityLayer Windows App signed installer launch (seven-day trial; user completes setup)", "Original PR Lens npm CLI local validation and SVG rendering (Node.js 20.11+ required)"] if windows_x64 else []),
             "unsupported": ["Remote runner connection", "Private GitHub repositories", "Generic app, CLI or library installation", "Public service exposure"],
             "storage": str(self.data_dir), "freeBytes": usage.free,
             "persistent": False if in_cloud else None,
@@ -402,6 +404,18 @@ class Service:
                     ("Original App, trial and agent workflow", "NOT VERIFIED", "Complete the original setup and a representative task on this Windows computer"),
                 ]
                 final = "PARTIAL"
+            elif record["plan"].get("methodKey") == "pr-lens-cli-windows":
+                if self.target()["osFamily"] != "Windows":
+                    raise RuntimeError("The approved Windows target is no longer available.")
+                if shutil.disk_usage(self.data_dir).free < 500_000_000:
+                    raise RuntimeError("At least 500 MB of free disk space is needed before preparing PR Lens.")
+                result = self.pr_lens_fn(record["discovery"], destination, cancelled, lambda message: self.log(job_id, message))
+                checks = [
+                    ("Original npm CLI and integrity", "PASS" if result.get("integrity") == record["plan"]["release"]["integrity"] and result.get("versionCheck") else "FAIL", f"PR Lens {result.get('version', 'unknown')} in {destination}"),
+                    ("Original upstream example validation and rendering", "PASS" if result.get("validationCheck") and result.get("diagramCount", 0) >= 2 and (destination / "example-output" / "manifest.json").is_file() else "FAIL", f"{result.get('diagramCount', 0)} light/dark SVGs"),
+                    ("Model analysis and hosted integrations", "NOT VERIFIED", "No model provider, GitHub App, public canvas or pull-request comment was used"),
+                ]
+                final = "PARTIAL"
             else:
                 result = self.download_fn(record["discovery"], destination, cancelled, lambda message: self.log(job_id, message))
                 readme = destination / result["readme"]
@@ -461,7 +475,33 @@ class Service:
             db.execute("UPDATE records SET status='VERIFYING',updated_at=? WHERE id=?", (now(), record_id))
         workspace = Path(row["workspace"])
         plan = json.loads(row["plan"])
-        if plan.get("methodKey") == "gentle-ai-windows":
+        if plan.get("methodKey") == "pr-lens-cli-windows":
+            import subprocess
+            from .pr_lens import INTEGRITY, VERSION
+            lock = workspace / "tool" / "package-lock.json"
+            binary = workspace / "tool" / "node_modules" / "@coldtea" / "pr-lens-cli" / "dist" / "bin.js"
+            valid_package = False
+            try:
+                package = json.loads(lock.read_text(encoding="utf-8")).get("packages", {}).get("node_modules/@coldtea/pr-lens-cli", {})
+                valid_package = package.get("version") == VERSION and package.get("integrity") == INTEGRITY
+            except (OSError, ValueError):
+                pass
+            valid_version = False
+            node = shutil.which("node.exe") or shutil.which("node")
+            if node and binary.is_file():
+                try:
+                    probe = subprocess.run([node, str(binary), "--version"], capture_output=True, text=True, timeout=15, check=False)
+                    valid_version = probe.returncode == 0 and probe.stdout.strip() == VERSION
+                except (OSError, subprocess.TimeoutExpired):
+                    pass
+            diagrams = list((workspace / "example-output").glob("*.svg"))
+            checks = [
+                ("Original npm package and CLI retained", "PASS" if valid_package and valid_version else "FAIL", str(binary)),
+                ("Rendered upstream example retained", "PASS" if len(diagrams) >= 2 and (workspace / "example-output" / "manifest.json").is_file() else "FAIL", f"{len(diagrams)} SVGs"),
+                ("Real pull-request analysis and hosted canvas", "NOT VERIFIED", "Requires separate provider and integration setup"),
+            ]
+            final = "PARTIAL"
+        elif plan.get("methodKey") == "gentle-ai-windows":
             from .gentle_ai import VERSION
             binary = workspace / "bin" / "gentle-ai.exe"
             valid = False
@@ -576,7 +616,7 @@ class Service:
             "workspace": record["workspace"], "status": record["status"], "planHash": record["plan_hash"],
             "approvedAt": record["approved_at"], "job": record["latestJob"], "checks": record["checks"],
             "usage": f"Read {record['workspace']}/START_HERE.md" if record["status"] in {"COMPLETE", "PARTIAL"} and Path(record["workspace"]).is_dir() else "Resume or resolve the blocker shown in this record",
-            "startStopRestart": "Close Happy to stop; open it from the Windows Start menu to restart. Complete the installer screens first." if record["plan"].get("methodKey") == "happy-desktop-windows" else "Use Ctrl+B then Q to detach the Herdr terminal UI, rerun herdr.exe to reattach, and herdr.exe server stop to stop its background server." if record["plan"].get("methodKey") == "herdr-windows" else "No application was started. If you choose to install the unsigned release, close and reopen it from the Windows Start menu." if record["plan"].get("methodKey") == "orchestrator-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_EKKO.ps1 after checking its target and START_EKKO.cmd to restart; closing the browser does not stop the server." if record["plan"].get("methodKey") == "ekko-web-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_HTML_ANYTHING.ps1 and START_HTML_ANYTHING.cmd in the job folder to stop and restart the original Next.js server." if record["plan"].get("methodKey") == "html-anything-windows" else "No service runs for the Gentle-AI CLI. Run bin/gentle-ai.exe from the job folder as needed; configure existing agents only after a separate plan." if record["plan"].get("methodKey") == "gentle-ai-windows" else "Complete QualityLayer's original interactive setup first. Close the App to stop it and reopen it from the Windows Start menu to restart; the CLI may retain user-level agent settings." if record["plan"].get("methodKey") == "qualitylayer-desktop-windows" else "No service was started; prepared files remain on the runner until removed after review.",
+            "startStopRestart": "Close Happy to stop; open it from the Windows Start menu to restart. Complete the installer screens first." if record["plan"].get("methodKey") == "happy-desktop-windows" else "Use Ctrl+B then Q to detach the Herdr terminal UI, rerun herdr.exe to reattach, and herdr.exe server stop to stop its background server." if record["plan"].get("methodKey") == "herdr-windows" else "No application was started. If you choose to install the unsigned release, close and reopen it from the Windows Start menu." if record["plan"].get("methodKey") == "orchestrator-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_EKKO.ps1 after checking its target and START_EKKO.cmd to restart; closing the browser does not stop the server." if record["plan"].get("methodKey") == "ekko-web-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_HTML_ANYTHING.ps1 and START_HTML_ANYTHING.cmd in the job folder to stop and restart the original Next.js server." if record["plan"].get("methodKey") == "html-anything-windows" else "No service runs for the Gentle-AI CLI. Run bin/gentle-ai.exe from the job folder as needed; configure existing agents only after a separate plan." if record["plan"].get("methodKey") == "gentle-ai-windows" else "Complete QualityLayer's original interactive setup first. Close the App to stop it and reopen it from the Windows Start menu to restart; the CLI may retain user-level agent settings." if record["plan"].get("methodKey") == "qualitylayer-desktop-windows" else "No service runs for the PR Lens CLI. Run its original local command as needed; model analysis and hosted integrations remain separate." if record["plan"].get("methodKey") == "pr-lens-cli-windows" else "No service was started; prepared files remain on the runner until removed after review.",
             "persistence": self.target()["persistenceNote"], "limitations": record["plan"]["limitations"],
             "sources": discovery["sources"], "lastUpdated": record["updated_at"],
         }

@@ -20,6 +20,7 @@ from onboarding.ekko_web import INTEGRITY as EKKO_INTEGRITY, PACKAGE as EKKO_PAC
 from onboarding.html_anything import NEXT_VERSION as HTML_NEXT_VERSION, PNPM_VERSION as HTML_PNPM_VERSION
 from onboarding.gentle_ai import MODULE as GENTLE_MODULE, VERSION as GENTLE_VERSION
 from onboarding.qualitylayer_desktop import ASSET as QL_ASSET, SHA256 as QL_SHA256, VERSION as QL_VERSION
+from onboarding.pr_lens import INTEGRITY as PR_LENS_INTEGRITY, PACKAGE as PR_LENS_PACKAGE, VERSION as PR_LENS_VERSION
 from onboarding.server import create_app
 
 
@@ -144,6 +145,19 @@ class ReferenceTests(unittest.TestCase):
             self.assertIn("skills, hooks and settings", " ".join(plan["changes"]))
             target["osFamily"] = "Linux"
             self.assertFalse(make_plan(discovery, target, Path(folder) / "qualitylayer")["supported"])
+
+    def test_pr_lens_plan_selects_original_local_cli_without_external_actions(self):
+        discovery = fixture_discovery("coldteadotai", "pr-lens", None)
+        discovery["type"] = "Monorepo"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "pr-lens")
+            self.assertEqual(plan["methodKey"], "pr-lens-cli-windows")
+            self.assertEqual(plan["release"]["asset"], PR_LENS_PACKAGE)
+            self.assertEqual(plan["release"]["integrity"], PR_LENS_INTEGRITY)
+            self.assertIn("Do not invoke a model", " ".join(plan["permissions"]))
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "pr-lens")["supported"])
 
     def test_book_with_chapter_notebooks_is_learning_material(self):
         kind, explanation = classify(
@@ -520,6 +534,42 @@ class RunnerTests(unittest.TestCase):
         headers = self.login()
         record = self.client.post("/api/onboardings", headers=headers,
                                   json={"reference": "maxritter/qualitylayer"}).json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.assertEqual(self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers).status_code, 409)
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
+                         json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
+
+    def test_pr_lens_local_render_does_not_claim_hosted_integration(self):
+        def monorepo_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "Monorepo"
+            return result
+        target = self.app.state.service.target()
+        target.update({"id": "windows-fixture", "osFamily": "Windows", "architecture": "AMD64"})
+        self.app.state.service.target = lambda: target
+        self.app.state.service.discover_fn = monorepo_discovery
+
+        def original_fixture(discovery, destination, cancelled, log):
+            (destination / "example-output").mkdir(parents=True)
+            (destination / "example-output" / "manifest.json").write_text("{}")
+            (destination / "START_HERE.md").write_text("Run original CLI locally")
+            log("Controlled upstream example rendered")
+            return {"package": PR_LENS_PACKAGE, "version": PR_LENS_VERSION,
+                    "integrity": PR_LENS_INTEGRITY, "versionCheck": True,
+                    "validationCheck": True, "diagramCount": 8}
+
+        self.app.state.service.pr_lens_fn = original_fixture
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers,
+                                  json={"reference": "coldteadotai/pr-lens"}).json()["record"]
         self.assertEqual(record["status"], "AWAITING_APPROVAL")
         self.assertEqual(self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers).status_code, 409)
         self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
