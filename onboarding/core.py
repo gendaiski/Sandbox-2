@@ -169,6 +169,8 @@ def discover(owner: str, name: str, requested_ref: str | None = None) -> dict:
         project_type, explanation = "Workflows and skills", "Reviewed NVIDIA catalog mirrors product-specific Agent Skills; no standalone application or universal skill runtime is included."
     if f"{owner.lower()}/{name.lower()}" == "vshulcz/deja-vu":
         project_type, explanation = "CLI or developer tool", "Reviewed original Go CLI indexes private local coding-agent session history; agent integration is optional and changes user-level settings."
+    if f"{owner.lower()}/{name.lower()}" == "rivet-dev/agents":
+        project_type, explanation = "Monorepo", "Reviewed monorepo contains Rivet Agents libraries and the original Sandbox Agent server, TypeScript SDK and Inspector; the selected local path installs Sandbox Agent."
     listed = (metadata.get("homepage") or "").strip()
     website_type = "None listed"
     official = "No official website verified."
@@ -258,7 +260,11 @@ def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
                     and target.get("osFamily") == "Windows"
                     and target.get("architecture", "").lower() in {"amd64", "x86_64"}
                     and not discovery["archived"] and not discovery["private"])
-    supported = (discovery["type"] in SUPPORTED_TYPES and not discovery["archived"] and not discovery["private"]) or happy_windows or herdr_windows or orchestrator_windows or ekko_windows or html_windows or gentle_windows or qualitylayer_windows or pr_lens_windows or nvidia_catalog or deja_windows
+    rivet_windows = (discovery["canonical"] == "rivet-dev/agents"
+                     and target.get("osFamily") == "Windows"
+                     and target.get("architecture", "").lower() in {"amd64", "x86_64"}
+                     and not discovery["archived"] and not discovery["private"])
+    supported = (discovery["type"] in SUPPORTED_TYPES and not discovery["archived"] and not discovery["private"]) or happy_windows or herdr_windows or orchestrator_windows or ekko_windows or html_windows or gentle_windows or qualitylayer_windows or pr_lens_windows or nvidia_catalog or deja_windows or rivet_windows
     plan = {
         "repository": discovery["canonical"], "commit": discovery["commit"], "targetId": target["id"],
         "targetName": target["name"], "projectType": discovery["type"], "supported": supported,
@@ -397,6 +403,24 @@ def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
             "credentialNeeds": [],
             "verification": ["Published ZIP size and SHA-256", "Original Windows CLI reports pinned version and help", "Private-history indexing and agent integration remain unverified"],
             "limitations": "Binary preparation alone does not index private sessions, provide useful search, or wire Codex and other agents. A separate reviewed plan and user decision are needed for those steps; result remains PARTIAL.",
+        })
+    elif rivet_windows:
+        from .rivet_sandbox_agent import CLI_INTEGRITY, PACKAGE, PORT, VERSION, WINDOWS_INTEGRITY
+        plan.update({
+            "methodKey": "rivet-sandbox-agent-windows",
+            "method": "Install the original Sandbox Agent CLI from this monorepo's pinned npm release, run its real server and Inspector on Windows loopback, and check the built-in mock adapter without invoking a paid model",
+            "release": {"version": VERSION, "asset": PACKAGE, "integrity": CLI_INTEGRITY,
+                        "windowsIntegrity": WINDOWS_INTEGRITY,
+                        "source": f"https://github.com/rivet-dev/agents/releases/tag/v{VERSION}"},
+            "services": ["Original Sandbox Agent Rust HTTP server and Inspector; real coding agents and Rivet Actors are separate"],
+            "ports": [f"127.0.0.1:{PORT} (runner-local only; original server uses no token on this loopback binding)"],
+            "resources": "Node.js 20+ and npm already installed; allow at least 300 MB for the isolated package, native binary and state",
+            "changes": ["Install only the pinned original npm CLI and Windows binary in this job folder with lifecycle scripts disabled", "Install its built-in mock agent process into this job's local state and start the original server on 127.0.0.1", "Create checked start/stop instructions and a report; do not install Claude Code, Codex, Pi or other real agents"],
+            "permissions": ["Execute the reviewed original Sandbox Agent Windows binary for version/help, built-in mock installation and loopback server after exact-plan approval", "The original local Inspector can access its own server without a token; do not forward or publicly expose this port", "No model provider, external sandbox or user credentials are contacted by this adapter"],
+            "cost": "This local server and mock check use no paid service. Real models, hosted Rivet infrastructure or external sandboxes may cost money and require separate configuration.",
+            "credentialNeeds": ["None for the local server and mock; real agent sessions require separately configured agents and provider credentials"],
+            "verification": ["Original npm package and Windows native binary integrity/version", "Original server /v1/health, Inspector HTML and installed built-in mock agent on loopback", "Original browser Inspector, provider-backed conversation and durable Rivet Actor workflow require separate on-device review"],
+            "limitations": "This selects the Sandbox Agent server and Inspector from a larger monorepo. The built-in mock is a smoke test, not a real agent workflow. No provider-backed agent, sandbox isolation, durable Rivet Actor, or browser Inspector interaction is verified by this adapter; result remains PARTIAL.",
         })
     if discovery["canonical"] == "openlit/openlit":
         plan.update({

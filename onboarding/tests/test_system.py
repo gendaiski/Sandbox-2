@@ -22,6 +22,7 @@ from onboarding.gentle_ai import MODULE as GENTLE_MODULE, VERSION as GENTLE_VERS
 from onboarding.qualitylayer_desktop import ASSET as QL_ASSET, SHA256 as QL_SHA256, VERSION as QL_VERSION
 from onboarding.pr_lens import INTEGRITY as PR_LENS_INTEGRITY, PACKAGE as PR_LENS_PACKAGE, VERSION as PR_LENS_VERSION
 from onboarding.deja_vu import ASSET as DEJA_ASSET, SHA256 as DEJA_SHA256, VERSION as DEJA_VERSION
+from onboarding.rivet_sandbox_agent import CLI_INTEGRITY as RIVET_CLI_INTEGRITY, WINDOWS_INTEGRITY as RIVET_WINDOWS_INTEGRITY, PORT as RIVET_PORT, VERSION as RIVET_VERSION
 from onboarding.server import create_app
 
 
@@ -196,6 +197,23 @@ class ReferenceTests(unittest.TestCase):
             self.assertIn("do not index transcripts", " ".join(plan["changes"]))
             target["osFamily"] = "Linux"
             self.assertFalse(make_plan(discovery, target, Path(folder) / "deja-vu")["supported"])
+
+    def test_rivet_monorepo_plan_selects_original_loopback_server(self):
+        discovery = fixture_discovery("rivet-dev", "agents", None)
+        discovery["type"] = "Monorepo"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "rivet")
+            self.assertTrue(plan["supported"])
+            self.assertEqual(plan["methodKey"], "rivet-sandbox-agent-windows")
+            self.assertEqual(plan["release"]["version"], RIVET_VERSION)
+            self.assertEqual(plan["release"]["integrity"], RIVET_CLI_INTEGRITY)
+            self.assertEqual(plan["release"]["windowsIntegrity"], RIVET_WINDOWS_INTEGRITY)
+            self.assertIn(f"127.0.0.1:{RIVET_PORT}", " ".join(plan["ports"]))
+            self.assertFalse(plan["publicExposure"])
+            self.assertIn("built-in mock", " ".join(plan["verification"]))
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "rivet")["supported"])
 
     def test_book_with_chapter_notebooks_is_learning_material(self):
         kind, explanation = classify(
@@ -677,6 +695,42 @@ class RunnerTests(unittest.TestCase):
             time.sleep(.02)
         self.assertEqual(current["status"], "COMPLETE")
         self.assertIn("NOT APPLICABLE", {check["status"] for check in current["checks"]})
+
+    def test_rivet_mock_health_never_claims_provider_agent_workflow(self):
+        def monorepo_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "Monorepo"
+            return result
+        target = self.app.state.service.target()
+        target.update({"id": "windows-fixture", "osFamily": "Windows", "architecture": "AMD64"})
+        self.app.state.service.target = lambda: target
+        self.app.state.service.discover_fn = monorepo_discovery
+
+        def original_fixture(destination, cancelled, log):
+            binary = destination / "node_modules" / "@sandbox-agent" / "cli-win32-x64" / "bin" / "sandbox-agent.exe"
+            binary.parent.mkdir(parents=True)
+            binary.write_bytes(b"controlled fixture")
+            (destination / "START_HERE.md").write_text("Original server fixture")
+            log("Controlled original server fixture responded")
+            return {"package": f"@sandbox-agent/cli@{RIVET_VERSION}", "version": RIVET_VERSION,
+                    "url": f"http://127.0.0.1:{RIVET_PORT}/ui/", "serverHealth": True,
+                    "originalInspector": True, "mockInstalled": True, "agentWorkflowVerified": False}
+
+        self.app.state.service.rivet_fn = original_fixture
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers,
+                                  json={"reference": "rivet-dev/agents"}).json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
+                         json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
 
     def test_failed_verification_cannot_report_complete(self):
         def missing_readme(discovery, destination, cancelled, log):

@@ -36,6 +36,7 @@ from .qualitylayer_desktop import prepare_and_launch as prepare_qualitylayer_des
 from .pr_lens import prepare as prepare_pr_lens
 from .nvidia_skills import prepare as prepare_nvidia_skills
 from .deja_vu import prepare as prepare_deja_vu
+from .rivet_sandbox_agent import prepare_and_start as prepare_rivet_sandbox_agent
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -65,7 +66,7 @@ class Approval(BaseModel):
 
 
 class Service:
-    def __init__(self, data_dir: Path, access_code: str, discover_fn: Callable = discover, download_fn: Callable = download_archive, happy_fn: Callable = prepare_happy_desktop, herdr_fn: Callable = prepare_herdr, orchestrator_fn: Callable = prepare_orchestrator, ekko_fn: Callable = prepare_ekko_web, html_fn: Callable = prepare_html_anything, gentle_fn: Callable = prepare_gentle_ai, qualitylayer_fn: Callable = prepare_qualitylayer_desktop, pr_lens_fn: Callable = prepare_pr_lens, nvidia_fn: Callable = prepare_nvidia_skills, deja_fn: Callable = prepare_deja_vu):
+    def __init__(self, data_dir: Path, access_code: str, discover_fn: Callable = discover, download_fn: Callable = download_archive, happy_fn: Callable = prepare_happy_desktop, herdr_fn: Callable = prepare_herdr, orchestrator_fn: Callable = prepare_orchestrator, ekko_fn: Callable = prepare_ekko_web, html_fn: Callable = prepare_html_anything, gentle_fn: Callable = prepare_gentle_ai, qualitylayer_fn: Callable = prepare_qualitylayer_desktop, pr_lens_fn: Callable = prepare_pr_lens, nvidia_fn: Callable = prepare_nvidia_skills, deja_fn: Callable = prepare_deja_vu, rivet_fn: Callable = prepare_rivet_sandbox_agent):
         self.data_dir = data_dir.resolve()
         self.data_dir.mkdir(parents=True, exist_ok=True)
         lock_path = self.data_dir / ".runner.lock"
@@ -104,6 +105,7 @@ class Service:
         self.pr_lens_fn = pr_lens_fn
         self.nvidia_fn = nvidia_fn
         self.deja_fn = deja_fn
+        self.rivet_fn = rivet_fn
         self._init_db()
         self._recover()
 
@@ -444,6 +446,18 @@ class Service:
                     ("Private session index and agent hooks", "NOT VERIFIED", "No transcript indexing, MCP wiring or coding-agent configuration was performed"),
                 ]
                 final = "PARTIAL"
+            elif record["plan"].get("methodKey") == "rivet-sandbox-agent-windows":
+                if self.target()["osFamily"] != "Windows":
+                    raise RuntimeError("The approved Windows target is no longer available.")
+                if shutil.disk_usage(self.data_dir).free < 300_000_000:
+                    raise RuntimeError("At least 300 MB of free disk space is needed before preparing Rivet Sandbox Agent.")
+                result = self.rivet_fn(destination, cancelled, lambda message: self.log(job_id, message))
+                checks = [
+                    ("Original Sandbox Agent npm release", "PASS" if result.get("package") == record["plan"]["release"]["asset"] and (destination / "node_modules" / "@sandbox-agent" / "cli-win32-x64" / "bin" / "sandbox-agent.exe").is_file() else "FAIL", f"Version {result.get('version', 'unknown')} in {destination}"),
+                    ("Original server, Inspector HTML and built-in mock", "PASS" if result.get("serverHealth") and result.get("originalInspector") and result.get("mockInstalled") else "FAIL", result.get("url", "No address returned")),
+                    ("Browser Inspector and real provider-backed agent", "NOT VERIFIED", "Mock smoke check does not establish a real agent workflow or Rivet Actor durability"),
+                ]
+                final = "PARTIAL"
             else:
                 result = self.download_fn(record["discovery"], destination, cancelled, lambda message: self.log(job_id, message))
                 readme = destination / result["readme"]
@@ -503,7 +517,40 @@ class Service:
             db.execute("UPDATE records SET status='VERIFYING',updated_at=? WHERE id=?", (now(), record_id))
         workspace = Path(row["workspace"])
         plan = json.loads(row["plan"])
-        if plan.get("methodKey") == "deja-vu-cli-windows":
+        if plan.get("methodKey") == "rivet-sandbox-agent-windows":
+            from .rivet_sandbox_agent import CLI_INTEGRITY, WINDOWS_INTEGRITY, PORT, VERSION
+            lock = workspace / "package-lock.json"
+            packages = {}
+            try:
+                packages = json.loads(lock.read_text(encoding="utf-8")).get("packages", {})
+            except (OSError, ValueError):
+                pass
+            cli = packages.get("node_modules/@sandbox-agent/cli", {})
+            platform = packages.get("node_modules/@sandbox-agent/cli-win32-x64", {})
+            binary = workspace / "node_modules" / "@sandbox-agent" / "cli-win32-x64" / "bin" / "sandbox-agent.exe"
+            package_valid = (cli.get("version") == VERSION and cli.get("integrity") == CLI_INTEGRITY
+                             and platform.get("version") == VERSION and platform.get("integrity") == WINDOWS_INTEGRITY
+                             and binary.is_file())
+            health = inspector = mock = False
+            try:
+                import urllib.request
+                base = f"http://127.0.0.1:{PORT}/"
+                with urllib.request.urlopen(base + "v1/health", timeout=3) as response:
+                    health = json.loads(response.read(32_000)).get("status") == "ok"
+                with urllib.request.urlopen(base + "ui/", timeout=3) as response:
+                    inspector = "Sandbox Agent" in response.read(150_000).decode("utf-8", "replace")
+                with urllib.request.urlopen(base + "v1/agents", timeout=3) as response:
+                    agents = json.loads(response.read(150_000)).get("agents", [])
+                    mock = any(a.get("id") == "mock" and a.get("installed") for a in agents)
+            except (OSError, ValueError, KeyError):
+                pass
+            checks = [
+                ("Original npm CLI and Windows binary retained", "PASS" if package_valid else "FAIL", str(binary)),
+                ("Original server and Inspector still respond", "PASS" if health and inspector and mock else "FAIL", f"http://127.0.0.1:{PORT}/ui/"),
+                ("Provider-backed session and Rivet Actor durability", "NOT VERIFIED", "Requires a real agent, model access and separate deployment plan"),
+            ]
+            final = "PARTIAL"
+        elif plan.get("methodKey") == "deja-vu-cli-windows":
             import subprocess
             from .deja_vu import ASSET, SHA256, VERSION
             archive = workspace / ASSET
@@ -678,7 +725,7 @@ class Service:
             "workspace": record["workspace"], "status": record["status"], "planHash": record["plan_hash"],
             "approvedAt": record["approved_at"], "job": record["latestJob"], "checks": record["checks"],
             "usage": f"Read {record['workspace']}/START_HERE.md" if record["status"] in {"COMPLETE", "PARTIAL"} and Path(record["workspace"]).is_dir() else "Resume or resolve the blocker shown in this record",
-            "startStopRestart": "Close Happy to stop; open it from the Windows Start menu to restart. Complete the installer screens first." if record["plan"].get("methodKey") == "happy-desktop-windows" else "Use Ctrl+B then Q to detach the Herdr terminal UI, rerun herdr.exe to reattach, and herdr.exe server stop to stop its background server." if record["plan"].get("methodKey") == "herdr-windows" else "No application was started. If you choose to install the unsigned release, close and reopen it from the Windows Start menu." if record["plan"].get("methodKey") == "orchestrator-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_EKKO.ps1 after checking its target and START_EKKO.cmd to restart; closing the browser does not stop the server." if record["plan"].get("methodKey") == "ekko-web-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_HTML_ANYTHING.ps1 and START_HTML_ANYTHING.cmd in the job folder to stop and restart the original Next.js server." if record["plan"].get("methodKey") == "html-anything-windows" else "No service runs for the Gentle-AI CLI. Run bin/gentle-ai.exe from the job folder as needed; configure existing agents only after a separate plan." if record["plan"].get("methodKey") == "gentle-ai-windows" else "Complete QualityLayer's original interactive setup first. Close the App to stop it and reopen it from the Windows Start menu to restart; the CLI may retain user-level agent settings." if record["plan"].get("methodKey") == "qualitylayer-desktop-windows" else "No service runs for the PR Lens CLI. Run its original local command as needed; model analysis and hosted integrations remain separate." if record["plan"].get("methodKey") == "pr-lens-cli-windows" else "No service runs for the deja-vu CLI. Run app/deja.exe from the job folder as needed; indexing private sessions and agent configuration require a separate plan." if record["plan"].get("methodKey") == "deja-vu-cli-windows" else "No service was started; prepared files remain on the runner until removed after review.",
+            "startStopRestart": "Close Happy to stop; open it from the Windows Start menu to restart. Complete the installer screens first." if record["plan"].get("methodKey") == "happy-desktop-windows" else "Use Ctrl+B then Q to detach the Herdr terminal UI, rerun herdr.exe to reattach, and herdr.exe server stop to stop its background server." if record["plan"].get("methodKey") == "herdr-windows" else "No application was started. If you choose to install the unsigned release, close and reopen it from the Windows Start menu." if record["plan"].get("methodKey") == "orchestrator-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_EKKO.ps1 after checking its target and START_EKKO.cmd to restart; closing the browser does not stop the server." if record["plan"].get("methodKey") == "ekko-web-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_HTML_ANYTHING.ps1 and START_HTML_ANYTHING.cmd in the job folder to stop and restart the original Next.js server." if record["plan"].get("methodKey") == "html-anything-windows" else "No service runs for the Gentle-AI CLI. Run bin/gentle-ai.exe from the job folder as needed; configure existing agents only after a separate plan." if record["plan"].get("methodKey") == "gentle-ai-windows" else "Complete QualityLayer's original interactive setup first. Close the App to stop it and reopen it from the Windows Start menu to restart; the CLI may retain user-level agent settings." if record["plan"].get("methodKey") == "qualitylayer-desktop-windows" else "No service runs for the PR Lens CLI. Run its original local command as needed; model analysis and hosted integrations remain separate." if record["plan"].get("methodKey") == "pr-lens-cli-windows" else "No service runs for the deja-vu CLI. Run app/deja.exe from the job folder as needed; indexing private sessions and agent configuration require a separate plan." if record["plan"].get("methodKey") == "deja-vu-cli-windows" else "Open the original Inspector at http://127.0.0.1:18850/ui/ on this Windows computer. Run STOP_RIVET.ps1 in the job folder to stop the checked PID; run START_RIVET.cmd to restart it on loopback. Closing the browser does not stop the server." if record["plan"].get("methodKey") == "rivet-sandbox-agent-windows" else "No service was started; prepared files remain on the runner until removed after review.",
             "persistence": self.target()["persistenceNote"], "limitations": record["plan"]["limitations"],
             "sources": discovery["sources"], "lastUpdated": record["updated_at"],
         }
