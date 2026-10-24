@@ -167,6 +167,8 @@ def discover(owner: str, name: str, requested_ref: str | None = None) -> dict:
         project_type, explanation = "Application", "Reviewed upstream self-hosted OpenLIT dashboard needs OpenLIT, ClickHouse, NATS, persistent volumes and a functioning Docker or Kubernetes host."
     if f"{owner.lower()}/{name.lower()}" == "nvidia/skills":
         project_type, explanation = "Workflows and skills", "Reviewed NVIDIA catalog mirrors product-specific Agent Skills; no standalone application or universal skill runtime is included."
+    if f"{owner.lower()}/{name.lower()}" == "vshulcz/deja-vu":
+        project_type, explanation = "CLI or developer tool", "Reviewed original Go CLI indexes private local coding-agent session history; agent integration is optional and changes user-level settings."
     listed = (metadata.get("homepage") or "").strip()
     website_type = "None listed"
     official = "No official website verified."
@@ -252,7 +254,11 @@ def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
         and not discovery["archived"] and not discovery["private"]
     )
     nvidia_catalog = discovery["canonical"] == "nvidia/skills" and not discovery["archived"] and not discovery["private"]
-    supported = (discovery["type"] in SUPPORTED_TYPES and not discovery["archived"] and not discovery["private"]) or happy_windows or herdr_windows or orchestrator_windows or ekko_windows or html_windows or gentle_windows or qualitylayer_windows or pr_lens_windows or nvidia_catalog
+    deja_windows = (discovery["canonical"] == "vshulcz/deja-vu"
+                    and target.get("osFamily") == "Windows"
+                    and target.get("architecture", "").lower() in {"amd64", "x86_64"}
+                    and not discovery["archived"] and not discovery["private"])
+    supported = (discovery["type"] in SUPPORTED_TYPES and not discovery["archived"] and not discovery["private"]) or happy_windows or herdr_windows or orchestrator_windows or ekko_windows or html_windows or gentle_windows or qualitylayer_windows or pr_lens_windows or nvidia_catalog or deja_windows
     plan = {
         "repository": discovery["canonical"], "commit": discovery["commit"], "targetId": target["id"],
         "targetName": target["name"], "projectType": discovery["type"], "supported": supported,
@@ -375,6 +381,22 @@ def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
             "credentialNeeds": [],
             "verification": ["Pinned archive and readable root README", "Product skill manifests accessible under skills/", "No application UI or global agent installation is claimed"],
             "limitations": "This catalog is content, not a running app. Preparing it makes the skills readable but does not install every product or automatically add instructions to Codex or other agents.",
+        })
+    elif deja_windows:
+        from .deja_vu import ASSET, SHA256, SIZE, URL, VERSION
+        plan.update({
+            "methodKey": "deja-vu-cli-windows",
+            "method": "Download the pinned original Windows CLI ZIP, compare it with upstream checksums, unpack it in an isolated job folder, and run version/help only",
+            "release": {"version": VERSION, "asset": ASSET, "url": URL, "sha256": SHA256, "bytes": SIZE,
+                        "source": f"https://github.com/vshulcz/deja-vu/releases/tag/v{VERSION}"},
+            "services": ["No service starts; optional MCP server and agent hooks are excluded from this plan"],
+            "resources": "8.5 MB download, about 22 MB extracted; allow at least 100 MB free disk space",
+            "changes": ["Save the original hash-verified ZIP and CLI in this job folder", "Write START_HERE.md; do not index transcripts or alter any coding-agent configuration"],
+            "permissions": ["Execute only the pinned original binary with --version and --help after exact-plan approval", "Do not run index, search, install, MCP or hooks on private session history"],
+            "cost": "No paid service is used for the binary; optional embedding providers can cost money and are excluded",
+            "credentialNeeds": [],
+            "verification": ["Published ZIP size and SHA-256", "Original Windows CLI reports pinned version and help", "Private-history indexing and agent integration remain unverified"],
+            "limitations": "Binary preparation alone does not index private sessions, provide useful search, or wire Codex and other agents. A separate reviewed plan and user decision are needed for those steps; result remains PARTIAL.",
         })
     if discovery["canonical"] == "openlit/openlit":
         plan.update({

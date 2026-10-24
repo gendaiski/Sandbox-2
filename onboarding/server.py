@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import ipaddress
 import hashlib
 import hmac
 import io
@@ -34,6 +35,7 @@ from .gentle_ai import prepare as prepare_gentle_ai
 from .qualitylayer_desktop import prepare_and_launch as prepare_qualitylayer_desktop
 from .pr_lens import prepare as prepare_pr_lens
 from .nvidia_skills import prepare as prepare_nvidia_skills
+from .deja_vu import prepare as prepare_deja_vu
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -63,7 +65,7 @@ class Approval(BaseModel):
 
 
 class Service:
-    def __init__(self, data_dir: Path, access_code: str, discover_fn: Callable = discover, download_fn: Callable = download_archive, happy_fn: Callable = prepare_happy_desktop, herdr_fn: Callable = prepare_herdr, orchestrator_fn: Callable = prepare_orchestrator, ekko_fn: Callable = prepare_ekko_web, html_fn: Callable = prepare_html_anything, gentle_fn: Callable = prepare_gentle_ai, qualitylayer_fn: Callable = prepare_qualitylayer_desktop, pr_lens_fn: Callable = prepare_pr_lens, nvidia_fn: Callable = prepare_nvidia_skills):
+    def __init__(self, data_dir: Path, access_code: str, discover_fn: Callable = discover, download_fn: Callable = download_archive, happy_fn: Callable = prepare_happy_desktop, herdr_fn: Callable = prepare_herdr, orchestrator_fn: Callable = prepare_orchestrator, ekko_fn: Callable = prepare_ekko_web, html_fn: Callable = prepare_html_anything, gentle_fn: Callable = prepare_gentle_ai, qualitylayer_fn: Callable = prepare_qualitylayer_desktop, pr_lens_fn: Callable = prepare_pr_lens, nvidia_fn: Callable = prepare_nvidia_skills, deja_fn: Callable = prepare_deja_vu):
         self.data_dir = data_dir.resolve()
         self.data_dir.mkdir(parents=True, exist_ok=True)
         lock_path = self.data_dir / ".runner.lock"
@@ -101,6 +103,7 @@ class Service:
         self.qualitylayer_fn = qualitylayer_fn
         self.pr_lens_fn = pr_lens_fn
         self.nvidia_fn = nvidia_fn
+        self.deja_fn = deja_fn
         self._init_db()
         self._recover()
 
@@ -429,6 +432,18 @@ class Service:
                     ("Global agent installation", "NOT APPLICABLE", "No skill was installed into an agent; content snapshot only"),
                 ]
                 final = "COMPLETE" if all(status != "FAIL" for _, status, _ in checks) else "PARTIAL"
+            elif record["plan"].get("methodKey") == "deja-vu-cli-windows":
+                if self.target()["osFamily"] != "Windows":
+                    raise RuntimeError("The approved Windows target is no longer available.")
+                if shutil.disk_usage(self.data_dir).free < 100_000_000:
+                    raise RuntimeError("At least 100 MB of free disk space is needed before preparing deja-vu.")
+                result = self.deja_fn(destination, cancelled, lambda message: self.log(job_id, message))
+                checks = [
+                    ("Original Windows release and published digest", "PASS" if result.get("sha256") == record["plan"]["release"]["sha256"] and (destination / record["plan"]["release"]["asset"]).is_file() else "FAIL", str(destination)),
+                    ("Original CLI version and help", "PASS" if result.get("versionCheck") and result.get("helpCheck") and (destination / "app" / "deja.exe").is_file() else "FAIL", f"deja {result.get('version', 'unknown')}"),
+                    ("Private session index and agent hooks", "NOT VERIFIED", "No transcript indexing, MCP wiring or coding-agent configuration was performed"),
+                ]
+                final = "PARTIAL"
             else:
                 result = self.download_fn(record["discovery"], destination, cancelled, lambda message: self.log(job_id, message))
                 readme = destination / result["readme"]
@@ -488,7 +503,32 @@ class Service:
             db.execute("UPDATE records SET status='VERIFYING',updated_at=? WHERE id=?", (now(), record_id))
         workspace = Path(row["workspace"])
         plan = json.loads(row["plan"])
-        if plan.get("methodKey") == "nvidia-skills-catalog":
+        if plan.get("methodKey") == "deja-vu-cli-windows":
+            import subprocess
+            from .deja_vu import ASSET, SHA256, VERSION
+            archive = workspace / ASSET
+            binary = workspace / "app" / "deja.exe"
+            digest = None
+            if archive.is_file():
+                with archive.open("rb") as source:
+                    digest = hashlib.file_digest(source, "sha256").hexdigest()
+            valid_binary = False
+            if binary.is_file():
+                try:
+                    child_env = os.environ.copy()
+                    child_env.update({"DEJA_OFFLINE": "1", "DEJA_EMBED_OFF": "1", "DEJA_NO_AUTO_INDEX": "1"})
+                    probe = subprocess.run([str(binary), "--version"], cwd=binary.parent, env=child_env,
+                                           capture_output=True, text=True, timeout=15, check=False)
+                    valid_binary = probe.returncode == 0 and probe.stdout.strip() == f"deja {VERSION}"
+                except (OSError, subprocess.TimeoutExpired):
+                    pass
+            checks = [
+                ("Original release still matches published digest", "PASS" if digest == SHA256 else "FAIL", str(archive)),
+                ("Original Windows CLI reports pinned version", "PASS" if valid_binary else "FAIL", str(binary)),
+                ("Private session search and agent hooks", "NOT VERIFIED", "No indexing or agent configuration approved"),
+            ]
+            final = "PARTIAL"
+        elif plan.get("methodKey") == "nvidia-skills-catalog":
             readme = workspace / "README.md"
             manifests = list((workspace / "skills").glob("*/SKILL.md"))
             checks = [
@@ -638,7 +678,7 @@ class Service:
             "workspace": record["workspace"], "status": record["status"], "planHash": record["plan_hash"],
             "approvedAt": record["approved_at"], "job": record["latestJob"], "checks": record["checks"],
             "usage": f"Read {record['workspace']}/START_HERE.md" if record["status"] in {"COMPLETE", "PARTIAL"} and Path(record["workspace"]).is_dir() else "Resume or resolve the blocker shown in this record",
-            "startStopRestart": "Close Happy to stop; open it from the Windows Start menu to restart. Complete the installer screens first." if record["plan"].get("methodKey") == "happy-desktop-windows" else "Use Ctrl+B then Q to detach the Herdr terminal UI, rerun herdr.exe to reattach, and herdr.exe server stop to stop its background server." if record["plan"].get("methodKey") == "herdr-windows" else "No application was started. If you choose to install the unsigned release, close and reopen it from the Windows Start menu." if record["plan"].get("methodKey") == "orchestrator-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_EKKO.ps1 after checking its target and START_EKKO.cmd to restart; closing the browser does not stop the server." if record["plan"].get("methodKey") == "ekko-web-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_HTML_ANYTHING.ps1 and START_HTML_ANYTHING.cmd in the job folder to stop and restart the original Next.js server." if record["plan"].get("methodKey") == "html-anything-windows" else "No service runs for the Gentle-AI CLI. Run bin/gentle-ai.exe from the job folder as needed; configure existing agents only after a separate plan." if record["plan"].get("methodKey") == "gentle-ai-windows" else "Complete QualityLayer's original interactive setup first. Close the App to stop it and reopen it from the Windows Start menu to restart; the CLI may retain user-level agent settings." if record["plan"].get("methodKey") == "qualitylayer-desktop-windows" else "No service runs for the PR Lens CLI. Run its original local command as needed; model analysis and hosted integrations remain separate." if record["plan"].get("methodKey") == "pr-lens-cli-windows" else "No service was started; prepared files remain on the runner until removed after review.",
+            "startStopRestart": "Close Happy to stop; open it from the Windows Start menu to restart. Complete the installer screens first." if record["plan"].get("methodKey") == "happy-desktop-windows" else "Use Ctrl+B then Q to detach the Herdr terminal UI, rerun herdr.exe to reattach, and herdr.exe server stop to stop its background server." if record["plan"].get("methodKey") == "herdr-windows" else "No application was started. If you choose to install the unsigned release, close and reopen it from the Windows Start menu." if record["plan"].get("methodKey") == "orchestrator-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_EKKO.ps1 after checking its target and START_EKKO.cmd to restart; closing the browser does not stop the server." if record["plan"].get("methodKey") == "ekko-web-windows" else "Open the runner-local URL on the same Windows computer. Use STOP_HTML_ANYTHING.ps1 and START_HTML_ANYTHING.cmd in the job folder to stop and restart the original Next.js server." if record["plan"].get("methodKey") == "html-anything-windows" else "No service runs for the Gentle-AI CLI. Run bin/gentle-ai.exe from the job folder as needed; configure existing agents only after a separate plan." if record["plan"].get("methodKey") == "gentle-ai-windows" else "Complete QualityLayer's original interactive setup first. Close the App to stop it and reopen it from the Windows Start menu to restart; the CLI may retain user-level agent settings." if record["plan"].get("methodKey") == "qualitylayer-desktop-windows" else "No service runs for the PR Lens CLI. Run its original local command as needed; model analysis and hosted integrations remain separate." if record["plan"].get("methodKey") == "pr-lens-cli-windows" else "No service runs for the deja-vu CLI. Run app/deja.exe from the job folder as needed; indexing private sessions and agent configuration require a separate plan." if record["plan"].get("methodKey") == "deja-vu-cli-windows" else "No service was started; prepared files remain on the runner until removed after review.",
             "persistence": self.target()["persistenceNote"], "limitations": record["plan"]["limitations"],
             "sources": discovery["sources"], "lastUpdated": record["updated_at"],
         }
@@ -669,7 +709,10 @@ class Service:
 
 
 def create_app(data_dir: Path | None = None, access_code: str | None = None, *, discover_fn: Callable = discover, download_fn: Callable = download_archive, allowed_hosts: set[str] | None = None) -> FastAPI:
-    service = Service(data_dir or DEFAULT_DATA, access_code or secrets.token_urlsafe(18), discover_fn, download_fn)
+    # The default executable binds only to 127.0.0.1 and opens a CSRF-protected
+    # browser session automatically. An explicitly supplied code retains the
+    # authenticated mode for tests or another deliberately configured host.
+    service = Service(data_dir or DEFAULT_DATA, access_code or "", discover_fn, download_fn)
     @asynccontextmanager
     async def lifespan(_app: FastAPI):
         try:
@@ -702,6 +745,13 @@ def create_app(data_dir: Path | None = None, access_code: str | None = None, *, 
             raise HTTPException(403, "Session check failed; reload and sign in again")
         return csrf
 
+    def require_local_client(request: Request):
+        try:
+            if not request.client or not ipaddress.ip_address(request.client.host).is_loopback:
+                raise ValueError("not a loopback address")
+        except ValueError as error:
+            raise HTTPException(403, "Automatic access is available only from this computer") from error
+
     @app.get("/")
     def root():
         return RedirectResponse("/showcase/onboarding-system/workspace.html")
@@ -711,12 +761,21 @@ def create_app(data_dir: Path | None = None, access_code: str | None = None, *, 
         return {"service": "Sandbox-2 Onboarding System", "runner": "connected", "scope": "loopback-only"}
 
     @app.get("/api/session")
-    def session(request: Request):
+    def session(request: Request, response: Response):
         csrf = service.sessions.get(request.cookies.get("sandbox2_onboarding", ""))
-        return {"authenticated": bool(csrf), "csrf": csrf}
+        if not csrf and not service.access_code:
+            require_local_client(request)
+            token = secrets.token_urlsafe(32)
+            csrf = secrets.token_urlsafe(24)
+            service.sessions[token] = csrf
+            response.set_cookie("sandbox2_onboarding", token, httponly=True, samesite="strict", secure=False, path="/api")
+            service.audit("LOCAL_SESSION", None, "Loopback owner session opened without a code")
+        return {"authenticated": bool(csrf), "csrf": csrf, "accessCodeRequired": bool(service.access_code)}
 
     @app.post("/api/session")
     def login(payload: Login, request: Request, response: Response):
+        if not service.access_code:
+            raise HTTPException(409, "This loopback runner opens directly; reload the page")
         import time
         client = request.client.host if request.client else "local"
         recent = [tick for tick in failed_logins.get(client, []) if time.monotonic() - tick < 60]
@@ -872,10 +931,11 @@ def main():
     args = parser.parse_args()
     if not 1024 <= args.port <= 65535:
         parser.error("Choose an unprivileged port between 1024 and 65535")
-    code = os.environ.get("ONBOARDING_ACCESS_CODE") or secrets.token_urlsafe(18)
+    code = os.environ.get("ONBOARDING_ACCESS_CODE") or None
     app = create_app(args.data_dir, code, allowed_hosts={f"127.0.0.1:{args.port}", f"localhost:{args.port}"})
     print(f"Sandbox-2 Onboarding System: http://127.0.0.1:{args.port}/", flush=True)
-    print(f"Local access code (keep private): {code}", flush=True)
+    print("Local access: automatic on this computer (127.0.0.1 only)" if not code else
+          "Local access code required; enter the private code from ONBOARDING_ACCESS_CODE in the browser", flush=True)
     print(f"Runner data: {app.state.service.data_dir}", flush=True)
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=args.port, access_log=False)

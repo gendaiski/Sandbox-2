@@ -21,6 +21,7 @@ from onboarding.html_anything import NEXT_VERSION as HTML_NEXT_VERSION, PNPM_VER
 from onboarding.gentle_ai import MODULE as GENTLE_MODULE, VERSION as GENTLE_VERSION
 from onboarding.qualitylayer_desktop import ASSET as QL_ASSET, SHA256 as QL_SHA256, VERSION as QL_VERSION
 from onboarding.pr_lens import INTEGRITY as PR_LENS_INTEGRITY, PACKAGE as PR_LENS_PACKAGE, VERSION as PR_LENS_VERSION
+from onboarding.deja_vu import ASSET as DEJA_ASSET, SHA256 as DEJA_SHA256, VERSION as DEJA_VERSION
 from onboarding.server import create_app
 
 
@@ -181,6 +182,21 @@ class ReferenceTests(unittest.TestCase):
             self.assertIn("7000 regular files", plan["resources"])
             self.assertIn("Do not execute repository scripts", " ".join(plan["permissions"]))
 
+    def test_deja_vu_plan_prepares_original_cli_without_private_history_access(self):
+        discovery = fixture_discovery("vshulcz", "deja-vu", None)
+        discovery["type"] = "CLI or developer tool"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "deja-vu")
+            self.assertTrue(plan["supported"])
+            self.assertEqual(plan["methodKey"], "deja-vu-cli-windows")
+            self.assertEqual(plan["release"]["asset"], DEJA_ASSET)
+            self.assertEqual(plan["release"]["sha256"], DEJA_SHA256)
+            self.assertEqual(plan["release"]["version"], DEJA_VERSION)
+            self.assertIn("do not index transcripts", " ".join(plan["changes"]))
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "deja-vu")["supported"])
+
     def test_book_with_chapter_notebooks_is_learning_material(self):
         kind, explanation = classify(
             "Agentic-Design-Patterns",
@@ -266,6 +282,32 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(self.client.get("/showcase/onboarding-system/workspace.html").status_code, 200)
         with self.assertRaisesRegex(RuntimeError, "Another Onboarding runner"):
             create_app(Path(self.temp.name), "second-code", discover_fn=fixture_discovery, download_fn=fixture_download, allowed_hosts={"testserver"})
+
+    def test_default_loopback_access_needs_no_code_but_preserves_request_boundaries(self):
+        with tempfile.TemporaryDirectory() as folder:
+            app = create_app(Path(folder), discover_fn=fixture_discovery,
+                             download_fn=fixture_download, allowed_hosts={"testserver"})
+            try:
+                with TestClient(app, client=("127.0.0.1", 50000)) as local:
+                    session = local.get("/api/session")
+                    self.assertEqual(session.status_code, 200)
+                    self.assertTrue(session.json()["authenticated"])
+                    self.assertFalse(session.json()["accessCodeRequired"])
+                    self.assertIn("sandbox2_onboarding", session.cookies)
+                    csrf = session.json()["csrf"]
+                    self.assertEqual(local.get("/api/target").status_code, 200)
+                    self.assertEqual(local.post("/api/onboardings", json={"reference": "Example/Docs"}).status_code, 403)
+                    self.assertEqual(local.post("/api/onboardings", headers={"X-Onboarding-CSRF": csrf,
+                                         "Origin": "https://other.example"}, json={"reference": "Example/Docs"}).status_code, 403)
+                    self.assertEqual(local.get("/api/session", headers={"Host": "rebound.example"}).status_code, 400)
+                    result = local.post("/api/onboardings", headers={"X-Onboarding-CSRF": csrf},
+                                        json={"reference": "Example/Docs"})
+                    self.assertEqual(result.status_code, 200, result.text)
+                with TestClient(app, client=("192.0.2.10", 50000)) as remote:
+                    self.assertEqual(remote.get("/api/session").status_code, 403)
+                    self.assertEqual(remote.get("/api/target").status_code, 401)
+            finally:
+                app.state.service.close()
 
     def test_real_job_record_and_exports(self):
         headers = self.login()
