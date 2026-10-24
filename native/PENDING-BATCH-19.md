@@ -84,7 +84,7 @@ This list is named **Onboarding System**. It preserves the user’s order and de
 66. `RINDOGATAN/deal-room`
 
 Items 51–58 were added on 2026-10-24. The user's preference is to label
-`RS-labhub/rs-docmanager` as a promising candidate; an evidence-based ranking
+`RS-labhub/rs-docmanager` as the user’s top pick; an evidence-based ranking
 is pending inspection. Items 59–66 belong to the separately queued
 [Fattura Egypt v2 project](FATTURA-EGYPT-V2-QUEUE.md). **Do not start that
 project now.** Its repositories are source inputs to one new, independently
