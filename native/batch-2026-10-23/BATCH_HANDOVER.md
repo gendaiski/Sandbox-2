@@ -1,6 +1,6 @@
 # Onboarding System — handover checkpoint
 
-**Latest queue update (2026-10-24):** Items 51–58 were appended and deduplicated. The Fattura Egypt v2 project is queued but **NOT STARTED**; its eight source repositories are items 59–66. Read [FATTURA-EGYPT-V2-QUEUE.md](../FATTURA-EGYPT-V2-QUEUE.md) before any work on them. No background task or scheduled continuation exists. This update did not modify the current Fattura version.
+**Latest project update (2026-10-24):** Items 51–58 were appended and deduplicated. The user later said “go” on Fattura Egypt v2; its PARTIAL local implementation is in [draft PR #1](https://github.com/gendaiski/Egyptian-eInvoice-SDK---Fattura/pull/1). The user corrected the M&A scope to an independent system, which the PR implements as Meridian. Its eight source repositories remain items 59–66 with QUEUED status for independent installations. Read [FATTURA-EGYPT-V2-QUEUE.md](../FATTURA-EGYPT-V2-QUEUE.md) and the PR handover before continuing. No background task or scheduled continuation exists; the current Fattura production branch was not modified.
 
 
 **State:** Resumed after the user opened the Onboarding System on their Windows computer. Items 01–06 are PARTIAL; item 07 is BLOCKED on Windows; items 08–14 are PARTIAL; item 15 is BLOCKED by Docker storage health; items 16–18 are PARTIAL; item 19 is PARTIAL; items 20–66 are queued. No background job is running.

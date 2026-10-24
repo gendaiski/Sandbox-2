@@ -1,9 +1,9 @@
 # Onboarding System — ordered repository queue
 
-This list is named **Onboarding System**. It preserves the user’s order and deduplicates repeated requests. Items 01–50 were recorded previously; items 51–58 were appended on 2026-10-24. Items 59–66 are source inputs to the separately queued [Fattura Egypt v2 project](FATTURA-EGYPT-V2-QUEUE.md), which the user explicitly said **not to start now**. The repeated `nocodb/nocodb` remains item 20 and `clientIO/joint` remains item 40. This file records a durable queue, not evidence of installation or a background job. See the [tracker](batch-2026-10-23/INSTALLATION_TRACKER.md) for current results.
+This list is named **Onboarding System**. It preserves the user’s order and deduplicates repeated requests. Items 01–50 were recorded previously; items 51–58 were appended on 2026-10-24. Items 59–66 are source inputs to the separate [Fattura Egypt v2 project](FATTURA-EGYPT-V2-QUEUE.md), which began after the user's later “go”; its local implementation is PARTIAL and reviewable in a draft PR. These eight sources are not independently installed by that work. The repeated `nocodb/nocodb` remains item 20 and `clientIO/joint` remains item 40. This file records a durable queue, not evidence of installation or a background job. See the [tracker](batch-2026-10-23/INSTALLATION_TRACKER.md) for current results.
 ## Instructions received
 
-- Process the ordered repositories below in sequence, except hold Fattura Egypt v2 (items 59–66) until the user asks to start it. Do not renumber items 01–43; the repeated `nocodb/nocodb` is already item 20.
+- Process the ordered repositories below in sequence. Fattura Egypt v2 began separately after the user's “go”; its source inspections do not count as individual installations for items 59–66. Do not renumber items 01–43; the repeated `nocodb/nocodb` is already item 20.
 - First identify the type of each repository: standalone UI application, CLI, plugin, library, collection, curated list, or monorepo. Deliver the most complete usable setup its actual type supports. Do not invent an interface or label an HTML study as a running application.
 - Check existing work first, continue it where present, and verify real native features. Do not start from scratch when working code already exists.
 - Determine whether execution is on the user's computer, a persistent remote machine, or a temporary sandbox. Never describe a sandbox setup as an installation on the user's computer.
@@ -85,17 +85,15 @@ This list is named **Onboarding System**. It preserves the user’s order and de
 
 Items 51–58 were added on 2026-10-24. The user's preference is to label
 `RS-labhub/rs-docmanager` as the user’s top pick; an evidence-based ranking
-is pending inspection. Items 59–66 belong to the separately queued
-[Fattura Egypt v2 project](FATTURA-EGYPT-V2-QUEUE.md). **Do not start that
-project now.** Its repositories are source inputs to one new, independently
-reviewable version, not eight unrelated installations. Preserve the current
-Fattura version and its functionality. No cloning, implementation, ETA
-production submission, or reference-site recreation has been authorized for
-immediate execution by this queue entry.
+is pending inspection. Items 59–66 belong to the separately tracked
+[Fattura Egypt v2 project](FATTURA-EGYPT-V2-QUEUE.md). The user later started
+that project. Its repositories are source inputs to one new review version,
+not eight unrelated installations. Preserve the current Fattura version and
+its functionality. No production ETA submission is authorized by the queue.
 
 ## Current checkpoint
 
 - This checkout is a temporary Codex cloud workspace. The user’s Windows checkout is separate; a cloud test is not a Windows installation.
 - The authoritative progress record is [INSTALLATION_TRACKER.md](batch-2026-10-23/INSTALLATION_TRACKER.md). Earlier completed investigations and individual reports are under [batch-2026-10-23/reports/](batch-2026-10-23/reports/).
-- Items 51–66 are queue entries only. Their GitHub About descriptions, sites, licences, and installation methods have not yet been inspected. The `RS-labhub/rs-docmanager` preference is the user’s stated preference, pending comparison and verification.
-- Fattura Egypt v2 has not begun. No background or scheduled continuation exists.
+- Items 51–58 are queue entries only. Items 59–66 were inspected as Fattura v2 source references, but their separate installation statuses remain QUEUED. The `RS-labhub/rs-docmanager` preference is the user’s stated preference, pending comparison and verification.
+- Fattura Egypt v2 has a PARTIAL local implementation in [draft PR #1](https://github.com/gendaiski/Egyptian-eInvoice-SDK---Fattura/pull/1). No background or scheduled continuation exists.

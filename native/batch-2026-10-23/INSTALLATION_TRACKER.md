@@ -1,6 +1,6 @@
 # Onboarding System — installation tracker
 
-This tracker records one status per repository. Items 01–18 have individual reports; item 19 is PARTIAL; items 20–66 are queued. Items 59–66 are held for the separately queued Fattura Egypt v2 project and must not be started now. Queued descriptions and websites marked NOT VERIFIED have not been researched. Cloud checks are never proof of installation on the user’s Windows computer. The [category map](REPO_CATEGORIES.json) supplies the Repo Category column.
+This tracker records one status per repository. Items 01–18 have individual reports; item 19 is PARTIAL; items 20–66 remain queued as independent installations. Items 59–66 were inspected as source references for the separately started Fattura Egypt v2 project; that work does not change their independent installation status. Queued descriptions and websites marked NOT VERIFIED have not been researched for an individual installation report. Cloud checks are never proof of installation on the user’s Windows computer. The [category map](REPO_CATEGORIES.json) supplies the Repo Category column.
 
 | # | Repository | Status | GitHub description | Website listed on GitHub | Verified official website | Individual report |
 | ---: | --- | --- | --- | --- | --- | --- |

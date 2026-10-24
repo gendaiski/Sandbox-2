@@ -1,12 +1,14 @@
 # Queued project: Fattura Egypt v2
 
-**Status: QUEUED — NOT STARTED.** Added on 2026-10-24 at the user's explicit
-request to onboard it without starting work. This is one versioned project,
+**Status: PARTIAL — LOCAL IMPLEMENTATION READY FOR REVIEW.** Added on 2026-10-24 at the user's explicit
+request to onboard it without starting work; the user's later “go” started it. This is one versioned project,
 using the current Fattura Egypt build as the foundation. Preserve the current
 version, data, deployments, and functionality. Make v2 independently
 reviewable. Its source repositories occupy Onboarding System items 59–66 so
 they can be tracked and deduplicated; do not treat those entries as separate
-finished installations.
+finished installations. The current implementation is in [Fattura draft PR #1](https://github.com/gendaiski/Egyptian-eInvoice-SDK---Fattura/pull/1) on `codex/fattura-egypt-v2`; its [handover](https://github.com/gendaiski/Egyptian-eInvoice-SDK---Fattura/blob/codex/fattura-egypt-v2/docs/V2-HANDOVER.md) records real tests and remaining blockers. The existing production Fattura branch is unchanged.
+
+**User correction:** the M&A workspace must be an **independent system**, not a route inside Fattura. Meridian in the PR has its own server, UI, data, account setup and encryption keys. Local workflows pass; it has no verified persistent public deployment. Fattura v2 is separately reviewable, with production ETA submission off by default and a Vercel branch preview requiring sign-in. Items 59–66 were inspected as source references for this project; their individual onboarding installation statuses remain QUEUED.
 
 ## Source repositories to inspect when this project starts
 
@@ -35,7 +37,7 @@ authentication. Verify with mocks or an authorized ETA test environment.
 
 Classify each source as an application, API, agent workflow, skill, or
 reference collection before choosing what to integrate. Build a separately
-identified M&A workspace within v2 for supported deal management, document
+identified M&A system separate from Fattura for supported deal management, document
 rooms, diligence, legal review, findings, and reporting. Require persistent
 data, appropriate permissions and document confidentiality, source citations
 for findings, and auditable actions. Clearly label AI-generated analysis
@@ -68,9 +70,6 @@ work begins, following existing project rules.
   configuration requirements, and blockers. Only mark COMPLETE after the new
   version is independently reviewable and representative workflows work.
 
-## Queue boundary
+## Current boundary
 
-This file is a durable checkpoint only. No cloning or implementation of this
-project was requested now. The existing repository batch remains in progress;
-begin this project only after the preceding work is handed over and the user
-asks to resume it. No background or scheduled worker has been created.
+The local implementation and its checks are documented in the draft PR. The source repositories are not eight independent installed applications. Official ETA pre-production, real signing hardware, live reference-site comparison and a persistent public M&A deployment remain unverified. The earlier general repository batch remains in progress; no background or scheduled worker has been created.
