@@ -1,0 +1,43 @@
+services:
+  picoagents:
+    image: sandbox2/picoagents:local
+    build:
+      context: ../..
+      dockerfile: deploy/render/picoagents/Dockerfile
+    ports:
+      - 127.0.0.1:${PICOAGENTS_HOST_PORT:-8790}:10000
+    environment:
+      PICOAGENTS_REQUIRE_AUTH: "0"
+    volumes:
+      - picoagents-data:/app/native/picoagents/data
+    restart: unless-stopped
+
+  agentfield:
+    image: sandbox2/agentfield:local
+    build:
+      context: ../..
+      dockerfile: deploy/render/agentfield/Dockerfile
+    ports:
+      - 127.0.0.1:${AGENTFIELD_HOST_PORT:-8791}:10000
+    environment:
+      AGENTFIELD_REQUIRE_AUTH: "0"
+    volumes:
+      - agentfield-data:/app/native/agentfield/data
+      - ./agentfield/nginx.local.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped
+
+  kedro:
+    image: sandbox2/kedro:local
+    build:
+      context: ../..
+      dockerfile: deploy/local/kedro/Dockerfile
+    ports:
+      - 127.0.0.1:${KEDRO_HOST_PORT:-8794}:10000
+    volumes:
+      - kedro-projects:/app/native/data/kedro-projects
+    restart: unless-stopped
+
+volumes:
+  picoagents-data:
+  agentfield-data:
+  kedro-projects:

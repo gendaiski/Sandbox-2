@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunk_ember_auto_import_=globalThis.webpackChunk_ember_auto_import_||[]).push([[25456],{25456(e,l,o){o.r(l),o.d(l,{default:()=>a})
+const a='<symbol id="hds-icon-flight-oracle-16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M.1 8c0 2.761 2.238 5 4.997 5h5.806A5 5 0 0 0 15.9 8c0-2.761-2.237-5-4.997-5H5.097A5 5 0 0 0 .1 8m13.911 0a3.235 3.235 0 0 1-3.234 3.237h-5.55A3.235 3.235 0 0 1 1.991 8a3.235 3.235 0 0 1 3.234-3.236h5.551A3.235 3.235 0 0 1 14.011 8" clip-rule="evenodd"/></symbol>'}}])

@@ -2,6 +2,10 @@
 vendor/
 native/node_modules/
 native/data/
+native/picoagents/data/
+native/agentfield/bin/
+native/agentfield/data/
+native/kedro/.venv
 native/.cache/
 
 # Per-system environments and outputs
@@ -14,6 +18,8 @@ systems/*/rag_storage/
 __pycache__/
 *.pyc
 .env
+onboarding-data/
+.venv-onboarding/
 
 # Panda
 styled-system

@@ -5,9 +5,26 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 SITE=ROOT/'showcase'
 sys.path.insert(0,str(SITE))
-from scenes import LANDINGS,render
+from scenes import LANDINGS,NATIVE_LANDINGS,DEPLOYED_LANDINGS,render
+from build_onboarding_system import main as build_onboarding_system, read_queue, read_tracker
 rows=json.loads((SITE/'catalog.json').read_text())
+about=json.loads((SITE/'catalog-about.json').read_text())
 assert rows and len({x['slug'] for x in rows})==len(rows)
+assert {x['slug'] for x in rows}==set(about), 'Catalog About metadata differs from systems'
+PUBLIC_ORIGINALS={
+ 'design-tokens-spec':'design-tokens-spec',
+ 'hashicorp-design-system':'helios',
+ 'ux-ui-agent-skills':'ux-ui-agent-skills',
+}
+LOCAL_NATIVE={
+ 'multiagent-systems':'picoagents',
+ 'agentfield':'agentfield',
+ 'kedro':'kedro',
+}
+SOURCE_BRANCH='codex/native-landings-20261023'
+
+def native_record(slug):
+ return f'https://github.com/gendaiski/Sandbox-2/blob/{SOURCE_BRANCH}/native/{LOCAL_NATIVE[slug]}/README.md'
 
 # Repository screenshots are visual references, never presented as a live app.
 # Their exact source paths are retained for provenance.
@@ -51,16 +68,47 @@ def doc(title,body,depth=0,page='system',slug=''):
  js_version=hashlib.sha256((SITE/'app.js').read_bytes()).hexdigest()[:8]
  return f'''<!doctype html><html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light dark"><title>{e(title)} · Sandbox-2 Showcase</title><meta name="description" content="Interactive, source-backed local UI preview in Sandbox-2"><link rel="stylesheet" href="{prefix}style.css?v={css_version}"><link rel="stylesheet" href="{prefix}design.css?v={design_version}"><script defer src="{prefix}app.js?v={js_version}"></script></head><body data-page="{page}" data-slug="{e(slug,quote=True)}">{body}</body></html>'''
 
-def side_nav(active):
- items=''.join(f'<a href="{e(r["slug"])}.html" class="side-item {"active" if r["slug"]==active else ""}"><span class="side-monogram" style="--accent:{r["accent"]}">{e(r["title"][:1])}</span><span>{e(r["title"])}</span></a>' for r in rows)
- return f'<aside class="site-sidebar"><a class="site-brand" href="../index.html"><span class="brand-mark">S²</span><span>Sandbox <b>2</b><small>Systems showcase</small></span></a><div class="side-label">Explore</div><a class="side-item" href="../index.html"><span class="side-monogram">⌂</span><span>All systems</span></a><div class="side-label">Source-backed previews</div><nav aria-label="Systems">{items}</nav><a class="bench-link" href="../../bench/index.html">Existing test bench →</a></aside>'
+NAV_GROUPS=(
+ ('Landing & Product',('landing-pages','macbook')),
+ ('Agents & Workspaces',('dify','minicpm','anything-llm','ruflo','open-agent','multiagent-systems','agentfield','openhands','autogpt','astron-agent','swarms','kun','lobehub')),
+ ('Data & Pipelines',('kedro','datagen')),
+ ('Design Tokens',('style-dictionary','design-extract','dembrandt','webgradients','design-tokens-spec','tokens-studio','awesome-design-tokens','diez')),
+ ('Design System Tokens',('oh-my-design','awesome-design-md','panda','ux-ui-agent-skills','styleseed','hashicorp-design-system')),
+ ('Components & Video',('swiftui-flx','hyperframes')),
+)
+assert sorted(slug for _,group in NAV_GROUPS for slug in group)==sorted(r['slug'] for r in rows)
 
-def topbar(crumb):return f'<header class="site-topbar"><button class="mobile-menu" data-action="menu" aria-label="Open system navigation">☰</button><div class="breadcrumb">Sandbox 2 <span>/</span> {e(crumb)}</div><div class="top-actions"><span class="live-dot"></span><span class="top-status">Local HTML preview</span><button class="theme-toggle" data-action="theme" aria-label="Switch theme" title="Switch light and dark mode">☾</button></div></header>'
+def side_nav(active):
+ by_slug={r['slug']:r for r in rows}
+ groups=[]
+ for name,slugs in NAV_GROUPS:
+  items=''.join(f'<a href="{e(slug)}.html" class="side-item {"active" if slug==active else ""}" {"aria-current=page" if slug==active else ""}><span class="side-monogram" style="--accent:{by_slug[slug]["accent"]}">{e(by_slug[slug]["title"][:1])}</span><span>{e(by_slug[slug]["title"])}</span></a>' for slug in slugs)
+  groups.append(f'<details class="side-group" {"open" if active in slugs else ""}><summary><span>{e(name)}</span><b>{len(slugs)}</b></summary><div class="side-group-items">{items}</div></details>')
+ return f'<aside class="site-sidebar"><a class="site-brand" href="../index.html"><span class="brand-mark">S²</span><span>Sandbox <b>2</b><small>Systems showcase</small></span></a><div class="side-label">Explore</div><a class="side-item" href="../index.html"><span class="side-monogram">⌂</span><span>All systems</span></a><a class="side-item" href="landing-pages.html"><span class="side-monogram">↗</span><span>Landing apps</span></a><div class="side-label">Browse by category</div><nav aria-label="Systems by category">{"".join(groups)}</nav><a class="bench-link" href="../../bench/index.html">Existing test bench →</a></aside>'
+
+def topbar(crumb,slug='',status_label='Local HTML preview'):
+ launch_link=f'<a class="top-launch" href="launch-{e(slug)}.html">Launch page ↗</a>' if slug else ''
+ return f'<header class="site-topbar"><button class="mobile-menu" data-action="menu" aria-label="Open system navigation">☰</button><div class="breadcrumb">Sandbox 2 <span>/</span> {e(crumb)}</div><div class="top-actions">{launch_link}<span class="live-dot"></span><span class="top-status">{e(status_label)}</span><button class="theme-toggle" data-action="theme" aria-label="Switch theme" title="Switch light and dark mode">☾</button></div></header>'
 
 def page(r):
+ if r['slug'] in PUBLIC_ORIGINALS:
+  target=f'../../native/apps/{PUBLIC_ORIGINALS[r["slug"]]}/'
+  body=f'<main><h1>{e(r["title"])} original application</h1><p>Opening the installed original interface.</p><a href="{target}">Open original app →</a></main>'
+  output=doc(r['title'],body,1,'system',r['slug']).replace('<head>','<head><meta http-equiv="refresh" content="0;url='+target+'">',1)
+  (SITE/'pages'/f'{r["slug"]}.html').write_text(output)
+  return
  source=link('Source at pinned revision',r['source'].rstrip('/')+('/tree/'+r['revision'] if r['slug']!='minicpm' else '')) if r['slug']!='minicpm' else link('Hugging Face source',r['source'])
  evidence=link('Prior installation record',r['priorEvidence']) if r['priorEvidence'] else '<span>No matching prior installation record found.</span>'
- body=f'''<div class="site-layout">{side_nav(r['slug'])}<div class="site-main">{topbar(r['title'])}<main class="page-content"><div class="page-intro"><div><span class="page-kicker">{e(r['category'])} · interactive UI preview</span><h1>{e(r['title'])}</h1><p>{e(r['description'])}</p><div class="hero-actions">{link('Open original',r['official'],'button primary-link')}{link('Browse source',r['source'],'button ghost-link')}</div></div><div class="intro-mark" style="--accent:{r['accent']}">{e(r['title'][:1])}<span>UI</span></div></div><div class="preview-banner"><span>● LOCAL INTERACTIVE SCREEN</span><p>The controls below run in this browser. Original plugins, services, compilers and exports require their upstream projects.</p></div><section class="stage" style="--accent:{r['accent']}">{render(r['slug'])}</section><section class="source-panel"><div><span class="eyebrow">SOURCE & INSTALLATION</span><h2>Continue from the original project</h2><p>{e(r['prior'])}</p><div class="source-links">{source}{evidence}</div></div><dl><div><dt>Checkout</dt><dd>{e(r['checkout'])}</dd></div><div><dt>Revision</dt><dd><code>{e(r['revision'][:12])}</code></dd></div><div><dt>Licence noted</dt><dd>{e(r['license'])}</dd></div><div><dt>This page</dt><dd>Local UI preview</dd></div></dl></section><footer>Sandbox-2 · source-backed study · {e(r['title'])}</footer></main></div></div>'''
+ body=f'''<div class="site-layout">{side_nav(r['slug'])}<div class="site-main">{topbar(r['title'],r['slug'],'14 original apps live' if r['slug']=='landing-pages' else 'Local HTML preview')}<main class="page-content"><div class="page-intro"><div><span class="page-kicker">{e(r['category'])} · interactive UI preview</span><h1>{e(r['title'])}</h1><p>{e(r['description'])}</p><div class="hero-actions">{link('Open original',r['official'],'button primary-link')}{link('Browse source',r['source'],'button ghost-link')}</div></div><div class="intro-mark" style="--accent:{r['accent']}">{e(r['title'][:1])}<span>UI</span></div></div><div class="preview-banner"><span>● LOCAL INTERACTIVE SCREEN</span><p>The controls below run in this browser. Original plugins, services, compilers and exports require their upstream projects.</p></div><section class="stage" style="--accent:{r['accent']}">{render(r['slug'])}</section><section class="source-panel"><div><span class="eyebrow">SOURCE & INSTALLATION</span><h2>Continue from the original project</h2><p>{e(r['prior'])}</p><div class="source-links">{source}{evidence}</div></div><dl><div><dt>Checkout</dt><dd>{e(r['checkout'])}</dd></div><div><dt>Revision</dt><dd><code>{e(r['revision'][:12])}</code></dd></div><div><dt>Licence noted</dt><dd>{e(r['license'])}</dd></div><div><dt>This page</dt><dd>Local UI preview</dd></div></dl></section><footer>Sandbox-2 · source-backed study · {e(r['title'])}</footer></main></div></div>'''
+ if r['slug']=='landing-pages':
+  body=body.replace(f'{e(r["category"])} · interactive UI preview','Landing collection · original applications',1)
+  body=body.replace(link('Open original',r['official'],'button primary-link'),'<a class="button primary-link" href="#landing-gallery">Browse 14 apps ↓</a>',1)
+  body=body.replace(e(r['description']),'Fourteen installed original Next.js apps. Choose a launch page or open the full interface.',1)
+  body=body.replace('● LOCAL INTERACTIVE SCREEN','● 14 ORIGINAL APPLICATIONS LIVE',1)
+  body=body.replace('The controls below run in this browser. Original plugins, services, compilers and exports require their upstream projects.','Choose a launch page for details, or open the original application directly.',1)
+  body=body.replace('<section class="stage"','<section class="stage" id="landing-gallery"',1)
+  body=body.replace('<dd>Local UI preview</dd>','<dd>Original app launcher</dd>',1)
+  body=body.replace('source-backed study · Landing Pages','original application collection · Landing Pages',1)
  if r['slug'] in SOURCE_SCREENS:
   image_name,source_path,caption=SOURCE_SCREENS[r['slug']]
   original_url=r['source'].rstrip('/')+(f'/blob/{r["revision"]}/{source_path}' if source_path else '')
@@ -85,15 +133,26 @@ def page(r):
 def landing_page(idx,item):
  slug,name,tag,url,ext=item
  prev=LANDINGS[(idx-1)%len(LANDINGS)][0];nxt=LANDINGS[(idx+1)%len(LANDINGS)][0]
- body=f'''<div class="landing-review"><header><a href="landing-pages.html">← All 14 pages</a><span>ln-dev7 / landing-pages</span><button class="theme-toggle" data-action="theme" aria-label="Switch theme">☾</button></header><main><div class="landing-review-head"><div><span class="eyebrow">ORIGINAL SOURCE FRAME · {idx+1:02}/14</span><h1>{e(name)}</h1><p>{e(tag)}. The screen below is the repository's original preview image; open the live site for its complete motion and interaction.</p></div><div class="review-actions"><a class="button primary-link" href="{e(url,quote=True)}" target="_blank" rel="noopener noreferrer">Open original →</a><button class="button ghost-link" data-action="zoom">Fit / enlarge</button></div></div><div class="review-frame"><img src="../assets/landing/{slug}.{ext}" alt="Original {e(name)} landing page screen"></div><nav class="review-pagination"><a href="landing-{prev}.html">← Previous</a><span>MIT preview image · ln-dev7/landing-pages</span><a href="landing-{nxt}.html">Next →</a></nav></main></div>'''
- (SITE/'pages'/f'landing-{slug}.html').write_text(doc(name,body,1,'landing',slug))
+ if slug in DEPLOYED_LANDINGS:
+  target=DEPLOYED_LANDINGS[slug]
+  body=f'''<main class="landing-redirect"><h1>{e(name)} original application</h1><p>Opening the original Next.js server application on Vercel.</p><a href="{e(target,quote=True)}">Open {e(name)} now →</a></main>'''
+  output=doc(name,body,1,'landing',slug).replace('<head>','<head><meta http-equiv="refresh" content="0;url='+e(target,quote=True)+'">',1)
+ elif slug in NATIVE_LANDINGS:
+  target=f'../../native/landing/{slug}/'
+  body=f'''<main class="landing-redirect"><h1>{e(name)} original application</h1><p>Opening the installed Next.js static build. Its interactive controls run in your browser.</p><a href="{target}">Open {e(name)} now →</a></main>'''
+  output=doc(name,body,1,'landing',slug).replace('<head>','<head><meta http-equiv="refresh" content="0;url='+target+'">',1)
+ else:
+  source=f'https://github.com/ln-dev7/landing-pages/tree/{rows[0]["revision"]}/landing-pages/{slug}'
+  body=f'''<div class="landing-review"><header><a href="landing-pages.html">← All 14 applications</a><span>ln-dev7 / landing-pages</span><button class="theme-toggle" data-action="theme" aria-label="Switch theme">☾</button></header><main><div class="landing-review-head"><div><span class="eyebrow">VERCEL DEPLOYMENT PREPARED · {idx+1:02}/14</span><h1>{e(name)}</h1><p>{e(tag)}. This original Next.js application passed a fresh build and a five-step server-action form submission. Its separate Vercel project is packaged in Sandbox-2. Public deployment awaits Vercel account access.</p></div><div class="review-actions"><a class="button primary-link" href="{e(url,quote=True)}" target="_blank" rel="noopener noreferrer">Try upstream live site →</a><a class="button ghost-link" href="https://github.com/gendaiski/Sandbox-2/pull/3/files" target="_blank" rel="noopener noreferrer">Review prepared source →</a><a class="button ghost-link" href="{e(source,quote=True)}" target="_blank" rel="noopener noreferrer">Pinned upstream →</a></div></div><nav class="review-pagination"><a href="landing-{prev}.html">← Previous</a><span>Original MIT Next.js application · Vercel project prepared</span><a href="landing-{nxt}.html">Next →</a></nav></main></div>'''
+  output=doc(name,body,1,'landing',slug)
+ (SITE/'pages'/f'landing-{slug}.html').write_text(output)
 
 for r in rows:page(r)
 for i,item in enumerate(LANDINGS):landing_page(i,item)
 
 # Evidence is deliberately explicit: an interactive HTML screen is not a native install.
 STATES={
- 'landing-pages':('Built here','14 original apps built','Static frontends','Served and checked','Select a page for deeper cloning'),
+ 'landing-pages':('Built here',f'{len(NATIVE_LANDINGS)+len(DEPLOYED_LANDINGS)} public; '+('all Vercel apps live' if len(DEPLOYED_LANDINGS)==4 else f'{4-len(DEPLOYED_LANDINGS)} Vercel projects prepared'),'Four server actions tested locally','All 14 apps built; four forms submitted','Review public app routes' if len(DEPLOYED_LANDINGS)==4 else f'Deploy the {4-len(DEPLOYED_LANDINGS)} remaining Vercel projects'),
  'macbook':('Built here','Original app built','Static frontend','3D canvas checked','Review original motion and mobile UI'),
  'dify':('Prior review','Stack not started','Services unverified','Compose validated','Configure and start the native stack'),
  'swiftui-flx':('Source inspected','Not run','No backend in scope','Source checkout','Run on a supported Apple target'),
@@ -101,11 +160,11 @@ STATES={
  'anything-llm':('Prior review','Not run','Services unverified','Source checkout','Configure a model provider and server'),
  'ruflo':('Source inspected','Not run','Runtime unverified','Source checkout','Install CLI and run a smoke check'),
  'open-agent':('Source inspected','Not run','Runtime unverified','Source checkout','Install and run a smoke check'),
- 'multiagent-systems':('Prior native run','PicoAgents UI ran','Backend tested before','19 prior tests passed','Re-run a sample workflow here'),
- 'agentfield':('Prior native run','Official UI ran','Backend tested before','Persistence checked','Re-run native smoke checks here'),
+ 'multiagent-systems':('Built here','Original React UI ran','FastAPI + SQLite + MCP ran','3 workflows; streamed result 46','Deploy persistent, access-controlled runtime'),
+ 'agentfield':('Built here','Official embedded UI ran','Go API + SQLite ran','Agent registered; real run returned 5','Deploy persistent, access-controlled runtime'),
  'openhands':('Prior review','Not run','Services unverified','Source checkout','Configure and start the native stack'),
  'autogpt':('Source inspected','Not run','Services unverified','Source checkout','Configure and start the native stack'),
- 'kedro':('Source inspected','Not run','Pipeline unverified','Source checkout','Install CLI and run a sample pipeline'),
+ 'kedro':('Built here','Original Kedro-Viz UI ran','Pinned Kedro pipeline ran','9 tasks; 15 datasets; graph API live','Deploy persistent visualisation service'),
  'datagen':('Source inspected','Not run','Generator unverified','Source checkout','Set up and test a sample dataset'),
  'astron-agent':('Source inspected','Not run','Services unverified','Source checkout','Configure and start the native stack'),
  'swarms':('Source inspected','Not run','Runtime unverified','Source checkout','Install and run a sample workflow'),
@@ -116,6 +175,59 @@ STATES={
 for row in rows:
  if row['category'] in ('Design Tokens','Design System Tokens'):
   STATES[row['slug']]=('Source inspected','Not run','Browser study only','Pinned checkout','Use the source project for native transforms or plugins')
+for slug in PUBLIC_ORIGINALS:
+ STATES[slug]=('Built here','Original app published','Static original interface','Browser verified','Explore the original interface')
+
+def launch_doc(title,kicker,status,description,accent,actions,details,back_href,back_label,slug):
+ body=f'''<div class="launch-shell" style="--launch-accent:{e(accent,quote=True)}"><header class="launch-header"><a class="site-brand" href="../index.html"><span class="brand-mark">S²</span><span>Sandbox <b>2</b><small>Systems showcase</small></span></a><nav><a href="../index.html">Dashboard</a><a href="landing-pages.html">Landing apps</a><button class="theme-toggle" data-action="theme" aria-label="Switch theme">☾</button></nav></header><main><a class="launch-back" href="{e(back_href,quote=True)}">← {e(back_label)}</a><section class="launch-hero"><div class="launch-copy"><span class="eyebrow">{e(kicker)}</span><span class="launch-status">{e(status)}</span><h1>{e(title)}</h1><p>{e(description)}</p><div class="launch-actions">{actions}</div></div><div class="launch-art" aria-hidden="true"><span>{e(title[:1])}</span><small>{e(kicker)}</small></div></section><section class="launch-details" aria-label="What opens and what works">{details}</section></main><footer class="launch-footer">Sandbox-2 · source-backed application directory</footer></div>'''
+ (SITE/'pages'/f'launch-{slug}.html').write_text(doc(title+' · Launch',body,1,'launch',slug))
+
+def launch_system(r):
+ slug=r['slug']
+ if slug=='landing-pages':
+  target='landing-pages.html';label='Browse all 14 original apps →';status='14 ORIGINAL APPS LIVE'
+  scope='Ten static Next.js builds and four Vercel server apps are publicly available. Each app has its own launch page and original interface.'
+ elif slug in PUBLIC_ORIGINALS:
+  target=f'../../native/apps/{PUBLIC_ORIGINALS[slug]}/';label='Open original interface →';status='ORIGINAL INTERFACE LIVE'
+  scope='The source-backed original interface is hosted in this repository and opens with its native browser controls.'
+ elif slug in LOCAL_NATIVE:
+  target=native_record(slug);label='Read native setup and tests →';status='NOT PUBLICLY DEPLOYED · NATIVE APP TESTED LOCALLY'
+  scope={
+   'multiagent-systems':'The original React UI, FastAPI backend, SQLite storage, MCP routes and a deterministic streamed workflow were verified together.',
+   'agentfield':'The official embedded dashboard, Go API, SQLite backend, registered demo node and a completed execution were verified together.',
+   'kedro':'The pinned Kedro engine completed its nine-task example pipeline; its original Kedro-Viz server rendered the graph, 15 datasets and 27 edges.',
+  }[slug]+' The public HTML is still a separate study; use the native installation record to run the real app.'
+ else:
+  target=f'{slug}.html';label='Open interactive study →';status='LOCAL STUDY · ORIGINAL RUNTIME SEPARATE'
+  runtime_notes={
+   'open-agent':'The original Open-Agent needs its Docker Compose services and model provider keys. Its multi-agent tasks do not run on this static showcase.',
+   'swiftui-flx':'The original components run in SwiftUI on a supported Apple platform. This browser page demonstrates their layout only.',
+   'tokens-studio':'The original Tokens Studio is a Figma plugin. Token editing and sync require the Figma plugin runtime and its configured integrations.',
+   'datagen':'The original DATAGEN is a Python data-analysis tool, not a browser dashboard. Run its source code with a suitable dataset to use its features.',
+   'swarms':'The original Swarms is a Python framework, not a hosted web application. Run its SDK with a model provider to execute agents.',
+   'hyperframes':'The original Hyperframes runs as a studio and rendering tool. Video export requires its native runtime; the HTML timeline is a study.',
+  }
+  scope=runtime_notes.get(slug,'The HTML study has browser interactions. It does not run the source project’s backend, model, plugin, compiler or account features.')
+ primary=f'<a class="button primary-link" href="{e(target,quote=True)}">{e(label)}</a>'
+ official=f'<a class="button ghost-link" href="{e(r["official"],quote=True)}" target="_blank" rel="noopener noreferrer">Visit official project ↗</a>' if r['official'] else ''
+ study=f'<a class="launch-inline" href="{e(slug)}.html">Open browser study →</a>' if slug not in PUBLIC_ORIGINALS and slug!='landing-pages' else ''
+ source=r['source'].rstrip('/')+(f'/tree/{r["revision"]}' if slug!='minicpm' else '')
+ details=f'''<article><span>01 · AVAILABLE HERE</span><h2>System access</h2><p>{e(scope)}</p>{study}</article><article><span>02 · ORIGINAL SOURCE</span><h2>Project and scope</h2><p>{e(STATES[slug][3] if slug in LOCAL_NATIVE else r['prior'])} Next step: {e(STATES[slug][4])}.</p><a class="launch-inline" href="{e(source,quote=True)}" target="_blank" rel="noopener noreferrer">Pinned source ↗</a></article>'''
+ launch_doc(r['title'],r['category'].upper(),status,r['description'],r['accent'],primary+official,details,'../index.html','Back to dashboard',slug)
+
+def launch_landing(idx,item):
+ slug,name,tag,upstream,_=item
+ native=slug in NATIVE_LANDINGS
+ target=f'../../native/landing/{slug}/' if native else DEPLOYED_LANDINGS[slug]
+ kind='STATIC NEXT.JS BUILD' if native else 'NEXT.JS SERVER APP'
+ scope='The original static application runs here with its browser interactions.' if native else 'The original application runs on Vercel, including its Next.js server routes and merchant form. Form delivery requires a separate webhook integration.'
+ source=f'https://github.com/ln-dev7/landing-pages/tree/{rows[0]["revision"]}/landing-pages/{slug}'
+ actions=f'<a class="button primary-link" href="{e(target,quote=True)}">Launch original app →</a><a class="button ghost-link" href="{e(source,quote=True)}" target="_blank" rel="noopener noreferrer">View pinned source ↗</a>'
+ details=f'''<article><span>01 · ORIGINAL APPLICATION</span><h2>Full interface</h2><p>{e(scope)}</p><a class="launch-inline" href="{e(target,quote=True)}">Open {e(name)} →</a></article><article><span>02 · REVIEW CONTEXT</span><h2>Demo boundaries</h2><p>Original fictional product demo. Payments, bookings and real merchant delivery require integrations outside this showcase.</p><a class="launch-inline" href="landing-pages.html">All 14 landing apps →</a></article>'''
+ launch_doc(name,kind,'ORIGINAL APP LIVE',tag,'#6369c9',actions,details,'landing-pages.html','Back to landing apps','landing-'+slug)
+
+for row in rows: launch_system(row)
+for index,item in enumerate(LANDINGS): launch_landing(index,item)
 
 def status_badge(value):
  tone='good' if 'Built here' in value or 'native run' in value or 'tested before' in value or 'apps built' in value or 'Original app built' in value else 'warn' if 'Prior' in value or 'UI ran' in value or 'validated' in value or 'checked' in value else 'blue'
@@ -123,26 +235,78 @@ def status_badge(value):
 
 def inventory_row(r):
  stage,native,backend,readiness,next_step=STATES[r['slug']]
- search=' '.join((r['title'],r['category'],r['repo'],r['description'],stage,native,backend,next_step)).lower()
+ metadata=about[r['slug']]
+ search=' '.join((r['title'],r['category'],r['repo'],r['description'],metadata['githubDescription'],metadata['websiteListedOnGitHub'] or '',stage,native,backend,next_step)).lower()
  source=f'{r["source"].rstrip("/")}/tree/{r["revision"]}' if r['slug']!='minicpm' else r['source']
- evidence=f'<a href="{e(r["priorEvidence"],quote=True)}" target="_blank" rel="noopener noreferrer">Atlas record →</a>' if r['priorEvidence'] else 'No prior Atlas record'
- visual='Original screen image' if r['slug'] in SOURCE_SCREENS or r['slug']=='landing-pages' else 'Original Python usage' if r['slug'] in SOURCE_USAGE else 'Source link; no image'
- return f'''<tr class="inventory-row" data-kind="{e(r['category'].lower(),quote=True)}" data-search="{e(search,quote=True)}"><td><div class="inventory-project"><span class="inventory-icon" style="--accent:{r['accent']}">{e(r['title'][:1])}</span><span><a class="inventory-title" href="pages/{e(r['slug'])}.html">{e(r['title'])}</a><small>{e(r['category'])} · {e(r['license'])}</small></span></div></td><td><a href="{e(source,quote=True)}" target="_blank" rel="noopener noreferrer">{e(r['repo'])} →</a><small>Revision {e(r['revision'][:12])}</small></td><td>{status_badge(stage)}<small>{e(r['prior'])}</small></td><td>{status_badge(native)}</td><td><span class="inventory-plain">{e(backend)}</span></td><td><span class="inventory-plain">{e(readiness)}</span></td><td>{status_badge('HTML preview live')}<small>{visual}; native app separate</small></td><td>{e(next_step)}</td><td class="inventory-actions"><a href="pages/{e(r['slug'])}.html">Open UI →</a><small>{evidence}</small></td></tr>'''
+ evidence=f'<a href="{e(native_record(r["slug"]),quote=True)}" target="_blank" rel="noopener noreferrer">Native run record →</a>' if r['slug'] in LOCAL_NATIVE else f'<a href="{e(r["priorEvidence"],quote=True)}" target="_blank" rel="noopener noreferrer">Atlas record →</a>' if r['priorEvidence'] else 'No prior Atlas record'
+ visual='Original app installs' if r['slug']=='landing-pages' else 'Original interface' if r['slug'] in PUBLIC_ORIGINALS else 'Original screen image' if r['slug'] in SOURCE_SCREENS else 'Original Python usage' if r['slug'] in SOURCE_USAGE else 'Source link; no image'
+ public=f'{len(NATIVE_LANDINGS)+len(DEPLOYED_LANDINGS)} original apps live' if r['slug']=='landing-pages' else 'Original app live' if r['slug'] in PUBLIC_ORIGINALS else 'Native app not public' if r['slug'] in LOCAL_NATIVE else 'Study only · no app'
+ public_note=('All Vercel apps live' if len(DEPLOYED_LANDINGS)==4 else f'{4-len(DEPLOYED_LANDINGS)} Vercel projects remain') if r['slug']=='landing-pages' else 'original static build' if r['slug'] in PUBLIC_ORIGINALS else 'tested only in this cloud workspace' if r['slug'] in LOCAL_NATIVE else 'browser study; original system not installed here'
+ review_label='Open app ↗' if r['slug'] in PUBLIC_ORIGINALS or r['slug']=='landing-pages' else 'Open study ↗'
+ website_url=metadata['websiteListedOnGitHub']
+ website_type=metadata['websiteType']
+ website=f'<a href="{e(website_url,quote=True)}" target="_blank" rel="noopener noreferrer">{e(website_url)} ↗</a><small>{e(website_type)} · listed by source owner</small>' if website_url and website_type!='Other link listed on GitHub' else '<span class="inventory-plain">No official website verified</span>'
+ if website_type=='Other link listed on GitHub' and website_url: website+=f'<small>GitHub About links elsewhere: {e(website_url)}</small>'
+ return f'''<tr class="inventory-row" data-kind="{e(r['category'].lower(),quote=True)}" data-search="{e(search,quote=True)}"><td><div class="inventory-project"><span class="inventory-icon" style="--accent:{r['accent']}">{e(r['title'][:1])}</span><span><a class="inventory-title" href="pages/launch-{e(r['slug'])}.html">{e(r['title'])}</a><small>{e(r['license'])}</small></span></div></td><td><span class="inventory-category">{e(r['category'])}</span></td><td><span class="inventory-description" title="{e(metadata['githubDescription'],quote=True)}">{e(metadata['githubDescription'])}</span><small><a href="{e(metadata['aboutSource'],quote=True)}" target="_blank" rel="noopener noreferrer">GitHub About source ↗</a></small></td><td>{website}</td><td><a href="{e(source,quote=True)}" target="_blank" rel="noopener noreferrer">{e(r['repo'])} →</a><small>Revision {e(r['revision'][:12])}</small></td><td>{status_badge(stage)}<small>{e(r['prior'])}</small></td><td>{status_badge(native)}</td><td><span class="inventory-plain">{e(backend)}</span></td><td><span class="inventory-plain">{e(readiness)}</span></td><td>{status_badge(public)}<small>{visual}; {public_note}</small></td><td>{e(next_step)}</td><td class="inventory-actions"><a href="pages/launch-{e(r['slug'])}.html">Status and setup →</a><a href="pages/{e(r['slug'])}.html">{review_label}</a><small>{evidence}</small></td></tr>'''
 
 table_rows=''.join(inventory_row(r) for r in rows)
-cards=''.join(f'''<article class="catalog-card" data-search="{e((' '.join((r['title'],r['category'],r['repo'],r['description'],*STATES[r['slug']])).lower()),quote=True)}" data-kind="{e(r['category'].lower(),quote=True)}"><div class="catalog-card-art" style="--accent:{r['accent']}"><span>{e(r['title'][:1])}</span><small>{e(r['category'])}</small></div><div class="catalog-card-body"><div class="card-meta">{e(r['category'])}</div><h3>{e(r['title'])}</h3><p>{e(r['description'])}</p><div class="catalog-card-actions"><a href="pages/{e(r['slug'])}.html">Open HTML preview <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" fill="none" stroke="currentColor" stroke-width="1.7"/></svg></a><span>{'Prior work' if r['priorEvidence'] else 'New study'}</span></div></div></article>''' for r in rows)
-hub=f'''<div class="hub-shell"><header class="hub-top"><a class="site-brand" href="index.html"><span class="brand-mark">S²</span><span>Sandbox <b>2</b><small>Systems showcase</small></span></a><nav><a href="#systems">Systems</a><a href="../bench/index.html">Existing test bench</a><a href="https://github.com/gendaiski/Sandbox-2" target="_blank" rel="noopener noreferrer">Repository →</a><button class="theme-toggle" data-action="theme" aria-label="Switch theme">☾</button></nav></header><main><section class="hub-hero"><span class="eyebrow">{len(rows)} SOURCES · {len(rows)+len(LANDINGS)} HTML SCREENS</span><h1>One place to explore the systems.<br><em>One screen for each.</em></h1><p>Source-backed interactive previews for landing pages, agents, video tools and design tokens. Prior Atlas installation work is linked in each system. Controls here use local browser state; upstream runtimes remain separate.</p><div class="hero-actions"><a class="button primary-link" href="#systems">Explore the screens ↓</a><a class="button ghost-link" href="../bench/index.html">Open existing test bench →</a></div></section><section id="systems" class="hub-directory"><div class="directory-head"><div><span class="eyebrow">THE COLLECTION</span><h2>Systems directory</h2><p>Search by name, category or source repository.</p></div><span class="directory-count" id="directory-count">{len(rows)} systems</span></div><div class="directory-controls"><label class="searchbox"><span>⌕</span><input id="system-search" type="search" placeholder="Search systems" aria-label="Search systems"></label><div class="filter-row"><button class="active" data-action="filter" data-filter="all">All</button><button data-action="filter" data-filter="landing">Landing</button><button data-action="filter" data-filter="agent">Agents</button><button data-action="filter" data-filter="data">Data</button><button data-action="filter" data-filter="design-tokens">Design Tokens</button><button data-action="filter" data-filter="design-system-tokens">Design System Tokens</button></div></div><div class="catalog-grid">{cards}</div><p class="no-results" hidden>No systems match your search.</p></section></main><footer>Sandbox-2 · {len(rows)-1} GitHub source checkouts and one prior Hugging Face installation record · UI previews are distinct from native deployments.</footer></div>'''
-metrics=f'''<div class="inventory-metrics" aria-label="Showcase summary"><div><small>Source systems</small><strong>{len(rows)}</strong><span>{len(rows)-1} GitHub · 1 Hugging Face</span></div><div><small>Original apps built here</small><strong>15</strong><span>14 landings · 1 MacBook</span></div><div><small>Prior Atlas records</small><strong>{sum(bool(r['priorEvidence']) for r in rows)}</strong><span>Linked to source evidence</span></div><div><small>Rendered HTML files</small><strong>{1+len(rows)+len(LANDINGS)}</strong><span>Hub · systems · landings</span></div></div>'''
-def latest_card(title,summary,items,filter_name=''):
- links=''.join(f'<a href="pages/{e(r["slug"])}.html">{e(r["title"])} →</a>' for r in items)
- action=f'<button type="button" data-action="latest-filter" data-filter="{e(filter_name)}">Show in inventory ↓</button>' if filter_name else ''
- return f'<article class="latest-card"><div class="latest-card-head"><div><h3>{e(title)}</h3><span>{len(items)} previews</span></div><p>{e(summary)}</p></div><div class="latest-links">{links}</div>{action}</article>'
-latest_tokens=[r for r in rows if r['category']=='Design Tokens']
-latest_systems=[r for r in rows if r['category']=='Design System Tokens']
-latest_other=[r for r in rows if r['slug'] in ('lobehub','hyperframes')]
-latest=f'''<section class="latest-section" aria-labelledby="latest-heading"><div class="latest-heading"><div><span class="eyebrow">23 OCTOBER 2026 · LATEST ADDITIONS</span><h2 id="latest-heading">New in the systems dashboard</h2><p>{len(latest_tokens)+len(latest_systems)+len(latest_other)} pinned sources added with separate rendered HTML previews. Original runtimes have their own status in the inventory below.</p></div><span class="latest-status">● PUBLIC PREVIEWS VERIFIED</span></div><div class="latest-grid">{latest_card('Design Tokens','Extract, format, share and browse token values.',latest_tokens,'design-tokens')}{latest_card('Design System Tokens','Carry a consistent visual language into components and agents.',latest_systems,'design-system-tokens')}{latest_card('Agent & video tools','LobeHub and Hyperframes continue earlier Atlas source reviews.',latest_other)}</div></section>'''
-table=f'''<section class="inventory-panel" aria-labelledby="inventory-heading"><div class="inventory-panel-head"><div><span class="eyebrow">PROJECT ATLAS STYLE</span><h3 id="inventory-heading">Detailed project inventory</h3><p>Original source, native installation evidence, backend reality, live preview and next action.</p></div><button id="inventory-export" type="button">Export CSV ↓</button></div><div class="inventory-note">The published HTML pages are interactive UI previews. Native apps and inference services have their own installation status below.</div><div class="inventory-scroll" tabindex="0" aria-label="Scrollable detailed systems table"><table class="inventory-table"><thead><tr><th scope="col">Project / system</th><th scope="col">Source / revision</th><th scope="col">Development / audit</th><th scope="col">Native app</th><th scope="col">Backend / inference</th><th scope="col">Operational evidence</th><th scope="col">Public access</th><th scope="col">Next step</th><th scope="col">Open / review</th></tr></thead><tbody>{table_rows}</tbody></table></div><div class="inventory-foot"><span id="inventory-visible">Showing {len(rows)} of {len(rows)} systems</span><span>Scroll horizontally to see every evidence column →</span></div></section><div class="card-section-head"><div><span class="eyebrow">VISUAL BROWSING</span><h3>System cards</h3></div><a href="#inventory-heading">Back to detailed table ↑</a></div>'''
-hub=hub.replace('</section><section id="systems"',f'</section>{metrics}{latest}<section id="systems"',1)
+cards=''.join(f'''<article class="catalog-card" data-search="{e((' '.join((r['title'],r['category'],r['repo'],r['description'],*STATES[r['slug']])).lower()),quote=True)}" data-kind="{e(r['category'].lower(),quote=True)}"><div class="catalog-card-art" style="--accent:{r['accent']}"><span>{e(r['title'][:1])}</span><small>{e(r['category'])}</small></div><div class="catalog-card-body"><div class="card-meta">{e(r['category'])}</div><h3>{e(r['title'])}</h3><p>{e(r['description'])}</p><div class="catalog-runtime {'live' if r['slug'] in PUBLIC_ORIGINALS or r['slug']=='landing-pages' else 'study'}">{'● Original apps live' if r['slug']=='landing-pages' else '● Original interface live' if r['slug'] in PUBLIC_ORIGINALS else '◐ Interactive study'}</div><div class="catalog-card-actions"><a href="pages/launch-{e(r['slug'])}.html">Launch page →</a><a href="pages/{e(r['slug'])}.html">{'Open app ↗' if r['slug'] in PUBLIC_ORIGINALS or r['slug']=='landing-pages' else 'Open study ↗'}</a></div></div></article>''' for r in rows)
+original_count=len(NATIVE_LANDINGS)+len(DEPLOYED_LANDINGS)+len(PUBLIC_ORIGINALS)
+queue_count=len(read_queue())
+queue_statuses=read_tracker()
+queued_count=sum(item['status']=='QUEUED' for item in queue_statuses)
+complete_count=sum(item['status']=='COMPLETE' for item in queue_statuses)
+hub=f'''<div class="hub-shell"><header class="hub-top"><a class="site-brand" href="index.html"><span class="brand-mark">S²</span><span>Sandbox <b>2</b><small>Systems showcase</small></span></a><nav><a href="#systems">Systems</a><a href="pages/landing-pages.html">Landing apps</a><a href="../bench/index.html">Existing test bench</a><a href="https://github.com/gendaiski/Sandbox-2" target="_blank" rel="noopener noreferrer">Repository →</a><button class="theme-toggle" data-action="theme" aria-label="Switch theme">☾</button></nav></header><main><section class="hub-hero"><span class="eyebrow">{len(rows)} SOURCES · {original_count} PUBLIC ORIGINAL INTERFACES</span><h1>Browse the systems.<br><em>Check what is truly live.</em></h1><p>Fourteen original landing applications and three original design interfaces are public. PicoAgents, AgentField and Kedro ran with their original backends in this cloud workspace, but they are not deployed for you to use. The other system screens are browser studies. Read each inventory row before opening a link.</p><div class="hero-actions"><a class="button primary-link" href="pages/landing-pages.html">Explore 14 landing apps →</a><a class="button ghost-link" href="#systems">Browse all systems ↓</a></div></section><section id="systems" class="hub-directory"><div class="directory-head"><div><span class="eyebrow">THE COLLECTION</span><h2>Systems directory</h2><p>Search by name, category or source repository.</p></div><span class="directory-count" id="directory-count">{len(rows)} systems</span></div><div class="directory-controls"><label class="searchbox"><span>⌕</span><input id="system-search" type="search" placeholder="Search systems" aria-label="Search systems"></label><div class="filter-row"><button class="active" data-action="filter" data-filter="all">All</button><button data-action="filter" data-filter="landing">Landing</button><button data-action="filter" data-filter="agent">Agents</button><button data-action="filter" data-filter="data">Data</button><button data-action="filter" data-filter="design-tokens">Design Tokens</button><button data-action="filter" data-filter="design-system-tokens">Design System Tokens</button></div></div><div class="catalog-grid">{cards}</div><p class="no-results" hidden>No systems match your search.</p></section></main><footer>Sandbox-2 · {len(rows)-1} GitHub source checkouts and one prior Hugging Face installation record · each inventory row shows its deployment status.</footer></div>'''
+hub=hub.replace('<a href="pages/landing-pages.html">Landing apps</a>', '<a href="onboarding-system/workspace.html">Onboarding System</a><a href="pages/landing-pages.html">Landing apps</a>', 1)
+hub=hub.replace('<header class="hub-top">', '<header class="hub-top" id="top"><button class="hub-menu-button" type="button" data-action="hub-menu" aria-label="Open sections menu" aria-expanded="false" aria-controls="hub-sidebar">☰</button>', 1)
+onboarding_spotlight=f'''<section class="hub-onboarding" aria-labelledby="onboarding-heading"><div class="hub-onboarding-mark" aria-hidden="true">↗</div><div class="hub-onboarding-copy"><span class="eyebrow">ONBOARDING SYSTEM</span><h2 id="onboarding-heading">From source to a verified result.</h2><p>Paste a repository link, review what it provides and connect the authenticated local runner for supported setup. The existing queue remains available as a separate reference.</p></div><div class="hub-onboarding-action"><span>Runner required for execution</span><a href="onboarding-system/workspace.html">Open Onboarding System →</a></div></section>'''
+hub=hub.replace('<section id="systems"', onboarding_spotlight+'<section id="systems"', 1)
+def hub_svg(name):
+ icons={
+  'home':'<path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h6v7"/>',
+  'grid':'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  'launch':'<path d="M5 19 19 5M10 5h9v9"/><path d="M5 5h5M5 5v5M19 19h-5M19 19v-5"/>',
+  'layers':'<path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5"/>',
+  'agent':'<rect x="4" y="7" width="16" height="13" rx="4"/><path d="M12 3v4M8 13h.01M16 13h.01M9 17h6"/>',
+  'database':'<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
+  'palette':'<path d="M12 3a9 9 0 1 0 0 18h2a2 2 0 0 0 1-3.7 1.7 1.7 0 0 1 1-3.2h2A3.5 3.5 0 0 0 21 10.6 9 9 0 0 0 12 3Z"/><path d="M7 10h.01M10 6.5h.01M15 7h.01M6.5 15h.01"/>',
+  'tokens':'<path d="m12 2 4 4-4 4-4-4 4-4Zm-6 9 4 4-4 4-4-4 4-4Zm12 0 4 4-4 4-4-4 4-4Z"/>',
+  'diagram':'<rect x="2" y="3" width="7" height="5" rx="1"/><rect x="15" y="3" width="7" height="5" rx="1"/><rect x="8" y="16" width="8" height="5" rx="1"/><path d="M5.5 8v4H12v4M18.5 8v4H12"/>',
+  'review':'<path d="M5 4h14v16H5zM8 9h8M8 13h8M8 17h5"/>',
+  'chevron':'<path d="m6 9 6 6 6-6"/>',
+  'search':'<circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/>',
+ }
+ return f'<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">{icons[name]}</svg>'
+
+def hub_side_link(label,url,icon,filter_key='',count='',active=False):
+ attributes=f' data-hub-filter="{e(filter_key,quote=True)}"' if filter_key else ''
+ badge=f'<small>{e(str(count))}</small>' if count!='' else ''
+ return f'<a class="hub-side-link{" active" if active else ""}" href="{e(url,quote=True)}"{attributes}>{hub_svg(icon)}<span>{e(label)}</span>{badge}</a>'
+
+def hub_subgroup(label,icon,links):
+ return f'<details class="hub-side-subgroup"><summary>{hub_svg(icon)}<span>{e(label)}</span>{hub_svg("chevron")}</summary><div class="hub-side-children">{links}</div></details>'
+
+def hub_group(label,icon,content,open_by_default=False):
+ return f'<details class="hub-side-group"{" open" if open_by_default else ""}><summary>{hub_svg(icon)}<span>{e(label)}</span>{hub_svg("chevron")}</summary><div class="hub-side-children">{content}</div></details>'
+
+def build_hub_sidebar(queue_total,system_total):
+ workspace=hub_side_link('Overview','#top','home',active=True)+hub_side_link('Onboarding System','onboarding-system/workspace.html','launch')+hub_side_link('Existing queue','onboarding-system/index.html','layers',count=queue_total)
+ systems=(hub_side_link('All systems','#systems','grid','all',system_total)
+  +hub_subgroup('Landing pages','launch',hub_side_link('Landing systems','#systems','layers','landing')+hub_side_link('14 original apps','pages/landing-pages.html','launch'))
+  +hub_subgroup('Agents & workspaces','agent',hub_side_link('Agent systems','#systems','agent','agent')+hub_side_link('AgentField','pages/launch-agentfield.html','launch')+hub_side_link('PicoAgents','pages/launch-multiagent-systems.html','launch'))
+  +hub_subgroup('Data & pipelines','database',hub_side_link('Data systems','#systems','database','data')+hub_side_link('Kedro','pages/launch-kedro.html','launch'))
+  +hub_subgroup('Design tokens','palette',hub_side_link('Token systems','#systems','palette','design-tokens')+hub_side_link('Style Dictionary','pages/launch-style-dictionary.html','launch'))
+  +hub_subgroup('Design system tokens','tokens',hub_side_link('System tokens','#systems','tokens','design-system-tokens')+hub_side_link('Panda','pages/launch-panda.html','launch')))
+ engineering=(hub_subgroup('Architecture & diagrams','diagram',hub_side_link('All architecture records','onboarding-system/index.html?focus=architecture#repository-list','diagram',count=10)+hub_side_link('Terravision','onboarding-system/index.html?focus=architecture&item=44#repository-list','launch'))
+  +hub_subgroup('Database','database',hub_side_link('All database records','onboarding-system/index.html?focus=database#repository-list','database',count=10)+hub_side_link('Microservices patterns','onboarding-system/index.html?focus=database&item=50#repository-list','review')))
+ review=hub_side_link('Detailed inventory','#inventory-heading','review')+hub_side_link('Existing test bench','../bench/index.html','grid')
+ controls=f'<div class="hub-side-controls"><label class="hub-side-search">{hub_svg("search")}<input id="hub-side-search" type="search" placeholder="Search sidebar" aria-label="Search sidebar categories and links"></label><div class="hub-side-control-row"><button type="button" data-action="hub-expand">Expand all</button><button type="button" data-action="hub-collapse">Collapse all</button></div></div>'
+ return f'<aside class="hub-sidebar" id="hub-sidebar" aria-label="Sandbox sections"><div class="hub-side-intro"><span class="hub-side-monogram">S²</span><span>YOUR WORKSPACE<small>Sandbox 2</small></span></div>{controls}<nav aria-label="Showcase sections">{hub_group("Workspace","home",workspace,True)}{hub_group("Systems","grid",systems,True)}{hub_group("Engineering Collection","diagram",engineering,True)}{hub_group("Review","review",review,True)}</nav><p class="hub-side-no-results" hidden>No sidebar items match.</p><div class="hub-side-bottom"><span class="hub-side-status-dot"></span><div><strong>Evidence first</strong><small>Source links are not live apps.</small></div></div></aside>'
+side_panel=build_hub_sidebar(queue_count,len(rows))
+
+hub=hub.replace('<main>', '<div class="hub-side-scrim" id="hub-side-scrim" hidden></div><div class="hub-layout">'+side_panel+'<main class="hub-main">', 1).replace('</main><footer>', '</main></div><footer>', 1)
+table=f'''<section class="inventory-panel" aria-labelledby="inventory-heading"><div class="inventory-panel-head"><div><span class="eyebrow">PROJECT ATLAS STYLE</span><h3 id="inventory-heading">Detailed project inventory</h3><p>Repo category, GitHub About description, official website, native installation evidence, backend reality, and public access.</p></div><button id="inventory-export" type="button">Export CSV ↓</button></div><div class="inventory-note">Fourteen landing apps and three design interfaces are original builds. Other HTML screens are browser studies until their upstream runtimes are deployed. Descriptions are quoted from each source's GitHub About field; the MiniCPM source is a Hugging Face Space.</div><div class="inventory-scroll" tabindex="0" aria-label="Scrollable detailed systems table"><table class="inventory-table"><thead><tr><th scope="col">Project / system</th><th scope="col">Repo category</th><th scope="col">GitHub description</th><th scope="col">Official website</th><th scope="col">Source / revision</th><th scope="col">Development / audit</th><th scope="col">Native app</th><th scope="col">Backend / inference</th><th scope="col">Operational evidence</th><th scope="col">Public access</th><th scope="col">Next step</th><th scope="col">Open / review</th></tr></thead><tbody>{table_rows}</tbody></table></div><div class="inventory-foot"><span id="inventory-visible">Showing {len(rows)} of {len(rows)} systems</span><span>Scroll horizontally to see every evidence column →</span></div></section><div class="card-section-head"><div><span class="eyebrow">VISUAL BROWSING</span><h3>System cards</h3></div><a href="#inventory-heading">Back to detailed table ↑</a></div>'''
 hub=hub.replace('<div class="catalog-grid">',table+'<div class="catalog-grid">',1)
 (SITE/'index.html').write_text(doc('Systems',hub,0,'hub'))
-print(f'Built {len(rows)} system pages + {len(LANDINGS)} landing previews + index')
+build_onboarding_system()
+print(f'Built {len(rows)} system pages + {len(rows)} system launch pages + {len(LANDINGS)} landing apps + {len(LANDINGS)} landing launch pages + index')

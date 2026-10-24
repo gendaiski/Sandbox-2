@@ -7,6 +7,35 @@
   document.documentElement.dataset.theme=savedTheme;
   const setTheme=(theme)=>{document.documentElement.dataset.theme=theme;try{localStorage.setItem(themeKey,theme)}catch{};$$('.theme-toggle').forEach(b=>{b.textContent=theme==='dark'?'☀':'☾';b.setAttribute('aria-label',theme==='dark'?'Switch to light mode':'Switch to dark mode')})};
   setTheme(savedTheme);
+  const hubMenu=$('[data-action="hub-menu"]');
+  const hubSidebar=$('#hub-sidebar');
+  const hubScrim=$('#hub-side-scrim');
+  function closeHubMenu(restoreFocus=false){if(!hubSidebar)return;hubSidebar.classList.remove('open');if(hubScrim)hubScrim.hidden=true;hubMenu?.setAttribute('aria-expanded','false');if(restoreFocus)hubMenu?.focus()}
+  hubMenu?.addEventListener('click',()=>{const open=!hubSidebar.classList.contains('open');hubSidebar.classList.toggle('open',open);if(hubScrim)hubScrim.hidden=!open;hubMenu.setAttribute('aria-expanded',String(open));if(open)hubSidebar.querySelector('#hub-side-search')?.focus()});
+  hubScrim?.addEventListener('click',()=>closeHubMenu(true));
+  $$('.hub-sidebar a').forEach(link=>link.addEventListener('click',()=>{if(link.dataset.hubFilter){$(`.filter-row button[data-filter="${link.dataset.hubFilter}"]`)?.click();$$('.hub-side-link').forEach(item=>item.classList.toggle('active',item===link))}closeHubMenu()}));
+  function filterHubSidebar(){
+    const query=($('#hub-side-search')?.value||'').trim().toLowerCase();let visibleGroups=0;
+    $$('.hub-side-group',hubSidebar).forEach(group=>{
+      const groupLabel=$(':scope > summary span',group)?.textContent.toLowerCase()||'';
+      const groupMatch=!!query&&groupLabel.includes(query);let shown=0;
+      $$(':scope > .hub-side-children > .hub-side-link',group).forEach(link=>{link.hidden=!!query&&!groupMatch&&!link.textContent.toLowerCase().includes(query);if(!link.hidden)shown++});
+      $$('.hub-side-subgroup',group).forEach(sub=>{
+        const subLabel=$(':scope > summary span',sub)?.textContent.toLowerCase()||'';
+        const subMatch=groupMatch||!!query&&subLabel.includes(query);let subShown=0;
+        $$('.hub-side-link',sub).forEach(link=>{link.hidden=!!query&&!subMatch&&!link.textContent.toLowerCase().includes(query);if(!link.hidden)subShown++});
+        sub.hidden=!!query&&!subMatch&&!subShown;if(!sub.hidden)shown++;
+        if(query&&!sub.hidden)sub.open=true;
+      });
+      group.hidden=!!query&&!groupMatch&&!shown;if(!group.hidden)visibleGroups++;
+      if(query&&!group.hidden)group.open=true;
+    });
+    const empty=$('.hub-side-no-results',hubSidebar);if(empty)empty.hidden=visibleGroups!==0;
+  }
+  $('#hub-side-search')?.addEventListener('input',filterHubSidebar);
+  hubSidebar?.querySelector('[data-action="hub-expand"]')?.addEventListener('click',()=>$$('.hub-side-group,.hub-side-subgroup',hubSidebar).forEach(group=>group.open=true));
+  hubSidebar?.querySelector('[data-action="hub-collapse"]')?.addEventListener('click',()=>$$('.hub-side-group,.hub-side-subgroup',hubSidebar).forEach(group=>group.open=false));
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&hubSidebar?.classList.contains('open'))closeHubMenu(true)});
   // Restore explicitly saved local editor drafts. No agent data is transmitted.
   $$('[data-draft]').forEach(el=>{try{const value=localStorage.getItem('sandbox2-draft-'+el.dataset.draft);if(value!==null)el.value=value}catch{}});
   const featureCopy={performance:'Built to handle ambitious work in a portable form.',display:'A vivid canvas for every detail and idea.',battery:'Keep creating while you move through the day.'};
@@ -63,7 +92,6 @@
       const result=$('#data-result');if(result)result.textContent='Sample result: Product C has the highest revenue ($450) across the three bundled rows.';
     }
     if(action==='zoom')$('.review-frame')?.classList.toggle('enlarged');
-    if(action==='latest-filter'){$(`.filter-row button[data-filter="${button.dataset.filter}"]`)?.click();document.getElementById('systems')?.scrollIntoView({behavior:'smooth',block:'start'})}
     if(action==='filter'){$$('.filter-row button').forEach(x=>x.classList.toggle('active',x===button));filterDirectory()}
     if(action==='token-export'){updateTokenStudy();button.closest('.appframe')?.querySelector('[data-action="pane"][data-target="pane-2"]')?.click();toast('Sample token JSON updated.')}
     if(action==='token-copy')copyText($('[data-token-output]')?.textContent||'');

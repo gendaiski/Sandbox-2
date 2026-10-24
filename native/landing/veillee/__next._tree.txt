@@ -1,0 +1,6 @@
+:HL["/Sandbox-2/native/landing/veillee/_next/static/chunks/3krkznihz_0on.css","style"]
+:HL["/Sandbox-2/native/landing/veillee/_next/static/media/Manrope-s.p.3rjk17h6oms_8.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+:HL["/Sandbox-2/native/landing/veillee/_next/static/media/bodoni_moda_latin_standard_italic-s.p.2knu9oo8uyx5c.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/Sandbox-2/native/landing/veillee/_next/static/media/bodoni_moda_latin_standard_normal-s.p.0upi7cxdvpner.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+1:[["children",{"s":"__PAGE__","h":160}]]
+0:{"b":"5eTfJC904sS5gSGBIPs1J","t":{"t":{"s":"","h":80,"c":"$Q1"}}}

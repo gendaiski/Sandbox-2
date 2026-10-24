@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: sandbox2-picoagents
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./deploy/render/picoagents/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    disk:
+      name: picoagents-data
+      mountPath: /app/native/picoagents/data
+      sizeGB: 1
+    envVars:
+      - key: PICOAGENTS_HTTP_USER
+        value: reviewer
+      - key: PICOAGENTS_HTTP_PASSWORD
+        sync: false

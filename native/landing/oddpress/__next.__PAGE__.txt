@@ -1,0 +1,25 @@
+1:"$Sreact.fragment"
+2:"/Sandbox-2/native/landing/oddpress/_next/static/chunks/2olj92cf_1kj1.js"
+3:I[77763,["$2"],"default"]
+4:I[18508,["$2"],"default"]
+8:"/Sandbox-2/native/landing/oddpress/_next/static/chunks/2csp6v0yms1gu.js"
+9:I[20675,["$2","$8"],"default"]
+a:I[7826,["$2"],"OutletBoundary"]
+b:"$Sreact.suspense"
+e:"ViewportBoundary"
+f:I[7826,["$2"],"$e"]
+10:"MetadataBoundary"
+11:I[7826,["$2"],"$10"]
+12:I[23000,["$2"],"IconMark"]
+:HL["/Sandbox-2/native/landing/oddpress/_next/static/chunks/0lqsdgxck3tgu.css","style"]
+6:X
+7:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$1","c",{"children":[["$","$L9",null,{}],[["$","script","script-0",{"src":"/Sandbox-2/native/landing/oddpress/_next/static/chunks/2csp6v0yms1gu.js","async":true}]],["$","$La",null,{"children":["$","$b",null,{"name":"Next.MetadataOutlet","children":"$@c"}]}]]}],"p":"$@d","v":null,"s":"$6"}}]]
+0:{"t":{"t":{"s":"","h":80,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/Sandbox-2/native/landing/oddpress/_next/static/chunks/0lqsdgxck3tgu.css","precedence":"next"}],["$","script","script-0",{"src":"/Sandbox-2/native/landing/oddpress/_next/static/chunks/2olj92cf_1kj1.js","async":true}]],["$","html",null,{"lang":"en","className":"iKMfdW_variable NyrHYW_variable","children":["$","body",null,{"children":["$","$L3",null,{"parallelRouterKey":"children","template":["$","$L4",null,{}],"notFound":[["$","main",null,{"style":{"minHeight":"100svh","display":"grid","placeContent":"center","padding":30,"textAlign":"center"},"children":[["$","p",null,{"children":"404 / A SMALL DETOUR"}],["$","h1",null,{"style":{"fontSize":48,"margin":"25px 0"},"children":"A little lost?"}],["$","a",null,{"href":"/","style":{"textDecoration":"underline","padding":20},"children":"Back to the studio"}]]}],[]]}]}]}]]}],"p":"$@5","v":null,"s":"$6"},"c":"$Q7"},"h":{"r":["$","$1","h",{"children":[null,["$","$Lf",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L11",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$b",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Oddpress — Perfectly off-register"}],["$","meta","1",{"name":"description","content":"An imaginary independent print club. A little ink. A happy accident. Make something wonderfully imperfect."}],["$","link","2",{"rel":"icon","href":"/Sandbox-2/native/landing/oddpress/icon.svg?icon.1pjnxn2mb0736.svg","sizes":"any","type":"image/svg+xml"}],["$","$L12","3",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@13","v":null,"s":"$6"}},"a":"$@14","u":"$@15","b":"eWAKR2VjIKNXq-Da0Wllj"}
+c:null
+6:300
+15:true
+6:C
+14:0
+5:"$undefined"
+13:"$undefined"
+d:"$undefined"

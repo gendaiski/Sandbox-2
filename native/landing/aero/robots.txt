@@ -1,0 +1,4 @@
+User-Agent: *
+Allow: /
+
+Sitemap: https://aero-lndev.vercel.app/sitemap.xml

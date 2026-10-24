@@ -1,0 +1,31 @@
+{
+  "originalInterfaces": [
+    {
+      "slug": "design-tokens-spec",
+      "homeStatus": 200,
+      "deepRoute": "/playground/",
+      "deepStatus": 200,
+      "interaction": "passed",
+      "pageErrors": [],
+      "missingAssets": []
+    },
+    {
+      "slug": "helios",
+      "homeStatus": 200,
+      "deepRoute": "/#/components/accordion",
+      "deepStatus": 200,
+      "interaction": "passed",
+      "pageErrors": [],
+      "missingAssets": []
+    },
+    {
+      "slug": "ux-ui-agent-skills",
+      "homeStatus": 200,
+      "deepRoute": "/component-states/button.html",
+      "deepStatus": 200,
+      "interaction": "passed",
+      "pageErrors": [],
+      "missingAssets": []
+    }
+  ]
+}

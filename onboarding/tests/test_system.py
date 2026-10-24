@@ -1,0 +1,770 @@
+import json
+import io
+import os
+import sqlite3
+import tarfile
+import tempfile
+import threading
+import time
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+
+from fastapi.testclient import TestClient
+
+from onboarding.core import InputError, classify, download_archive, make_plan, parse_reference, validate_ref
+from onboarding.happy_desktop import ASSET, SHA256, VERSION
+from onboarding.herdr import ASSET as HERDR_ASSET, SHA256 as HERDR_SHA256, VERSION as HERDR_VERSION
+from onboarding.orchestrator_desktop import ASSET as ORCHESTRATOR_ASSET, SHA256 as ORCHESTRATOR_SHA256, VERSION as ORCHESTRATOR_VERSION
+from onboarding.ekko_web import INTEGRITY as EKKO_INTEGRITY, PACKAGE as EKKO_PACKAGE, VERSION as EKKO_VERSION
+from onboarding.html_anything import NEXT_VERSION as HTML_NEXT_VERSION, PNPM_VERSION as HTML_PNPM_VERSION
+from onboarding.gentle_ai import MODULE as GENTLE_MODULE, VERSION as GENTLE_VERSION
+from onboarding.qualitylayer_desktop import ASSET as QL_ASSET, SHA256 as QL_SHA256, VERSION as QL_VERSION
+from onboarding.pr_lens import INTEGRITY as PR_LENS_INTEGRITY, PACKAGE as PR_LENS_PACKAGE, VERSION as PR_LENS_VERSION
+from onboarding.deja_vu import ASSET as DEJA_ASSET, SHA256 as DEJA_SHA256, VERSION as DEJA_VERSION
+from onboarding.rivet_sandbox_agent import CLI_INTEGRITY as RIVET_CLI_INTEGRITY, WINDOWS_INTEGRITY as RIVET_WINDOWS_INTEGRITY, PORT as RIVET_PORT, VERSION as RIVET_VERSION
+from onboarding.server import create_app
+
+
+def fixture_discovery(owner, name, ref):
+    return {
+        "owner": owner, "name": name, "canonical": f"{owner.lower()}/{name.lower()}",
+        "github": f"https://github.com/{owner}/{name}",
+        "description": "A small set of readable examples.",
+        "listedWebsite": "None listed.", "websiteType": "None listed",
+        "officialWebsite": "No official website verified.", "documentation": None, "demo": None,
+        "license": "MIT", "archived": False, "private": False,
+        "ref": ref or "main", "commit": "a" * 40, "defaultBranch": "main",
+        "type": "Documentation", "typeReason": "Only documentation was found at the root.",
+        "rootFiles": ["README.md"], "readmeExcerpt": "A local fixture README.",
+        "sources": [f"https://github.com/{owner}/{name}"],
+    }
+
+
+def fixture_download(discovery, destination, cancelled, log):
+    log("Preparing controlled local fixture")
+    destination.mkdir(parents=True)
+    (destination / "README.md").write_text("# Example\nThis is the source content.\n")
+    (destination / "START_HERE.md").write_text("Read README.md")
+    return {"fileCount": 1, "bytes": 38, "readme": "README.md", "workspace": str(destination)}
+
+
+class ReferenceTests(unittest.TestCase):
+    def test_happy_desktop_plan_is_pinned_to_windows_and_signed_release(self):
+        discovery = fixture_discovery("slopus", "happy", None)
+        discovery["type"] = "Monorepo"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "happy")
+            self.assertTrue(plan["supported"])
+            self.assertEqual(plan["methodKey"], "happy-desktop-windows")
+            self.assertEqual(plan["release"]["sha256"], SHA256)
+            self.assertEqual(plan["release"]["version"], VERSION)
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "happy")["supported"])
+
+    def test_herdr_plan_requires_windows_and_pins_original_binary(self):
+        discovery = fixture_discovery("herdrdev", "herdr", None)
+        discovery["type"] = "CLI or developer tool"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "herdr")
+            self.assertTrue(plan["supported"])
+            self.assertEqual(plan["methodKey"], "herdr-windows")
+            self.assertEqual(plan["release"]["sha256"], HERDR_SHA256)
+            self.assertEqual(plan["release"]["version"], HERDR_VERSION)
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "herdr")["supported"])
+
+    def test_unsigned_orchestrator_plan_never_promises_auto_launch(self):
+        discovery = fixture_discovery("OrchestratorInc", "agent-orchestrator", None)
+        discovery["type"] = "Application"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "orchestrator")
+            self.assertTrue(plan["supported"])
+            self.assertEqual(plan["methodKey"], "orchestrator-windows")
+            self.assertEqual(plan["release"]["sha256"], ORCHESTRATOR_SHA256)
+            self.assertEqual(plan["release"]["version"], ORCHESTRATOR_VERSION)
+            self.assertIn("do not execute", plan["method"].lower())
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "orchestrator")["supported"])
+
+    def test_ekko_plan_pins_original_web_package_and_local_port(self):
+        discovery = fixture_discovery("EKKOLearnAI", "ekko-studio", None)
+        discovery["type"] = "Application"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "ekko")
+            self.assertEqual(plan["methodKey"], "ekko-web-windows")
+            self.assertEqual(plan["release"]["integrity"], EKKO_INTEGRITY)
+            self.assertEqual(plan["release"]["asset"], EKKO_PACKAGE)
+            self.assertEqual(plan["ports"], ["127.0.0.1:18848 (runner-local only)"])
+            self.assertFalse(plan["publicExposure"])
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "ekko")["supported"])
+
+    def test_html_anything_plan_uses_original_next_workspace_without_agent_run(self):
+        discovery = fixture_discovery("nexu-io", "html-anything", None)
+        discovery["type"] = "Application"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "html")
+            self.assertEqual(plan["methodKey"], "html-anything-windows")
+            self.assertIn(HTML_PNPM_VERSION, plan["resources"])
+            self.assertIn(HTML_NEXT_VERSION, " ".join(plan["changes"]))
+            self.assertFalse(plan["publicExposure"])
+            self.assertIn("Do not automatically invoke", " ".join(plan["permissions"]))
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "html")["supported"])
+
+    def test_gentle_ai_plan_uses_original_cli_without_agent_changes(self):
+        discovery = fixture_discovery("Gentleman-Programming", "gentle-ai", None)
+        discovery["type"] = "CLI or developer tool"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "gentle")
+            self.assertTrue(plan["supported"])
+            self.assertEqual(plan["methodKey"], "gentle-ai-windows")
+            self.assertEqual(plan["release"]["asset"], GENTLE_MODULE)
+            self.assertEqual(plan["release"]["version"], GENTLE_VERSION)
+            self.assertIn("do not install, sync or uninstall", " ".join(plan["changes"]))
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "gentle")["supported"])
+
+    def test_qualitylayer_plan_discloses_trial_and_original_signed_app(self):
+        discovery = fixture_discovery("maxritter", "qualitylayer", None)
+        discovery["type"] = "Application"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "qualitylayer")
+            self.assertTrue(plan["supported"])
+            self.assertEqual(plan["methodKey"], "qualitylayer-desktop-windows")
+            self.assertEqual(plan["release"]["asset"], QL_ASSET)
+            self.assertEqual(plan["release"]["sha256"], QL_SHA256)
+            self.assertEqual(plan["release"]["version"], QL_VERSION)
+            self.assertIn("seven-day trial", plan["cost"])
+            self.assertIn("skills, hooks and settings", " ".join(plan["changes"]))
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "qualitylayer")["supported"])
+
+    def test_pr_lens_plan_selects_original_local_cli_without_external_actions(self):
+        discovery = fixture_discovery("coldteadotai", "pr-lens", None)
+        discovery["type"] = "Monorepo"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "pr-lens")
+            self.assertEqual(plan["methodKey"], "pr-lens-cli-windows")
+            self.assertEqual(plan["release"]["asset"], PR_LENS_PACKAGE)
+            self.assertEqual(plan["release"]["integrity"], PR_LENS_INTEGRITY)
+            self.assertIn("Do not invoke a model", " ".join(plan["permissions"]))
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "pr-lens")["supported"])
+
+    def test_openlit_plan_blocks_stock_compose_until_host_review(self):
+        discovery = fixture_discovery("openlit", "openlit", None)
+        discovery["type"] = "Application"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "openlit")
+            self.assertFalse(plan["supported"])
+            self.assertEqual(plan["methodKey"], "openlit-docker-blocked")
+            self.assertIn("ClickHouse", " ".join(plan["services"]))
+            self.assertIn("example passwords", plan["limitations"])
+
+    def test_nvidia_catalog_plan_does_not_install_skills_globally(self):
+        discovery = fixture_discovery("NVIDIA", "skills", None)
+        discovery["type"] = "Workflows and skills"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "nvidia")
+            self.assertTrue(plan["supported"])
+            self.assertEqual(plan["methodKey"], "nvidia-skills-catalog")
+            self.assertIn("7000 regular files", plan["resources"])
+            self.assertIn("Do not execute repository scripts", " ".join(plan["permissions"]))
+
+    def test_deja_vu_plan_prepares_original_cli_without_private_history_access(self):
+        discovery = fixture_discovery("vshulcz", "deja-vu", None)
+        discovery["type"] = "CLI or developer tool"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "deja-vu")
+            self.assertTrue(plan["supported"])
+            self.assertEqual(plan["methodKey"], "deja-vu-cli-windows")
+            self.assertEqual(plan["release"]["asset"], DEJA_ASSET)
+            self.assertEqual(plan["release"]["sha256"], DEJA_SHA256)
+            self.assertEqual(plan["release"]["version"], DEJA_VERSION)
+            self.assertIn("do not index transcripts", " ".join(plan["changes"]))
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "deja-vu")["supported"])
+
+    def test_rivet_monorepo_plan_selects_original_loopback_server(self):
+        discovery = fixture_discovery("rivet-dev", "agents", None)
+        discovery["type"] = "Monorepo"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "rivet")
+            self.assertTrue(plan["supported"])
+            self.assertEqual(plan["methodKey"], "rivet-sandbox-agent-windows")
+            self.assertEqual(plan["release"]["version"], RIVET_VERSION)
+            self.assertEqual(plan["release"]["integrity"], RIVET_CLI_INTEGRITY)
+            self.assertEqual(plan["release"]["windowsIntegrity"], RIVET_WINDOWS_INTEGRITY)
+            self.assertIn(f"127.0.0.1:{RIVET_PORT}", " ".join(plan["ports"]))
+            self.assertFalse(plan["publicExposure"])
+            self.assertIn("built-in mock", " ".join(plan["verification"]))
+            target["osFamily"] = "Linux"
+            self.assertFalse(make_plan(discovery, target, Path(folder) / "rivet")["supported"])
+
+    def test_book_with_chapter_notebooks_is_learning_material(self):
+        kind, explanation = classify(
+            "Agentic-Design-Patterns",
+            ["README.md", "Agentic_Design_Patterns_Complete.pdf", "chapter_notebooks"],
+            "A hands-on guide with notebook examples", "",
+        )
+        self.assertEqual(kind, "Learning materials")
+        self.assertIn("credentials", explanation)
+
+    def test_equivalent_formats(self):
+        formats = (
+            "https://github.com/Example/Docs", "https://github.com/Example/Docs.git",
+            "gh repo clone Example/Docs", "git clone https://github.com/Example/Docs.git",
+            "git@github.com:Example/Docs.git", "Example/Docs",
+        )
+        self.assertEqual({parse_reference(value)[2] for value in formats}, {"https://github.com/Example/Docs"})
+
+    def test_untrusted_command_syntax_rejected(self):
+        for value in (
+            "gh repo clone Example/Docs; echo bad", "git clone https://github.com/Example/Docs && whoami",
+            "Example/Docs$(whoami)", "https://evil.example/Example/Docs", "git clone --depth 1 https://github.com/Example/Docs",
+            "https://github.com/Example/Docs/tree/main", "Example/Docs\nwhoami", "https://github.com/Example/Docs?token=abc",
+        ):
+            with self.subTest(value=value), self.assertRaises(InputError):
+                parse_reference(value)
+        for value in ("main;whoami", "../main", "branch name", "-malicious"):
+            with self.subTest(ref=value), self.assertRaises(InputError):
+                validate_ref(value)
+
+    def test_archive_rejects_traversal_and_links(self):
+        discovery = fixture_discovery("Example", "Docs", None)
+        for unsafe_name, link in (("root/../escape", False), ("root/link", True)):
+            with self.subTest(unsafe_name=unsafe_name), tempfile.TemporaryDirectory() as folder:
+                stream = io.BytesIO()
+                with tarfile.open(fileobj=stream, mode="w:gz") as archive:
+                    info = tarfile.TarInfo(unsafe_name)
+                    if link:
+                        info.type = tarfile.SYMTYPE
+                        info.linkname = "../../etc/passwd"
+                        archive.addfile(info)
+                    else:
+                        payload = b"unsafe"
+                        info.size = len(payload)
+                        archive.addfile(info, io.BytesIO(payload))
+                stream.seek(0)
+                destination = Path(folder) / "checkout"
+                with patch("onboarding.core.urllib.request.urlopen", return_value=stream), self.assertRaises(RuntimeError):
+                    download_archive(discovery, destination, threading.Event(), lambda message: None)
+                self.assertFalse((Path(folder) / "escape").exists())
+                self.assertFalse(destination.exists())
+
+
+class RunnerTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.app = create_app(Path(self.temp.name), "fixture-access-code", discover_fn=fixture_discovery, download_fn=fixture_download, allowed_hosts={"testserver"})
+        self.client = TestClient(self.app)
+
+    def tearDown(self):
+        for _ in range(100):
+            if not self.app.state.service.cancel_events:
+                break
+            time.sleep(.02)
+        self.client.close()
+        self.app.state.service.close()
+        self.temp.cleanup()
+
+    def login(self):
+        response = self.client.post("/api/session", json={"code": "fixture-access-code"})
+        self.assertEqual(response.status_code, 200)
+        return {"X-Onboarding-CSRF": response.json()["csrf"]}
+
+    def test_session_target_and_boundaries(self):
+        self.assertEqual(self.client.get("/api/target").status_code, 401)
+        headers = self.login()
+        target = self.client.get("/api/target").json()
+        self.assertEqual(target["kind"], "Temporary cloud workspace" if os.environ.get("CODEX_ENVIRONMENT_ID") else "Connected local runner")
+        self.assertIn("documentation", target["capabilities"][1].lower())
+        self.assertEqual(self.client.post("/api/onboardings", json={"reference": "Example/Docs"}).status_code, 403)
+        self.assertEqual(self.client.post("/api/onboardings", headers={**headers, "Origin": "https://evil.example"}, json={"reference": "Example/Docs"}).status_code, 403)
+        self.assertEqual(self.client.get("/onboarding-data/records.sqlite3").status_code, 404)
+        self.assertEqual(self.client.get("/native/apps/design-tokens-spec/").status_code, 404)
+        self.assertEqual(self.client.get("/showcase/onboarding-system/workspace.html").status_code, 200)
+        with self.assertRaisesRegex(RuntimeError, "Another Onboarding runner"):
+            create_app(Path(self.temp.name), "second-code", discover_fn=fixture_discovery, download_fn=fixture_download, allowed_hosts={"testserver"})
+
+    def test_default_loopback_access_needs_no_code_but_preserves_request_boundaries(self):
+        with tempfile.TemporaryDirectory() as folder:
+            app = create_app(Path(folder), discover_fn=fixture_discovery,
+                             download_fn=fixture_download, allowed_hosts={"testserver"})
+            try:
+                with TestClient(app, client=("127.0.0.1", 50000)) as local:
+                    session = local.get("/api/session")
+                    self.assertEqual(session.status_code, 200)
+                    self.assertTrue(session.json()["authenticated"])
+                    self.assertFalse(session.json()["accessCodeRequired"])
+                    self.assertIn("sandbox2_onboarding", session.cookies)
+                    csrf = session.json()["csrf"]
+                    self.assertEqual(local.get("/api/target").status_code, 200)
+                    self.assertEqual(local.post("/api/onboardings", json={"reference": "Example/Docs"}).status_code, 403)
+                    self.assertEqual(local.post("/api/onboardings", headers={"X-Onboarding-CSRF": csrf,
+                                         "Origin": "https://other.example"}, json={"reference": "Example/Docs"}).status_code, 403)
+                    self.assertEqual(local.get("/api/session", headers={"Host": "rebound.example"}).status_code, 400)
+                    result = local.post("/api/onboardings", headers={"X-Onboarding-CSRF": csrf},
+                                        json={"reference": "Example/Docs"})
+                    self.assertEqual(result.status_code, 200, result.text)
+                with TestClient(app, client=("192.0.2.10", 50000)) as remote:
+                    self.assertEqual(remote.get("/api/session").status_code, 403)
+                    self.assertEqual(remote.get("/api/target").status_code, 401)
+            finally:
+                app.state.service.close()
+
+    def test_real_job_record_and_exports(self):
+        headers = self.login()
+        created = self.client.post("/api/onboardings", headers=headers, json={"reference": "gh repo clone Example/Docs"})
+        self.assertEqual(created.status_code, 200, created.text)
+        record = created.json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.assertEqual(record["discovery"]["description"], "A small set of readable examples.")
+        self.assertEqual(self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers, json={"planHash": "wrong"}).status_code, 409)
+        self.assertEqual(self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers).status_code, 409)
+        duplicate = self.client.post("/api/onboardings", headers=headers, json={"reference": "https://github.com/example/docs.git"}).json()
+        self.assertTrue(duplicate["duplicate"])
+        self.assertEqual(duplicate["record"]["id"], record["id"])
+        approval = self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers, json={"planHash": record["plan_hash"]})
+        self.assertEqual(approval.status_code, 200)
+        job = self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        self.assertEqual(job.status_code, 200, job.text)
+        job_id = job.json()["jobId"]
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "COMPLETE", current)
+        self.assertEqual(self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers).status_code, 409)
+        statuses = {check["status"] for check in current["checks"]}
+        self.assertIn("PASS", statuses)
+        self.assertIn("NOT APPLICABLE", statuses)
+        logs = self.client.get(f"/api/jobs/{job_id}").json()["logs"]
+        self.assertTrue(any("fixture" in log["message"] for log in logs))
+        self.assertEqual(self.client.get(f"/api/onboardings/{record['id']}/report.json").json()["status"], "COMPLETE")
+        self.assertIn("A small set of readable examples.", self.client.get(f"/api/onboardings/{record['id']}/report.md").text)
+        self.assertTrue(self.client.get(f"/api/onboardings/{record['id']}/report.pdf").content.startswith(b"%PDF"))
+        files = self.client.get(f"/api/onboardings/{record['id']}/files").json()
+        self.assertIn("START_HERE.md", {entry["path"] for entry in files})
+        self.assertIn("Example", self.client.get(f"/api/onboardings/{record['id']}/file", params={"path": "README.md"}).text)
+        self.assertEqual(self.client.get(f"/api/onboardings/{record['id']}/file", params={"path": "../../records.sqlite3"}).status_code, 404)
+        self.assertEqual(self.client.post(f"/api/onboardings/{record['id']}/verify", headers=headers).json()["status"], "COMPLETE")
+        self.app.state.service.close()
+        other_app = create_app(Path(self.temp.name), "new-code", discover_fn=fixture_discovery, download_fn=fixture_download, allowed_hosts={"testserver"})
+        with TestClient(other_app) as other:
+            self.assertEqual(other.get("/api/onboardings").status_code, 401)
+            new_session = other.post("/api/session", json={"code": "new-code"}).json()
+            self.assertEqual(len(other.get("/api/onboardings").json()), 1)
+            self.assertTrue(new_session["authenticated"])
+
+    def test_unsupported_type_is_not_installed(self):
+        def application(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "Application"
+            return result
+        self.app.state.service.discover_fn = application
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers, json={"reference": "Example/Application"}).json()["record"]
+        self.assertEqual(record["status"], "BLOCKED")
+        self.assertFalse(record["plan"]["supported"])
+        self.assertEqual(self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers).status_code, 409)
+        self.assertFalse(Path(record["workspace"]).exists())
+
+    def test_happy_installer_open_is_partial_until_original_workflow_verified(self):
+        def happy_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "Monorepo"
+            return result
+        target = self.app.state.service.target()
+        target.update({"id": "windows-fixture", "osFamily": "Windows", "architecture": "AMD64"})
+        self.app.state.service.target = lambda: target
+        self.app.state.service.discover_fn = happy_discovery
+
+        def approved_installer(destination, cancelled, log):
+            destination.mkdir()
+            (destination / ASSET).write_bytes(b"controlled fixture")
+            (destination / "START_HERE.md").write_text("Open the original installer")
+            log("Controlled installer fixture opened")
+            return {"installer": ASSET, "sha256": SHA256, "publisher": "Test Publisher", "installerLaunched": True}
+
+        self.app.state.service.happy_fn = approved_installer
+        headers = self.login()
+        response = self.client.post("/api/onboardings", headers=headers, json={"reference": "slopus/happy"})
+        record = response.json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.assertEqual(self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers).status_code, 409)
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers, json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
+        self.assertEqual(self.client.get(f"/api/onboardings/{record['id']}/report.json").json()["status"], "PARTIAL")
+        self.assertEqual(self.client.post(f"/api/onboardings/{record['id']}/verify", headers=headers).json()["status"], "PARTIAL")
+
+    def test_herdr_cli_checks_do_not_claim_full_tui_workflow(self):
+        def herdr_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "CLI or developer tool"
+            return result
+        target = self.app.state.service.target()
+        target.update({"id": "windows-fixture", "osFamily": "Windows", "architecture": "AMD64"})
+        self.app.state.service.target = lambda: target
+        self.app.state.service.discover_fn = herdr_discovery
+
+        def approved_binary(destination, cancelled, log):
+            (destination / "app").mkdir(parents=True)
+            (destination / HERDR_ASSET).write_bytes(b"controlled archive fixture")
+            (destination / "app" / "herdr.exe").write_bytes(b"controlled binary fixture")
+            (destination / "START_HERE.md").write_text("Run app/herdr.exe")
+            log("Controlled Herdr fixture version and help checked")
+            return {"archive": HERDR_ASSET, "binary": "app/herdr.exe", "sha256": HERDR_SHA256,
+                    "version": HERDR_VERSION, "versionCheck": True, "helpCheck": True}
+
+        self.app.state.service.herdr_fn = approved_binary
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers, json={"reference": "herdrdev/herdr"}).json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers, json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
+
+    def test_unsigned_orchestrator_preparation_is_never_complete(self):
+        def app_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "Application"
+            return result
+        target = self.app.state.service.target()
+        target.update({"id": "windows-fixture", "osFamily": "Windows", "architecture": "AMD64"})
+        self.app.state.service.target = lambda: target
+        self.app.state.service.discover_fn = app_discovery
+
+        def unsigned_release(destination, cancelled, log):
+            destination.mkdir()
+            (destination / ORCHESTRATOR_ASSET).write_bytes(b"controlled fixture")
+            (destination / "START_HERE.md").write_text("Review original release before running")
+            log("Unsigned release prepared without launch")
+            return {"installer": ORCHESTRATOR_ASSET, "sha256": ORCHESTRATOR_SHA256,
+                    "version": ORCHESTRATOR_VERSION, "executed": False}
+
+        self.app.state.service.orchestrator_fn = unsigned_release
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers,
+                                  json={"reference": "OrchestratorInc/agent-orchestrator"}).json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
+                         json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertEqual(current["latestJob"]["status"], "PARTIAL")
+        self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
+
+    def test_ekko_backend_health_does_not_claim_agent_workflow(self):
+        def app_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "Application"
+            return result
+        target = self.app.state.service.target()
+        target.update({"id": "windows-fixture", "osFamily": "Windows", "architecture": "AMD64"})
+        self.app.state.service.target = lambda: target
+        self.app.state.service.discover_fn = app_discovery
+
+        def original_fixture(destination, cancelled, log):
+            destination.mkdir()
+            (destination / "START_HERE.md").write_text("Original app fixture")
+            log("Controlled original backend fixture responded")
+            return {"package": EKKO_PACKAGE, "version": EKKO_VERSION,
+                    "serverHealth": True, "originalLoginShell": True, "url": "http://127.0.0.1:18848/"}
+
+        self.app.state.service.ekko_fn = original_fixture
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers,
+                                  json={"reference": "EKKOLearnAI/ekko-studio"}).json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
+                         json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertEqual(current["latestJob"]["status"], "PARTIAL")
+        self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
+
+    def test_html_anything_server_checks_do_not_claim_agent_generation(self):
+        def app_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "Application"
+            return result
+        target = self.app.state.service.target()
+        target.update({"id": "windows-fixture", "osFamily": "Windows", "architecture": "AMD64"})
+        self.app.state.service.target = lambda: target
+        self.app.state.service.discover_fn = app_discovery
+
+        def original_fixture(discovery, destination, cancelled, log):
+            (destination / "next" / ".next").mkdir(parents=True)
+            (destination / "next" / ".next" / "BUILD_ID").write_text("controlled build fixture")
+            (destination / "START_HERE.md").write_text("Original app fixture")
+            log("Controlled original editor fixture responded")
+            return {"commit": discovery["commit"], "url": "http://127.0.0.1:18849/",
+                    "serverHealth": True, "originalFrontend": True,
+                    "templateCount": 81, "agentDetection": True}
+
+        self.app.state.service.html_fn = original_fixture
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers,
+                                  json={"reference": "nexu-io/html-anything"}).json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
+                         json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertEqual(current["latestJob"]["status"], "PARTIAL")
+        self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
+
+    def test_gentle_ai_cli_checks_do_not_claim_agent_configuration(self):
+        def cli_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "CLI or developer tool"
+            return result
+        target = self.app.state.service.target()
+        target.update({"id": "windows-fixture", "osFamily": "Windows", "architecture": "AMD64"})
+        self.app.state.service.target = lambda: target
+        self.app.state.service.discover_fn = cli_discovery
+
+        def original_fixture(destination, cancelled, log):
+            (destination / "bin").mkdir(parents=True)
+            (destination / "bin" / "gentle-ai.exe").write_bytes(b"controlled binary fixture")
+            (destination / "START_HERE.md").write_text("Review original CLI before configuring agents")
+            log("Controlled original CLI fixture version and help checked")
+            return {"binary": "bin/gentle-ai.exe", "version": GENTLE_VERSION,
+                    "versionCheck": True, "helpCheck": True, "agentConfigured": False}
+
+        self.app.state.service.gentle_fn = original_fixture
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers,
+                                  json={"reference": "Gentleman-Programming/gentle-ai"}).json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.assertEqual(self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers).status_code, 409)
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
+                         json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
+        self.assertEqual(self.client.get(f"/api/onboardings/{record['id']}/report.json").json()["status"], "PARTIAL")
+
+    def test_qualitylayer_installer_open_is_not_a_verified_app(self):
+        def app_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "Application"
+            return result
+        target = self.app.state.service.target()
+        target.update({"id": "windows-fixture", "osFamily": "Windows", "architecture": "AMD64"})
+        self.app.state.service.target = lambda: target
+        self.app.state.service.discover_fn = app_discovery
+
+        def signed_fixture(destination, cancelled, log):
+            destination.mkdir()
+            (destination / QL_ASSET).write_bytes(b"controlled original installer fixture")
+            (destination / "START_HERE.md").write_text("Complete original setup after reading the licence")
+            log("Controlled signed installer fixture opened")
+            return {"installer": QL_ASSET, "version": QL_VERSION,
+                    "sha256": QL_SHA256, "publisher": "CN=Maximilian Ritter", "installerLaunched": True}
+
+        self.app.state.service.qualitylayer_fn = signed_fixture
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers,
+                                  json={"reference": "maxritter/qualitylayer"}).json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.assertEqual(self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers).status_code, 409)
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
+                         json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
+
+    def test_pr_lens_local_render_does_not_claim_hosted_integration(self):
+        def monorepo_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "Monorepo"
+            return result
+        target = self.app.state.service.target()
+        target.update({"id": "windows-fixture", "osFamily": "Windows", "architecture": "AMD64"})
+        self.app.state.service.target = lambda: target
+        self.app.state.service.discover_fn = monorepo_discovery
+
+        def original_fixture(discovery, destination, cancelled, log):
+            (destination / "example-output").mkdir(parents=True)
+            (destination / "example-output" / "manifest.json").write_text("{}")
+            (destination / "START_HERE.md").write_text("Run original CLI locally")
+            log("Controlled upstream example rendered")
+            return {"package": PR_LENS_PACKAGE, "version": PR_LENS_VERSION,
+                    "integrity": PR_LENS_INTEGRITY, "versionCheck": True,
+                    "validationCheck": True, "diagramCount": 8}
+
+        self.app.state.service.pr_lens_fn = original_fixture
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers,
+                                  json={"reference": "coldteadotai/pr-lens"}).json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.assertEqual(self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers).status_code, 409)
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
+                         json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
+
+    def test_nvidia_collection_completes_only_as_content_snapshot(self):
+        def catalog_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "Workflows and skills"
+            return result
+        self.app.state.service.discover_fn = catalog_discovery
+
+        def catalog_fixture(discovery, destination, cancelled, log):
+            (destination / "skills" / "example").mkdir(parents=True)
+            (destination / "README.md").write_text("# Original skills catalog")
+            (destination / "skills" / "example" / "SKILL.md").write_text("# Original skill instructions")
+            (destination / "START_HERE.md").write_text("Browse the skills, no global install")
+            log("Controlled original catalog fixture prepared")
+            return {"fileCount": 2, "skillCount": 1, "bytes": 60, "globalAgentInstall": False}
+
+        self.app.state.service.nvidia_fn = catalog_fixture
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers,
+                                  json={"reference": "NVIDIA/skills"}).json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
+                         json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "COMPLETE")
+        self.assertIn("NOT APPLICABLE", {check["status"] for check in current["checks"]})
+
+    def test_rivet_mock_health_never_claims_provider_agent_workflow(self):
+        def monorepo_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "Monorepo"
+            return result
+        target = self.app.state.service.target()
+        target.update({"id": "windows-fixture", "osFamily": "Windows", "architecture": "AMD64"})
+        self.app.state.service.target = lambda: target
+        self.app.state.service.discover_fn = monorepo_discovery
+
+        def original_fixture(destination, cancelled, log):
+            binary = destination / "node_modules" / "@sandbox-agent" / "cli-win32-x64" / "bin" / "sandbox-agent.exe"
+            binary.parent.mkdir(parents=True)
+            binary.write_bytes(b"controlled fixture")
+            (destination / "START_HERE.md").write_text("Original server fixture")
+            log("Controlled original server fixture responded")
+            return {"package": f"@sandbox-agent/cli@{RIVET_VERSION}", "version": RIVET_VERSION,
+                    "url": f"http://127.0.0.1:{RIVET_PORT}/ui/", "serverHealth": True,
+                    "originalInspector": True, "mockInstalled": True, "agentWorkflowVerified": False}
+
+        self.app.state.service.rivet_fn = original_fixture
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers,
+                                  json={"reference": "rivet-dev/agents"}).json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
+                         json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
+
+    def test_failed_verification_cannot_report_complete(self):
+        def missing_readme(discovery, destination, cancelled, log):
+            destination.mkdir(parents=True)
+            (destination / "START_HERE.md").write_text("No upstream README")
+            return {"fileCount": 0, "bytes": 0, "readme": "README.md", "workspace": str(destination)}
+        self.app.state.service.download_fn = missing_readme
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers, json={"reference": "Example/MissingReadme"}).json()["record"]
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers, json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "PARTIAL")
+        self.assertIn("FAIL", {check["status"] for check in current["checks"]})
+        self.assertEqual(self.client.get(f"/api/onboardings/{record['id']}/report.json").json()["status"], "PARTIAL")
+
+    def test_interrupted_job_recovers_to_partial(self):
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers, json={"reference": "Example/Recover"}).json()["record"]
+        with sqlite3.connect(self.app.state.service.db_path) as db:
+            db.execute("INSERT INTO jobs(id,record_id,kind,status,started_at) VALUES('interrupted',?,'PREPARE','RUNNING','2026-01-01')", (record["id"],))
+            db.execute("UPDATE records SET status='INSTALLING' WHERE id=?", (record["id"],))
+        self.app.state.service.close()
+        recovered = create_app(Path(self.temp.name), "new-code", discover_fn=fixture_discovery, download_fn=fixture_download, allowed_hosts={"testserver"})
+        with TestClient(recovered) as client:
+            client.post("/api/session", json={"code": "new-code"})
+            state = client.get(f"/api/onboardings/{record['id']}").json()
+            self.assertEqual(state["status"], "PARTIAL")
+            self.assertEqual(state["latestJob"]["status"], "INTERRUPTED")
+
+
+if __name__ == "__main__":
+    unittest.main()

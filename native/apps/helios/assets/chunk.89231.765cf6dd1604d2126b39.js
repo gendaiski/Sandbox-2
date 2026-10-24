@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunk_ember_auto_import_=globalThis.webpackChunk_ember_auto_import_||[]).push([[89231],{89231(a,l,o){o.r(l),o.d(l,{default:()=>t})
+const t='<symbol id="hds-icon-flight-chevrons-right-16" viewBox="0 0 16 16"><g><path d="M3.24 5.3a.75.75 0 0 1 1.02-1.1l3.5 3.25a.75.75 0 0 1 0 1.1l-3.5 3.25a.75.75 0 1 1-1.02-1.1L6.148 8z"/><path d="M8.24 5.3a.75.75 0 1 1 1.02-1.1l3.5 3.25a.75.75 0 0 1 0 1.1l-3.5 3.25a.75.75 0 1 1-1.02-1.1L11.148 8z"/></g></symbol>'}}])

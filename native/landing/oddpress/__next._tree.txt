@@ -1,0 +1,5 @@
+:HL["/Sandbox-2/native/landing/oddpress/_next/static/chunks/0lqsdgxck3tgu.css","style"]
+:HL["/Sandbox-2/native/landing/oddpress/_next/static/media/DelaGothicOne-s.p.1mtkyd88qzlqr.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+:HL["/Sandbox-2/native/landing/oddpress/_next/static/media/Manrope-s.p.3rjk17h6oms_8.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+1:[["children",{"s":"__PAGE__","h":160}]]
+0:{"b":"eWAKR2VjIKNXq-Da0Wllj","t":{"t":{"s":"","h":80,"c":"$Q1"}}}

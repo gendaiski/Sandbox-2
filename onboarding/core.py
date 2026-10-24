@@ -1,0 +1,526 @@
+"""Validated references, GitHub discovery, and a bounded content-only adapter."""
+
+from __future__ import annotations
+
+import base64
+import hashlib
+import io
+import json
+import re
+import tarfile
+import urllib.error
+import urllib.parse
+import urllib.request
+from pathlib import Path
+from threading import Event
+from typing import Callable
+
+
+IDENTITY = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,99}/[A-Za-z0-9][A-Za-z0-9_.-]{0,99}\Z")
+REF = re.compile(r"[A-Za-z0-9][A-Za-z0-9._/-]{0,199}\Z")
+MAX_ARCHIVE = 25 * 1024 * 1024
+MAX_EXTRACTED = 50 * 1024 * 1024
+MAX_FILES = 3000
+SUPPORTED_TYPES = {"Documentation", "Curated resource list", "Learning materials"}
+
+
+class InputError(ValueError):
+    pass
+
+
+class DiscoveryError(RuntimeError):
+    pass
+
+
+class Cancelled(RuntimeError):
+    pass
+
+
+def parse_reference(value: str) -> tuple[str, str, str]:
+    """Treat a pasted clone command as data. Never return anything executable."""
+    if not isinstance(value, str) or not value or len(value) > 300 or value != value.strip():
+        raise InputError("Paste one GitHub repository URL or clone command without extra text.")
+    if any(char in value for char in "\r\n;&|`$<>\\\x00"):
+        raise InputError("The input contains shell syntax or multiple commands. Paste only one repository reference.")
+    raw = value
+    if raw.startswith("gh repo clone "):
+        raw = raw.removeprefix("gh repo clone ")
+    elif raw.startswith("git clone "):
+        raw = raw.removeprefix("git clone ")
+    if " " in raw or "\t" in raw:
+        raise InputError("Extra arguments are not supported. Choose a branch or tag in the separate field.")
+    if raw.startswith("git@github.com:"):
+        raw = raw.removeprefix("git@github.com:")
+    elif raw.startswith("https://"):
+        parsed = urllib.parse.urlsplit(raw)
+        if parsed.scheme != "https" or parsed.netloc.lower() != "github.com" or parsed.query or parsed.fragment:
+            raise InputError("Use a direct https://github.com/OWNER/REPOSITORY link without a query or fragment.")
+        raw = parsed.path.removeprefix("/")
+    elif "://" in raw or raw.startswith("git@"):
+        raise InputError("Only github.com HTTPS or GitHub SSH repository references are supported.")
+    raw = raw.removesuffix(".git")
+    if not IDENTITY.fullmatch(raw) or raw.split("/")[0] in {".", ".."} or raw.split("/")[1] in {".", ".."}:
+        raise InputError("Use exactly OWNER/REPOSITORY. Paths inside a repository are not accepted.")
+    owner, name = raw.split("/", 1)
+    return owner, name, f"https://github.com/{owner}/{name}"
+
+
+def validate_ref(value: str | None) -> str | None:
+    if value in (None, ""):
+        return None
+    if not isinstance(value, str) or not REF.fullmatch(value) or ".." in value or "//" in value or value.endswith(("/", ".")) or "@{" in value:
+        raise InputError("Use a branch, tag, or commit name without flags, spaces, or shell syntax.")
+    return value
+
+
+def github_json(path: str) -> dict | list:
+    url = f"https://api.github.com/{path}"
+    request = urllib.request.Request(url, headers={"Accept": "application/vnd.github+json", "User-Agent": "Sandbox-2-Onboarding/1"})
+    try:
+        with urllib.request.urlopen(request, timeout=15) as response:
+            data = response.read(2 * 1024 * 1024 + 1)
+    except urllib.error.HTTPError as error:
+        if error.code == 404:
+            raise DiscoveryError("Repository or revision was not found. Private repositories need a supported secure connection, which this runner does not yet have.") from error
+        if error.code in (403, 429):
+            raise DiscoveryError("GitHub refused the metadata request, possibly due to a rate limit. Retry later.") from error
+        raise DiscoveryError(f"GitHub metadata request failed with HTTP {error.code}.") from error
+    except (TimeoutError, OSError) as error:
+        raise DiscoveryError("Could not reach GitHub from the runner. Check its network connection.") from error
+    if len(data) > 2 * 1024 * 1024:
+        raise DiscoveryError("GitHub metadata exceeded the supported size.")
+    try:
+        return json.loads(data)
+    except json.JSONDecodeError as error:
+        raise DiscoveryError("GitHub returned unreadable metadata.") from error
+
+
+def readme_text(owner: str, name: str, ref: str) -> str:
+    path = f"repos/{owner}/{name}/readme?ref={urllib.parse.quote(ref, safe='')}"
+    try:
+        payload = github_json(path)
+    except DiscoveryError:
+        return ""
+    if not isinstance(payload, dict) or payload.get("encoding") != "base64":
+        return ""
+    try:
+        return base64.b64decode(payload.get("content", ""), validate=False)[:200_000].decode("utf-8", "replace")
+    except (ValueError, TypeError):
+        return ""
+
+
+def classify(name: str, files: list[str], readme: str, description: str) -> tuple[str, str]:
+    """Conservative rule-based classification; uncertain results stay unsupported."""
+    names = {file.lower() for file in files}
+    low = f"{name} {description} {readme[:12000]}".lower()
+    if name.lower().startswith("awesome-") or "curated list" in low or "curated collection" in low:
+        return "Curated resource list", "Based on repository naming and README wording; inspect the source before relying on it."
+    if "chapter_notebooks" in names and any(file.endswith(".pdf") for file in names):
+        return "Learning materials", "Chapter notebooks and a book PDF appear at the root; individual notebooks may still need separate dependencies or credentials."
+    if "course" in low or "learning journey" in low or "tutorial" in low:
+        return "Learning materials", "Based on GitHub About and README wording; inspect the source before relying on it."
+    if names <= {"readme.md", "readme", "license", "license.md", ".gitignore", "index.md"} and names:
+        return "Documentation", "Only documentation and repository metadata were found at the root."
+    if "apps" in names and "packages" in names:
+        return "Monorepo", "Multiple app and package directories appear at the root; select a documented component before setup."
+    if "docker-compose.yml" in names or "compose.yaml" in names or "dockerfile" in names:
+        return "Application", "A container entry point appears at the root; installation needs an inspected adapter."
+    if "package.json" in names or "pyproject.toml" in names or "cargo.toml" in names or "go.mod" in names:
+        if any(word in low for word in ("library", "framework", "sdk", "component")):
+            return "Library or SDK", "A package manifest and library wording were found; a documented example still needs review."
+        if any(word in low for word in ("cli", "command line", "developer tool")):
+            return "CLI or developer tool", "A package manifest and CLI wording were found; a documented install still needs review."
+        return "Application or package — review needed", "A manifest exists, but its supported entry point is not clear enough for automated setup."
+    if "docs" in names or "documentation" in names:
+        return "Documentation", "A documentation directory was found at the root."
+    return "Unknown — review needed", "The repository does not clearly match a supported setup type."
+
+
+def discover(owner: str, name: str, requested_ref: str | None = None) -> dict:
+    full = f"repos/{owner}/{name}"
+    metadata = github_json(full)
+    if not isinstance(metadata, dict):
+        raise DiscoveryError("GitHub returned an unexpected repository record.")
+    branch = requested_ref or metadata.get("default_branch")
+    if not branch:
+        raise DiscoveryError("GitHub did not provide a default branch. Choose a valid revision separately.")
+    commit = github_json(f"{full}/commits/{urllib.parse.quote(branch, safe='')}")
+    sha = commit.get("sha") if isinstance(commit, dict) else None
+    if not isinstance(sha, str) or not re.fullmatch(r"[a-f0-9]{40}", sha):
+        raise DiscoveryError("Could not verify an immutable commit for the selected revision.")
+    listing = github_json(f"{full}/contents?ref={sha}")
+    files = [item.get("name", "") for item in listing] if isinstance(listing, list) else []
+    readme = readme_text(owner, name, sha)
+    description = metadata.get("description") or "No GitHub About description provided."
+    project_type, explanation = classify(name, files, readme, description)
+    if f"{owner.lower()}/{name.lower()}" == "ekkolearnai/ekko-studio":
+        project_type, explanation = "Application", "Reviewed upstream npm web distribution runs the original Ekko Studio frontend and backend; agent features need a provider."
+    if f"{owner.lower()}/{name.lower()}" == "nexu-io/html-anything":
+        project_type, explanation = "Application", "Reviewed upstream pnpm workspace contains the original Next.js editor and agent-invocation API."
+    if f"{owner.lower()}/{name.lower()}" == "gentleman-programming/gentle-ai":
+        project_type, explanation = "CLI or developer tool", "Reviewed upstream Go CLI configures supported coding agents; there is no standalone web UI."
+    if f"{owner.lower()}/{name.lower()}" == "maxritter/qualitylayer":
+        project_type, explanation = "Application", "Reviewed upstream release provides its original signed Windows desktop App and CLI, with a seven-day trial and licence terms."
+    if f"{owner.lower()}/{name.lower()}" == "coldteadotai/pr-lens":
+        project_type, explanation = "Monorepo", "Reviewed upstream monorepo provides a GitHub App, Action, npm CLI, coding-agent skill, renderer, and canvas; this plan selects its original local CLI."
+    if f"{owner.lower()}/{name.lower()}" == "openlit/openlit":
+        project_type, explanation = "Application", "Reviewed upstream self-hosted OpenLIT dashboard needs OpenLIT, ClickHouse, NATS, persistent volumes and a functioning Docker or Kubernetes host."
+    if f"{owner.lower()}/{name.lower()}" == "nvidia/skills":
+        project_type, explanation = "Workflows and skills", "Reviewed NVIDIA catalog mirrors product-specific Agent Skills; no standalone application or universal skill runtime is included."
+    if f"{owner.lower()}/{name.lower()}" == "vshulcz/deja-vu":
+        project_type, explanation = "CLI or developer tool", "Reviewed original Go CLI indexes private local coding-agent session history; agent integration is optional and changes user-level settings."
+    if f"{owner.lower()}/{name.lower()}" == "rivet-dev/agents":
+        project_type, explanation = "Monorepo", "Reviewed monorepo contains Rivet Agents libraries and the original Sandbox Agent server, TypeScript SDK and Inspector; the selected local path installs Sandbox Agent."
+    listed = (metadata.get("homepage") or "").strip()
+    website_type = "None listed"
+    official = "No official website verified."
+    docs = None
+    demo = None
+    if listed.startswith(("https://", "http://")):
+        host = urllib.parse.urlsplit(listed).hostname or ""
+        if host in {"github.com", "www.github.com"}:
+            website_type = "Other GitHub link"
+        elif "docs." in host or "/docs" in listed or host == "docs.nvidia.com":
+            website_type = "Official documentation listed by repository owner"
+            docs = listed
+        elif "demo" in host or "/demo" in listed:
+            website_type = "Official demo listed by repository owner"
+            demo = listed
+        elif listed.rstrip("/") in readme:
+            website_type = "Official project website identified in README"
+            official = listed
+        else:
+            website_type = "Website listed by repository owner; type not independently verified"
+    license_data = metadata.get("license") or {}
+    readme_lines = [line.strip(" #*\t") for line in readme.splitlines() if line.strip() and not line.lstrip().startswith(("[!", "<", "!"))]
+    return {
+        "owner": metadata.get("owner", {}).get("login", owner), "name": metadata.get("name", name),
+        "canonical": f"{owner.lower()}/{name.lower()}", "github": metadata.get("html_url", f"https://github.com/{owner}/{name}"),
+        "description": description, "listedWebsite": listed or "None listed.", "websiteType": website_type,
+        "officialWebsite": official, "documentation": docs, "demo": demo,
+        "license": license_data.get("spdx_id") or "NOT VERIFIED", "archived": bool(metadata.get("archived")),
+        "private": bool(metadata.get("private")), "ref": branch, "commit": sha, "defaultBranch": metadata.get("default_branch"),
+        "type": project_type, "typeReason": explanation, "rootFiles": files[:100],
+        "readmeExcerpt": " ".join(readme_lines[:3])[:360] or "No README summary available.",
+        "sources": [metadata.get("html_url", f"https://github.com/{owner}/{name}"), f"https://github.com/{owner}/{name}/blob/{sha}/README.md", f"https://github.com/{owner}/{name}/commit/{sha}"],
+    }
+
+
+def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
+    happy_windows = (
+        discovery["canonical"] == "slopus/happy"
+        and target.get("osFamily") == "Windows"
+        and target.get("architecture", "").lower() in {"amd64", "x86_64"}
+        and not discovery["archived"] and not discovery["private"]
+    )
+    herdr_windows = (
+        discovery["canonical"] == "herdrdev/herdr"
+        and target.get("osFamily") == "Windows"
+        and target.get("architecture", "").lower() in {"amd64", "x86_64"}
+        and not discovery["archived"] and not discovery["private"]
+    )
+    orchestrator_windows = (
+        discovery["canonical"] == "orchestratorinc/agent-orchestrator"
+        and target.get("osFamily") == "Windows"
+        and target.get("architecture", "").lower() in {"amd64", "x86_64"}
+        and not discovery["archived"] and not discovery["private"]
+    )
+    ekko_windows = (
+        discovery["canonical"] == "ekkolearnai/ekko-studio"
+        and target.get("osFamily") == "Windows"
+        and target.get("architecture", "").lower() in {"amd64", "x86_64"}
+        and not discovery["archived"] and not discovery["private"]
+    )
+    html_windows = (
+        discovery["canonical"] == "nexu-io/html-anything"
+        and target.get("osFamily") == "Windows"
+        and target.get("architecture", "").lower() in {"amd64", "x86_64"}
+        and not discovery["archived"] and not discovery["private"]
+    )
+    gentle_windows = (
+        discovery["canonical"] == "gentleman-programming/gentle-ai"
+        and target.get("osFamily") == "Windows"
+        and target.get("architecture", "").lower() in {"amd64", "x86_64"}
+        and not discovery["archived"] and not discovery["private"]
+    )
+    qualitylayer_windows = (
+        discovery["canonical"] == "maxritter/qualitylayer"
+        and target.get("osFamily") == "Windows"
+        and target.get("architecture", "").lower() in {"amd64", "x86_64"}
+        and not discovery["archived"] and not discovery["private"]
+    )
+    pr_lens_windows = (
+        discovery["canonical"] == "coldteadotai/pr-lens"
+        and target.get("osFamily") == "Windows"
+        and target.get("architecture", "").lower() in {"amd64", "x86_64"}
+        and not discovery["archived"] and not discovery["private"]
+    )
+    nvidia_catalog = discovery["canonical"] == "nvidia/skills" and not discovery["archived"] and not discovery["private"]
+    deja_windows = (discovery["canonical"] == "vshulcz/deja-vu"
+                    and target.get("osFamily") == "Windows"
+                    and target.get("architecture", "").lower() in {"amd64", "x86_64"}
+                    and not discovery["archived"] and not discovery["private"])
+    rivet_windows = (discovery["canonical"] == "rivet-dev/agents"
+                     and target.get("osFamily") == "Windows"
+                     and target.get("architecture", "").lower() in {"amd64", "x86_64"}
+                     and not discovery["archived"] and not discovery["private"])
+    supported = (discovery["type"] in SUPPORTED_TYPES and not discovery["archived"] and not discovery["private"]) or happy_windows or herdr_windows or orchestrator_windows or ekko_windows or html_windows or gentle_windows or qualitylayer_windows or pr_lens_windows or nvidia_catalog or deja_windows or rivet_windows
+    plan = {
+        "repository": discovery["canonical"], "commit": discovery["commit"], "targetId": target["id"],
+        "targetName": target["name"], "projectType": discovery["type"], "supported": supported,
+        "methodKey": "happy-desktop-windows" if happy_windows else "herdr-windows" if herdr_windows else "orchestrator-windows" if orchestrator_windows else "content" if supported else "unsupported",
+        "method": "Download the pinned, signed original Happy Desktop Windows installer, verify its SHA-256 and Authenticode signature, and open its own installer" if happy_windows else "Download the pinned original Herdr Windows package, verify its SHA-256, unpack its executable and ConPTY files, and check version/help" if herdr_windows else "Download and hash-check the original Orchestrator.inc Windows installer; do not execute it automatically because this release lacks an embedded Windows publisher signature" if orchestrator_windows else "Download the pinned GitHub source archive and prepare readable content without executing repository code" if supported else "No automatic installation adapter for this project type",
+        "location": str(workspace), "services": [], "ports": [], "publicExposure": False,
+        "resources": "125 MB download and at least 500 MB free disk space; installed app may use more" if happy_windows else "10 MB download and at least 150 MB free disk space" if herdr_windows else "190 MB download and at least 400 MB free disk space; installation may use more" if orchestrator_windows else "Archive download capped at 25 MiB; extracted files capped at 50 MiB and 3,000 files" if supported else "Not estimated before an adapter is selected",
+        "changes": ["Save the verified installer and START_HERE.md in the isolated onboarding folder", "Open Happy's original Windows installer; it may add the application under the current user's profile"] if happy_windows else ["Unpack the original Herdr binary and ConPTY files inside the isolated onboarding folder", "Run the original binary with --version and --help; these checks may create user-level application state"] if herdr_windows else ["Save the original Orchestrator.inc installer and START_HERE.md in the isolated onboarding folder", "Do not execute the unsigned release automatically"] if orchestrator_windows else ["Create an isolated folder under the runner's onboarding data directory", "Write START_HERE.md and a verification report"] if supported else [],
+        "permissions": ["Launch only the pinned, signed Happy Desktop installer after exact-plan approval", "Complete the app's own setup screens on this Windows computer"] if happy_windows else ["Execute only the hash-verified Herdr binary for version and help checks", "Run the terminal UI later in the user's own terminal"] if herdr_windows else ["Download only the exact hash-verified original installer", "Opening the unsigned installer is a separate decision on the user's computer"] if orchestrator_windows else ["Write only inside the selected onboarding workspace", "Read the public repository through GitHub HTTPS"] if supported else [],
+        "cost": "No cost to download Happy; connected agent subscriptions or services may have their own charges" if happy_windows else "No cost to download Herdr; connected agents may require their own subscriptions" if herdr_windows else "No cost to download Orchestrator.inc; connected agent services may have their own charges" if orchestrator_windows else "No paid service used by this content-only adapter", "credentialNeeds": ["Sign in to the chosen agent provider inside Happy after installation"] if happy_windows else [],
+        "verification": ["Installer size, SHA-256, and Windows publisher signature", "Installer opened", "Original UI and an agent session need on-device review"] if happy_windows else ["Official ZIP size and SHA-256", "Original binary reports pinned version and help", "Terminal UI and agent pane need on-device review"] if herdr_windows else ["Official installer size and SHA-256", "Publisher signature absent on this release; no automatic launch", "Original UI and agent task need on-device review"] if orchestrator_windows else ["Archive and README exist", "Extracted files stay within the planned folder", "Report names the pinned commit and actual result"] if supported else [],
+        "recovery": "Delete only this job's newly created workspace after reviewing its contents; user data is never removed automatically",
+        "limitations": "The installer is opened, but Happy's installation screens, login, original UI, and a real agent session require verification on this Windows machine before COMPLETE." if happy_windows else "The original binary is installed and its CLI checked, but its terminal UI, agent pane, and persistence need on-device verification before COMPLETE." if herdr_windows else "The original release lacks an embedded publisher signature. This adapter verifies its GitHub digest but will not launch it. Installation, original UI, and an agent task need separate on-device review." if orchestrator_windows else "This does not run an application UI or repository code. Other project types require a reviewed installation adapter." if supported else "Automated setup is blocked until a reviewed adapter for this project type is available.",
+    }
+    if happy_windows:
+        from .happy_desktop import ASSET, SHA256, SIZE, URL, VERSION
+        plan["release"] = {"version": VERSION, "asset": ASSET, "url": URL, "sha256": SHA256, "bytes": SIZE,
+                           "source": f"https://github.com/slopus/happy-desktop/releases/tag/v{VERSION}"}
+    elif herdr_windows:
+        from .herdr import ASSET, SHA256, SIZE, URL, VERSION
+        plan["release"] = {"version": VERSION, "asset": ASSET, "url": URL, "sha256": SHA256, "bytes": SIZE,
+                           "source": f"https://github.com/herdrdev/herdr/releases/tag/v{VERSION}"}
+    elif orchestrator_windows:
+        from .orchestrator_desktop import ASSET, SHA256, SIZE, URL, VERSION
+        plan["release"] = {"version": VERSION, "asset": ASSET, "url": URL, "sha256": SHA256, "bytes": SIZE,
+                           "publisherSignature": "Absent in inspected v0.14.5 asset",
+                           "source": f"https://github.com/OrchestratorInc/agent-orchestrator/releases/tag/v{VERSION}"}
+    elif ekko_windows:
+        from .ekko_web import INTEGRITY, PACKAGE, PORT, URL, VERSION
+        plan.update({
+            "methodKey": "ekko-web-windows",
+            "method": f"Install the pinned original {PACKAGE} npm web distribution in an isolated folder, start its real backend on Windows loopback, and check backend health and login shell",
+            "release": {"version": VERSION, "asset": PACKAGE, "integrity": INTEGRITY,
+                        "url": f"https://registry.npmjs.org/ekko-studio/-/ekko-studio-{VERSION}.tgz",
+                        "source": f"https://github.com/EKKOLearnAI/ekko-studio/releases/tag/v{VERSION}"},
+            "services": ["Original Ekko Studio web and backend; provider or Hermes runtime may be needed for agent chat"],
+            "ports": [f"127.0.0.1:{PORT} (runner-local only)"],
+            "resources": "Node.js 23 or newer and npm already installed; approximately 500 MB for npm dependencies and state; at least 1 GB free disk space",
+            "changes": ["Install the pinned upstream npm package and dependencies only inside this onboarding folder; package scripts are disabled during install", "Create a private local state directory and start the original Ekko server on Windows loopback", "Create local start, stop and START_HERE instructions"],
+            "permissions": ["Run only the reviewed original Ekko Studio npm web entry point after exact-plan approval", "Use only 127.0.0.1; do not publish the app or use provider credentials without separate setup"],
+            "cost": "No paid service is used for installation; real model providers or hosted services may charge separately",
+            "credentialNeeds": ["Change the upstream default account password immediately in the original UI before entering any provider credentials"],
+            "verification": ["npm package version and published SHA-512 integrity", "Original backend /health and login HTML on loopback", "Original authenticated UI and a real agent conversation require on-device review and a configured provider"],
+            "limitations": "Backend and login shell can be checked automatically. The default local account must be secured before any broader access. Provider integration, original authenticated UI, and a real agent workflow are not automatically verified; result remains PARTIAL.",
+        })
+    elif html_windows:
+        from .html_anything import NEXT_VERSION, PNPM_VERSION, PORT
+        plan.update({
+            "methodKey": "html-anything-windows",
+            "method": "Download the inspected original source commit, use its pinned pnpm workspace to build the original Next.js editor, and start it on Windows loopback",
+            "services": ["Original Next.js editor and API; a separately installed coding-agent CLI is needed only for AI generation"],
+            "ports": [f"127.0.0.1:{PORT} (runner-local only)"],
+            "resources": f"Node.js 20.9+ and Corepack or pnpm {PNPM_VERSION}; approximately 1 GB install/build disk, at least 2 GB free recommended",
+            "changes": ["Extract the pinned source archive into an isolated onboarding folder", "Install pnpm lockfile dependencies with lifecycle scripts disabled", f"Build the original Next.js {NEXT_VERSION} app and start it on Windows loopback", "Create local start, stop and START_HERE instructions"],
+            "permissions": ["Run only the reviewed upstream pnpm install and Next.js build/start commands after exact-plan approval", "Do not automatically invoke a local coding-agent CLI or expose the server publicly"],
+            "cost": "The editor and sample/export checks have no charge; a connected coding-agent subscription may have its own costs",
+            "credentialNeeds": ["A local signed-in coding-agent CLI is needed only if the user chooses to generate new HTML"],
+            "verification": ["Pinned source, pnpm workspace, and original production build", "Original frontend, template API, and agent detection API on loopback", "Sample preview, HTML export, and agent generation need on-device browser review"],
+            "limitations": "The runner checks the original frontend and APIs, but cannot certify on-device browser export or an agent generation. Upstream agent adapters may run with broad file/command permissions; no generation is triggered automatically. Result remains PARTIAL.",
+        })
+    elif gentle_windows:
+        from .gentle_ai import MIN_GO, MODULE, VERSION
+        plan.update({
+            "methodKey": "gentle-ai-windows",
+            "method": f"Build the original {MODULE} Go CLI into an isolated job folder, then verify its version and help without changing any installed coding agent",
+            "services": ["Existing coding agents are optional for later configuration; no server is started"],
+            "resources": f"Go {'.'.join(map(str, MIN_GO))} or newer already installed; allow at least 1 GB for an isolated module/build cache",
+            "changes": ["Download Go modules and compile only the pinned original Gentle-AI CLI into this onboarding folder", "Write START_HERE.md; do not install, sync or uninstall any global agent configuration"],
+            "permissions": ["Run the reviewed upstream Go install and its --version/--help commands after exact-plan approval", "A separate reviewed plan is required before configuring real coding agents"],
+            "cost": "No paid service used for the CLI build; existing agent subscriptions may have their own charges",
+            "credentialNeeds": [],
+            "verification": ["Original executable reports the pinned version and help", "No global coding-agent settings are modified", "Interactive configuration of a real agent remains separate and unverified"],
+            "limitations": "The Windows release has no prebuilt asset, so a suitable Go compiler is required. This path prepares the real CLI but does not run its installer/TUI against existing agents; result remains PARTIAL.",
+            "release": {"version": VERSION, "asset": MODULE,
+                        "source": f"https://github.com/Gentleman-Programming/gentle-ai/releases/tag/v{VERSION}"},
+        })
+    elif qualitylayer_windows:
+        from .qualitylayer_desktop import ASSET, SHA256, SIZE, URL, VERSION
+        plan.update({
+            "methodKey": "qualitylayer-desktop-windows",
+            "method": "Download the pinned original QualityLayer Windows App, verify SHA-256 and Maximilian Ritter's Windows publisher signature, then open its interactive installer",
+            "release": {"version": VERSION, "asset": ASSET, "sha256": SHA256, "bytes": SIZE,
+                        "url": URL, "source": f"https://github.com/maxritter/qualitylayer/releases/tag/v{VERSION}"},
+            "services": ["Original QualityLayer desktop App and CLI; a separately installed coding agent is needed for an agent workflow"],
+            "resources": "73 MB installer download; allow at least 500 MB free disk space, with more space for the installed App and agent state",
+            "changes": ["Save the hash-verified installer in this onboarding job folder", "Open the original interactive Windows installer; it may add the App, CLI, skills, hooks and settings under your user profile"],
+            "permissions": ["Open only the pinned, Windows-signed upstream installer after exact-plan approval", "You review the licence and complete its own screens; no silent account activation, agent setup or payment is performed by this runner"],
+            "cost": "The official licence starts a seven-day trial on first use without payment. Continued use after the trial requires a paid subscription. Existing coding-agent subscriptions may have separate costs.",
+            "credentialNeeds": ["An existing signed-in coding agent is needed for a real workflow; enter any licence or account details only in the original App"],
+            "verification": ["Official installer size, SHA-256 and Windows publisher signature", "Original installer opened", "Original UI, trial activation and a real agent task need on-device review"],
+            "limitations": "Opening the signed original installer is not proof of installation. The App's licence acceptance, trial activation, original UI, added agent settings, and a real workflow remain for on-device verification; result stays PARTIAL.",
+        })
+    elif pr_lens_windows:
+        from .pr_lens import INTEGRITY, PACKAGE, SOURCE_COMMIT, VERSION
+        plan.update({
+            "methodKey": "pr-lens-cli-windows",
+            "method": "Install the pinned original PR Lens npm CLI into an isolated folder, then validate and render its inspected upstream example without contacting a model or posting to GitHub",
+            "release": {"version": VERSION, "asset": PACKAGE, "integrity": INTEGRITY,
+                        "sourceCommit": SOURCE_COMMIT,
+                        "source": f"https://github.com/coldteadotai/pr-lens/tree/{SOURCE_COMMIT}"},
+            "services": ["No background service for local CLI validation/rendering; GitHub App and hosted canvas are separate integrations"],
+            "resources": "Node.js 20.11+ and npm already installed; at least 500 MB free disk space for the isolated npm package and upstream example",
+            "changes": ["Download only inspected upstream example files at the pinned commit", "Install the original npm CLI with package scripts disabled inside this onboarding job folder", "Validate and render the official example to light/dark SVGs and a manifest inside this folder"],
+            "permissions": ["Execute the pinned original PR Lens CLI only for version, local validation and local rendering after exact-plan approval", "Do not invoke a model, connect the GitHub App, push a canvas or post a PR comment automatically"],
+            "cost": "Local validation and rendering use no paid service. Model-powered analysis or private hosted integrations may have their own costs.",
+            "credentialNeeds": ["A model provider key is needed only if you later choose to analyze a real diff; never enter it in chat"],
+            "verification": ["Published npm name, version and SHA-512 integrity", "Original CLI version and upstream example validation", "Original renderer produces light/dark SVGs and manifest", "Real model analysis, hosted canvas, and PR comment remain separate"],
+            "limitations": "The local CLI renderer can be checked automatically, but no model-backed analysis, GitHub App connection, hosted canvas, or real pull-request comment is performed; result stays PARTIAL.",
+        })
+    elif nvidia_catalog:
+        from .nvidia_skills import MAX_ARCHIVE, MAX_EXTRACTED, MAX_FILES
+        plan.update({
+            "methodKey": "nvidia-skills-catalog",
+            "method": "Download and unpack the pinned original NVIDIA Agent Skills catalog as readable files, without installing any skill into a coding agent or executing examples",
+            "services": ["No service or application UI; individual skills may require separate NVIDIA products or hardware"],
+            "resources": f"Archive capped at {MAX_ARCHIVE // 1024 // 1024} MiB; extraction capped at {MAX_EXTRACTED // 1024 // 1024} MiB and {MAX_FILES} regular files; at least 150 MB free space recommended",
+            "changes": ["Create an isolated snapshot of the original README, docs and skill folders in this job folder", "Create START_HERE.md describing catalog use; do not change global agent configuration"],
+            "permissions": ["Download and inspect only the pinned public GitHub archive", "Do not execute repository scripts, install all skills, or change any coding-agent configuration"],
+            "cost": "No paid service used to prepare the catalog; individual NVIDIA product workflows may require hardware or paid services",
+            "credentialNeeds": [],
+            "verification": ["Pinned archive and readable root README", "Product skill manifests accessible under skills/", "No application UI or global agent installation is claimed"],
+            "limitations": "This catalog is content, not a running app. Preparing it makes the skills readable but does not install every product or automatically add instructions to Codex or other agents.",
+        })
+    elif deja_windows:
+        from .deja_vu import ASSET, SHA256, SIZE, URL, VERSION
+        plan.update({
+            "methodKey": "deja-vu-cli-windows",
+            "method": "Download the pinned original Windows CLI ZIP, compare it with upstream checksums, unpack it in an isolated job folder, and run version/help only",
+            "release": {"version": VERSION, "asset": ASSET, "url": URL, "sha256": SHA256, "bytes": SIZE,
+                        "source": f"https://github.com/vshulcz/deja-vu/releases/tag/v{VERSION}"},
+            "services": ["No service starts; optional MCP server and agent hooks are excluded from this plan"],
+            "resources": "8.5 MB download, about 22 MB extracted; allow at least 100 MB free disk space",
+            "changes": ["Save the original hash-verified ZIP and CLI in this job folder", "Write START_HERE.md; do not index transcripts or alter any coding-agent configuration"],
+            "permissions": ["Execute only the pinned original binary with --version and --help after exact-plan approval", "Do not run index, search, install, MCP or hooks on private session history"],
+            "cost": "No paid service is used for the binary; optional embedding providers can cost money and are excluded",
+            "credentialNeeds": [],
+            "verification": ["Published ZIP size and SHA-256", "Original Windows CLI reports pinned version and help", "Private-history indexing and agent integration remain unverified"],
+            "limitations": "Binary preparation alone does not index private sessions, provide useful search, or wire Codex and other agents. A separate reviewed plan and user decision are needed for those steps; result remains PARTIAL.",
+        })
+    elif rivet_windows:
+        from .rivet_sandbox_agent import CLI_INTEGRITY, PACKAGE, PORT, VERSION, WINDOWS_INTEGRITY
+        plan.update({
+            "methodKey": "rivet-sandbox-agent-windows",
+            "method": "Install the original Sandbox Agent CLI from this monorepo's pinned npm release, run its real server and Inspector on Windows loopback, and check the built-in mock adapter without invoking a paid model",
+            "release": {"version": VERSION, "asset": PACKAGE, "integrity": CLI_INTEGRITY,
+                        "windowsIntegrity": WINDOWS_INTEGRITY,
+                        "source": f"https://github.com/rivet-dev/agents/releases/tag/v{VERSION}"},
+            "services": ["Original Sandbox Agent Rust HTTP server and Inspector; real coding agents and Rivet Actors are separate"],
+            "ports": [f"127.0.0.1:{PORT} (runner-local only; original server uses no token on this loopback binding)"],
+            "resources": "Node.js 20+ and npm already installed; allow at least 300 MB for the isolated package, native binary and state",
+            "changes": ["Install only the pinned original npm CLI and Windows binary in this job folder with lifecycle scripts disabled", "Install its built-in mock agent process into this job's local state and start the original server on 127.0.0.1", "Create checked start/stop instructions and a report; do not install Claude Code, Codex, Pi or other real agents"],
+            "permissions": ["Execute the reviewed original Sandbox Agent Windows binary for version/help, built-in mock installation and loopback server after exact-plan approval", "The original local Inspector can access its own server without a token; do not forward or publicly expose this port", "No model provider, external sandbox or user credentials are contacted by this adapter"],
+            "cost": "This local server and mock check use no paid service. Real models, hosted Rivet infrastructure or external sandboxes may cost money and require separate configuration.",
+            "credentialNeeds": ["None for the local server and mock; real agent sessions require separately configured agents and provider credentials"],
+            "verification": ["Original npm package and Windows native binary integrity/version", "Original server /v1/health, Inspector HTML and installed built-in mock agent on loopback", "Original browser Inspector, provider-backed conversation and durable Rivet Actor workflow require separate on-device review"],
+            "limitations": "This selects the Sandbox Agent server and Inspector from a larger monorepo. The built-in mock is a smoke test, not a real agent workflow. No provider-backed agent, sandbox isolation, durable Rivet Actor, or browser Inspector interaction is verified by this adapter; result remains PARTIAL.",
+        })
+    if discovery["canonical"] == "openlit/openlit":
+        plan.update({
+            "supported": False,
+            "methodKey": "openlit-docker-blocked",
+            "method": "No approved OpenLIT deployment adapter is available. Its original three-service Docker stack must wait for a healthy persistent Docker host and a scoped configuration plan.",
+            "services": ["Original OpenLIT dashboard and OTLP receiver", "ClickHouse persistent database", "NATS realtime service"],
+            "ports": ["3000 (UI)", "4317/4318 (OTLP)", "9000/8123 (ClickHouse; original stock file publishes them)"],
+            "resources": "Persistent Docker or Kubernetes host with adequate disk for three services and volumes; exact usage needs a host-specific check",
+            "changes": [],
+            "permissions": ["No installation or container start is approved by this unsupported plan"],
+            "cost": "Self-hosted Apache-2.0 core is free; hosting resources and enterprise features may cost money",
+            "credentialNeeds": ["Private database and NATS passwords must be generated and stored outside reports before deployment"],
+            "verification": ["Docker storage health and free disk space", "Original three-service health", "Original UI and a real ingested trace"],
+            "limitations": "The previously reported Windows Docker filesystem was read-only. The original Compose file publishes ClickHouse and OTLP ports and uses example passwords. No service is started until Docker is healthy and a reviewed adapter sets appropriate passwords, port bindings, volumes and recovery steps.",
+        })
+    plan["hash"] = hashlib.sha256(json.dumps(plan, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    return plan
+
+
+def download_archive(discovery: dict, destination: Path, cancelled: Event, log: Callable[[str], None],
+                     *, max_archive: int = MAX_ARCHIVE, max_extracted: int = MAX_EXTRACTED,
+                     max_files: int = MAX_FILES) -> dict:
+    """Download and unpack regular files only. Never run scripts or follow symlinks."""
+    if destination.exists():
+        raise RuntimeError("The planned workspace already exists. Review it before retrying.")
+    owner, name = discovery["canonical"].split("/", 1)
+    url = f"https://api.github.com/repos/{owner}/{name}/tarball/{discovery['commit']}"
+    request = urllib.request.Request(url, headers={"User-Agent": "Sandbox-2-Onboarding/1"})
+    log("Downloading pinned source archive from GitHub")
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            data = bytearray()
+            while True:
+                if cancelled.is_set():
+                    raise Cancelled("Cancellation requested during download")
+                chunk = response.read(64 * 1024)
+                if not chunk:
+                    break
+                data.extend(chunk)
+                if len(data) > max_archive:
+                    raise RuntimeError("The archive exceeds the reviewed download limit.")
+    except (urllib.error.URLError, TimeoutError) as error:
+        raise RuntimeError("Could not download the pinned source archive from GitHub.") from error
+    temp = destination.with_name(destination.name + ".incomplete")
+    if temp.exists():
+        raise RuntimeError("An incomplete workspace already exists; inspect it before retrying.")
+    temp.mkdir(parents=True)
+    count = 0
+    total = 0
+    log("Inspecting archive paths, file types, and limits")
+    try:
+        with tarfile.open(fileobj=io.BytesIO(data), mode="r:gz") as archive:
+            for member in archive:
+                if cancelled.is_set():
+                    raise Cancelled("Cancellation requested during extraction")
+                parts = Path(member.name).parts
+                if len(parts) < 2:
+                    continue
+                relative = Path(*parts[1:])
+                if relative.is_absolute() or any(part in {"", ".", ".."} for part in relative.parts):
+                    raise RuntimeError("Archive contains an unsafe path.")
+                target = temp / relative
+                if not target.resolve().is_relative_to(temp.resolve()):
+                    raise RuntimeError("Archive path would escape the approved workspace.")
+                if member.isdir():
+                    target.mkdir(parents=True, exist_ok=True)
+                    continue
+                if not member.isfile():
+                    raise RuntimeError("Archive contains a link or special file; preparation stopped.")
+                count += 1
+                total += member.size
+                if count > max_files or total > max_extracted or member.size > max_extracted:
+                    raise RuntimeError("Archive exceeds the reviewed file or size limits.")
+                target.parent.mkdir(parents=True, exist_ok=True)
+                source = archive.extractfile(member)
+                if source is None:
+                    raise RuntimeError("Archive file could not be read.")
+                with source, target.open("wb") as output:
+                    remaining = member.size
+                    while remaining:
+                        block = source.read(min(64 * 1024, remaining))
+                        if not block:
+                            raise RuntimeError("Archive file ended unexpectedly.")
+                        output.write(block)
+                        remaining -= len(block)
+        readmes = [file for file in temp.iterdir() if file.is_file() and file.name.lower().startswith("readme")]
+        if not readmes:
+            raise RuntimeError("No root README was found; the content adapter cannot verify a starting point.")
+        (temp / "START_HERE.md").write_text(
+            f"# {discovery['owner']}/{discovery['name']}\n\n"
+            f"Project type: {discovery['type']}\n\n"
+            f"Pinned source: {discovery['github']}/tree/{discovery['commit']}\n\n"
+            f"Start by reading [{readmes[0].name}]({readmes[0].name}). This preparation does not run repository code.\n\n"
+            "Stop/restart: no background service was started. The files remain in this workspace until reviewed and removed.\n"
+        )
+        temp.rename(destination)
+        log(f"Prepared {count} regular files ({total} bytes); START_HERE.md created")
+        return {"fileCount": count, "bytes": total, "readme": readmes[0].name, "workspace": str(destination)}
+    except Exception:
+        # Preserve partial files for review rather than silently deleting potentially useful evidence.
+        log(f"Incomplete content remains at {temp}; no existing installation was overwritten")
+        raise

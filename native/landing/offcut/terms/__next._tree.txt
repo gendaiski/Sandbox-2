@@ -1,0 +1,6 @@
+:HL["/Sandbox-2/native/landing/offcut/_next/static/chunks/1y0f4s0c1ygs0.css","style"]
+:HL["/Sandbox-2/native/landing/offcut/_next/static/media/Fraunces%5BSOFT%2CWONK%2Copsz%2Cwght%5D-s.p.24tivhgkz9rhh.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+:HL["/Sandbox-2/native/landing/offcut/_next/static/media/Manrope%5Bwght%5D-s.p.3rjk17h6oms_8.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+2:[["children",{"s":"__PAGE__","h":160}]]
+1:[["children",{"s":{"n":"document","t":"d","k":"terms","s":["commission","faq","fonts"]},"h":96,"c":"$Q2"}]]
+0:{"b":"uFnSEniC05WYwCRVnS2EK","t":{"t":{"s":"","h":80,"c":"$Q1"}}}

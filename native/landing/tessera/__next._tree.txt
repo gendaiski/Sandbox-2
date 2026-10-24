@@ -1,0 +1,5 @@
+:HL["/Sandbox-2/native/landing/tessera/_next/static/chunks/02456dd8fo_lm.css","style"]
+:HL["/Sandbox-2/native/landing/tessera/_next/static/media/Manrope-s.p.3rjk17h6oms_8.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+:HL["/Sandbox-2/native/landing/tessera/_next/static/media/Syne-s.p.2e-t4p6ws0hhz.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+1:[["children",{"s":"__PAGE__","h":160}]]
+0:{"b":"81mzYKLzYh9gFu2jFz0PK","t":{"t":{"s":"","h":80,"c":"$Q1"}}}

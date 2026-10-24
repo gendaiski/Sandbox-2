@@ -1,0 +1,45 @@
+1:"$Sreact.fragment"
+2:"/Sandbox-2/native/landing/maree/_next/static/chunks/3mg_fhy_gj3vb.js"
+3:"/Sandbox-2/native/landing/maree/_next/static/chunks/2hyeml81ceeln.js"
+4:"/Sandbox-2/native/landing/maree/_next/static/chunks/3lv-q6hxub2f8.js"
+5:I[13293,["$2","$3","$4"],"Header"]
+6:"/Sandbox-2/native/landing/maree/_next/static/chunks/2thbmgn1kze-3.js"
+7:I[77763,["$6"],"default"]
+8:I[63408,["$6"],"default"]
+9:I[43926,["$2","$3","$4"],"Button"]
+a:I[39254,["$2","$3","$4"],""]
+b:I[24203,["$2","$3","$4"],"MotionSetup"]
+12:"/Sandbox-2/native/landing/maree/_next/static/chunks/0c7m-wktx-pe7.js"
+13:"/Sandbox-2/native/landing/maree/_next/static/chunks/1t1fxo0ciqt9m.js"
+14:I[36358,["$2","$3","$4","$12","$13"],"FaqSearch"]
+15:I[7826,["$6"],"OutletBoundary"]
+16:"$Sreact.suspense"
+19:"ViewportBoundary"
+1a:I[7826,["$6"],"$19"]
+1b:"MetadataBoundary"
+1c:I[7826,["$6"],"$1b"]
+:HL["/Sandbox-2/native/landing/maree/_next/static/chunks/0sdcszh7a9-ri.css","style"]
+d:X
+10:X
+10:C
+11:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$1","c",{"children":[["$","div",null,{"className":"inner-page","children":[["$","header",null,{"className":"page-intro","children":[["$","p",null,{"className":"eyebrow","children":"Questions & answers"}],["$","h1",null,{"children":["A little less",["$","br",null,{}],"wondering."]}],["$","p",null,{"children":"What to bring, how it works, and everything in between."}]]}],["$","$L14",null,{}]]}],[["$","script","script-0",{"src":"/Sandbox-2/native/landing/maree/_next/static/chunks/0c7m-wktx-pe7.js","async":true}],["$","script","script-1",{"src":"/Sandbox-2/native/landing/maree/_next/static/chunks/1t1fxo0ciqt9m.js","async":true}]],["$","$L15",null,{"children":["$","$16",null,{"name":"Next.MetadataOutlet","children":"$@17"}]}]]}],"p":"$@18","v":null,"s":"$d"}}]]
+e:[["children",{"s":"faq","h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$L7",null,{"parallelRouterKey":"children","template":["$","$L8",null,{}]}]]}],"p":"$@f","v":"$10","s":"$d"},"c":"$Q11"}]]
+0:{"t":{"t":{"s":"","h":80,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/Sandbox-2/native/landing/maree/_next/static/chunks/0sdcszh7a9-ri.css","precedence":"next"}],["$","script","script-0",{"src":"/Sandbox-2/native/landing/maree/_next/static/chunks/3mg_fhy_gj3vb.js","async":true}],["$","script","script-1",{"src":"/Sandbox-2/native/landing/maree/_next/static/chunks/2hyeml81ceeln.js","async":true}],["$","script","script-2",{"src":"/Sandbox-2/native/landing/maree/_next/static/chunks/3lv-q6hxub2f8.js","async":true}]],["$","html",null,{"lang":"en","className":"WIdxKW_variable wIuzGW_variable","children":["$","body",null,{"children":[["$","a",null,{"className":"skip-link","href":"#content","children":"Skip to content"}],["$","$L5",null,{}],["$","main",null,{"id":"content","children":["$","$L7",null,{"parallelRouterKey":"children","template":["$","$L8",null,{}],"notFound":[["$","section",null,{"className":"not-found inner-page","children":[["$","p",null,{"className":"eyebrow","children":"404 · A little off the path"}],["$","h1",null,{"children":"Drifted a little too far."}],["$","p",null,{"children":"This page isn’t here. Let’s take you back to somewhere familiar."}],["$","$L9",null,{"data-slot":"button","nativeButton":false,"role":"link","className":"ui-button button","render":["$","$La",null,{"href":"/"}],"children":["Back to the beginning ",["$","span",null,{"aria-hidden":"true","children":"↗︎"}]]}]]}],[]]}]}],["$","footer",null,{"className":"site-footer","children":[["$","div",null,{"className":"footer-top","children":[["$","$La",null,{"className":"footer-wordmark","href":"/","children":["Marée",["$","span",null,{"aria-hidden":"true","children":"↗︎"}]]}],["$","p",null,{"children":["A little closer to yourself.",["$","br",null,{}],"Stillwater Cove, North Cornwall"]}],["$","div",null,{"children":[["$","$La",null,{"href":"/book","children":"Find your quiet hour"}],["$","$La",null,{"href":"/groups","children":"Private gatherings"}],["$","$La",null,{"href":"/faq","children":"Questions & answers"}]]}]]}],["$","div",null,{"className":"footer-bottom","children":[["$","p",null,{"children":["©︎ 2026 ","Marée"," · A fictional brand, thoughtfully imagined."]}],["$","nav",null,{"aria-label":"Information","children":[["$","$La",null,{"href":"/privacy","children":"Privacy"}],["$","$La",null,{"href":"/terms","children":"Terms"}],["$","$La",null,{"href":"/accessibility","children":"Accessibility"}],["$","$La",null,{"href":"/credits","children":"Credits"}]]}]]}],["$","div",null,{"className":"footer-project","children":[["$","p",null,{"children":["Developed by ",["$","a",null,{"href":"https://lndev.me","children":"LN"}],"."]}],["$","a",null,{"href":"https://github.com/ln-dev7/landing-pages","children":"Open-source code · MIT License"}],["$","a",null,{"href":"https://lndev.mychariow.shop/prd_3cu1s0","children":["Support the project ",["$","span",null,{"aria-hidden":"true","children":"↗︎"}]]}]]}]]}],["$","$Lb",null,{}]]}]}]]}],"p":"$@c","v":null,"s":"$d"},"c":"$Qe"},"h":{"r":["$","$1","h",{"children":[null,["$","$L1a",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#f3f0e6"}]]}],["$","$L1c",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$16",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Questions & answers | Marée"}],["$","meta","1",{"name":"description","content":"Everything to know before your first visit."}],["$","meta","2",{"name":"robots","content":"noindex, follow"}],["$","meta","3",{"property":"og:title","content":"Marée — A little closer to yourself."}],["$","meta","4",{"property":"og:description","content":"A fictional coastal bath house. Cedar warmth, cool water, and a quieter kind of time by the sea."}],["$","meta","5",{"property":"og:locale","content":"en_GB"}],["$","meta","6",{"property":"og:image","content":"http://localhost:3000/opengraph-image?713b9cf6b5be445f"}],["$","meta","7",{"property":"og:image:type","content":"image/png"}],["$","meta","8",{"property":"og:image:width","content":"1200"}],["$","meta","9",{"property":"og:image:height","content":"630"}],["$","meta","10",{"property":"og:image:alt","content":"Marée — Come back to your senses"}],["$","meta","11",{"property":"og:type","content":"website"}],["$","meta","12",{"name":"twitter:card","content":"summary_large_image"}],["$","meta","13",{"name":"twitter:title","content":"Marée — A little closer to yourself."}],["$","meta","14",{"name":"twitter:description","content":"A fictional coastal bath house. Cedar warmth, cool water, and a quieter kind of time by the sea."}],"$L1d","$L1e","$L1f","$L20","$L21","$L22","$L23"]}]}],null]}],"$L24"]}],"p":"$@25","v":null,"s":"$d"}},"a":"$@26","u":"$@27","b":"Q1mY9ovz8NYUjJIH0_GjQ"}
+28:I[23000,["$6"],"IconMark"]
+17:null
+1d:["$","meta","15",{"name":"twitter:image","content":"http://localhost:3000/opengraph-image?713b9cf6b5be445f"}]
+1e:["$","meta","16",{"name":"twitter:image:alt","content":"Marée — Come back to your senses"}]
+1f:["$","meta","17",{"name":"twitter:image:type","content":"image/png"}]
+20:["$","meta","18",{"name":"twitter:image:width","content":"1200"}]
+21:["$","meta","19",{"name":"twitter:image:height","content":"630"}]
+22:["$","link","20",{"rel":"icon","href":"/Sandbox-2/native/landing/maree/icon.svg?icon.0g7sh_q1db406.svg","sizes":"any","type":"image/svg+xml"}]
+23:["$","$L28","21",{}]
+24:["$","meta",null,{"name":"next-size-adjust","content":""}]
+d:300
+27:true
+d:C
+26:0
+f:"$undefined"
+c:"$undefined"
+25:"$undefined"
+18:"$undefined"

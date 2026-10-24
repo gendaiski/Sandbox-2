@@ -1,10 +1,18 @@
 # Sandbox-2: test each system separately
 
+## Onboarding System
+
+[Open the Onboarding System interface](https://gendaiski.github.io/Sandbox-2/showcase/onboarding-system/workspace.html) or [read the local runner guide](onboarding/README.md). The public page is a connection and review entry point; approved work runs only through the authenticated loopback runner started on the target machine. The runner currently supports bounded preparation of public documentation, curated lists, and learning repositories, with persistent job records and verification reports. Application, CLI, library, private-repository, and remote-runner installations remain **unsupported**, so this feature is **PARTIAL** against the full onboarding specification. The [existing repository queue](https://gendaiski.github.io/Sandbox-2/showcase/onboarding-system/) remains separately available.
+
 ## Systems showcase
 
 [Open the live 33-system HTML hub](https://gendaiski.github.io/Sandbox-2/showcase/) or [browse its source](showcase/index.html). Each system has its own interactive HTML screen; the landing-page collection also has 14 individual visual previews. The hub includes Design Tokens and Design System Tokens filters. [Installation and provenance record](showcase/README.md) explains which original applications were built or run and which pages are browser-only studies.
 
 The hub includes a Project Atlas style evidence table with shared filters, source revisions, native/backend status, next actions and CSV export. Original source interface images are shown on supported system pages, alongside clearly labelled local interaction studies.
+
+## Meridian M&A Diligence System
+
+[Meridian](systems/meridian-ma-diligence/README.md) is a standalone local application, independent of the Fattura Egypt repository and its accounts. It has its own Node server, deal-room UI, database, encrypted document storage and workflow tests. Start it from `systems/meridian-ma-diligence/` with `npm ci` and `npm start`, then open `http://127.0.0.1:8797/` on the computer running it. The [handover](systems/meridian-ma-diligence/docs/HANDOVER.md) records what was verified and why public hosting remains unverified. This app uses its own npm setup rather than the Python-oriented `run.sh` harness below.
 
 Every system gets its own folder under `systems/`, its own environment
 (a uv virtualenv, a pnpm project or a Cargo crate), and its own test script.
