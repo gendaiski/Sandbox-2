@@ -163,6 +163,8 @@ def discover(owner: str, name: str, requested_ref: str | None = None) -> dict:
         project_type, explanation = "Application", "Reviewed upstream release provides its original signed Windows desktop App and CLI, with a seven-day trial and licence terms."
     if f"{owner.lower()}/{name.lower()}" == "coldteadotai/pr-lens":
         project_type, explanation = "Monorepo", "Reviewed upstream monorepo provides a GitHub App, Action, npm CLI, coding-agent skill, renderer, and canvas; this plan selects its original local CLI."
+    if f"{owner.lower()}/{name.lower()}" == "openlit/openlit":
+        project_type, explanation = "Application", "Reviewed upstream self-hosted OpenLIT dashboard needs OpenLIT, ClickHouse, NATS, persistent volumes and a functioning Docker or Kubernetes host."
     listed = (metadata.get("homepage") or "").strip()
     website_type = "None listed"
     official = "No official website verified."
@@ -356,6 +358,21 @@ def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
             "credentialNeeds": ["A model provider key is needed only if you later choose to analyze a real diff; never enter it in chat"],
             "verification": ["Published npm name, version and SHA-512 integrity", "Original CLI version and upstream example validation", "Original renderer produces light/dark SVGs and manifest", "Real model analysis, hosted canvas, and PR comment remain separate"],
             "limitations": "The local CLI renderer can be checked automatically, but no model-backed analysis, GitHub App connection, hosted canvas, or real pull-request comment is performed; result stays PARTIAL.",
+        })
+    if discovery["canonical"] == "openlit/openlit":
+        plan.update({
+            "supported": False,
+            "methodKey": "openlit-docker-blocked",
+            "method": "No approved OpenLIT deployment adapter is available. Its original three-service Docker stack must wait for a healthy persistent Docker host and a scoped configuration plan.",
+            "services": ["Original OpenLIT dashboard and OTLP receiver", "ClickHouse persistent database", "NATS realtime service"],
+            "ports": ["3000 (UI)", "4317/4318 (OTLP)", "9000/8123 (ClickHouse; original stock file publishes them)"],
+            "resources": "Persistent Docker or Kubernetes host with adequate disk for three services and volumes; exact usage needs a host-specific check",
+            "changes": [],
+            "permissions": ["No installation or container start is approved by this unsupported plan"],
+            "cost": "Self-hosted Apache-2.0 core is free; hosting resources and enterprise features may cost money",
+            "credentialNeeds": ["Private database and NATS passwords must be generated and stored outside reports before deployment"],
+            "verification": ["Docker storage health and free disk space", "Original three-service health", "Original UI and a real ingested trace"],
+            "limitations": "The previously reported Windows Docker filesystem was read-only. The original Compose file publishes ClickHouse and OTLP ports and uses example passwords. No service is started until Docker is healthy and a reviewed adapter sets appropriate passwords, port bindings, volumes and recovery steps.",
         })
     plan["hash"] = hashlib.sha256(json.dumps(plan, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     return plan

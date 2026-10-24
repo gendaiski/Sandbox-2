@@ -159,6 +159,17 @@ class ReferenceTests(unittest.TestCase):
             target["osFamily"] = "Linux"
             self.assertFalse(make_plan(discovery, target, Path(folder) / "pr-lens")["supported"])
 
+    def test_openlit_plan_blocks_stock_compose_until_host_review(self):
+        discovery = fixture_discovery("openlit", "openlit", None)
+        discovery["type"] = "Application"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "openlit")
+            self.assertFalse(plan["supported"])
+            self.assertEqual(plan["methodKey"], "openlit-docker-blocked")
+            self.assertIn("ClickHouse", " ".join(plan["services"]))
+            self.assertIn("example passwords", plan["limitations"])
+
     def test_book_with_chapter_notebooks_is_learning_material(self):
         kind, explanation = classify(
             "Agentic-Design-Patterns",
