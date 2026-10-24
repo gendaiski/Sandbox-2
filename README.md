@@ -1,5 +1,11 @@
 # Sandbox-2: test each system separately
 
+## Systems showcase
+
+[Open the live 33-system HTML hub](https://gendaiski.github.io/Sandbox-2/showcase/) or [browse its source](showcase/index.html). Each system has its own interactive HTML screen; the landing-page collection also has 14 individual visual previews. The hub includes Design Tokens and Design System Tokens filters. [Installation and provenance record](showcase/README.md) explains which original applications were built or run and which pages are browser-only studies.
+
+The hub includes a Project Atlas style evidence table with shared filters, source revisions, native/backend status, next actions and CSV export. Original source interface images are shown on supported system pages, alongside clearly labelled local interaction studies.
+
 Every system gets its own folder under `systems/`, its own environment
 (a uv virtualenv, a pnpm project or a Cargo crate), and its own test script.
 Each test runs on its own: one system's dependencies never touch another's.

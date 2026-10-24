@@ -1,0 +1,142 @@
+[
+  {
+    "name": "Warm Flame",
+    "deg": 45,
+    "gradient": [
+      {
+        "color": "#ff9a9e",
+        "pos": 0
+      },
+      {
+        "color": "#fad0c4",
+        "pos": 99
+      },
+      {
+        "color": "#fad0c4",
+        "pos": 100
+      }
+    ]
+  },
+  {
+    "name": "Night Fade",
+    "deg": 0,
+    "gradient": [
+      {
+        "color": "#a18cd1",
+        "pos": 0
+      },
+      {
+        "color": "#fbc2eb",
+        "pos": 100
+      }
+    ]
+  },
+  {
+    "name": "Spring Warmth",
+    "deg": 0,
+    "gradient": [
+      {
+        "color": "#fad0c4",
+        "pos": 0
+      },
+      {
+        "color": "#fad0c4",
+        "pos": 1
+      },
+      {
+        "color": "#ffd1ff",
+        "pos": 100
+      }
+    ]
+  },
+  {
+    "name": "Juicy Peach",
+    "deg": 90,
+    "gradient": [
+      {
+        "color": "#ffecd2",
+        "pos": 0
+      },
+      {
+        "color": "#fcb69f",
+        "pos": 100
+      }
+    ]
+  },
+  {
+    "name": "Young Passion",
+    "deg": 90,
+    "gradient": [
+      {
+        "color": "#ff8177",
+        "pos": 0
+      },
+      {
+        "color": "#ff867a",
+        "pos": 0
+      },
+      {
+        "color": "#ff8c7f",
+        "pos": 21
+      },
+      {
+        "color": "#f99185",
+        "pos": 52
+      },
+      {
+        "color": "#cf556c",
+        "pos": 78
+      },
+      {
+        "color": "#b12a5b",
+        "pos": 100
+      }
+    ]
+  },
+  {
+    "name": "Lady Lips",
+    "deg": 0,
+    "gradient": [
+      {
+        "color": "#ff9a9e",
+        "pos": 0
+      },
+      {
+        "color": "#fecfef",
+        "pos": 99
+      },
+      {
+        "color": "#fecfef",
+        "pos": 100
+      }
+    ]
+  },
+  {
+    "name": "Sunny Morning",
+    "deg": 120,
+    "gradient": [
+      {
+        "color": "#f6d365",
+        "pos": 0
+      },
+      {
+        "color": "#fda085",
+        "pos": 100
+      }
+    ]
+  },
+  {
+    "name": "Rainy Ashville",
+    "deg": 0,
+    "gradient": [
+      {
+        "color": "#fbc2eb",
+        "pos": 0
+      },
+      {
+        "color": "#a6c1ee",
+        "pos": 100
+      }
+    ]
+  }
+]
