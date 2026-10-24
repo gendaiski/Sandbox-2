@@ -33,6 +33,7 @@ from .html_anything import prepare_and_start as prepare_html_anything
 from .gentle_ai import prepare as prepare_gentle_ai
 from .qualitylayer_desktop import prepare_and_launch as prepare_qualitylayer_desktop
 from .pr_lens import prepare as prepare_pr_lens
+from .nvidia_skills import prepare as prepare_nvidia_skills
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -62,7 +63,7 @@ class Approval(BaseModel):
 
 
 class Service:
-    def __init__(self, data_dir: Path, access_code: str, discover_fn: Callable = discover, download_fn: Callable = download_archive, happy_fn: Callable = prepare_happy_desktop, herdr_fn: Callable = prepare_herdr, orchestrator_fn: Callable = prepare_orchestrator, ekko_fn: Callable = prepare_ekko_web, html_fn: Callable = prepare_html_anything, gentle_fn: Callable = prepare_gentle_ai, qualitylayer_fn: Callable = prepare_qualitylayer_desktop, pr_lens_fn: Callable = prepare_pr_lens):
+    def __init__(self, data_dir: Path, access_code: str, discover_fn: Callable = discover, download_fn: Callable = download_archive, happy_fn: Callable = prepare_happy_desktop, herdr_fn: Callable = prepare_herdr, orchestrator_fn: Callable = prepare_orchestrator, ekko_fn: Callable = prepare_ekko_web, html_fn: Callable = prepare_html_anything, gentle_fn: Callable = prepare_gentle_ai, qualitylayer_fn: Callable = prepare_qualitylayer_desktop, pr_lens_fn: Callable = prepare_pr_lens, nvidia_fn: Callable = prepare_nvidia_skills):
         self.data_dir = data_dir.resolve()
         self.data_dir.mkdir(parents=True, exist_ok=True)
         lock_path = self.data_dir / ".runner.lock"
@@ -99,6 +100,7 @@ class Service:
         self.gentle_fn = gentle_fn
         self.qualitylayer_fn = qualitylayer_fn
         self.pr_lens_fn = pr_lens_fn
+        self.nvidia_fn = nvidia_fn
         self._init_db()
         self._recover()
 
@@ -167,7 +169,7 @@ class Service:
             "machine": "Runner host; this is your computer only if you started the runner on it",
             "os": f"{platform.system()} {platform.release()}",
             "osFamily": platform.system(), "architecture": platform.machine(),
-            "connected": True, "capabilities": ["Public GitHub discovery", "Bounded documentation preparation", "Local file verification", "Markdown, JSON and PDF reports"] + (["Original Happy Desktop installer preparation and launch", "Original Herdr Windows terminal binary preparation", "Original Orchestrator.inc Windows installer preparation without launch", "Original Ekko Studio npm web app preparation and loopback launch (Node.js 23+ required)", "Original HTML Anything Next.js editor preparation and loopback launch (Node.js 20.9+ and pnpm required)", "Original Gentle-AI CLI source build (Go 1.25.10+ required; global agent config untouched)", "Original QualityLayer Windows App signed installer launch (seven-day trial; user completes setup)", "Original PR Lens npm CLI local validation and SVG rendering (Node.js 20.11+ required)"] if windows_x64 else []),
+            "connected": True, "capabilities": ["Public GitHub discovery", "Bounded documentation preparation", "Local file verification", "Markdown, JSON and PDF reports", "Original NVIDIA Agent Skills catalog snapshot without global installation"] + (["Original Happy Desktop installer preparation and launch", "Original Herdr Windows terminal binary preparation", "Original Orchestrator.inc Windows installer preparation without launch", "Original Ekko Studio npm web app preparation and loopback launch (Node.js 23+ required)", "Original HTML Anything Next.js editor preparation and loopback launch (Node.js 20.9+ and pnpm required)", "Original Gentle-AI CLI source build (Go 1.25.10+ required; global agent config untouched)", "Original QualityLayer Windows App signed installer launch (seven-day trial; user completes setup)", "Original PR Lens npm CLI local validation and SVG rendering (Node.js 20.11+ required)"] if windows_x64 else []),
             "unsupported": ["Remote runner connection", "Private GitHub repositories", "Generic app, CLI or library installation", "Public service exposure"],
             "storage": str(self.data_dir), "freeBytes": usage.free,
             "persistent": False if in_cloud else None,
@@ -416,6 +418,17 @@ class Service:
                     ("Model analysis and hosted integrations", "NOT VERIFIED", "No model provider, GitHub App, public canvas or pull-request comment was used"),
                 ]
                 final = "PARTIAL"
+            elif record["plan"].get("methodKey") == "nvidia-skills-catalog":
+                if shutil.disk_usage(self.data_dir).free < 150_000_000:
+                    raise RuntimeError("At least 150 MB of free disk space is needed to prepare NVIDIA's skill catalog.")
+                result = self.nvidia_fn(record["discovery"], destination, cancelled, lambda message: self.log(job_id, message))
+                checks = [
+                    ("Original NVIDIA catalog and README", "PASS" if (destination / "README.md").is_file() and result.get("fileCount", 0) > 0 else "FAIL", str(destination)),
+                    ("Product skill manifests readable", "PASS" if result.get("skillCount", 0) > 0 and (destination / "skills").is_dir() else "FAIL", f"{result.get('skillCount', 0)} manifests"),
+                    ("Application user interface", "NOT APPLICABLE", "NVIDIA/skills is a skill collection, not an application"),
+                    ("Global agent installation", "NOT APPLICABLE", "No skill was installed into an agent; content snapshot only"),
+                ]
+                final = "COMPLETE" if all(status != "FAIL" for _, status, _ in checks) else "PARTIAL"
             else:
                 result = self.download_fn(record["discovery"], destination, cancelled, lambda message: self.log(job_id, message))
                 readme = destination / result["readme"]
@@ -475,7 +488,16 @@ class Service:
             db.execute("UPDATE records SET status='VERIFYING',updated_at=? WHERE id=?", (now(), record_id))
         workspace = Path(row["workspace"])
         plan = json.loads(row["plan"])
-        if plan.get("methodKey") == "pr-lens-cli-windows":
+        if plan.get("methodKey") == "nvidia-skills-catalog":
+            readme = workspace / "README.md"
+            manifests = list((workspace / "skills").glob("*/SKILL.md"))
+            checks = [
+                ("Original catalog README retained", "PASS" if readme.is_file() and readme.stat().st_size else "FAIL", str(readme)),
+                ("Product skill manifests retained", "PASS" if manifests else "FAIL", f"{len(manifests)} manifests"),
+                ("Application UI", "NOT APPLICABLE", "Content collection, no standalone application"),
+            ]
+            final = "COMPLETE" if all(status != "FAIL" for _, status, _ in checks) else "PARTIAL"
+        elif plan.get("methodKey") == "pr-lens-cli-windows":
             import subprocess
             from .pr_lens import INTEGRITY, VERSION
             lock = workspace / "tool" / "package-lock.json"

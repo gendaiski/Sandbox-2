@@ -170,6 +170,17 @@ class ReferenceTests(unittest.TestCase):
             self.assertIn("ClickHouse", " ".join(plan["services"]))
             self.assertIn("example passwords", plan["limitations"])
 
+    def test_nvidia_catalog_plan_does_not_install_skills_globally(self):
+        discovery = fixture_discovery("NVIDIA", "skills", None)
+        discovery["type"] = "Workflows and skills"
+        with tempfile.TemporaryDirectory() as folder:
+            target = {"id": "windows", "name": "Windows test", "osFamily": "Windows", "architecture": "AMD64"}
+            plan = make_plan(discovery, target, Path(folder) / "nvidia")
+            self.assertTrue(plan["supported"])
+            self.assertEqual(plan["methodKey"], "nvidia-skills-catalog")
+            self.assertIn("7000 regular files", plan["resources"])
+            self.assertIn("Do not execute repository scripts", " ".join(plan["permissions"]))
+
     def test_book_with_chapter_notebooks_is_learning_material(self):
         kind, explanation = classify(
             "Agentic-Design-Patterns",
@@ -593,6 +604,37 @@ class RunnerTests(unittest.TestCase):
             time.sleep(.02)
         self.assertEqual(current["status"], "PARTIAL")
         self.assertIn("NOT VERIFIED", {check["status"] for check in current["checks"]})
+
+    def test_nvidia_collection_completes_only_as_content_snapshot(self):
+        def catalog_discovery(owner, name, ref):
+            result = fixture_discovery(owner, name, ref)
+            result["type"] = "Workflows and skills"
+            return result
+        self.app.state.service.discover_fn = catalog_discovery
+
+        def catalog_fixture(discovery, destination, cancelled, log):
+            (destination / "skills" / "example").mkdir(parents=True)
+            (destination / "README.md").write_text("# Original skills catalog")
+            (destination / "skills" / "example" / "SKILL.md").write_text("# Original skill instructions")
+            (destination / "START_HERE.md").write_text("Browse the skills, no global install")
+            log("Controlled original catalog fixture prepared")
+            return {"fileCount": 2, "skillCount": 1, "bytes": 60, "globalAgentInstall": False}
+
+        self.app.state.service.nvidia_fn = catalog_fixture
+        headers = self.login()
+        record = self.client.post("/api/onboardings", headers=headers,
+                                  json={"reference": "NVIDIA/skills"}).json()["record"]
+        self.assertEqual(record["status"], "AWAITING_APPROVAL")
+        self.client.post(f"/api/onboardings/{record['id']}/approve", headers=headers,
+                         json={"planHash": record["plan_hash"]})
+        self.client.post(f"/api/onboardings/{record['id']}/run", headers=headers)
+        for _ in range(100):
+            current = self.client.get(f"/api/onboardings/{record['id']}").json()
+            if current["status"] != "INSTALLING":
+                break
+            time.sleep(.02)
+        self.assertEqual(current["status"], "COMPLETE")
+        self.assertIn("NOT APPLICABLE", {check["status"] for check in current["checks"]})
 
     def test_failed_verification_cannot_report_complete(self):
         def missing_readme(discovery, destination, cancelled, log):

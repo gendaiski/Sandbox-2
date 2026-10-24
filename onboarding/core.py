@@ -165,6 +165,8 @@ def discover(owner: str, name: str, requested_ref: str | None = None) -> dict:
         project_type, explanation = "Monorepo", "Reviewed upstream monorepo provides a GitHub App, Action, npm CLI, coding-agent skill, renderer, and canvas; this plan selects its original local CLI."
     if f"{owner.lower()}/{name.lower()}" == "openlit/openlit":
         project_type, explanation = "Application", "Reviewed upstream self-hosted OpenLIT dashboard needs OpenLIT, ClickHouse, NATS, persistent volumes and a functioning Docker or Kubernetes host."
+    if f"{owner.lower()}/{name.lower()}" == "nvidia/skills":
+        project_type, explanation = "Workflows and skills", "Reviewed NVIDIA catalog mirrors product-specific Agent Skills; no standalone application or universal skill runtime is included."
     listed = (metadata.get("homepage") or "").strip()
     website_type = "None listed"
     official = "No official website verified."
@@ -249,7 +251,8 @@ def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
         and target.get("architecture", "").lower() in {"amd64", "x86_64"}
         and not discovery["archived"] and not discovery["private"]
     )
-    supported = (discovery["type"] in SUPPORTED_TYPES and not discovery["archived"] and not discovery["private"]) or happy_windows or herdr_windows or orchestrator_windows or ekko_windows or html_windows or gentle_windows or qualitylayer_windows or pr_lens_windows
+    nvidia_catalog = discovery["canonical"] == "nvidia/skills" and not discovery["archived"] and not discovery["private"]
+    supported = (discovery["type"] in SUPPORTED_TYPES and not discovery["archived"] and not discovery["private"]) or happy_windows or herdr_windows or orchestrator_windows or ekko_windows or html_windows or gentle_windows or qualitylayer_windows or pr_lens_windows or nvidia_catalog
     plan = {
         "repository": discovery["canonical"], "commit": discovery["commit"], "targetId": target["id"],
         "targetName": target["name"], "projectType": discovery["type"], "supported": supported,
@@ -359,6 +362,20 @@ def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
             "verification": ["Published npm name, version and SHA-512 integrity", "Original CLI version and upstream example validation", "Original renderer produces light/dark SVGs and manifest", "Real model analysis, hosted canvas, and PR comment remain separate"],
             "limitations": "The local CLI renderer can be checked automatically, but no model-backed analysis, GitHub App connection, hosted canvas, or real pull-request comment is performed; result stays PARTIAL.",
         })
+    elif nvidia_catalog:
+        from .nvidia_skills import MAX_ARCHIVE, MAX_EXTRACTED, MAX_FILES
+        plan.update({
+            "methodKey": "nvidia-skills-catalog",
+            "method": "Download and unpack the pinned original NVIDIA Agent Skills catalog as readable files, without installing any skill into a coding agent or executing examples",
+            "services": ["No service or application UI; individual skills may require separate NVIDIA products or hardware"],
+            "resources": f"Archive capped at {MAX_ARCHIVE // 1024 // 1024} MiB; extraction capped at {MAX_EXTRACTED // 1024 // 1024} MiB and {MAX_FILES} regular files; at least 150 MB free space recommended",
+            "changes": ["Create an isolated snapshot of the original README, docs and skill folders in this job folder", "Create START_HERE.md describing catalog use; do not change global agent configuration"],
+            "permissions": ["Download and inspect only the pinned public GitHub archive", "Do not execute repository scripts, install all skills, or change any coding-agent configuration"],
+            "cost": "No paid service used to prepare the catalog; individual NVIDIA product workflows may require hardware or paid services",
+            "credentialNeeds": [],
+            "verification": ["Pinned archive and readable root README", "Product skill manifests accessible under skills/", "No application UI or global agent installation is claimed"],
+            "limitations": "This catalog is content, not a running app. Preparing it makes the skills readable but does not install every product or automatically add instructions to Codex or other agents.",
+        })
     if discovery["canonical"] == "openlit/openlit":
         plan.update({
             "supported": False,
@@ -378,7 +395,9 @@ def make_plan(discovery: dict, target: dict, workspace: Path) -> dict:
     return plan
 
 
-def download_archive(discovery: dict, destination: Path, cancelled: Event, log: Callable[[str], None]) -> dict:
+def download_archive(discovery: dict, destination: Path, cancelled: Event, log: Callable[[str], None],
+                     *, max_archive: int = MAX_ARCHIVE, max_extracted: int = MAX_EXTRACTED,
+                     max_files: int = MAX_FILES) -> dict:
     """Download and unpack regular files only. Never run scripts or follow symlinks."""
     if destination.exists():
         raise RuntimeError("The planned workspace already exists. Review it before retrying.")
@@ -396,8 +415,8 @@ def download_archive(discovery: dict, destination: Path, cancelled: Event, log: 
                 if not chunk:
                     break
                 data.extend(chunk)
-                if len(data) > MAX_ARCHIVE:
-                    raise RuntimeError("The archive exceeds the reviewed 25 MiB download limit.")
+                if len(data) > max_archive:
+                    raise RuntimeError("The archive exceeds the reviewed download limit.")
     except (urllib.error.URLError, TimeoutError) as error:
         raise RuntimeError("Could not download the pinned source archive from GitHub.") from error
     temp = destination.with_name(destination.name + ".incomplete")
@@ -428,7 +447,7 @@ def download_archive(discovery: dict, destination: Path, cancelled: Event, log: 
                     raise RuntimeError("Archive contains a link or special file; preparation stopped.")
                 count += 1
                 total += member.size
-                if count > MAX_FILES or total > MAX_EXTRACTED or member.size > MAX_EXTRACTED:
+                if count > max_files or total > max_extracted or member.size > max_extracted:
                     raise RuntimeError("Archive exceeds the reviewed file or size limits.")
                 target.parent.mkdir(parents=True, exist_ok=True)
                 source = archive.extractfile(member)
