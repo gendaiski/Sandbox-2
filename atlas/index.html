@@ -60063,11 +60063,13 @@ input[type="checkbox"]:focus-visible{
       "done": [
         "Captured 1,402 listed expert records and five extra public prompt files across seven languages from a pinned source commit.",
         "Pasted JSON import and re-exported standalone HTML were reopened successfully in a browser.",
-        "English display for 280 Chinese-source entries, resilient startup, Fish Code-inspired typography and accessible light/dark palettes."
+        "English display for 280 Chinese-source entries, resilient startup, classic serif typography and accessible light/dark palettes.",
+        "Desktop browser bookmarklet captures rendered agent cards from cross-site-blocked pages without transmitting them to a server; imports preserve source and excerpt labels."
       ],
       "gaps": [
         "Arbitrary websites may block cross-origin fetch; paste source or upload a file when that occurs.",
-        "An external GitHub raw-file fetch could not be verified in this managed browser environment."
+        "An external GitHub raw-file fetch could not be verified in this managed browser environment.",
+        "The capture helper needs a desktop browser that allows script bookmarks; in-app and mobile browsers may require a saved page file. It cannot recover hidden or unloaded prompts."
       ],
       "evidence": [
         "2026-10-24: source and local handover checked for this conversation."
@@ -60075,7 +60077,7 @@ input[type="checkbox"]:focus-visible{
       "url": "https://github.com/gendaiski/Project-Atlas/blob/codex/chat-projects-20261024/Agent-Harvester.html",
       "download": "",
       "source": "https://github.com/gendaiski/Project-Atlas/blob/codex/chat-projects-20261024/Agent-Harvester.html \u00b7 codex/chat-projects-20261024",
-      "test": "24 Oct: built-in 1,407 agents rendered, search/detail/theme/mobile checks passed; one imported agent survived HTML export and reopening. 25 Oct: public page and 1,407 bundled agents rechecked after translation and visual updates.",
+      "test": "24 Oct: built-in 1,407 agents rendered, search/detail/theme/mobile checks passed; one imported agent survived HTML export and reopening. 25 Oct: public page and 1,407 bundled agents rechecked after translation and visual updates. Controlled browser capture produced two agent cards and excluded an unrelated article; pasted imports survived refresh and standalone HTML export/reopen.",
       "checkedDate": "2026-10-25",
       "classificationDate": "2026-10-24",
       "risk": "Not assessed",
@@ -60120,6 +60122,12 @@ input[type="checkbox"]:focus-visible{
       },
       "chatProject": true,
       "activityLog": [
+        {
+          "type": "Updated",
+          "date": "2026-10-25",
+          "summary": "Added a desktop capture helper for blocked websites, filtered unrelated content and labelled source excerpts honestly.",
+          "source": "https://github.com/gendaiski/Project-Atlas/blob/codex/chat-projects-20261024/Agent-Harvester.html"
+        },
         {
           "type": "Updated",
           "date": "2026-10-25",
