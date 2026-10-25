@@ -60056,7 +60056,7 @@ input[type="checkbox"]:focus-visible{
       "scope": "built",
       "stage": "Browser workflow verified",
       "category": "Developer tools & skills",
-      "frontend": "Single HTML interface with 1,407 full agent prompts, search, preview and export",
+      "frontend": "Single HTML interface with 1,407 bundled agent prompts, search, cards/table/list views, preview and export",
       "backend": "No server backend; browser-only parsing and optional GitHub/CORS fetch",
       "storage": "Built-in compressed data; imported agents in browser IndexedDB or exported HTML",
       "milestones": [],
@@ -60064,7 +60064,8 @@ input[type="checkbox"]:focus-visible{
         "Captured 1,402 listed expert records and five extra public prompt files across seven languages from a pinned source commit.",
         "Pasted JSON import and re-exported standalone HTML were reopened successfully in a browser.",
         "English display for 280 Chinese-source entries, resilient startup, classic serif typography and accessible light/dark palettes.",
-        "Desktop browser bookmarklet captures rendered agent cards from cross-site-blocked pages without transmitting them to a server; imports preserve source and excerpt labels."
+        "Desktop browser bookmarklet captures rendered agent cards from cross-site-blocked pages without transmitting them to a server; imports preserve source and excerpt labels.",
+        "Added persistent card, table and list views, shareable links to bundled agents, and restored focus after closing the agent viewer."
       ],
       "gaps": [
         "Arbitrary websites may block cross-origin fetch; paste source or upload a file when that occurs.",
@@ -60072,12 +60073,13 @@ input[type="checkbox"]:focus-visible{
         "The capture helper needs a desktop browser that allows script bookmarks; in-app and mobile browsers may require a saved page file. It cannot recover hidden or unloaded prompts."
       ],
       "evidence": [
-        "2026-10-24: source and local handover checked for this conversation."
+        "2026-10-24: source and local handover checked for this conversation.",
+        "2026-10-25: published Agent Harvester checked in Chromium after GitHub Pages deployment 7a13e8d."
       ],
       "url": "https://github.com/gendaiski/Project-Atlas/blob/codex/chat-projects-20261024/Agent-Harvester.html",
       "download": "",
       "source": "https://github.com/gendaiski/Project-Atlas/blob/codex/chat-projects-20261024/Agent-Harvester.html \u00b7 codex/chat-projects-20261024",
-      "test": "24 Oct: built-in 1,407 agents rendered, search/detail/theme/mobile checks passed; one imported agent survived HTML export and reopening. 25 Oct: public page and 1,407 bundled agents rechecked after translation and visual updates. Controlled browser capture produced two agent cards and excluded an unrelated article; pasted imports survived refresh and standalone HTML export/reopen.",
+      "test": "24 Oct: built-in 1,407 agents rendered, search/detail/theme/mobile checks passed; one imported agent survived HTML export and reopening. 25 Oct: published GitHub Pages deployment succeeded; public browser loaded 1,407 bundled agents with no page errors. Capture helper, table/list switches and dark theme were present and responsive. Controlled browser capture produced two agent cards and excluded an unrelated article; pasted imports survived refresh and standalone HTML export/reopen.",
       "checkedDate": "2026-10-25",
       "classificationDate": "2026-10-24",
       "risk": "Not assessed",
@@ -60096,7 +60098,7 @@ input[type="checkbox"]:focus-visible{
       "related": "",
       "nativeCode": {
         "status": "Yes",
-        "reason": "Single HTML interface with 1,407 full agent prompts, search, preview and export"
+        "reason": "Single HTML interface with 1,407 bundled agent prompts, search, cards/table/list views, preview and export"
       },
       "backendCode": {
         "status": "No",
@@ -60125,8 +60127,8 @@ input[type="checkbox"]:focus-visible{
         {
           "type": "Updated",
           "date": "2026-10-25",
-          "summary": "Added a desktop capture helper for blocked websites, filtered unrelated content and labelled source excerpts honestly.",
-          "source": "https://github.com/gendaiski/Project-Atlas/blob/codex/chat-projects-20261024/Agent-Harvester.html"
+          "summary": "Published and browser-checked 1,407 agents, card/table/list views, share links, light/dark theme and a desktop capture helper; imported card text is labelled as an excerpt.",
+          "source": "https://github.com/gendaiski/Sandbox-2/commit/7a13e8d"
         },
         {
           "type": "Updated",
@@ -107246,7 +107248,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-detail],[d
 $('#detail').addEventListener('close',render);$('#detail').addEventListener('click',e=>{if(e.target===$('#detail')){const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close()}});
 $('#navCount').textContent=DATA.projects.length;$('#chatCount').textContent=DATA.chatProjects?.ids.length||0;$('#repoCount').textContent=DATA.repos.length;$('#artifactCount').textContent=DATA.artifacts.length;
 $('#metrics').innerHTML=[['Built / updated records',built.length,'Original workstreams and this chat’s new editions'],['Portfolio reviews',audited.length,'5 works · 36 partly · 11 blocked'],['Imported resources',resources.length,'118 RepoLedger + 17 Builder task records'],['Source groups',DATA.repos.length,`${DATA.repos.filter(r=>r.type.includes('GitHub')).length} GitHub repos + ${DATA.repos.filter(r=>!r.type.includes('GitHub')).length} other source groups`],['Published artifacts',DATA.artifacts.length,'Original handoff register']].map(([label,count,sub])=>`<div class="metric"><label>${label}</label><strong>${count}</strong><small>${sub}</small></div>`).join('');
-$('#footerCount').textContent=`${DATA.projects.length} project records · ${DATA.chatProjects?.ids.length||0} in this chat · Updated 24 October`;
+$('#footerCount').textContent=`${DATA.projects.length} project records · ${DATA.chatProjects?.ids.length||0} in this chat · Updated ${new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(`${DATA.chatProjects?.asOf||DATA.auditDate}T00:00:00Z`))}`;
 $('#repoSummary').textContent=`${DATA.repos.length} source groups. GitHub repositories, managed Sites sources and local authored code are explicitly distinguished.`;
 $('#repoCards').innerHTML=DATA.repos.map(r=>`<section class="card"><span class="badge ${r.type.includes('Private')?'warn':'blue'}">${esc(r.type)}</span><h3 style="margin-top:14px">${esc(r.name)}</h3><p>${esc(r.scope)}</p><div class="tagline">${esc(r.stack)}</div><p>${esc(r.backend)}</p><div class="tagline">${esc(r.folder)}</div>${r.id?`<div class="tagline">${esc(r.id)}</div>`:''}<div class="detailactions">${link(r.url,r.type.includes('GitHub')?'Repository':'Live site')}${r.live?link(r.live,'Demo'):''}<button class="titlebtn" data-repo="${esc(r.key)}">View records</button></div></section>`).join('');
 function renderArtifacts(){const q=$('#artifactSearch').value.trim().toLowerCase(),a=DATA.artifacts.filter(a=>!q||JSON.stringify(a).toLowerCase().includes(q));$('#artifactRows').innerHTML=a.map(a=>`<tr><td><b>${esc(a.title)}</b></td><td>${esc(a.repo_or_project)}</td><td>${esc(a.session)}<span class="sub">${esc([a.flag,a.what].filter(Boolean).join(' · '))}</span></td><td>${link(a.url,'Open artifact')}</td></tr>`).join('')||'<tr><td colspan="4" class="empty">No matching artifacts.</td></tr>';$('#artifactResults').textContent=`${a.length} of ${DATA.artifacts.length} artifacts`;}
