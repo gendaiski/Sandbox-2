@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" role="img" aria-labelledby="title">
+  <title id="title">Legal Standards monogram</title>
+  <rect width="72" height="72" rx="14" fill="#242c38"/>
+  <path d="M14 15v42h24" fill="none" stroke="#f5efe4" stroke-width="6" stroke-linecap="square"/>
+  <path d="M56 20c-4-6-17-7-21 0-6 11 22 7 22 22 0 13-17 18-27 9" fill="none" stroke="#d9a96e" stroke-width="5" stroke-linecap="round"/>
+  <path d="M56 10v8M56 54v8" stroke="#d9a96e" stroke-width="2"/>
+</svg>
