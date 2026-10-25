@@ -1,0 +1,323 @@
+{
+  "name": "Legal Standards",
+  "source_url": "https://www.legalbenchmarks.ai/directory",
+  "source_capture_date": "2026-10-24",
+  "independent_test_count": 0,
+  "items": [
+    {
+      "name": "Claude for Legal",
+      "slug": "claude-for-legal",
+      "kind": "general_purpose",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Data extraction",
+        "Drafting and summarisation"
+      ],
+      "audience": [],
+      "listed_website": "https://claude.ai/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/claude-for-legal"
+    },
+    {
+      "name": "GC AI",
+      "slug": "gcai",
+      "kind": "legal_ai",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Legal research",
+        "Data extraction"
+      ],
+      "audience": [
+        "In-house legal teams"
+      ],
+      "listed_website": "https://gc.ai/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/gcai"
+    },
+    {
+      "name": "Aline",
+      "slug": "aline",
+      "kind": "legal_ai",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Data extraction",
+        "Matter management"
+      ],
+      "audience": [
+        "In-house legal teams",
+        "Law firms"
+      ],
+      "listed_website": "https://www.aline.co/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/aline"
+    },
+    {
+      "name": "Ruli",
+      "slug": "ruli",
+      "kind": "legal_ai",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Legal research",
+        "Data extraction"
+      ],
+      "audience": [
+        "In-house legal teams"
+      ],
+      "listed_website": "https://www.ruli.ai/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/ruli"
+    },
+    {
+      "name": "OpenAI",
+      "slug": "openai",
+      "kind": "general_purpose",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Data extraction",
+        "Drafting and summarisation"
+      ],
+      "audience": [],
+      "listed_website": "https://chatgpt.com/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/openai"
+    },
+    {
+      "name": "DeepSeek",
+      "slug": "deepseek",
+      "kind": "general_purpose",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Data extraction",
+        "Drafting and summarisation"
+      ],
+      "audience": [],
+      "listed_website": "https://www.deepseek.com/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/deepseek"
+    },
+    {
+      "name": "Perplexity",
+      "slug": "perplexity",
+      "kind": "general_purpose",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Data extraction",
+        "Drafting and summarisation"
+      ],
+      "audience": [],
+      "listed_website": "https://www.perplexity.ai/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/perplexity"
+    },
+    {
+      "name": "Grok",
+      "slug": "grok",
+      "kind": "general_purpose",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Data extraction",
+        "Drafting and summarisation"
+      ],
+      "audience": [],
+      "listed_website": "https://grok.com/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/grok"
+    },
+    {
+      "name": "Chamelio",
+      "slug": "chamelio",
+      "kind": "legal_ai",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Data extraction",
+        "Matter management"
+      ],
+      "audience": [
+        "In-house legal teams"
+      ],
+      "listed_website": "https://www.chamelio.ai/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/chamelio"
+    },
+    {
+      "name": "HAQQ",
+      "slug": "haqq",
+      "kind": "legal_ai",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Legal research",
+        "Matter management"
+      ],
+      "audience": [
+        "In-house legal teams",
+        "Law firms"
+      ],
+      "listed_website": "https://www.haqq.ai/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/haqq"
+    },
+    {
+      "name": "Descrybe",
+      "slug": "descrybe",
+      "kind": "legal_ai",
+      "use_cases": [
+        "Legal research"
+      ],
+      "audience": [
+        "In-house legal teams",
+        "Law firms"
+      ],
+      "listed_website": "https://descrybe.com/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/descrybe"
+    },
+    {
+      "name": "Irys",
+      "slug": "irys",
+      "kind": "legal_ai",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Legal research",
+        "Matter management"
+      ],
+      "audience": [
+        "Law firms",
+        "In-house legal teams"
+      ],
+      "listed_website": "https://www.irys.ai/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/irys"
+    },
+    {
+      "name": "Mike OSS",
+      "slug": "mikeoss",
+      "kind": "legal_ai",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Data extraction",
+        "Legal research"
+      ],
+      "audience": [
+        "Law firms"
+      ],
+      "listed_website": "https://mikeoss.com/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/mikeoss"
+    },
+    {
+      "name": "Legora",
+      "slug": "legora",
+      "kind": "legal_ai",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Legal research",
+        "Data extraction"
+      ],
+      "audience": [
+        "In-house legal teams",
+        "Law firms"
+      ],
+      "listed_website": "https://legora.com/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/legora"
+    },
+    {
+      "name": "Flank",
+      "slug": "flank",
+      "kind": "legal_ai",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Matter management"
+      ],
+      "audience": [
+        "In-house legal teams",
+        "Law firms"
+      ],
+      "listed_website": "https://flank.ai/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/flank"
+    },
+    {
+      "name": "Harvey",
+      "slug": "harvey",
+      "kind": "legal_ai",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Legal research",
+        "Data extraction"
+      ],
+      "audience": [
+        "In-house legal teams",
+        "Law firms"
+      ],
+      "listed_website": "https://www.harvey.ai/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/harvey"
+    },
+    {
+      "name": "Microsoft Copilot",
+      "slug": "microsoft-copilot",
+      "kind": "general_purpose",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Data extraction",
+        "Drafting and summarisation"
+      ],
+      "audience": [],
+      "listed_website": "https://copilot.microsoft.com/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/microsoft-copilot"
+    },
+    {
+      "name": "Gemini",
+      "slug": "gemini",
+      "kind": "general_purpose",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Data extraction",
+        "Drafting and summarisation"
+      ],
+      "audience": [],
+      "listed_website": "https://gemini.google.com/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/gemini"
+    },
+    {
+      "name": "Wordsmith AI",
+      "slug": "wordsmith-ai",
+      "kind": "legal_ai",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Legal research",
+        "Matter management"
+      ],
+      "audience": [
+        "In-house legal teams"
+      ],
+      "listed_website": "https://www.wordsmith.ai/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/wordsmith-ai"
+    },
+    {
+      "name": "NotebookLM",
+      "slug": "notebooklm",
+      "kind": "general_purpose",
+      "use_cases": [
+        "Data extraction",
+        "Drafting and summarisation"
+      ],
+      "audience": [],
+      "listed_website": "https://notebooklm.google.com/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/notebooklm"
+    },
+    {
+      "name": "SquarePact",
+      "slug": "squarepact",
+      "kind": "legal_ai",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Data extraction"
+      ],
+      "audience": [
+        "In-house legal teams"
+      ],
+      "listed_website": "https://squarepact.com/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/squarepact"
+    },
+    {
+      "name": "Ironclad",
+      "slug": "ironclad",
+      "kind": "legal_ai",
+      "use_cases": [
+        "Contract drafting and redlining",
+        "Data extraction"
+      ],
+      "audience": [
+        "In-house legal teams"
+      ],
+      "listed_website": "https://ironcladapp.com/",
+      "source_profile": "https://www.legalbenchmarks.ai/vendors/ironclad"
+    }
+  ]
+}
