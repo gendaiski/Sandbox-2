@@ -1,0 +1,17 @@
+{
+  "notice": "Source fingerprints for the private user-supplied captures; captured HTML is not distributed in this public preview.",
+  "sources": {
+    "directory": {
+      "source_url": "https://www.legalbenchmarks.ai/directory",
+      "sha256": "0fccee2c643014488ddf0a2a40b3015f9d484515c17e27c9b1acffb173ae518c",
+      "bytes": 557984,
+      "received_date": "2026-10-24"
+    },
+    "methodology": {
+      "source_url": "https://www.legalbenchmarks.ai/methodology",
+      "sha256": "30495743c686f8d963adb6f837653c539bcba81fbf4f049fb412737d2eb4b06f",
+      "bytes": 260350,
+      "received_date": "2026-10-24"
+    }
+  }
+}
