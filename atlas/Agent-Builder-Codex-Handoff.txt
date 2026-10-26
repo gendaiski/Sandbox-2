@@ -1,0 +1,350 @@
+CONTINUE MY AGENT BUILDER WORK
+
+I want to continue the Agent Builder work in this new Codex chat. Start from the existing sources and version history. Do not rebuild a version from scratch or treat this index as installed application code.
+
+Open the standalone version system: https://gendaiski.github.io/Sandbox-2/atlas/Agent-Builder-System.html
+Version index source: https://github.com/gendaiski/Project-Atlas/blob/codex/chat-projects-20261024/dist/Agent-Builder-System.html
+Agent Builder OS repository: https://github.com/gendaiski/Agent-Builder-OS-
+Ultimate Agent Builder repository: https://github.com/gendaiski/Ultimate-Agent-Builder
+
+INVENTORY REQUEST FOR THIS NEW CHAT
+Add Agent Builder System to this new chat’s project inventory or dashboard. Include every entry in the complete 45-record version register below, with its family, type, existing URL, source and access limits. Group related historical builds, source snapshots and recovered archives under their proper Builder family; do not count all 45 records as independently installed applications. Record this shared Agent Builder System HTML as the version register and copyable handoff. If an inventory record already exists, update it instead of creating a duplicate.
+After updating the inventory, report its link and the exact number of version records captured. Preserve the existing dashboard and all earlier inventory entries.
+
+IMMEDIATE DESIGN TASK FOR THIS NEW CHAT
+Change the homepage of the Agent Builder System tracker so its design closely matches my AI Engineering Collection homepage: https://independent-systems-directory.aelgendy673996.chatgpt.site/inspection/engineering-collection/
+Use the actual AI Engineering Collection homepage as the visual reference for the header, hero, typography, palette, spacing, category presentation and responsive layout. Inspect its real desktop and mobile screens first. The saved collection intake and source URL are also recorded at https://github.com/gendaiski/Project-Atlas/blob/codex/chat-projects-20261024/SYSTEMS-ENGINEERING-INTAKE.md if the site is unavailable.
+In my wording I called this the Agent Builder System tracker. The current public page title is Agent Builder System and does not visibly use the word Tracker. Keep the product name Agent Builder System; if you find a Tracker label in another version, update that label as part of the homepage work. Do not invent a Tracker page.
+Edit the existing Project Atlas inputs builder-system-template.html and builder_library.py, then rebuild with python3 build.py. Preserve all 45 version records, their exact source and access labels, timelines, filters, both cards and table views, Agent Foundry context, the plain-text handoff, Copy button and TXT export. Do not change the underlying Agent Builder or Ultimate apps for this design request. Verify desktop and mobile, publish the public GitHub Pages copy, and give me the working link and evidence. If the visual reference cannot be accessed or reconstructed from saved evidence, identify the exact gap before claiming a match.
+
+Read first:
+1. Agent-Builder-OS-/AGENTS.md, CATALOG.md and agent-builder/README.md on master. They distinguish Version A, Agent Builder (ours), and AgentOS Studio as separate products.
+2. Ultimate-Agent-Builder/README.md and docs/CURRENT-DECISIONS.md, docs/HANDOFF.txt, docs/PROPOSED-ACTION-PLAN.txt, and conversation/LATEST-USER-REQUIREMENTS.txt. Check the current working branch and release before changing anything; main and historical deployments may lag the latest release.
+3. The Project Atlas evidence register: https://github.com/gendaiski/Project-Atlas/blob/codex/chat-projects-20261024/evidence/agent-builder-versions-source.md and https://github.com/gendaiski/Project-Atlas/blob/codex/chat-projects-20261024/evidence/ultimate-release-history.json
+
+What these records mean:
+- 45 source-linked records across two families; these include historical artifacts, source snapshots, live editions, recovered archives, a launch redirect and reference-only pages.
+- Agent Builder has numbered builds 01–17. Build 14 and Version 16 are byte-identical and share one Claude artifact. The current Agent Builder page is a separate artifact.
+- Ultimate 5.11 Guided and Advanced are two views of the same release. Releases 1.0–3.0 are recovered ZIPs; source snapshots are not separately deployed apps.
+- Agent Foundry is included in the Ultimate family: the legacy 4.0 hosted workspace uses the Agent Foundry address, and the later source releases live under source/agent-foundry. It is not a missing third family.
+- Claude artifacts and some GitHub sources may require my signed-in account. Do not claim an address is publicly accessible or an app fully functional based only on this index.
+- Keep Version A, Agent Builder (ours), AgentOS Studio, and Ultimate distinct. Do not merge or alter them without my specific request.
+
+Your next task: inspect the existing code and version evidence, report which Builder edition is current and which historical editions are usable, then continue from the relevant source for the work I request next. Preserve existing builds and data. When the intended family or feature is genuinely unclear, show the short choices and ask only that question. For any change, verify the real interface and workflow, state what remains unverified, and provide the resulting source and preview links.
+
+COMPLETE VERSION REGISTER (existing URL, source, and access context)
+
+01. Agent Builder OS · Version A / launch address
+Family: Agent Builder OS | Type: Launch redirect
+Purpose/change: Existing address forwards to the Version A Claude artifact; it is not another independent native deployment.
+Existing URL: https://agent-builder-os.vercel.app/
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/site/vercel.json
+Access/limits: Repository site/vercel.json confirms this redirect. Claude access and account requirements apply.
+
+02. Agent Builder · current published page
+Family: Agent Builder OS | Type: Current artifact
+Purpose/change: Current live page (artifact version 1791199406-d7f5): version 17 plus later changes made outside this repo, including build 15's agent files.
+Existing URL: https://claude.ai/artifact/9gE4aYrkD7oGbwTwPUg1F6
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/agent-builder/index.html
+Access/limits: Original private Claude artifact; sign-in may be required. Claude model capabilities require the original host and viewer account.
+
+03. Agent Builder · Version 17
+Family: Agent Builder OS | Type: Historical artifact
+Purpose/change: Published version 17: the stage fix described below.
+Existing URL: https://claude.ai/artifact/EnM5erszGV9FBFKAUF8VUs
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/agent-builder/versions/v17-stage-fix.html
+Access/limits: Original private Claude artifact; sign-in may be required. Claude model capabilities require the original host and viewer account.
+
+04. Agent Builder · Version 16
+Family: Agent Builder OS | Type: Historical artifact
+Purpose/change: Published artifact version 16, byte-identical to build 14.
+Existing URL: https://claude.ai/artifact/PSeNnnCTUYLNZDe3b1WhiJ
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/agent-builder/versions/v16-before-stage-fix.html
+Access/limits: Original private Claude artifact; sign-in may be required. Build 14 and Version 16 are byte-identical and share this artifact.
+
+05. Agent Builder · Build 15
+Family: Agent Builder OS | Type: Historical artifact
+Purpose/change: Agent files and a grouped Library menu
+Existing URL: https://claude.ai/artifact/7KUxsJd4kaHXgu9zVwQAzt
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/agent-builder/versions/build-15-agent-files-library-menu.html
+Access/limits: Original private Claude artifact; sign-in may be required. Claude model capabilities require the original host and viewer account.
+
+06. Agent Builder · Build 14
+Family: Agent Builder OS | Type: Historical artifact
+Purpose/change: Documentation and a refined header menu (identical to published version 16)
+Existing URL: https://claude.ai/artifact/PSeNnnCTUYLNZDe3b1WhiJ
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/agent-builder/versions/build-14-documentation-header-menu.html
+Access/limits: Original private Claude artifact; sign-in may be required. Build 14 and Version 16 are byte-identical and share this artifact.
+
+07. Agent Builder · Build 13
+Family: Agent Builder OS | Type: Historical artifact
+Purpose/change: Studio, teams of agents, new home page
+Existing URL: https://claude.ai/artifact/RUq5qN4HRX9dkFuuQcr7Pd
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/agent-builder/versions/build-13-studio-teams-new-home.html
+Access/limits: Original private Claude artifact; sign-in may be required. Claude model capabilities require the original host and viewer account.
+
+08. Agent Builder · Build 12
+Family: Agent Builder OS | Type: Historical artifact
+Purpose/change: Storage: database types, storage plan, deploy kit
+Existing URL: https://claude.ai/artifact/96H1i6ttqTRZhqvPXozKRg
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/agent-builder/versions/build-12-storage-and-deploy-kit.html
+Access/limits: Original private Claude artifact; sign-in may be required. Claude model capabilities require the original host and viewer account.
+
+09. Agent Builder · Build 11
+Family: Agent Builder OS | Type: Historical artifact
+Purpose/change: Renamed to Agent Builder; memory readiness check
+Existing URL: https://claude.ai/artifact/ChfEZkJwpZ7gMdGpxsTekj
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/agent-builder/versions/build-11-renamed-agent-builder-memory-check.html
+Access/limits: Original private Claude artifact; sign-in may be required. Claude model capabilities require the original host and viewer account.
+
+10. Agent Builder · Build 10
+Family: Agent Builder OS | Type: Historical artifact
+Purpose/change: Obsidian-style graph view
+Existing URL: https://claude.ai/artifact/RSjC2jJDdDVuoHSzJNKW4g
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/agent-builder/versions/build-10-graph-view.html
+Access/limits: Original private Claude artifact; sign-in may be required. Claude model capabilities require the original host and viewer account.
+
+11. Agent Builder · Build 09
+Family: Agent Builder OS | Type: Historical artifact
+Purpose/change: Guided setup and step guides
+Existing URL: https://claude.ai/artifact/5m3gVysVwLxZEVQLVmmwFB
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/agent-builder/versions/build-09-guided-setup-step-guides.html
+Access/limits: Original private Claude artifact; sign-in may be required. Claude model capabilities require the original host and viewer account.
+
+12. Agent Builder · Build 08
+Family: Agent Builder OS | Type: Historical artifact
+Purpose/change: Website layout with an organised library
+Existing URL: https://claude.ai/artifact/J4e6zpPneELKYRGcNDdvqV
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/agent-builder/versions/build-08-website-organised-library.html
+Access/limits: Original private Claude artifact; sign-in may be required. Claude model capabilities require the original host and viewer account.
+
+13. Agent Builder · Build 07
+Family: Agent Builder OS | Type: Historical artifact
+Purpose/change: LinkedIn and Instagram skills
+Existing URL: https://claude.ai/artifact/F2kKKGiVenz343WiifRFnS
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/agent-builder/versions/build-07-linkedin-instagram-skills.html
+Access/limits: Original private Claude artifact; sign-in may be required. Claude model capabilities require the original host and viewer account.
+
+14. Agent Builder · Build 06
+Family: Agent Builder OS | Type: Historical artifact
+Purpose/change: Memory step and AI provider choice
+Existing URL: https://claude.ai/artifact/AyZJDZeWJnTvLgMJRdhj6U
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/agent-builder/versions/build-06-memory-step-provider-choice.html
+Access/limits: Original private Claude artifact; sign-in may be required. Claude model capabilities require the original host and viewer account.
+
+15. Agent Builder · Build 05
+Family: Agent Builder OS | Type: Historical artifact
+Purpose/change: Advisor chat
+Existing URL: https://claude.ai/artifact/SKvPHfEtiVaywxtWEYWzNv
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/agent-builder/versions/build-05-advisor-chat.html
+Access/limits: Original private Claude artifact; sign-in may be required. Claude model capabilities require the original host and viewer account.
+
+16. Agent Builder · Build 04
+Family: Agent Builder OS | Type: Historical artifact
+Purpose/change: Automation blueprints in the library
+Existing URL: https://claude.ai/artifact/P49NkypZGWGxFQCNNg7fGH
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/agent-builder/versions/build-04-automation-blueprints.html
+Access/limits: Original private Claude artifact; sign-in may be required. Claude model capabilities require the original host and viewer account.
+
+17. Agent Builder · Build 03
+Family: Agent Builder OS | Type: Historical artifact
+Purpose/change: Full app: home, library, my agents
+Existing URL: https://claude.ai/artifact/MyUYDxrGUJytC92Mnn1Z37
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/agent-builder/versions/build-03-full-app-home-library-my-agents.html
+Access/limits: Original private Claude artifact; sign-in may be required. Claude model capabilities require the original host and viewer account.
+
+18. Agent Builder · Build 02
+Family: Agent Builder OS | Type: Historical artifact
+Purpose/change: Search step with 27 RAG techniques
+Existing URL: https://claude.ai/artifact/NijmEkPueX6CP5Tz2okbEU
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/agent-builder/versions/build-02-search-step-27-rag.html
+Access/limits: Original private Claude artifact; sign-in may be required. Claude model capabilities require the original host and viewer account.
+
+19. Agent Builder · Build 01
+Family: Agent Builder OS | Type: Historical artifact
+Purpose/change: Agent Patterns Builder: a guided page to design, test and export an agent
+Existing URL: https://claude.ai/artifact/Dengu3KKh35rdYoohpBYvj
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/agent-builder/versions/build-01-first-guided-builder.html
+Access/limits: Original private Claude artifact; sign-in may be required. Claude model capabilities require the original host and viewer account.
+
+20. Agent Builder OS
+Family: Agent Builder OS | Type: Current artifact
+Purpose/change: Agent Builder OS dashboard (current)
+Existing URL: https://claude.ai/artifact/Na6ua6m1T95GoHFANDdaV7
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/CATALOG.md
+Access/limits: Original Claude application. Source and runtime requirements are described in the repository catalogue.
+
+21. AgentOS Studio
+Family: Agent Builder OS | Type: Current artifact
+Purpose/change: 
+Existing URL: https://claude.ai/artifact/M2y56y1cnPoZfhBgpU2NVj
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/CATALOG.md
+Access/limits: Original Claude application. Source and runtime requirements are described in the repository catalogue.
+
+22. Presentation · Version A and Agent Builder
+Family: Agent Builder OS | Type: Reference only
+Purpose/change: A slide deck about the apps, not an executable Builder version. No source saved.
+Existing URL: https://claude.ai/artifact/Gn3cWBRFLxfbkfTTGMknNz
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/CATALOG.md
+Access/limits: A slide deck about the apps, not an executable Builder version. No source saved.
+
+23. Broken duplicate · Version A
+Family: Agent Builder OS | Type: Reference only
+Purpose/change: Repository CATALOG marks this a broken duplicate with no saved source.
+Existing URL: https://claude.ai/artifact/W9DQ42Se1VLJxcZur5ndny
+Source: https://github.com/gendaiski/Agent-Builder-OS-/blob/master/CATALOG.md
+Access/limits: Repository CATALOG marks this a broken duplicate with no saved source.
+
+24. Ultimate · 5.11 Advanced builder
+Family: Ultimate Agent Builder | Type: Live edition
+Purpose/change: Full workspace for cases, architecture, teams, graphs, loops and coding controls.
+Existing URL: https://ultimate-agent-builder-live.vercel.app/
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/codex/ultimate-design-v3/source/agent-foundry/src/versions.html
+Access/limits: HTTP 200 and page title checked 20 October 2026. Live release.json reports 5.11-native-engineering. Live model and terminal execution require a connected runtime and account. Existing deployment only; no restricted source republished.
+
+25. Ultimate · 5.11 Guided creator
+Family: Ultimate Agent Builder | Type: Live edition
+Purpose/change: Six-step creator. Guided and Advanced are views of the same current release and share a project.
+Existing URL: https://ultimate-agent-builder-live.vercel.app/create/
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/codex/ultimate-design-v3/source/agent-foundry/src/versions.html
+Access/limits: HTTP 200 and page title checked 20 October 2026. Live release.json reports 5.11-native-engineering. Live model and terminal execution require a connected runtime and account. Existing deployment only; no restricted source republished.
+
+26. Ultimate · Classic v2 guide
+Family: Ultimate Agent Builder | Type: Live edition
+Purpose/change: Preserved v2 guided route through cases, agent choices and workspace review.
+Existing URL: https://ultimate-agent-builder-live.vercel.app/guide/
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/codex/ultimate-design-v3/source/agent-foundry/src/versions.html
+Access/limits: HTTP 200 and page title checked 20 October 2026. Live release.json reports 5.11-native-engineering. Live model and terminal execution require a connected runtime and account. Existing deployment only; no restricted source republished.
+
+27. Ultimate · Original pre-v2 / 36 patterns
+Family: Ultimate Agent Builder | Type: Live edition
+Purpose/change: The preserved first studio is available as an existing live page, alongside its archived HTML.
+Existing URL: https://ultimate-agent-builder-live.vercel.app/editions/pre-v2/studio.html
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/codex/ultimate-design-v3/source/agent-foundry/src/versions.html
+Access/limits: HTTP 200 and page title checked 20 October 2026. Live release.json reports 5.11-native-engineering. Live model and terminal execution require a connected runtime and account. Existing deployment only; no restricted source republished.
+
+28. Ultimate · legacy 4.0 workspace
+Family: Ultimate Agent Builder | Type: Historical deployment
+Purpose/change: Earlier Agent Foundry deployment captured by the 4.0 handoff. It is not the latest 5.11 application.
+Existing URL: https://agent-foundry.aelgendy673996.chatgpt.site/
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/main/docs/HANDOFF.txt
+Access/limits: Kept for historical comparison. The newer Vercel editions are listed separately.
+
+29. Ultimate · original v2 test deployment
+Family: Ultimate Agent Builder | Type: Historical deployment
+Purpose/change: Separate original v2 test address and its supplied archive.
+Existing URL: https://ultimate-agent-builder-v2-test.aelgendy673996.chatgpt.site/
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/main/original-handoffs/Ultimate-Agent-Builder-v2-for-Graph-Cities.zip
+Access/limits: Historical deployment, distinct from the preserved Classic guide in the current application.
+
+30. Ultimate · 5.11-native-engineering
+Family: Ultimate Agent Builder | Type: Source snapshot
+Purpose/change: Add native engineering workflow and release backend
+Existing URL: https://github.com/gendaiski/Ultimate-Agent-Builder/tree/49a9e8ec9efd74e0ff95c6917febd710525e4cd8/source/agent-foundry
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/49a9e8ec9efd74e0ff95c6917febd710525e4cd8/source/agent-foundry/scripts/build.mjs
+Access/limits: Versioned source at the first commit declaring this release, not a separately verified hosted app. Private GitHub access required; upstream licence restrictions remain. Commit 49a9e8ec9efd74e0ff95c6917febd710525e4cd8
+
+31. Ultimate · 5.10-native-coding-continuity
+Family: Ultimate Agent Builder | Type: Source snapshot
+Purpose/change: Add private project context search to coding handoffs
+Existing URL: https://github.com/gendaiski/Ultimate-Agent-Builder/tree/bb24177daef2e17a906211407e3b9e040009da59/source/agent-foundry
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/bb24177daef2e17a906211407e3b9e040009da59/source/agent-foundry/scripts/build.mjs
+Access/limits: Versioned source at the first commit declaring this release, not a separately verified hosted app. Private GitHub access required; upstream licence restrictions remain. Commit bb24177daef2e17a906211407e3b9e040009da59
+
+32. Ultimate · 5.9-upstream-loop-runtime
+Family: Ultimate Agent Builder | Type: Source snapshot
+Purpose/change: Integrate upstream Loop Engineering CLI with reviewed project runtime
+Existing URL: https://github.com/gendaiski/Ultimate-Agent-Builder/tree/09364daa6c74e380b920a248649bb0367b7def6d/source/agent-foundry
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/09364daa6c74e380b920a248649bb0367b7def6d/source/agent-foundry/scripts/build.mjs
+Access/limits: Versioned source at the first commit declaring this release, not a separately verified hosted app. Private GitHub access required; upstream licence restrictions remain. Commit 09364daa6c74e380b920a248649bb0367b7def6d
+
+33. Ultimate · 5.8-loop-navigation-preview
+Family: Ultimate Agent Builder | Type: Source snapshot
+Purpose/change: Prioritize project instructions and surface Loop Lab with honest integration status
+Existing URL: https://github.com/gendaiski/Ultimate-Agent-Builder/tree/d886962206e2fac21b91bbea623dd8bfe045125a/source/agent-foundry
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/d886962206e2fac21b91bbea623dd8bfe045125a/source/agent-foundry/scripts/build.mjs
+Access/limits: Versioned source at the first commit declaring this release, not a separately verified hosted app. Private GitHub access required; upstream licence restrictions remain. Commit d886962206e2fac21b91bbea623dd8bfe045125a
+
+34. Ultimate · 5.7-tool-instructions-preview
+Family: Ultimate Agent Builder | Type: Source snapshot
+Purpose/change: Generate project instructions for coding editors and Framer handoff
+Existing URL: https://github.com/gendaiski/Ultimate-Agent-Builder/tree/81f8bb62a093722cc7b8c4a9ed3cca737e4327ef/source/agent-foundry
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/81f8bb62a093722cc7b8c4a9ed3cca737e4327ef/source/agent-foundry/scripts/build.mjs
+Access/limits: Versioned source at the first commit declaring this release, not a separately verified hosted app. Private GitHub access required; upstream licence restrictions remain. Commit 81f8bb62a093722cc7b8c4a9ed3cca737e4327ef
+
+35. Ultimate · 5.6-invited-group-preview
+Family: Ultimate Agent Builder | Type: Source snapshot
+Purpose/change: Add invited group exchange and criterion-based CrewAI review
+Existing URL: https://github.com/gendaiski/Ultimate-Agent-Builder/tree/1e765a923aa9dae1428cc2ade72a2658b2c13773/source/agent-foundry
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/1e765a923aa9dae1428cc2ade72a2658b2c13773/source/agent-foundry/scripts/build.mjs
+Access/limits: Versioned source at the first commit declaring this release, not a separately verified hosted app. Private GitHub access required; upstream licence restrictions remain. Commit 1e765a923aa9dae1428cc2ade72a2658b2c13773
+
+36. Ultimate · 5.5-reviewed-team-result-preview
+Family: Ultimate Agent Builder | Type: Source snapshot
+Purpose/change: Persist reviewed CrewAI results in the project
+Existing URL: https://github.com/gendaiski/Ultimate-Agent-Builder/tree/81bf97193da7a2e1d9bbd7d6ab022f42c515767b/source/agent-foundry
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/81bf97193da7a2e1d9bbd7d6ab022f42c515767b/source/agent-foundry/scripts/build.mjs
+Access/limits: Versioned source at the first commit declaring this release, not a separately verified hosted app. Private GitHub access required; upstream licence restrictions remain. Commit 81bf97193da7a2e1d9bbd7d6ab022f42c515767b
+
+37. Ultimate · 5.4-reviewed-team-run-preview
+Family: Ultimate Agent Builder | Type: Source snapshot
+Purpose/change: Add reviewed CrewAI team execution and reproducible runtime package
+Existing URL: https://github.com/gendaiski/Ultimate-Agent-Builder/tree/eb2c9b4af7f80d7c653fce05506d1dd1ac7c2dba/source/agent-foundry
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/eb2c9b4af7f80d7c653fce05506d1dd1ac7c2dba/source/agent-foundry/scripts/build.mjs
+Access/limits: Versioned source at the first commit declaring this release, not a separately verified hosted app. Private GitHub access required; upstream licence restrictions remain. Commit eb2c9b4af7f80d7c653fce05506d1dd1ac7c2dba
+
+38. Ultimate · 5.3-reviewed-role-run-preview
+Family: Ultimate Agent Builder | Type: Source snapshot
+Purpose/change: Add reviewed role execution and durable runtime evidence
+Existing URL: https://github.com/gendaiski/Ultimate-Agent-Builder/tree/54611dce28d3ff267f0f082cbf8bbd9fe3889f61/source/agent-foundry
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/54611dce28d3ff267f0f082cbf8bbd9fe3889f61/source/agent-foundry/scripts/build.mjs
+Access/limits: Versioned source at the first commit declaring this release, not a separately verified hosted app. Private GitHub access required; upstream licence restrictions remain. Commit 54611dce28d3ff267f0f082cbf8bbd9fe3889f61
+
+39. Ultimate · 5.2-native-graph-preview
+Family: Ultimate Agent Builder | Type: Source snapshot
+Purpose/change: Build native graph sessions and live project process controls
+Existing URL: https://github.com/gendaiski/Ultimate-Agent-Builder/tree/997cb762c0e674aa9f139f5fb80446104345ff2e/source/agent-foundry
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/997cb762c0e674aa9f139f5fb80446104345ff2e/source/agent-foundry/scripts/build.mjs
+Access/limits: Versioned source at the first commit declaring this release, not a separately verified hosted app. Private GitHub access required; upstream licence restrictions remain. Commit 997cb762c0e674aa9f139f5fb80446104345ff2e
+
+40. Ultimate · 5.1-local-graph-preview
+Family: Ultimate Agent Builder | Type: Source snapshot
+Purpose/change: Add durable local project graph to guided Builder
+Existing URL: https://github.com/gendaiski/Ultimate-Agent-Builder/tree/5b7b5acaaa267ce939401d9f35d3262492542117/source/agent-foundry
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/5b7b5acaaa267ce939401d9f35d3262492542117/source/agent-foundry/scripts/build.mjs
+Access/limits: Versioned source at the first commit declaring this release, not a separately verified hosted app. Private GitHub access required; upstream licence restrictions remain. Commit 5b7b5acaaa267ce939401d9f35d3262492542117
+
+41. Ultimate · 5.0-guided-preview
+Family: Ultimate Agent Builder | Type: Source snapshot
+Purpose/change: Build guided ultimate agent workspace with case-aware graph and loops
+Existing URL: https://github.com/gendaiski/Ultimate-Agent-Builder/tree/ed5df5a75f54c5c9b711741affdb5628535ec568/source/agent-foundry
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/ed5df5a75f54c5c9b711741affdb5628535ec568/source/agent-foundry/scripts/build.mjs
+Access/limits: Versioned source at the first commit declaring this release, not a separately verified hosted app. Private GitHub access required; upstream licence restrictions remain. Commit ed5df5a75f54c5c9b711741affdb5628535ec568
+
+42. Ultimate · 4.0-native-process-preview
+Family: Ultimate Agent Builder | Type: Source snapshot
+Purpose/change: Import Ultimate Agent Builder release and complete Setup handoff
+Existing URL: https://github.com/gendaiski/Ultimate-Agent-Builder/tree/b0f8019dde2d0257c0fdcf23ec7f1699db59381a/source/agent-foundry
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/b0f8019dde2d0257c0fdcf23ec7f1699db59381a/source/agent-foundry/scripts/build.mjs
+Access/limits: Versioned source at the first commit declaring this release, not a separately verified hosted app. Private GitHub access required; upstream licence restrictions remain. Commit b0f8019dde2d0257c0fdcf23ec7f1699db59381a
+
+43. Ultimate · 1.0-evaluation · recovered
+Family: Ultimate Agent Builder | Type: Recovered build archive
+Purpose/change: Original 1.0-evaluation recovered from the Agent Foundry Site Git history before the GitHub handoff. Complete, unchanged application build.
+Existing URL: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/codex/recover-builder-history/recovered-releases/Ultimate-1.0-evaluation.zip?raw=true
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/codex/recover-builder-history/recovered-releases/README.md
+Access/limits: Private GitHub download, not a new live deployment. 597 files; 6.6 MiB. Every file verified against original Git blobs. Original commit a81be87378eb7824fbaa5908fdcc6becc7f799f6. Archive SHA-256 82cb56c814fc674e43b1f8cf5787814927505e2bcd4276cbee2f1122906fa43d. Existing licence restrictions remain.
+
+44. Ultimate · 2.0-engineering-preview · recovered
+Family: Ultimate Agent Builder | Type: Recovered build archive
+Purpose/change: Original 2.0-engineering-preview recovered from the Agent Foundry Site Git history before the GitHub handoff. Complete, unchanged application build.
+Existing URL: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/codex/recover-builder-history/recovered-releases/Ultimate-2.0-engineering-preview.zip?raw=true
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/codex/recover-builder-history/recovered-releases/README.md
+Access/limits: Private GitHub download, not a new live deployment. 1882 files; 70.7 MiB. Every file verified against original Git blobs. Original commit b4625c36d350b8dc6a91e356fe9d631b16a3705f. Archive SHA-256 08176b6b8d54a7747a3c2d94c1119f739d52175e9631598ad8997f60b01e1a86. Existing licence restrictions remain.
+
+45. Ultimate · 3.0-unified-process-preview · recovered
+Family: Ultimate Agent Builder | Type: Recovered build archive
+Purpose/change: Original 3.0-unified-process-preview recovered from the Agent Foundry Site Git history before the GitHub handoff. Complete, unchanged application build.
+Existing URL: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/codex/recover-builder-history/recovered-releases/Ultimate-3.0-unified-process-preview.zip?raw=true
+Source: https://github.com/gendaiski/Ultimate-Agent-Builder/blob/codex/recover-builder-history/recovered-releases/README.md
+Access/limits: Private GitHub download, not a new live deployment. 1898 files; 72.2 MiB. Every file verified against original Git blobs. Original commit 7aa5f44b23d6b8a691374a8955a846d3589c1875. Archive SHA-256 f13724a61672cd08c6bfac7ab539cd61509deca1b4e144bf4f2b02d68de691fa. Existing licence restrictions remain.
