@@ -62,6 +62,12 @@ a:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid 
 .controls input { flex: 1 1 14rem; }
 .count { font-size: 0.8rem; color: var(--muted); align-self: center; }
 footer { font-size: 0.8rem; color: var(--muted); }
+.sysgrid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
+.sys { display: grid; gap: 4px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); text-decoration: none; color: var(--ink); }
+.sys:hover { border-color: var(--accent); }
+.sys b { font-weight: 600; } .sys span { font-size: 0.82rem; color: var(--muted); } .sys em { font-style: normal; font-size: 0.82rem; color: var(--accent); }
+.diagrams { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 28rem), 1fr)); }
+pre.mermaid { margin: 0; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 14px; overflow-x: auto; text-align: center; }
 </style>
 
 <div class="wrap">
@@ -77,12 +83,45 @@ footer { font-size: 0.8rem; color: var(--muted); }
     <div class="tile"><span>Checks skipped</span><b id="t-skipped"></b></div>
   </section>
 
+  <section class="card" id="open">
+    <h2>Open a system</h2>
+    <p class="note">Each page is an interactive version of the system that runs in your browser: its features work on the sample contract, and each page has a diagram of how the real system works.</p>
+    <div class="sysgrid" id="sysgrid"></div>
+  </section>
+
+  <section class="card" id="how">
+    <h2>How the bench works</h2>
+    <div class="diagrams">
+<pre class="mermaid">
+flowchart LR
+  UP["12 upstream repos<br/>(scripts/clone_all.sh)"] --> SET["systems/NAME/setup.sh<br/>own venv, node_modules or Docker"]
+  SET --> TEST["systems/NAME/test_*.py<br/>standalone checks"]
+  TEST --> CI["GitHub Actions<br/>one job per system"]
+  CI --> REP["reports/latest.json"]
+  REP --> BENCH["bench data job<br/>systems.json, checks.json"]
+  BENCH --> PAGE["This page"]
+  SRC["interactive/pages"] --> BUILD["scripts/build_interactive.py"] --> APPS["12 interactive systems"]
+  SET --> RUN["serve.sh, start.sh, portal :8080<br/>(the real apps, in Codespaces)"]
+</pre>
+<pre class="mermaid">
+flowchart LR
+  PDF["Contract PDF"] --> PARSE["Parse<br/>OXR · PDFStract · Chunky"]
+  PARSE --> CHUNK["Chunk<br/>ChunkNorris · ChunckerFlow ·<br/>Chunking Methods"]
+  CHUNK --> INDEX["Index and graph<br/>RAG-Anything"]
+  INDEX --> FLOW["Orchestrate agents<br/>Flowise · OpenFlow"]
+  FLOW --> OBS["Observe and evaluate<br/>Langfuse"]
+  FLOW --> UI["Interface<br/>Prism UI"]
+  UI --> SHIP["Ship as a desktop app<br/>Pake"]
+</pre>
+    </div>
+  </section>
+
   <section class="card" id="systems">
     <h2>Systems</h2>
-    <p class="note">One CI job per system on GitHub's runners. Each row links to its report page, its test code, its CI job, the upstream project and, for Prism UI, the live demo.</p>
+    <p class="note">One CI job per system on GitHub's runners. Each row links to the interactive system, its test code, its CI job and the upstream project.</p>
     <div class="scroll">
       <table>
-        <thead><tr><th>System</th><th>Kind</th><th>Status</th><th class="num">Passed</th><th class="num">Failed</th><th class="num">Skipped</th><th>Report</th><th>Test code</th><th>CI</th><th>Upstream</th><th>Demo</th><th>Finding</th></tr></thead>
+        <thead><tr><th>System</th><th>Kind</th><th>Status</th><th class="num">Passed</th><th class="num">Failed</th><th class="num">Skipped</th><th>System page</th><th>Test code</th><th>CI</th><th>Upstream</th><th>Demo</th><th>Finding</th></tr></thead>
         <tbody id="systems-body"></tbody>
       </table>
     </div>
@@ -131,8 +170,10 @@ const BENCH = /*BENCH_DATA*/null;
 
   const failing = systems.filter((s) => s.failed > 0).map((s) => s.system);
   document.getElementById('lede').textContent = failing.length
-    ? `Eight systems, each tested on its own in a separate CI job. Failing now: ${failing.join(', ')}. Everything else passes.`
-    : 'Eight systems, each tested on its own in a separate CI job, and every job passes.';
+    ? `${BENCH.pages.length} systems, each tested on its own in a separate CI job and each open to use below. Failing now: ${failing.join(', ')}. Everything else passes.`
+    : `${BENCH.pages.length} systems, each tested on its own in a separate CI job and each open to use below. Every job passes.`;
+  document.getElementById('sysgrid').replaceChildren(...BENCH.pages.map((p) => el('a', { className: 'sys', href: p.url, target: '_blank', rel: 'noopener' },
+    el('b', { textContent: p.name }), el('span', { textContent: p.what }), el('em', { textContent: 'Open the system →' }))));
 
   const sysBody = document.getElementById('systems-body');
   for (const s of systems) {
@@ -143,7 +184,7 @@ const BENCH = /*BENCH_DATA*/null;
       el('td', { className: 'num', textContent: n(s.passed) }),
       el('td', { className: 'num', textContent: n(s.failed) }),
       el('td', { className: 'num', textContent: n(s.skipped) }),
-      el('td', {}, link(s.report_url ? 'Report' : '', s.report_url)),
+      el('td', {}, link(s.report_url ? 'Open' : '', s.report_url)),
       el('td', { className: 'mono' }, link(s.code, s.code_url)),
       el('td', {}, link(s.ci_label, s.ci_url)),
       el('td', { className: 'mono' }, link(s.upstream, s.upstream_url)),
