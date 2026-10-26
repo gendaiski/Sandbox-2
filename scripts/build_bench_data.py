@@ -72,6 +72,30 @@ SYSTEMS = {
         code="systems/langfuse", variant="self-hosted",
         finding="No issues found; ran against a real self-hosted server.",
     ),
+    "report-chunking-methods": dict(
+        job_name="chunking-methods",
+        system="Chunking Methods for RAG", kind="Chunking", upstream="itsual/Chunking-Methods-for-RAG",
+        code="systems/chunking-methods",
+        finding="Upstream is a guide without code; all 20 methods implemented here and tested.",
+    ),
+    "report-chunky": dict(
+        job_name="chunky",
+        system="Chunky", kind="Chunking workbench", upstream="GiovanniPasq/chunky",
+        code="systems/chunky",
+        finding="No issues found; tested through its own backend.",
+    ),
+    "report-pake": dict(
+        job_name="pake (real build)",
+        system="Pake", kind="Desktop packaging", upstream="tw93/Pake",
+        code="systems/pake",
+        finding="No issues found; builds a 4.8 MB Linux app from the sample page.",
+    ),
+    "report-flowise": dict(
+        job_name="flowise",
+        system="Flowise", kind="Agent builder", upstream="FlowiseAI/Flowise",
+        code="systems/flowise",
+        finding="",
+    ),
 }
 
 

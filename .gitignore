@@ -15,3 +15,5 @@ __pycache__/
 # start.sh state and the Workbench data
 .run/
 systems/rag-anything/data/
+systems/*/.node/
+bench/interactive/*.tmp

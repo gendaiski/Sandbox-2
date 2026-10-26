@@ -15,6 +15,10 @@ declare -A REPOS=(
   [chunknorris]="wikit-ai/chunknorris"
   [openflow]="philbotar/OpenFlow"
   [langfuse]="langfuse/langfuse"
+  [chunking-methods]="itsual/Chunking-Methods-for-RAG"
+  [chunky]="GiovanniPasq/chunky"
+  [pake]="tw93/Pake"
+  [flowise]="FlowiseAI/Flowise"
 )
 
 names=("$@")

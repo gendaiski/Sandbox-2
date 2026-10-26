@@ -5,7 +5,7 @@
 #   ./run.sh list
 set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SYSTEMS=(chunknorris chunckerflow pdfstract oxr rag-anything openflow prism-ui langfuse)
+SYSTEMS=(chunknorris chunckerflow pdfstract oxr rag-anything openflow prism-ui langfuse chunking-methods chunky pake flowise)
 
 script_for() { echo "$ROOT/systems/$1/test_${1//-/_}.py"; }
 
