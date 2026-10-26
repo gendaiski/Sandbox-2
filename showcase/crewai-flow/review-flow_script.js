@@ -2278,8 +2278,7 @@ class NetworkManager {
   setupExportControls() {
     document.getElementById("export-png").addEventListener("click", () => {
       const script = document.createElement("script");
-      script.src =
-        "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+      script.src = "vendor/html2canvas.min.js";
       script.onload = () => {
         html2canvas(document.getElementById("network-container")).then(
           (canvas) => {
@@ -2290,17 +2289,16 @@ class NetworkManager {
           },
         );
       };
+      script.onerror = () => alert("PNG export could not load its local library.");
       document.head.appendChild(script);
     });
 
     document.getElementById("export-pdf").addEventListener("click", () => {
       const script1 = document.createElement("script");
-      script1.src =
-        "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+      script1.src = "vendor/html2canvas.min.js";
       script1.onload = () => {
         const script2 = document.createElement("script");
-        script2.src =
-          "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+        script2.src = "vendor/jspdf.umd.min.js";
         script2.onload = () => {
           html2canvas(document.getElementById("network-container")).then(
             (canvas) => {
@@ -2317,8 +2315,10 @@ class NetworkManager {
             },
           );
         };
+        script2.onerror = () => alert("PDF export could not load its local library.");
         document.head.appendChild(script2);
       };
+      script1.onerror = () => alert("PDF export could not load its local library.");
       document.head.appendChild(script1);
     });
 
