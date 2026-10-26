@@ -114,14 +114,49 @@ with h.check("chatflow CRUD with the API key") as c:
     c.expect(api.delete(f"/chatflows/{fid}").status_code == 200, "delete")
     c.expect(api.get(f"/chatflows/{fid}").status_code == 404, "gone after delete")
 
+# Types the UI keeps as parameters; any other input type is an anchor fed by another node.
+PARAM_TYPES = {"asyncOptions", "asyncMultiOptions", "options", "multiOptions", "array", "datagrid", "string", "number",
+               "boolean", "password", "json", "code", "date", "file", "folder", "tabs", "conditionFunction",
+               "timePicker", "weekDaysPicker", "monthDaysPicker", "datePicker"}
+
+
+def init_node(definition, node_id, inputs, **extra):
+    """Node data the way the UI's initNode saves it: the server reads inputParams when it builds a flow."""
+    params, anchors = [], []
+    for i in definition.get("inputs", []):
+        (params if i["type"] in PARAM_TYPES else anchors).append({**i, "id": f"{node_id}-input-{i['name']}-{i['type']}"})
+    if isinstance(definition.get("credential"), dict):
+        cred = definition["credential"]
+        params.insert(0, {**cred, "id": f"{node_id}-input-{cred['name']}-{cred['type']}"})
+    return {**definition, "id": node_id, "inputParams": params, "inputAnchors": anchors,
+            "outputAnchors": output_anchors(definition, node_id), "inputs": inputs, **extra}
+
+
+def output_anchors(definition, node_id):
+    """The UI's createStandardOutputs: one anchor, or an options anchor when the node has several outputs."""
+    if definition.get("hideOutput"):
+        return []
+    outs = definition.get("outputs") or []
+    if outs:
+        def option(o):
+            bc = o.get("baseClasses") or []
+            return {"id": f"{node_id}-output-{o['name']}-{'|'.join(bc)}", "name": o["name"], "label": o.get("label"),
+                    "description": o.get("description", ""), "type": " | ".join(bc), "isAnchor": o.get("isAnchor"), "hidden": o.get("hidden")}
+        return [{"name": "output", "label": "Output", "type": "options", "description": outs[0].get("description", ""),
+                 "options": [option(o) for o in outs], "default": outs[0]["name"]}]
+    bc = definition.get("baseClasses", [])
+    return [{"id": f"{node_id}-output-{definition['name']}-{'|'.join(bc)}", "name": definition["name"],
+             "label": definition.get("type"), "description": definition.get("description", ""), "type": " | ".join(bc)}]
+
+
 with h.check("prediction through a flow (Custom JS Function as ending node)") as c:
     need_key(c)
     state.get("custom_fn") or c.skip("node definition missing")
     nid = "customFunction_0"
-    data = {**state["custom_fn"], "id": nid,
-            "inputs": {"functionInputVariables": "", "functionName": "shout", "tools": "",
-                       "javascriptFunction": 'const words = $input.split(/\\s+/).length;\nreturn `Clause search for "${$input}" (${words} words)`;'},
-            "outputs": {"output": "EndingNode"}}
+    data = init_node(state["custom_fn"], nid,
+                     {"functionInputVariables": "", "functionName": "shout", "tools": "",
+                      "javascriptFunction": 'const words = $input.split(/\\s+/).length;\nreturn `Clause search for "${$input}" (${words} words)`;'},
+                     outputs={"output": "EndingNode"})
     flow = {"nodes": [{"id": nid, "type": "customNode", "position": {"x": 0, "y": 0}, "data": data}], "edges": []}
     r = api.post("/chatflows", json={"name": "harness-function", "flowData": json.dumps(flow), "type": "CHATFLOW"})
     c.expect(r.status_code == 200, f"create HTTP {r.status_code}: {r.text[:200]}")
@@ -172,10 +207,11 @@ with h.check("LLM chain with ChatAnthropic (live)") as c:
     c.expect(cred.status_code == 200, f"credential HTTP {cred.status_code}: {cred.text[:200]}")
     model, prompt, chain = (ui.get(f"/nodes/{n}").json() for n in ("chatAnthropic", "promptTemplate", "llmChain"))
     nodes = [
-        {"id": "chatAnthropic_0", "data": {**model, "id": "chatAnthropic_0", "credential": cred.json()["id"],
-                                           "inputs": {"modelName": "claude-haiku-4-5", "temperature": 0, "maxTokensToSample": 200}}},
-        {"id": "promptTemplate_0", "data": {**prompt, "id": "promptTemplate_0", "inputs": {"template": "Answer in one sentence: {question}", "promptValues": ""}}},
-        {"id": "llmChain_0", "data": {**chain, "id": "llmChain_0", "inputs": {"model": "{{chatAnthropic_0.data.instance}}", "prompt": "{{promptTemplate_0.data.instance}}"}, "outputs": {"output": "llmChain"}}},
+        {"id": "chatAnthropic_0", "data": init_node(model, "chatAnthropic_0", {"modelName": "claude-haiku-4-5", "temperature": 0, "maxTokensToSample": 200},
+                                                    credential=cred.json()["id"])},
+        {"id": "promptTemplate_0", "data": init_node(prompt, "promptTemplate_0", {"template": "Answer in one sentence: {question}", "promptValues": ""})},
+        {"id": "llmChain_0", "data": init_node(chain, "llmChain_0", {"model": "{{chatAnthropic_0.data.instance}}", "prompt": "{{promptTemplate_0.data.instance}}"},
+                                               outputs={"output": "llmChain"})},
     ]
     for n in nodes:
         n.update(type="customNode", position={"x": 0, "y": 0})
