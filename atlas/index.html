@@ -1664,6 +1664,17 @@ input[type="checkbox"]:focus-visible{
       "backend": "Varies by component",
       "scope": "Current conversation",
       "evidence": "2026-10-24 repository and local README inspection"
+    },
+    {
+      "key": "github:https://github.com/crewAIInc/crewAI",
+      "name": "CrewAI",
+      "folder": "crewAIInc/crewAI",
+      "url": "https://github.com/crewAIInc/crewAI",
+      "type": "GitHub repository \u00b7 open-source Python agent framework and CLI",
+      "stack": "See individual project record",
+      "backend": "Varies by component",
+      "scope": "Current conversation",
+      "evidence": "2026-10-24 repository and local README inspection"
     }
   ],
   "projects": [
@@ -5593,6 +5604,12 @@ input[type="checkbox"]:focus-visible{
           "type": "Updated",
           "date": "2026-10-25",
           "summary": "Added the Legal Standards variations to this chat dashboard.",
+          "source": "https://github.com/gendaiski/Project-Atlas/tree/codex/chat-projects-20261024"
+        },
+        {
+          "type": "Updated",
+          "date": "2026-10-26",
+          "summary": "Added a source-linked CrewAI record to the This chat dashboard, with separate cloud runtime, public visualization and AMP access status.",
           "source": "https://github.com/gendaiski/Project-Atlas/tree/codex/chat-projects-20261024"
         },
         {
@@ -59888,6 +59905,12 @@ input[type="checkbox"]:focus-visible{
       "chatProject": true,
       "activityLog": [
         {
+          "type": "Updated",
+          "date": "2026-10-26",
+          "summary": "Published the CrewAI Flow visualization and verified its graph, local assets and exports.",
+          "source": "https://github.com/gendaiski/Sandbox-2/commit/b5a923d"
+        },
+        {
           "type": "Worked on",
           "date": "2026-10-24",
           "summary": "Updated the showcase, local native checks and onboarding workspace.",
@@ -60167,7 +60190,8 @@ input[type="checkbox"]:focus-visible{
       "done": [
         "Collected Agent Builder OS and Ultimate Agent Builder version records into one source-labelled interface.",
         "Generated a complete plain-text continuation prompt with all 45 existing URLs, sources and access limits.",
-        "Clarified the Agent Foundry lineage and added the requested AI Engineering Collection homepage redesign to the copyable Codex handoff."
+        "Clarified the Agent Foundry lineage and added the requested AI Engineering Collection homepage redesign to the copyable Codex handoff.",
+        "The full 45-version copyable handoff asks the next Codex chat to add the system and each version record to its inventory without duplicating existing entries."
       ],
       "gaps": [
         "The HTML is an index and handoff, not a running copy of all Builder editions.",
@@ -60180,7 +60204,7 @@ input[type="checkbox"]:focus-visible{
       "download": "",
       "source": "https://github.com/gendaiski/Project-Atlas/blob/codex/chat-projects-20261024/dist/Agent-Builder-System.html \u00b7 codex/chat-projects-20261024",
       "test": "25 Oct: browser loaded 45 entries and both timelines; family filters, search, dark theme, mobile layout, clipboard copy and TXT download passed with no page errors. 25 Oct: Agent Foundry search and lineage link were checked; the copied handoff includes the exact AI Engineering Collection reference URL and homepage task.",
-      "checkedDate": "2026-10-24",
+      "checkedDate": "2026-10-26",
       "classificationDate": "2026-10-24",
       "risk": "Not assessed",
       "branch": "codex/chat-projects-20261024",
@@ -60222,12 +60246,18 @@ input[type="checkbox"]:focus-visible{
         "status": "Public static app",
         "url": "https://gendaiski.github.io/Sandbox-2/atlas/Agent-Builder-System.html",
         "public": true,
-        "checkedAt": "2026-10-24",
+        "checkedAt": "2026-10-26",
         "note": "The HTML is an index and handoff, not a running copy of all Builder editions.",
         "checks": []
       },
       "chatProject": true,
       "activityLog": [
+        {
+          "type": "Updated",
+          "date": "2026-10-26",
+          "summary": "Updated the full 45-version copyable handoff to ask the next Codex chat to add Agent Builder System and every version record to its inventory.",
+          "source": "https://github.com/gendaiski/Project-Atlas/blob/codex/chat-projects-20261024/dist/Agent-Builder-System.html"
+        },
         {
           "type": "Updated",
           "date": "2026-10-25",
@@ -60239,6 +60269,101 @@ input[type="checkbox"]:focus-visible{
           "date": "2026-10-24",
           "summary": "Gathered 45 Agent Builder version records into one HTML system with a copyable plain-text Codex handoff.",
           "source": "https://github.com/gendaiski/Project-Atlas/blob/codex/chat-projects-20261024/dist/Agent-Builder-System.html"
+        }
+      ]
+    },
+    {
+      "id": "chat-crewai",
+      "name": "CrewAI \u00b7 framework and Flow Visualization",
+      "repo": "github:https://github.com/crewAIInc/crewAI",
+      "kind": "Python framework and CLI",
+      "scope": "built",
+      "stage": "Cloud installation verified \u00b7 public flow visualization",
+      "category": "AI agents & company systems",
+      "frontend": "Original CrewAI Flow.plot() interactive graph, published on GitHub Pages",
+      "backend": "CrewAI Python framework and CLI installed in the Codex cloud workspace; no public execution API",
+      "storage": "Generated report in the cloud workspace; public graph is static",
+      "milestones": [],
+      "done": [
+        "Installed the original CrewAI 1.15.30 framework, Core, CLI, Tools and Files packages from commit 38db11e.",
+        "The original CLI created a two-agent project; a real CrewAI Flow and two-agent Crew completed a deterministic local test workflow.",
+        "Published the generated interactive Flow visualization with local browser libraries; graph, node details, theme, PNG and PDF export were browser checked."
+      ],
+      "gaps": [
+        "The installation is in a temporary Codex cloud workspace, not on the user\u2019s Windows computer.",
+        "The local test model verifies orchestration, not a live AI provider; no model account or production run was tested.",
+        "CrewAI AMP is a separate hosted control plane and requires sign-in; the public visualization cannot create or run agents."
+      ],
+      "evidence": [
+        "2026-10-26: CrewAI source, cloud installation, local workflow and published flow assets checked."
+      ],
+      "url": "https://github.com/crewAIInc/crewAI/tree/38db11e3324fa0e23beb5eecd0d87e8e31ca2bb0",
+      "download": "",
+      "source": "https://github.com/crewAIInc/crewAI/tree/38db11e3324fa0e23beb5eecd0d87e8e31ca2bb0 \u00b7 main \u00b7 38db11e",
+      "test": "26 Oct: CLI/version and two-agent Flow passed locally with a deterministic test model. Chromium loaded the three-node graph and downloaded valid PNG and PDF files with no page errors or failed requests. GitHub Pages deployment succeeded and the published assets matched the tested files.",
+      "checkedDate": "2026-10-26",
+      "classificationDate": "2026-10-26",
+      "risk": "Not assessed",
+      "branch": "main \u00b7 38db11e",
+      "prs": [],
+      "links": [
+        {
+          "label": "Open CrewAI Flow Visualization \u00b7 no sign-in",
+          "url": "https://gendaiski.github.io/Sandbox-2/showcase/crewai-flow/?v=b5a923d"
+        },
+        {
+          "label": "Visualization source and limits",
+          "url": "https://github.com/gendaiski/Sandbox-2/blob/gh-pages/showcase/crewai-flow/README.md"
+        },
+        {
+          "label": "CrewAI source",
+          "url": "https://github.com/crewAIInc/crewAI/tree/38db11e3324fa0e23beb5eecd0d87e8e31ca2bb0"
+        },
+        {
+          "label": "Original quickstart",
+          "url": "https://github.com/crewAIInc/crewAI/blob/main/docs/edge/en/quickstart.mdx"
+        }
+      ],
+      "related": "",
+      "nativeCode": {
+        "status": "Yes \u00b7 cloud workspace",
+        "reason": "Original CrewAI Flow.plot() interactive graph, published on GitHub Pages"
+      },
+      "backendCode": {
+        "status": "Framework only",
+        "reason": "CrewAI Python framework and CLI installed in the Codex cloud workspace; no public execution API"
+      },
+      "operationalStatus": "Cloud installation verified \u00b7 public flow visualization. The installation is in a temporary Codex cloud workspace, not on the user\u2019s Windows computer.",
+      "provenance": {
+        "key": "codex-task",
+        "label": "Updated in this Codex chat",
+        "sourceDashboard": "Current conversation",
+        "sourceUrl": "https://github.com/crewAIInc/crewAI/tree/38db11e3324fa0e23beb5eecd0d87e8e31ca2bb0",
+        "sessionUrl": "",
+        "originalWorkType": "Python framework and CLI",
+        "note": "Dated local/repository evidence; hosted access is recorded separately."
+      },
+      "liveAccess": {
+        "status": "Public visualization; runtime cloud local",
+        "url": "https://gendaiski.github.io/Sandbox-2/showcase/crewai-flow/?v=b5a923d",
+        "public": true,
+        "checkedAt": "2026-10-26",
+        "note": "The installation is in a temporary Codex cloud workspace, not on the user\u2019s Windows computer.",
+        "checks": []
+      },
+      "chatProject": true,
+      "activityLog": [
+        {
+          "type": "Updated",
+          "date": "2026-10-26",
+          "summary": "Bundled export libraries, verified PNG/PDF downloads and deployed the finished flow page on GitHub Pages.",
+          "source": "https://github.com/gendaiski/Sandbox-2/commit/b5a923d"
+        },
+        {
+          "type": "Added",
+          "date": "2026-10-26",
+          "summary": "Installed the original open-source CrewAI framework in the Codex cloud workspace and published its generated Flow visualization; AMP remains a separate sign-in service.",
+          "source": "https://github.com/gendaiski/Sandbox-2/commit/805809b"
         }
       ]
     },
@@ -107185,7 +107310,7 @@ input[type="checkbox"]:focus-visible{
     "verificationBoundary": "Verified in the temporary Codex cloud workspace; local ports are not a public deployment."
   },
   "chatProjects": {
-    "asOf": "2026-10-25",
+    "asOf": "2026-10-26",
     "ids": [
       "atlas",
       "audit-fatura",
@@ -107203,9 +107328,10 @@ input[type="checkbox"]:focus-visible{
       "chat-meridian",
       "chat-agent-harvester",
       "chat-agent-builder-system",
+      "chat-crewai",
       "chat-legal-standards"
     ],
-    "note": "Legal Standards appears once in this conversation, with both HTML variations linked from its record. The earlier source-review record remains in the full inventory for provenance. Other rows track projects or independently reviewable Fattura editions. Historical audits keep their original evidence dates; local URLs are not presented as public deployments."
+    "note": "Legal Standards appears once in this conversation, with both HTML variations linked from its record. CrewAI separates the public Flow visualization from the cloud-only framework installation and the sign-in-only AMP service. Historical audits keep their original evidence dates; local URLs are not presented as public deployments."
   }
 }</script><script id="category-seed" type="application/json">null</script><script id="compare-seed" type="application/json">[]</script><script id="review-seed" type="application/json">{}</script><script id="activity-seed" type="application/json">{}</script><script>'use strict';
 const DATA=JSON.parse(document.getElementById('audit-data').textContent),$=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
