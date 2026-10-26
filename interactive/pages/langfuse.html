@@ -1,0 +1,524 @@
+<title>Langfuse Workbench</title>
+{{HEAD}}
+<style>
+  :root { --accent: #0d7a6f; --accent-soft: #dcf1ee; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #45c2b1; --accent-ink: #06201c; --accent-soft: #123430; } }
+  :root[data-theme="dark"] { --accent: #45c2b1; --accent-ink: #06201c; --accent-soft: #123430; }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: end; }
+  .tree { display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+  .obs { display: grid; grid-template-columns: minmax(150px, 260px) minmax(0, 1fr) 70px; gap: 10px; align-items: center; padding: 4px 6px; border-radius: 6px; cursor: pointer; }
+  .obs:hover { background: var(--sunk); } .obs.sel { background: var(--accent-soft); }
+  .obs .nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .obs .lane { position: relative; height: 12px; background: var(--sunk); border-radius: 3px; }
+  .obs .lane i { position: absolute; top: 0; bottom: 0; border-radius: 3px; }
+  .obs .ms { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; font-size: 12px; }
+  .type { font: 600 10px var(--mono); padding: 1px 5px; border-radius: 4px; margin-right: 6px; background: var(--sunk); color: var(--muted); }
+  .type.GENERATION { background: var(--c0); color: var(--e0); } .type.RETRIEVER { background: var(--c2); color: var(--e2); }
+  .type.TOOL { background: var(--c1); color: var(--e1); } .type.AGENT { background: var(--c6); color: var(--e6); }
+  .type.EVALUATOR { background: var(--c3); color: var(--e3); } .type.GUARDRAIL { background: var(--c7); color: var(--e7); }
+  .type.CHAIN, .type.SPAN { background: var(--c5); color: var(--e5); }
+  .io { background: var(--sunk); border-radius: 6px; padding: 8px 10px; white-space: pre-wrap; word-break: break-word; font: 12px/1.5 var(--mono); max-height: 240px; overflow: auto; margin: 0; }
+  .turn { border-left: 3px solid var(--line); padding: 4px 0 4px 12px; display: flex; flex-direction: column; gap: 4px; }
+  .turn .q { font-weight: 600; } .turn .a { color: var(--ink); }
+  .ver { display: flex; gap: 8px; align-items: center; padding: 6px 8px; border-radius: 6px; cursor: pointer; }
+  .ver:hover { background: var(--sunk); } .ver.sel { background: var(--accent-soft); }
+  .diff { font: 12px/1.55 var(--mono); white-space: pre-wrap; word-break: break-word; background: var(--sunk); border-radius: 6px; padding: 8px 10px; margin: 0; }
+  .diff .add { background: var(--good-soft); color: var(--good); display: block; } .diff .del { background: var(--bad-soft); color: var(--bad); display: block; text-decoration: line-through; }
+  .scorechips { display: flex; gap: 6px; flex-wrap: wrap; }
+  svg.chart { width: 100%; height: auto; display: block; }
+  .secret { font: 12.5px var(--mono); background: var(--sunk); padding: 6px 9px; border-radius: 6px; word-break: break-all; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand">
+      <span class="mark">Lf</span>
+      <h1>Langfuse Workbench</h1>
+      <span class="tag">LLM observability, prompts and evaluation for a contract assistant</span>
+      <span class="links"><a href="https://github.com/langfuse/langfuse" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/langfuse" target="_blank" rel="noopener">Run the real server</a></span>
+    </div>
+    <nav class="tabs" aria-label="Sections">
+      <button data-tab="dashboard">Dashboard</button><button data-tab="tracing">Tracing</button><button data-tab="sessions">Sessions</button>
+      <button data-tab="users">Users</button><button data-tab="prompts">Prompts</button><button data-tab="datasets">Datasets</button>
+      <button data-tab="evaluation">Evaluation</button><button data-tab="settings">API keys &amp; SDK</button><button data-tab="how">How it works</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">An interactive model of Langfuse's features, built for this review and not affiliated with Langfuse. It runs in your browser on example traffic from a contract assistant (14 days, 3 apps). Your scores, prompt versions and experiment runs stay in this browser.</p>
+
+  <section data-panel="dashboard">
+    <div class="row"><label class="field inline">Range <select id="d-range"><option value="14">Last 14 days</option><option value="7">Last 7 days</option><option value="1">Last 24 hours</option></select></label>
+      <label class="field inline">App <select id="d-name"><option value="">All apps</option></select></label></div>
+    <div class="kpis" id="d-kpis"></div>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Traces per day</h2><svg class="chart" id="d-traces"></svg></div>
+      <div class="panel"><h2>Cost per day (USD)</h2><svg class="chart" id="d-cost"></svg></div>
+      <div class="panel"><h2>Cost by model</h2><svg class="chart" id="d-model"></svg></div>
+      <div class="panel"><h2>Latency by app (p50 / p95, seconds)</h2><div class="table-wrap"><table class="data" id="d-latency"></table></div></div>
+      <div class="panel"><h2>Faithfulness score distribution</h2><svg class="chart" id="d-scores"></svg></div>
+      <div class="panel"><h2>User feedback</h2><svg class="chart" id="d-feedback"></svg></div>
+    </div>
+  </section>
+
+  <section data-panel="tracing" hidden>
+    <div class="filters">
+      <label class="field">Search <input type="search" id="t-q" placeholder="question, answer or trace id"></label>
+      <label class="field">App <select id="t-name"><option value="">All</option></select></label>
+      <label class="field">User <select id="t-user"><option value="">All</option></select></label>
+      <label class="field">Model <select id="t-model"><option value="">All</option></select></label>
+      <label class="field">Tag <select id="t-tag"><option value="">All</option></select></label>
+      <label class="field inline"><input type="checkbox" id="t-err"> Errors only</label>
+      <span class="note" id="t-count"></span>
+    </div>
+    <div class="grid cols-side-r">
+      <div class="panel"><div class="table-wrap"><table class="data" id="t-table"></table></div><div class="row" id="t-pager"></div></div>
+      <div class="panel" id="t-detail"><div class="empty">Select a trace to see its observations, timing, cost and scores.</div></div>
+    </div>
+  </section>
+
+  <section data-panel="sessions" hidden>
+    <div class="grid cols-side">
+      <div class="panel"><h2>Sessions</h2><div class="table-wrap"><table class="data" id="s-table"></table></div></div>
+      <div class="panel" id="s-detail"></div>
+    </div>
+  </section>
+
+  <section data-panel="users" hidden>
+    <div class="panel"><h2>Users</h2><p class="note">Traces carry a user id, so usage and cost roll up per user.</p><div class="table-wrap"><table class="data" id="u-table"></table></div></div>
+  </section>
+
+  <section data-panel="prompts" hidden>
+    <div class="grid cols-side">
+      <div class="panel"><header><h2 class="grow">Prompts</h2><button class="btn small" id="p-new">New prompt</button></header><div id="p-list" class="stack"></div></div>
+      <div class="stack" id="p-detail"></div>
+    </div>
+  </section>
+
+  <section data-panel="datasets" hidden>
+    <div class="grid cols-side">
+      <div class="panel"><h2>Datasets</h2><div id="ds-list" class="stack"></div>
+        <p class="note">Items can also be added from any trace: open a trace in Tracing and choose “Add to dataset”.</p></div>
+      <div class="stack" id="ds-detail"></div>
+    </div>
+  </section>
+
+  <section data-panel="evaluation" hidden>
+    <div class="grid cols-2">
+      <div class="panel" id="e-queue"></div>
+      <div class="panel" id="e-judge"></div>
+    </div>
+    <div class="panel"><h2>Score configs</h2><p class="note">Configs define the scores people and evaluators can attach to traces.</p><div class="table-wrap"><table class="data" id="e-configs"></table></div></div>
+  </section>
+
+  <section data-panel="settings" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Project API keys</h2><p class="note">SDKs authenticate with a public and a secret key. The secret is shown once.</p>
+        <div class="row"><input type="text" id="k-note" placeholder="Note, e.g. production backend" class="grow"><button class="btn primary" id="k-create">Create keys</button></div>
+        <div id="k-new"></div><div class="table-wrap"><table class="data" id="k-table"></table></div></div>
+      <div class="panel"><header><h2 class="grow">Instrument your app</h2><select id="k-lang"><option value="py">Python</option><option value="ts">TypeScript</option><option value="otel">OpenTelemetry</option></select><button class="btn small" id="k-copy">Copy</button></header><pre class="code" id="k-snippet"></pre></div>
+    </div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Self-hosted architecture</h2>
+<pre class="mermaid">
+flowchart LR
+  APP["Your app<br/>(Python / JS SDK, OpenTelemetry)"] -->|"batched events"| WEB["langfuse-web<br/>UI + public API"]
+  WEB -->|"queue"| REDIS[("Redis")]
+  REDIS --> WORKER["langfuse-worker"]
+  WEB -->|"raw events"| S3[("MinIO / S3")]
+  WORKER -->|"traces, observations, scores"| CH[("ClickHouse")]
+  WEB <-->|"prompts, datasets, users, keys"| PG[("Postgres")]
+  WEB -->|"dashboards, trace views"| CH
+  WORKER -->|"LLM-as-a-judge runs"| LLM["Model provider"]
+</pre>
+        <p class="note">This is the stack that <code>systems/langfuse/setup.sh</code> starts with Docker: six services from upstream's compose file.</p></div>
+      <div class="panel"><h2>Data model</h2>
+<pre class="mermaid">
+flowchart TB
+  SESSION["Session"] --> TRACE["Trace<br/>user, tags, input, output"]
+  TRACE --> OBS["Observations<br/>span, generation, agent, tool,<br/>retriever, evaluator, guardrail"]
+  OBS --> OBS
+  TRACE --> SCORE["Scores<br/>numeric, boolean, categorical"]
+  OBS --> SCORE
+  PROMPT["Prompt version<br/>labels: production, staging"] -.->|"linked to"| OBS
+  DATASET["Dataset item"] -->|"experiment run"| TRACE
+</pre></div>
+      <div class="panel"><h2>Prompt release flow</h2>
+<pre class="mermaid">
+sequenceDiagram
+  participant Dev as Developer
+  participant LF as Langfuse
+  participant App as App (SDK cache)
+  Dev->>LF: create version 3 (label: staging)
+  Dev->>LF: run experiment on dataset with v3
+  LF-->>Dev: scores vs v2
+  Dev->>LF: move label production to v3
+  App->>LF: get_prompt("contract-qa", label="production")
+  LF-->>App: v3 (cached, refreshed in background)
+</pre></div>
+      <div class="panel"><h2>What each section here maps to</h2>
+        <dl class="kv">
+          <dt>Tracing</dt><dd>Nested observations with timing, token usage, cost, levels and linked prompt versions.</dd>
+          <dt>Sessions</dt><dd>Traces grouped by session id, replayed as a conversation.</dd>
+          <dt>Prompts</dt><dd>Versioned prompts with labels, variables, config and diffs; compiled in a playground.</dd>
+          <dt>Datasets</dt><dd>Golden items, experiment runs over prompt versions, evaluator scores per run.</dd>
+          <dt>Evaluation</dt><dd>Human annotation queues, score configs, and LLM-as-a-judge evaluators on live traces.</dd>
+          <dt>API keys</dt><dd>Project-scoped key pairs and the SDK setup that sends traces.</dd>
+        </dl></div>
+    </div>
+  </section>
+</main>
+<p class="footer">Example data generated in the page. The real Langfuse runs from <code>systems/langfuse/serve.sh</code> with seeded demo data.</p>
+{{LIB}}
+<script>
+/* ---------- example data, deterministic ---------- */
+let seed = 20261026;
+const rnd = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+const pick = (a) => a[Math.floor(rnd() * a.length)];
+const PRICE = { 'claude-opus-5-5': [5, 25], 'claude-sonnet-5-5': [3, 15], 'gpt-4o-mini': [0.15, 0.6], 'claude-haiku-5-5': [1, 5] }; // USD per 1M tokens in/out
+const USERS = ['maria@northwind.example', 'dev@contoso.example', 'sam@northwind.example', 'legal-ops@contoso.example', 'priya@fabrikam.example'];
+const QA = [
+  ['How long is the initial term?', 'Twenty-four months, renewing for 12-month periods unless 90 days\' notice is given.', 'agreement', '6.1 Term'],
+  ['What is the cap on aggregate liability?', 'Fees paid in the twelve months before the claim, excluding confidentiality breaches.', 'agreement', '5. Limitation of Liability'],
+  ['Which law governs the agreement?', 'The laws of the State of New York.', 'agreement', '7. Governing Law'],
+  ['What uptime does the provider commit to?', '99.5% monthly uptime, with a 5% service credit if missed.', 'agreement', '2.2 Service Levels'],
+  ['How fast must security incidents be reported?', 'Without undue delay and within 48 hours of discovery.', 'dpa', '2. Security Measures'],
+  ['Who are the approved sub-processors?', 'Fabrikam Cloud GmbH, Tailspin Search Inc. and Litware Mail Ltd.', 'dpa', '3. Sub-processors'],
+  ['How much notice before a new sub-processor?', 'Thirty days, during which the controller may object.', 'dpa', '3. Sub-processors'],
+  ['Can data leave the EEA?', 'Only with prior written consent and under the Standard Contractual Clauses.', 'dpa', '5. International Transfers'],
+  ['How often can the controller audit?', 'Once per calendar year on 30 days\' notice, or via ISO 27001 and SOC 2 reports.', 'dpa', '6. Audits'],
+  ['When is data deleted after termination?', 'Returned or deleted within 60 days, with written certification.', 'dpa', '7. Return and Deletion'],
+  ['Is there a liquidated damages clause?', 'Yes, damages are fixed at twice the annual fees.', 'agreement', '5. Limitation of Liability'],
+];
+function section(doc, title) {
+  const d = SAMPLES[doc], heads = Text.headings(d), h = heads.find((x) => x.title.startsWith(title.split(' ')[0]) && x.title.includes(title.split(' ').slice(1).join(' ').slice(0, 8)));
+  if (!h) return d.slice(0, 300);
+  const next = heads.find((x) => x.at > h.at && x.level <= h.level); return d.slice(h.at, next ? next.at : d.length).trim();
+}
+const NOW = Date.UTC(2026, 9, 26, 15, 0);
+function makeTraces() {
+  const traces = [];
+  for (let i = 0; i < 120; i++) {
+    const app = rnd() < 0.62 ? 'contract-qa' : rnd() < 0.6 ? 'clause-extract' : 'redline-agent';
+    const user = pick(USERS), day = Math.floor(rnd() ** 1.3 * 14), ts = NOW - day * 864e5 - Math.floor(rnd() * 864e5);
+    const model = app === 'clause-extract' ? pick(['claude-sonnet-5-5', 'gpt-4o-mini']) : pick(['claude-opus-5-5', 'claude-opus-5-5', 'claude-sonnet-5-5', 'gpt-4o-mini']);
+    const qa = pick(QA), hallucinated = qa[0].includes('liquidated') || rnd() < 0.05, failed = rnd() < 0.045;
+    const id = 't-' + Math.floor(rnd() * 1e12).toString(16).padStart(10, '0');
+    const obs = []; let t = 0;
+    const add = (name, type, dur, extra = {}, parent = 'root') => { const o = { id: id + '-' + obs.length, name, type, start: t, dur, parent, ...extra }; obs.push(o); t += dur + Math.floor(rnd() * 30); return o; };
+    const gen = (name, mdl, inTok, outTok, input, output, extra = {}) => { const [pi, po] = PRICE[mdl]; return add(name, 'GENERATION', Math.floor(outTok * (mdl.includes('opus') ? 28 : 14) + 300 + rnd() * 500), { model: mdl, usage: { input: inTok, output: outTok }, cost: (inTok * pi + outTok * po) / 1e6, input, output, ...extra }); };
+    const ctx = section(qa[2], qa[3]);
+    let input, output;
+    if (app === 'contract-qa') {
+      input = { question: qa[0] };
+      gen('classify-question', 'gpt-4o-mini', 64, 3, [{ role: 'user', content: qa[0] }], qa[3].split(' ').slice(1).join(' ').toLowerCase());
+      add('search-clauses', 'RETRIEVER', 90 + Math.floor(rnd() * 160), { input: { query: qa[0], top_k: 3 }, output: { chunks: [ctx.slice(0, 260)], scores: [+(0.7 + rnd() * 0.25).toFixed(2)] } });
+      add('lookup-matter', 'TOOL', 40 + Math.floor(rnd() * 90), { input: { matter: 'M-' + (1000 + Math.floor(rnd() * 90)) }, output: { client: user.split('@')[1], status: 'open' } });
+      output = failed ? null : { answer: hallucinated ? qa[1] : qa[1] };
+      const g = gen('answer', model, 420 + Math.floor(rnd() * 300), 40 + Math.floor(rnd() * 50), [{ role: 'system', content: 'You are a contracts analyst...' }, { role: 'user', content: `Clause: ${ctx.slice(0, 160)}…\nQuestion: ${qa[0]}` }], failed ? null : qa[1], { prompt: { name: 'contract-qa', version: day > 6 ? 1 : 2 } });
+      if (failed) { g.level = 'ERROR'; g.status = 'Upstream timeout after 30s'; }
+    } else if (app === 'clause-extract') {
+      input = { document: qa[2] === 'dpa' ? 'data-processing-addendum.pdf' : 'master-services-agreement.pdf' };
+      add('parse-pdf', 'SPAN', 600 + Math.floor(rnd() * 900), { input, output: { pages: 2, blocks: 41 } });
+      gen('extract-clauses', model, 2900 + Math.floor(rnd() * 900), 600 + Math.floor(rnd() * 300), [{ role: 'user', content: 'Extract every clause as JSON…' }], '[{"clause": "Term", "value": "24 months"}, {"clause": "Liability cap", "value": "12 months of fees"}, …]', { prompt: { name: 'clause-extractor', version: 1 } });
+      add('pii-check', 'GUARDRAIL', 70 + Math.floor(rnd() * 60), { input: { fields: 12 }, output: { pii_found: rnd() < 0.2 ? ['email'] : [] } });
+      output = { clauses: 12 };
+      if (failed) { obs[1].level = 'ERROR'; obs[1].status = 'Model returned invalid JSON'; output = null; }
+    } else {
+      input = { document: 'vendor-msa-draft.docx', playbook: 'standard-buy-side' };
+      gen('plan-review', model, 900, 140, [{ role: 'user', content: 'Plan the redline review…' }], '1. Liability cap 2. Indemnity 3. Governing law');
+      add('fetch-playbook', 'TOOL', 120, { input: { playbook: 'standard-buy-side' }, output: { rules: 18 } });
+      gen('redline-liability', model, 1500, 380, [{ role: 'user', content: 'Redline clause 5 against the playbook…' }], 'Replace "twelve (12) months" with "twenty-four (24) months"…');
+      gen('redline-governing-law', model, 1100, 210, [{ role: 'user', content: 'Redline clause 7…' }], 'Accept: New York law is on the approved list.');
+      add('self-check', 'EVALUATOR', 300, { input: { redlines: 2 }, output: { consistent: true } });
+      output = { redlines: 2 };
+    }
+    const total = t, gens = obs.filter((o) => o.type === 'GENERATION');
+    const root = { id: id + '-root', name: app, type: app === 'clause-extract' ? 'CHAIN' : 'AGENT', start: 0, dur: total, parent: null, input, output, level: obs.some((o) => o.level === 'ERROR') ? 'ERROR' : 'DEFAULT' };
+    const scores = [];
+    if (app === 'contract-qa' && !failed) {
+      const f = hallucinated ? 0.12 + rnd() * 0.2 : 0.78 + rnd() * 0.21;
+      scores.push({ name: 'faithfulness', value: +f.toFixed(2), source: 'EVAL' });
+      if (rnd() < 0.55) scores.push({ name: 'user-feedback', value: hallucinated ? 0 : rnd() < 0.92 ? 1 : 0, source: 'API' });
+    }
+    traces.push({ id, name: app, ts, user, session: `${user.split('@')[0]}-${Math.floor(day / 3)}`, tags: [app, model.split('-').slice(0, 2).join('-'), ...(failed ? ['error'] : [])], model,
+      input, output, obs: [root, ...obs], scores, qa, latency: total / 1000,
+      tokens: gens.reduce((a, g) => a + g.usage.input + g.usage.output, 0), cost: gens.reduce((a, g) => a + g.cost, 0), level: root.level });
+  }
+  return traces.sort((a, b) => b.ts - a.ts);
+}
+const TRACES = makeTraces();
+const saved = store.get('lf:annotations', {});
+TRACES.forEach((t) => (saved[t.id] || []).forEach((s) => t.scores.push(s)));
+const saveScore = (t, s) => { t.scores.push(s); const all = store.get('lf:annotations', {}); (all[t.id] ||= []).push(s); store.set('lf:annotations', all); };
+const uniq = (a) => [...new Set(a)].sort();
+const day = (ts) => new Date(ts).toISOString().slice(5, 10);
+const pct = (arr, p) => { const s = [...arr].sort((a, b) => a - b); return s.length ? s[Math.min(s.length - 1, Math.floor(p * s.length))] : 0; };
+const usd = (v) => '$' + (v < 0.01 ? v.toFixed(4) : v.toFixed(2));
+const scoreChip = (s) => el('span', { class: 'pill ' + (s.name === 'user-feedback' ? (s.value ? 'good' : 'bad') : typeof s.value === 'number' ? (s.value >= 0.7 ? 'good' : s.value >= 0.4 ? 'warn' : 'bad') : 'accent') }, `${s.name}: ${s.value}`);
+
+/* ---------- dashboard ---------- */
+const fill = (sel, values, all = 'All') => { const s = $(sel); s.replaceChildren(el('option', { value: '' }, all), ...values.map((v) => el('option', { value: v }, v))); };
+fill('#d-name', uniq(TRACES.map((t) => t.name)), 'All apps');
+function dashboard() {
+  const days = +$('#d-range').value, name = $('#d-name').value, from = NOW - days * 864e5;
+  const ts = TRACES.filter((t) => t.ts >= from && (!name || t.name === name));
+  const faith = ts.flatMap((t) => t.scores.filter((s) => s.name === 'faithfulness').map((s) => s.value));
+  $('#d-kpis').replaceChildren(
+    el('div', { class: 'kpi' }, el('b', {}, fmt(ts.length)), el('span', {}, 'traces')),
+    el('div', { class: 'kpi' }, el('b', {}, usd(ts.reduce((a, t) => a + t.cost, 0))), el('span', {}, 'model cost')),
+    el('div', { class: 'kpi' }, el('b', {}, fmt(ts.reduce((a, t) => a + t.tokens, 0))), el('span', {}, 'tokens')),
+    el('div', { class: 'kpi' }, el('b', {}, fmt(pct(ts.map((t) => t.latency), 0.95), 1) + ' s'), el('span', {}, 'p95 latency')),
+    el('div', { class: 'kpi' }, el('b', {}, faith.length ? fmt(faith.reduce((a, b) => a + b, 0) / faith.length, 2) : '–'), el('span', {}, 'mean faithfulness')),
+    el('div', { class: 'kpi' }, el('b', { style: { color: 'var(--bad)' } }, fmt(ts.filter((t) => t.level === 'ERROR').length)), el('span', {}, 'errors')));
+  const nd = Math.max(days, 1), labels = [...Array(nd)].map((_, i) => day(NOW - (nd - 1 - i) * 864e5));
+  const per = (f) => labels.map((l) => ts.filter((t) => day(t.ts) === l).reduce((a, t) => a + f(t), 0));
+  areaChart($('#d-traces'), per(() => 1), { labels });
+  areaChart($('#d-cost'), per((t) => t.cost), { labels, color: 'var(--e1)', fmtv: (v) => '$' + v.toFixed(2) });
+  const byModel = {}; ts.forEach((t) => t.obs.filter((o) => o.model).forEach((o) => { byModel[o.model] = (byModel[o.model] || 0) + o.cost; }));
+  barChart($('#d-model'), Object.entries(byModel).sort((a, b) => b[1] - a[1]).map(([label, value], i) => ({ label, value, color: `var(--e${i})` })), { fmtv: (v) => '$' + v.toFixed(2) });
+  $('#d-latency').replaceChildren(el('tr', {}, el('th', {}, 'App'), el('th', {}, 'Traces'), el('th', {}, 'p50'), el('th', {}, 'p95'), el('th', {}, 'Errors')),
+    ...uniq(ts.map((t) => t.name)).map((n) => { const l = ts.filter((t) => t.name === n); return el('tr', {}, el('td', {}, n), el('td', {}, l.length), el('td', {}, fmt(pct(l.map((t) => t.latency), 0.5), 2)), el('td', {}, fmt(pct(l.map((t) => t.latency), 0.95), 2)), el('td', {}, l.filter((t) => t.level === 'ERROR').length)); }));
+  const bins = [...Array(10)].map((_, i) => ({ label: `${(i / 10).toFixed(1)}–${((i + 1) / 10).toFixed(1)}`, value: faith.filter((v) => Math.min(9, Math.floor(v * 10)) === i).length, color: i < 4 ? 'var(--bad)' : i < 7 ? 'var(--warn)' : 'var(--good)' }));
+  barChart($('#d-scores'), bins, { fmtv: (v) => v, height: 18 });
+  const fb = ts.flatMap((t) => t.scores.filter((s) => s.name === 'user-feedback'));
+  barChart($('#d-feedback'), [{ label: 'Thumbs up', value: fb.filter((s) => s.value).length, color: 'var(--good)' }, { label: 'Thumbs down', value: fb.filter((s) => !s.value).length, color: 'var(--bad)' }], { fmtv: (v) => v });
+}
+['#d-range', '#d-name'].forEach((s) => $(s).addEventListener('change', dashboard));
+
+/* ---------- tracing ---------- */
+fill('#t-name', uniq(TRACES.map((t) => t.name))); fill('#t-user', USERS); fill('#t-model', uniq(TRACES.map((t) => t.model))); fill('#t-tag', uniq(TRACES.flatMap((t) => t.tags)));
+let selTrace = null, selObs = null, page = 0;
+const PAGE = 20;
+function traceTable() {
+  const q = $('#t-q').value.toLowerCase(), f = { name: $('#t-name').value, user: $('#t-user').value, model: $('#t-model').value, tag: $('#t-tag').value };
+  const rows = TRACES.filter((t) => (!f.name || t.name === f.name) && (!f.user || t.user === f.user) && (!f.model || t.model === f.model) && (!f.tag || t.tags.includes(f.tag))
+    && (!$('#t-err').checked || t.level === 'ERROR') && (!q || (t.id + JSON.stringify(t.input) + JSON.stringify(t.output)).toLowerCase().includes(q)));
+  page = Math.min(page, Math.max(0, Math.ceil(rows.length / PAGE) - 1));
+  $('#t-count').textContent = `${rows.length} of ${TRACES.length} traces`;
+  $('#t-pager').replaceChildren(el('button', { class: 'btn small', disabled: page === 0, onclick: () => { page--; traceTable(); } }, 'Previous'),
+    el('span', { class: 'note' }, `Page ${page + 1} of ${Math.max(1, Math.ceil(rows.length / PAGE))}`),
+    el('button', { class: 'btn small', disabled: (page + 1) * PAGE >= rows.length, onclick: () => { page++; traceTable(); } }, 'Next'));
+  $('#t-table').replaceChildren(el('tr', {}, ...['Time', 'App', 'Input', 'User', 'Latency', 'Cost', 'Scores'].map((h) => el('th', {}, h))),
+    ...rows.slice(page * PAGE, page * PAGE + PAGE).map((t) => el('tr', { class: 'click' + (t === selTrace ? ' sel' : ''), onclick: () => { selTrace = t; selObs = t.obs[0]; traceTable(); traceDetail(); } },
+      el('td', { class: 'mono' }, new Date(t.ts).toISOString().slice(5, 16).replace('T', ' ')),
+      el('td', {}, t.name, t.level === 'ERROR' ? el('span', { class: 'pill bad', style: { marginLeft: '6px' } }, 'error') : null),
+      el('td', {}, String(t.input.question || t.input.document).slice(0, 48)),
+      el('td', { class: 'note' }, t.user.split('@')[0]), el('td', {}, t.latency.toFixed(2) + 's'), el('td', {}, usd(t.cost)),
+      el('td', {}, el('div', { class: 'scorechips' }, ...t.scores.map((s) => el('span', { class: 'pill' + (typeof s.value === 'number' && s.name === 'faithfulness' ? (s.value >= .7 ? ' good' : ' bad') : '') }, `${s.name.slice(0, 5)} ${s.value}`)))))));
+}
+['#t-q', '#t-name', '#t-user', '#t-model', '#t-tag', '#t-err'].forEach((s) => $(s).addEventListener('input', () => { page = 0; traceTable(); }));
+function depth(t, o) { let d = 0, p = o.parent; while (p) { d++; p = p === 'root' ? null : (t.obs.find((x) => x.id === p) || {}).parent; } return d; }
+function traceDetail() {
+  const t = selTrace, box = $('#t-detail'); if (!t) return;
+  const total = t.obs[0].dur || 1, o = selObs;
+  box.replaceChildren(
+    el('header', {}, el('h2', { class: 'grow' }, `${t.name} · ${t.id}`), el('span', { class: 'pill' }, t.user), el('span', { class: 'pill' }, 'session ' + t.session)),
+    el('div', { class: 'row' }, ...t.tags.map((g) => el('span', { class: 'pill accent' }, g)), el('span', { class: 'note' }, `${t.latency.toFixed(2)} s · ${fmt(t.tokens)} tokens · ${usd(t.cost)}`)),
+    el('div', { class: 'tree' }, ...t.obs.map((x) => el('div', { class: 'obs' + (x === o ? ' sel' : ''), onclick: () => { selObs = x; traceDetail(); } },
+      el('div', { class: 'nm', style: { paddingLeft: depth(t, x) * 14 + 'px' } }, el('span', { class: 'type ' + x.type }, x.type.slice(0, 4)), x.name, x.level === 'ERROR' ? ' ⚠' : ''),
+      el('div', { class: 'lane' }, el('i', { style: { left: (x.start / total * 100) + '%', width: Math.max(0.6, x.dur / total * 100) + '%', background: x.level === 'ERROR' ? 'var(--bad)' : `var(--e${['GENERATION', 'SPAN', 'TOOL', 'EVALUATOR', 'GUARDRAIL', 'RETRIEVER', 'AGENT', 'CHAIN'].indexOf(x.type)})` } })),
+      el('div', { class: 'ms' }, x.dur + ' ms')))),
+    el('div', { class: 'stack' },
+      el('div', { class: 'row' }, el('b', {}, o.name), el('span', { class: 'type ' + o.type }, o.type), o.model ? el('span', { class: 'pill' }, o.model) : null, o.prompt ? el('span', { class: 'pill accent' }, `prompt ${o.prompt.name} v${o.prompt.version}`) : null, o.level === 'ERROR' ? el('span', { class: 'pill bad' }, o.status) : null),
+      o.usage ? el('div', { class: 'note' }, `Usage: ${o.usage.input} input + ${o.usage.output} output tokens · cost ${usd(o.cost)}`) : null,
+      el('div', { class: 'grid cols-2' }, el('div', { class: 'stack' }, el('span', { class: 'note' }, 'Input'), el('pre', { class: 'io' }, JSON.stringify(o.input, null, 2))),
+        el('div', { class: 'stack' }, el('span', { class: 'note' }, 'Output'), el('pre', { class: 'io' }, o.output == null ? '(none)' : typeof o.output === 'string' ? o.output : JSON.stringify(o.output, null, 2))))),
+    el('div', { class: 'stack' }, el('span', { class: 'note' }, 'Scores'), el('div', { class: 'scorechips' }, ...(t.scores.length ? t.scores.map(scoreChip) : [el('span', { class: 'note' }, 'No scores yet')]))),
+    el('div', { class: 'row' },
+      el('select', { id: 'a-name' }, ...SCORE_CONFIGS.map((c) => el('option', { value: c.name }, c.name))),
+      el('select', { id: 'a-val' }, ...[1, 0.75, 0.5, 0.25, 0].map((v) => el('option', { value: v }, v))),
+      el('button', { class: 'btn', onclick: () => { saveScore(t, { name: $('#a-name').value, value: +$('#a-val').value, source: 'ANNOTATION' }); traceDetail(); traceTable(); toast('Score added to the trace'); } }, 'Add score'),
+      el('button', { class: 'btn', onclick: () => { addDatasetItem(t); } }, 'Add to dataset')));
+}
+
+/* ---------- sessions ---------- */
+let selSession = null;
+function sessions() {
+  const groups = {}; TRACES.forEach((t) => (groups[t.session] ||= []).push(t));
+  const list = Object.entries(groups).sort((a, b) => Math.max(...b[1].map((t) => t.ts)) - Math.max(...a[1].map((t) => t.ts)));
+  selSession ||= list[0][0];
+  $('#s-table').replaceChildren(el('tr', {}, el('th', {}, 'Session'), el('th', {}, 'Traces'), el('th', {}, 'Cost')),
+    ...list.map(([id, ts]) => el('tr', { class: 'click' + (id === selSession ? ' sel' : ''), onclick: () => { selSession = id; sessions(); } }, el('td', {}, id), el('td', {}, ts.length), el('td', {}, usd(ts.reduce((a, t) => a + t.cost, 0))))));
+  const ts = groups[selSession].slice().sort((a, b) => a.ts - b.ts);
+  $('#s-detail').replaceChildren(el('header', {}, el('h2', { class: 'grow' }, 'Session ' + selSession), el('span', { class: 'pill' }, ts[0].user)),
+    ...ts.map((t) => el('div', { class: 'turn', style: { borderLeftColor: t.level === 'ERROR' ? 'var(--bad)' : 'var(--accent)' } },
+      el('span', { class: 'note' }, new Date(t.ts).toISOString().slice(0, 16).replace('T', ' ') + ' · ' + t.name),
+      el('div', { class: 'q' }, t.input.question || 'Process ' + t.input.document),
+      el('div', { class: 'a' }, t.output ? (t.output.answer || JSON.stringify(t.output)) : el('span', { style: { color: 'var(--bad)' } }, (t.obs.find((o) => o.level === 'ERROR') || {}).status)),
+      el('div', { class: 'row' }, ...t.scores.map(scoreChip), el('button', { class: 'btn small', onclick: () => { selTrace = t; selObs = t.obs[0]; showTab('tracing'); traceTable(); traceDetail(); } }, 'Open trace')))));
+}
+
+/* ---------- users ---------- */
+function users() {
+  $('#u-table').replaceChildren(el('tr', {}, ...['User', 'Traces', 'Tokens', 'Cost', 'Errors', 'First seen', 'Last seen'].map((h) => el('th', {}, h))),
+    ...USERS.map((u) => { const ts = TRACES.filter((t) => t.user === u); return el('tr', {}, el('td', {}, u), el('td', {}, ts.length), el('td', {}, fmt(ts.reduce((a, t) => a + t.tokens, 0))), el('td', {}, usd(ts.reduce((a, t) => a + t.cost, 0))), el('td', {}, ts.filter((t) => t.level === 'ERROR').length), el('td', { class: 'mono' }, day(Math.min(...ts.map((t) => t.ts)))), el('td', { class: 'mono' }, day(Math.max(...ts.map((t) => t.ts))))); }));
+}
+
+/* ---------- prompts ---------- */
+const PROMPTS = store.get('lf:prompts', [
+  { name: 'contract-qa', type: 'text', versions: [
+    { version: 1, labels: [], text: 'Answer the question from the clause below.\n\nClause: {{clause}}\n\nQuestion: {{question}}', config: { model: 'claude-sonnet-5-5', temperature: 0 }, message: 'First draft', at: NOW - 12 * 864e5 },
+    { version: 2, labels: ['production', 'latest'], text: 'You are a contracts analyst. Using ONLY the clause below, answer in one sentence and quote the clause number.\nIf the clause does not answer the question, say so.\n\nClause: {{clause}}\n\nQuestion: {{question}}', config: { model: 'claude-opus-5-5', temperature: 0, max_tokens: 400 }, message: 'Ground answers in the clause; refuse when unsupported', at: NOW - 6 * 864e5 }] },
+  { name: 'clause-extractor', type: 'text', versions: [
+    { version: 1, labels: ['production', 'latest'], text: 'Extract every clause from the {{document_type}} below as JSON objects with "clause", "value" and "section".\n\n{{document}}', config: { model: 'claude-sonnet-5-5', response_format: 'json' }, message: 'Initial', at: NOW - 13 * 864e5 }] },
+  { name: 'redline-playbook', type: 'chat', versions: [
+    { version: 1, labels: ['production', 'latest'], text: 'system: You review vendor contracts against the {{playbook}} playbook.\nuser: Redline this clause and explain each change:\n{{clause}}', config: { model: 'claude-opus-5-5' }, message: 'Initial', at: NOW - 10 * 864e5 }] },
+]);
+const savePrompts = () => store.set('lf:prompts', PROMPTS);
+let selPrompt = PROMPTS[0].name, selVersion = null;
+const vars = (text) => [...new Set([...text.matchAll(/\{\{\s*(\w+)\s*\}\}/g)].map((m) => m[1]))];
+function lineDiff(a, b) {
+  const A = a.split('\n'), B = b.split('\n'), dp = A.map(() => new Array(B.length + 1).fill(0)); dp.push(new Array(B.length + 1).fill(0));
+  for (let i = A.length - 1; i >= 0; i--) for (let j = B.length - 1; j >= 0; j--) dp[i][j] = A[i] === B[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+  const out = []; let i = 0, j = 0;
+  while (i < A.length || j < B.length) {
+    if (i < A.length && j < B.length && A[i] === B[j]) { out.push(el('span', {}, '  ' + A[i] + '\n')); i++; j++; }
+    else if (j < B.length && (i >= A.length || dp[i][j + 1] >= dp[i + 1][j])) { out.push(el('span', { class: 'add' }, '+ ' + B[j])); j++; }
+    else { out.push(el('span', { class: 'del' }, '- ' + A[i])); i++; }
+  }
+  return out;
+}
+function prompts() {
+  $('#p-list').replaceChildren(...PROMPTS.map((p) => el('div', { class: 'ver' + (p.name === selPrompt ? ' sel' : ''), onclick: () => { selPrompt = p.name; selVersion = null; prompts(); } },
+    el('b', { class: 'grow' }, p.name), el('span', { class: 'pill' }, p.type), el('span', { class: 'note' }, `${p.versions.length} v`))));
+  const p = PROMPTS.find((x) => x.name === selPrompt), v = p.versions.find((x) => x.version === selVersion) || p.versions.find((x) => x.labels.includes('production')) || p.versions[p.versions.length - 1];
+  selVersion = v.version;
+  const prev = p.versions.find((x) => x.version === v.version - 1);
+  const play = el('div', { class: 'stack' }); const out = el('pre', { class: 'io' });
+  const compile = () => { let s = v.text; vars(v.text).forEach((k) => { s = s.replaceAll(new RegExp(`\\{\\{\\s*${k}\\s*\\}\\}`, 'g'), $('#pv-' + k).value || `{{${k}}}`); }); out.textContent = s; };
+  const DEF = { clause: section('agreement', '5. Limitation of Liability'), question: 'What is the cap on aggregate liability?', document_type: 'data processing addendum', document: SAMPLES.dpa.slice(0, 400) + '…', playbook: 'standard buy-side' };
+  play.append(...vars(v.text).map((k) => el('label', { class: 'field' }, k, el(k === 'clause' || k === 'document' ? 'textarea' : 'input', { type: 'text', id: 'pv-' + k, rows: 4, value: DEF[k] || '', oninput: compile }))));
+  const editor = el('textarea', { id: 'p-edit', rows: 7 }, v.text);
+  $('#p-detail').replaceChildren(
+    el('div', { class: 'panel' }, el('header', {}, el('h2', { class: 'grow' }, p.name), el('span', { class: 'note' }, 'Fetch in code:'), el('code', {}, `langfuse.get_prompt("${p.name}", label="production")`)),
+      el('div', { class: 'stack' }, ...p.versions.slice().reverse().map((x) => el('div', { class: 'ver' + (x === v ? ' sel' : ''), onclick: () => { selVersion = x.version; prompts(); } },
+        el('b', {}, 'v' + x.version), ...x.labels.map((l) => el('span', { class: 'pill ' + (l === 'production' ? 'good' : l === 'staging' ? 'warn' : '') }, l)), el('span', { class: 'grow note' }, x.message), el('span', { class: 'note mono' }, day(x.at)))))),
+    el('div', { class: 'grid cols-2' },
+      el('div', { class: 'panel' }, el('h2', {}, `Version ${v.version}`), el('pre', { class: 'io' }, v.text), el('div', { class: 'note' }, 'Config: ', el('code', {}, JSON.stringify(v.config))),
+        el('div', { class: 'row' }, el('span', { class: 'note' }, 'Variables:'), ...vars(v.text).map((k) => el('span', { class: 'pill accent' }, k))),
+        el('div', { class: 'row' }, ...['production', 'staging'].map((l) => el('button', { class: 'btn small', disabled: v.labels.includes(l), onclick: () => { p.versions.forEach((x) => { x.labels = x.labels.filter((y) => y !== l); }); v.labels.push(l); savePrompts(); prompts(); toast(`Label ${l} now points to v${v.version}`); } }, `Set ${l}`)))),
+      el('div', { class: 'panel' }, el('h2', {}, prev ? `Changes from v${prev.version}` : 'First version'), prev ? el('pre', { class: 'diff' }, ...lineDiff(prev.text, v.text)) : el('p', { class: 'note' }, 'No earlier version to compare.'))),
+    el('div', { class: 'grid cols-2' },
+      el('div', { class: 'panel' }, el('h2', {}, 'Playground'), play, el('span', { class: 'note' }, 'Compiled prompt'), out),
+      el('div', { class: 'panel' }, el('h2', {}, 'New version'), editor, el('input', { type: 'text', id: 'p-msg', placeholder: 'What changed' }),
+        el('div', { class: 'row' }, el('label', { class: 'field inline' }, el('input', { type: 'checkbox', id: 'p-stage', checked: true }), 'Label as staging'),
+          el('button', { class: 'btn primary', onclick: () => {
+            const text = $('#p-edit').value.trim(); if (!text || text === v.text) return toast('Change the text to save a new version');
+            const n = Math.max(...p.versions.map((x) => x.version)) + 1; p.versions.forEach((x) => { x.labels = x.labels.filter((l) => l !== 'latest' && !($('#p-stage').checked && l === 'staging')); });
+            p.versions.push({ version: n, labels: ['latest', ...($('#p-stage').checked ? ['staging'] : [])], text, config: v.config, message: $('#p-msg').value || 'Edited in the workbench', at: Date.now() });
+            selVersion = n; savePrompts(); prompts(); toast(`Saved v${n}`);
+          } }, 'Save version')))));
+  compile();
+}
+$('#p-new').addEventListener('click', () => {
+  const name = 'prompt-' + (PROMPTS.length + 1);
+  PROMPTS.push({ name, type: 'text', versions: [{ version: 1, labels: ['latest'], text: 'Summarise {{clause}} for a non-lawyer in two sentences.', config: { model: 'claude-haiku-5-5' }, message: 'Created in the workbench', at: Date.now() }] });
+  selPrompt = name; selVersion = null; savePrompts(); prompts();
+});
+
+/* ---------- datasets & experiments ---------- */
+const EXPECTED = ['Twenty-four months', 'Fees paid in the twelve months', 'State of New York', '99.5%', 'within 48 hours', 'Fabrikam Cloud GmbH', 'Thirty days', 'Standard Contractual Clauses', 'Once per calendar year', 'within 60 days'];
+const DATASETS = store.get('lf:datasets', [{ name: 'contract-qa-golden', description: 'Reviewed answers on the sample agreement and addendum',
+  items: QA.slice(0, 10).map(([q, a, doc, sec], i) => ({ id: 'item-' + i, input: { question: q, clause: sec }, expected: EXPECTED[i], doc })), runs: [] }]);
+const saveDatasets = () => store.set('lf:datasets', DATASETS);
+let selDataset = DATASETS[0].name;
+function addDatasetItem(t) {
+  const ds = DATASETS[0];
+  ds.items.push({ id: uid('item'), input: t.input, expected: t.output ? (t.output.answer || JSON.stringify(t.output)) : '', source: t.id });
+  saveDatasets(); toast(`Added to ${ds.name} (${ds.items.length} items)`);
+}
+/* The experiment task: a deterministic stand-in for running the prompt
+   version over each item. v2's grounding instruction raises accuracy. */
+function runTask(item, version) {
+  const qa = QA.find((x) => x[0] === item.input.question), base = qa ? qa[1] : '';
+  const h = [...(item.input.question || '') + version].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
+  const correct = (h % 100) < (version >= 2 ? 90 : 62);
+  return correct ? base : 'The agreement does not say; it is probably the standard market position.';
+}
+const EVALUATORS = {
+  contains_expected: (out, exp) => (out.toLowerCase().includes(String(exp).toLowerCase().slice(0, 18)) ? 1 : 0),
+  grounded: (out) => (/probably|standard market/.test(out) ? 0 : 1),
+};
+function datasets() {
+  $('#ds-list').replaceChildren(...DATASETS.map((d) => el('div', { class: 'ver' + (d.name === selDataset ? ' sel' : ''), onclick: () => { selDataset = d.name; datasets(); } }, el('b', { class: 'grow' }, d.name), el('span', { class: 'note' }, `${d.items.length} items · ${d.runs.length} runs`))));
+  const d = DATASETS.find((x) => x.name === selDataset), qaPrompt = PROMPTS.find((p) => p.name === 'contract-qa');
+  const runs = d.runs;
+  $('#ds-detail').replaceChildren(
+    el('div', { class: 'panel' }, el('header', {}, el('h2', { class: 'grow' }, d.name), el('span', { class: 'note' }, d.description)),
+      el('div', { class: 'row' }, el('label', { class: 'field inline' }, 'Prompt version', el('select', { id: 'ds-ver' }, ...qaPrompt.versions.map((v) => el('option', { value: v.version }, `contract-qa v${v.version} ${v.labels.join(' ')}`)))),
+        el('button', { class: 'btn primary', onclick: async (e) => {
+          e.target.disabled = true; const version = +$('#ds-ver').value, results = [];
+          for (const item of d.items) { await sleep(60); const out = runTask(item, version); results.push({ item: item.id, output: out, scores: Object.fromEntries(Object.entries(EVALUATORS).map(([k, f]) => [k, f(out, item.expected)])) }); }
+          runs.push({ name: `v${version}-run-${runs.length + 1}`, version, at: Date.now(), results }); saveDatasets(); datasets(); toast('Experiment finished');
+        } }, 'Run experiment')),
+      el('div', { class: 'table-wrap' }, el('table', { class: 'data' }, el('tr', {}, el('th', {}, 'Input'), el('th', {}, 'Expected'), ...runs.slice(-3).map((r) => el('th', {}, r.name))),
+        ...d.items.map((it) => el('tr', {}, el('td', {}, it.input.question || JSON.stringify(it.input)), el('td', {}, it.expected),
+          ...runs.slice(-3).map((r) => { const res = r.results.find((x) => x.item === it.id); return el('td', {}, res ? el('div', { class: 'stack' }, el('span', {}, res.output.slice(0, 70)), el('div', { class: 'scorechips' }, ...Object.entries(res.scores).map(([k, v]) => el('span', { class: 'pill ' + (v ? 'good' : 'bad') }, `${k} ${v}`)))) : el('span', { class: 'note' }, 'not in run')); })))))),
+    el('div', { class: 'panel' }, el('h2', {}, 'Run comparison'), runs.length ? el('div', { class: 'table-wrap' }, el('table', { class: 'data' },
+      el('tr', {}, el('th', {}, 'Run'), el('th', {}, 'Prompt'), el('th', {}, 'Items'), ...Object.keys(EVALUATORS).map((k) => el('th', {}, k))),
+      ...runs.map((r) => el('tr', {}, el('td', {}, r.name), el('td', {}, 'v' + r.version), el('td', {}, r.results.length),
+        ...Object.keys(EVALUATORS).map((k) => { const m = r.results.reduce((a, x) => a + x.scores[k], 0) / r.results.length; return el('td', {}, el('div', { class: 'row' }, el('div', { class: 'bar', style: { width: '80px' } }, el('i', { style: { width: m * 100 + '%', background: m >= .8 ? 'var(--good)' : 'var(--warn)' } })), fmt(m, 2))); })))))
+      : el('div', { class: 'empty' }, 'No runs yet. Run v1, then v2, to compare prompt versions on the same items.')));
+}
+
+/* ---------- evaluation ---------- */
+const SCORE_CONFIGS = [
+  { name: 'correctness', type: 'NUMERIC', range: '0–1', description: 'Answer matches the contract' },
+  { name: 'helpfulness', type: 'NUMERIC', range: '0–1', description: 'Usable by a non-lawyer' },
+  { name: 'faithfulness', type: 'NUMERIC', range: '0–1', description: 'Every claim supported by the retrieved clause (LLM judge)' },
+  { name: 'user-feedback', type: 'BOOLEAN', range: '0 / 1', description: 'Thumbs up or down from the app' },
+];
+function evaluation() {
+  const queue = TRACES.filter((t) => t.name === 'contract-qa' && t.output && !t.scores.some((s) => s.source === 'ANNOTATION')).slice(0, 12);
+  const t = queue[0];
+  $('#e-queue').replaceChildren(el('header', {}, el('h2', { class: 'grow' }, 'Annotation queue'), el('span', { class: 'pill warn' }, `${queue.length} to review`)),
+    t ? el('div', { class: 'stack' }, el('div', { class: 'turn' }, el('div', { class: 'q' }, t.input.question), el('div', {}, t.output.answer), el('span', { class: 'note' }, 'Retrieved: ' + t.obs.find((o) => o.type === 'RETRIEVER').output.chunks[0].slice(0, 220) + '…')),
+      ...['correctness', 'helpfulness'].map((n) => el('div', { class: 'row' }, el('span', { style: { width: '110px' } }, n), ...[0, 0.5, 1].map((v) => el('button', { class: 'btn small', onclick: () => { saveScore(t, { name: n, value: v, source: 'ANNOTATION' }); toast(`${n} = ${v}`); evaluation(); } }, String(v)))))) : el('div', { class: 'empty' }, 'Queue is empty.'));
+  const judge = el('div', { class: 'stack' });
+  $('#e-judge').replaceChildren(el('h2', {}, 'LLM-as-a-judge: faithfulness'),
+    el('pre', { class: 'io' }, 'Score from 0 to 1 how well every claim in the answer is supported by the context.\nContext: {{context}}\nAnswer: {{answer}}'),
+    el('div', { class: 'row' }, el('label', { class: 'field inline' }, 'Target', el('select', {}, el('option', {}, 'contract-qa traces'))), el('label', { class: 'field inline' }, 'Sample', el('select', { id: 'j-n' }, ...[10, 25, 50].map((n) => el('option', { value: n }, `last ${n}`))))),
+    el('button', { class: 'btn primary', onclick: () => {
+      // Stand-in judge: share of the answer's content words found in the retrieved clause.
+      const rows = TRACES.filter((x) => x.name === 'contract-qa' && x.output).slice(0, +$('#j-n').value).map((x) => {
+        const ctx = new Set(Text.terms(x.qa ? section(x.qa[2], x.qa[3]) : '')), words = Text.terms(x.output.answer);
+        const f = words.length ? words.filter((w) => ctx.has(w) || /\d/.test(w)).length / words.length : 0; return [x, +f.toFixed(2)];
+      });
+      judge.replaceChildren(el('div', { class: 'table-wrap' }, el('table', { class: 'data' }, el('tr', {}, el('th', {}, 'Question'), el('th', {}, 'Judge score'), el('th', {}, 'Stored score')),
+        ...rows.map(([x, f]) => el('tr', {}, el('td', {}, x.input.question), el('td', {}, el('span', { class: 'pill ' + (f >= .5 ? 'good' : 'bad') }, f)), el('td', {}, (x.scores.find((s) => s.name === 'faithfulness') || {}).value ?? '–'))))));
+    } }, 'Run evaluator'), judge,
+    el('p', { class: 'note' }, 'Here the judge is a word-overlap stand-in so it runs offline; in Langfuse the worker sends this template to the model you configure.'));
+  $('#e-configs').replaceChildren(el('tr', {}, ...['Name', 'Type', 'Range', 'Description'].map((h) => el('th', {}, h))), ...SCORE_CONFIGS.map((c) => el('tr', {}, el('td', {}, c.name), el('td', {}, el('span', { class: 'pill' }, c.type)), el('td', {}, c.range), el('td', {}, c.description))));
+}
+
+/* ---------- keys & SDK ---------- */
+const KEYS = store.get('lf:keys', [{ pk: 'pk-lf-harness-public', note: 'Seeded by setup.sh', created: NOW - 14 * 864e5 }]);
+function keys() {
+  $('#k-table').replaceChildren(el('tr', {}, el('th', {}, 'Public key'), el('th', {}, 'Note'), el('th', {}, 'Created'), el('th', {}, '')),
+    ...KEYS.map((k, i) => el('tr', {}, el('td', { class: 'mono' }, k.pk), el('td', {}, k.note), el('td', { class: 'mono' }, day(k.created)), el('td', {}, i ? el('button', { class: 'btn small', onclick: () => { KEYS.splice(i, 1); store.set('lf:keys', KEYS); keys(); toast('Key revoked'); } }, 'Revoke') : ''))));
+  const k = KEYS[KEYS.length - 1].pk, host = 'http://localhost:3000';
+  const SNIP = {
+    py: `pip install langfuse\n\nfrom langfuse import Langfuse, propagate_attributes\n\nlf = Langfuse(public_key="${k}", secret_key="sk-lf-…", base_url="${host}")\n\nwith propagate_attributes(user_id="maria@northwind.example", session_id="matter-1042"):\n    with lf.start_as_current_observation(name="contract-qa", as_type="agent") as root:\n        with lf.start_as_current_observation(name="answer", as_type="generation",\n                                             model="claude-opus-5-5") as gen:\n            gen.update(output="Fees paid in the prior 12 months.",\n                       usage_details={"input": 420, "output": 40})\nlf.flush()`,
+    ts: `npm install @langfuse/tracing @langfuse/otel\n\nimport { startActiveObservation } from "@langfuse/tracing";\n\nawait startActiveObservation("contract-qa", async (span) => {\n  span.update({ input: { question } });\n  const answer = await askModel(question);\n  span.update({ output: { answer } });\n});\n\n// LANGFUSE_PUBLIC_KEY=${k}  LANGFUSE_BASE_URL=${host}`,
+    otel: `# Any OpenTelemetry exporter can send traces\nOTEL_EXPORTER_OTLP_ENDPOINT="${host}/api/public/otel"\nOTEL_EXPORTER_OTLP_HEADERS="Authorization=Basic $(echo -n ${k}:sk-lf-… | base64)"`,
+  };
+  $('#k-snippet').textContent = SNIP[$('#k-lang').value];
+}
+$('#k-lang').addEventListener('change', keys);
+$('#k-copy').addEventListener('click', () => copyText($('#k-snippet').textContent, 'Snippet copied'));
+$('#k-create').addEventListener('click', () => {
+  const hex = () => [...crypto.getRandomValues(new Uint8Array(12))].map((b) => b.toString(16).padStart(2, '0')).join('');
+  const pk = 'pk-lf-' + hex(), sk = 'sk-lf-' + hex();
+  KEYS.push({ pk, note: $('#k-note').value || 'Created in the workbench', created: Date.now() }); store.set('lf:keys', KEYS);
+  $('#k-new').replaceChildren(el('div', { class: 'stack' }, el('span', { class: 'note' }, 'Copy the secret key now; it is not shown again.'), el('div', { class: 'secret' }, pk), el('div', { class: 'secret' }, sk), el('button', { class: 'btn small', onclick: () => copyText(`LANGFUSE_PUBLIC_KEY=${pk}\nLANGFUSE_SECRET_KEY=${sk}`, 'Keys copied') }, 'Copy as env vars')));
+  keys();
+});
+
+const RENDER = { dashboard, tracing: () => { traceTable(); if (!selTrace) { selTrace = TRACES.find((t) => t.name === 'contract-qa'); selObs = selTrace.obs[0]; } traceDetail(); traceTable(); }, sessions, users, prompts, datasets, evaluation, settings: keys };
+const showTab = initTabs((name) => RENDER[name] && RENDER[name]());
+</script>

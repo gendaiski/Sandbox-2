@@ -8,5 +8,7 @@
   "rag-anything": "https://claude.ai/artifact/Ujih4A2gT331orR8AHE3rE",
   "openflow": "https://claude.ai/artifact/25X4xsc8uFt32a953BxgUQ",
   "prism-ui": "https://claude.ai/artifact/97wRF4yKGb5v7s7tEhb4fg",
-  "langfuse": "https://claude.ai/artifact/TBXPE1gPaNyZex8eupECMX"
+  "langfuse": "https://claude.ai/artifact/TBXPE1gPaNyZex8eupECMX",
+  "flowise": "https://claude.ai/artifact/UdZaUZTWn9z75JT6H51hme",
+  "chunking-methods": "https://claude.ai/artifact/1cZrUYeQJ88Mm4MYrdASE4"
 }

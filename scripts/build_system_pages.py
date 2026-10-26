@@ -253,6 +253,11 @@ def render(slug: str, meta: dict) -> str:
 
 out = bench / "pages"
 out.mkdir(parents=True, exist_ok=True)
+written = 0
 for slug, meta in SYSTEMS.items():
+    if not any(r["job"] in meta["jobs"] for r in rows):
+        print(f"no CI report for {slug}; keeping its previous page")  # e.g. its setup step failed
+        continue
     (out / f"{slug}.html").write_text(render(slug, meta))
-print(f"wrote {len(SYSTEMS)} pages to {out}")
+    written += 1
+print(f"wrote {written} pages to {out}")

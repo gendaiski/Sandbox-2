@@ -10,6 +10,7 @@ function el(tag, props = {}, ...kids) {
     else if (k === 'style' && typeof v === 'object') Object.assign(n.style, v);
     else if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
     else if (k === 'html') n.innerHTML = v;
+    else if (k === 'value' || k === 'checked' || k === 'disabled' || k === 'selected') n[k] = v;
     else if (k in n && typeof v !== 'string') n[k] = v;
     else n.setAttribute(k, v === true ? '' : v);
   }
@@ -298,7 +299,7 @@ function renderOverlay(container, doc, chunks, { onPick } = {}) {
 
 function renderChunkCards(container, chunks, { limit = 200, extra } = {}) {
   container.replaceChildren(...(chunks.length ? chunks.slice(0, limit).map((c, i) => el('div', { class: 'chunk', style: { borderLeftColor: `var(--e${i % 8})` }, id: 'chunk-' + i },
-    el('div', { class: 'meta' }, el('b', {}, `#${i + 1}`), `${c.text.length} chars`, `${Text.words(c.text)} words`,
+    el('div', { class: 'meta' }, el('b', {}, `#${i + 1}`), el('span', {}, `${c.text.length} chars`), el('span', {}, `${Text.words(c.text)} words`),
       ...Object.entries(c.meta || {}).filter(([k, v]) => k !== 'method' && v !== '' && v != null && !(Array.isArray(v) && !v.length)).slice(0, 4)
         .map(([k, v]) => el('span', {}, `${k}: ${Array.isArray(v) ? v.join(', ') : String(v).slice(0, 70)}`)), extra ? extra(c, i) : null),
     el('pre', {}, c.text))) : [el('div', { class: 'empty' }, 'No chunks')]));
@@ -404,11 +405,11 @@ function barChart(svg, rows, { max, fmtv = (v) => fmt(v, 2), height = 22 } = {})
 
 /* Sparkline/area chart: values over time */
 function areaChart(svg, values, { labels = [], color = 'var(--accent)', h = 120, fmtv = (v) => fmt(v) } = {}) {
-  const W = 520, H = h, pad = 22, max = Math.max(1, ...values), n = values.length;
-  const x = (i) => pad + (i / Math.max(1, n - 1)) * (W - pad * 2), y = (v) => H - pad - (v / max) * (H - pad * 2);
+  const W = 520, H = h, pad = 22, left = 40, max = Math.max(1e-9, ...values), n = values.length;
+  const x = (i) => left + (i / Math.max(1, n - 1)) * (W - left - pad), y = (v) => H - pad - (v / max) * (H - pad * 2);
   const pts = values.map((v, i) => `${x(i)},${y(v)}`).join(' ');
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-  svg.innerHTML = `${[0, 0.5, 1].map((f) => `<line x1="${pad}" x2="${W - pad}" y1="${y(max * f)}" y2="${y(max * f)}" stroke="var(--line)"/><text x="${pad - 4}" y="${y(max * f) + 4}" text-anchor="end" font-size="10" fill="var(--muted)">${esc(fmtv(max * f))}</text>`).join('')}
+  svg.innerHTML = `${[0, 0.5, 1].map((f) => `<line x1="${left}" x2="${W - pad}" y1="${y(max * f)}" y2="${y(max * f)}" stroke="var(--line)"/><text x="${left - 5}" y="${y(max * f) + 4}" text-anchor="end" font-size="10" fill="var(--muted)">${esc(fmtv(max * f))}</text>`).join('')}
     <polygon points="${x(0)},${H - pad} ${pts} ${x(n - 1)},${H - pad}" fill="${color}" opacity=".16"/>
     <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2"/>
     <circle cx="${x(n - 1)}" cy="${y(values[n - 1])}" r="3.5" fill="${color}"/>

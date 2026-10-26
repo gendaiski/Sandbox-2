@@ -21,5 +21,6 @@ else
   uv pip install -q --python "$PY" "lightrag-hku<1.5" huggingface_hub tqdm python-dotenv numpy Pillow reportlab openai  # openai: the examples and live check use it
 fi
 # The Workbench web app (app/) and its tests.
-uv pip install -q --python "$PY" pytest pytest-asyncio fastapi "uvicorn[standard]" python-multipart networkx anthropic httpx openai
+# markdown, pygments: the markdown extra minus WeasyPrint; upstream tests assume it is installed
+uv pip install -q --python "$PY" pytest pytest-asyncio fastapi "uvicorn[standard]" python-multipart networkx anthropic httpx openai markdown pygments
 echo "rag-anything ready: $HERE/.venv"

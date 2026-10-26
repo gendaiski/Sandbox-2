@@ -1,0 +1,1052 @@
+<title>Flowise Flow Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap"><meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Systems Lab shell: one family for every system page.
+   Layout: app bar, tab strip, working area; each page sets --accent. */
+:root {
+  --bg: #f3f5f8; --panel: #ffffff; --sunk: #eceff4; --ink: #151a23; --muted: #596273; --line: #dce1e9;
+  --accent: #2f5bd3; --accent-ink: #ffffff; --accent-soft: #e5ecfc;
+  --good: #19794a; --good-soft: #e1f3e8; --warn: #946200; --warn-soft: #fbf0d6; --bad: #b42831; --bad-soft: #fbe3e4;
+  --c0: #dbe7ff; --c1: #ffe3c8; --c2: #d6f2df; --c3: #f6d9ef; --c4: #fff2b8; --c5: #d5f0f4; --c6: #e6dcff; --c7: #ffd9d6;
+  --e0: #4f7ae6; --e1: #d9822b; --e2: #2f9d5a; --e3: #b8509a; --e4: #b08f00; --e5: #1f93a5; --e6: #7d5bd6; --e7: #d14d43;
+  --font: "Schibsted Grotesk", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --r: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1116; --panel: #161a21; --sunk: #1d222b; --ink: #e5e8ee; --muted: #97a0ae; --line: #2a303b;
+    --accent-soft: #1d2a4a; --good: #67d197; --good-soft: #15301f; --warn: #eec266; --warn-soft: #362b11; --bad: #f08a8f; --bad-soft: #3c1b1d;
+    --c0: #1f2d4d; --c1: #3d2b18; --c2: #18352a; --c3: #3a2136; --c4: #3a3413; --c5: #143438; --c6: #2b2448; --c7: #3d2220;
+    --e0: #86a5f2; --e1: #f0a45e; --e2: #6cc98f; --e3: #e08bc8; --e4: #e3c64e; --e5: #67c6d4; --e6: #ad93f0; --e7: #f08a80;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1116; --panel: #161a21; --sunk: #1d222b; --ink: #e5e8ee; --muted: #97a0ae; --line: #2a303b;
+  --accent-soft: #1d2a4a; --good: #67d197; --good-soft: #15301f; --warn: #eec266; --warn-soft: #362b11; --bad: #f08a8f; --bad-soft: #3c1b1d;
+  --c0: #1f2d4d; --c1: #3d2b18; --c2: #18352a; --c3: #3a2136; --c4: #3a3413; --c5: #143438; --c6: #2b2448; --c7: #3d2220;
+  --e0: #86a5f2; --e1: #f0a45e; --e2: #6cc98f; --e3: #e08bc8; --e4: #e3c64e; --e5: #67c6d4; --e6: #ad93f0; --e7: #f08a80;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { min-height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14.5px/1.5 var(--font); }
+a { color: var(--accent); }
+code, pre, .mono { font-family: var(--mono); font-size: 12.5px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.appbar { background: var(--panel); border-bottom: 1px solid var(--line); }
+.appbar .wrap { max-width: 1320px; margin: 0 auto; padding-block: 14px 0; display: flex; flex-direction: column; gap: 10px; }
+.brand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.brand h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+.brand .tag { color: var(--muted); }
+.brand .links { margin-left: auto; display: flex; gap: 14px; font-size: 13px; flex-wrap: wrap; }
+.mark { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; background: var(--accent); color: var(--accent-ink);
+  font: 700 13px var(--mono); align-self: center; }
+.tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+.tabs button { border: 0; background: none; padding: 9px 13px 11px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; white-space: nowrap; font-weight: 500; }
+.tabs button:hover { color: var(--ink); }
+.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+main.wrap { max-width: 1320px; margin: 0 auto; padding-block: 18px 40px; }
+[data-panel] { display: flex; flex-direction: column; gap: 16px; }
+.note { font-size: 12.5px; color: var(--muted); }
+.banner { font-size: 12.5px; color: var(--muted); background: var(--sunk); border-radius: var(--r); padding: 8px 12px; }
+
+.grid { display: grid; gap: 16px; }
+.cols-2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.cols-side { grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); }
+.cols-side-r { grid-template-columns: minmax(0, 1fr) minmax(280px, 380px); }
+.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 900px) { .cols-2, .cols-side, .cols-side-r, .cols-3 { grid-template-columns: minmax(0, 1fr); } .cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.panel > h2, .panel > header h2 { font-size: 14.5px; font-weight: 600; }
+.panel > header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.panel > header .grow { flex: 1; }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.stack { display: flex; flex-direction: column; gap: 8px; }
+.grow { flex: 1; min-width: 0; }
+
+.btn { border: 1px solid var(--line); background: var(--panel); border-radius: 7px; padding: 6px 12px; cursor: pointer; font-weight: 500; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.small { padding: 3px 9px; font-size: 12.5px; }
+.btn:disabled { opacity: .5; cursor: default; }
+label.field { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--muted); min-width: 0; }
+label.field.inline { flex-direction: row; align-items: center; gap: 8px; }
+input[type=text], input[type=number], input[type=search], input[type=url], select, textarea {
+  border: 1px solid var(--line); background: var(--panel); border-radius: 7px; padding: 6px 9px; min-width: 0; color: var(--ink); }
+textarea { font-family: var(--mono); font-size: 12.5px; line-height: 1.5; resize: vertical; width: 100%; }
+input[type=range] { accent-color: var(--accent); }
+
+.pill { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 600; padding: 1px 8px; border-radius: 99px; background: var(--sunk); color: var(--muted); white-space: nowrap; }
+.pill.good { background: var(--good-soft); color: var(--good); } .pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); } .pill.accent { background: var(--accent-soft); color: var(--accent); }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.kpi { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; }
+.kpi b { display: block; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.kpi span { font-size: 12px; color: var(--muted); }
+
+.table-wrap { overflow-x: auto; }
+table.data { border-collapse: collapse; width: 100%; font-size: 13px; }
+table.data th { text-align: left; font-weight: 600; color: var(--muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; padding: 7px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.data td { padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; font-variant-numeric: tabular-nums; }
+table.data tr.click { cursor: pointer; } table.data tr.click:hover td { background: var(--sunk); }
+table.data tr.sel td { background: var(--accent-soft); }
+
+.chunks { display: flex; flex-direction: column; gap: 8px; }
+.chunk { border: 1px solid var(--line); border-left: 4px solid var(--e0); border-radius: 6px; padding: 8px 10px; background: var(--panel); }
+.chunk .meta { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11.5px; color: var(--muted); margin-bottom: 4px; }
+.chunk pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-size: 12px; max-height: 220px; overflow: auto; }
+.overlay { white-space: pre-wrap; word-break: break-word; font: 12.5px/1.65 var(--mono); background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px; max-height: 560px; overflow: auto; }
+.overlay mark { color: inherit; border-radius: 3px; padding: 1px 0; }
+.overlay .ov { background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgba(127,127,127,.25) 4px 6px); }
+
+pre.code { background: var(--sunk); border-radius: 7px; padding: 10px 12px; margin: 0; overflow-x: auto; white-space: pre; }
+pre.mermaid { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; margin: 0; overflow-x: auto; text-align: center; }
+.toast { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 9px 14px; border-radius: 8px; font-size: 13px; opacity: 0; transform: translateY(8px); transition: .2s; pointer-events: none; z-index: 50; }
+.toast.show { opacity: 1; transform: none; }
+.empty { color: var(--muted); font-size: 13px; padding: 18px; text-align: center; border: 1px dashed var(--line); border-radius: var(--r); }
+.bar { height: 8px; background: var(--sunk); border-radius: 99px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
+.kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 12px; font-size: 13px; }
+.kv dt { color: var(--muted); } .kv dd { margin: 0; word-break: break-word; }
+canvas.graph { width: 100%; height: 460px; background: var(--sunk); border-radius: var(--r); display: block; touch-action: none; }
+.footer { color: var(--muted); font-size: 12px; text-align: center; padding-block: 8px 24px; }
+
+</style>
+<style>
+  :root { --accent: #4a52c9; --accent-soft: #e6e7fb; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #9aa0f5; --accent-ink: #12143a; --accent-soft: #23264d; } }
+  :root[data-theme="dark"] { --accent: #9aa0f5; --accent-ink: #12143a; --accent-soft: #23264d; }
+  .studio { display: grid; grid-template-columns: 210px minmax(0, 1fr) 320px; gap: 12px; min-height: 640px; }
+  @media (max-width: 1100px) { .studio { grid-template-columns: minmax(0, 1fr); } }
+  .palette { display: flex; flex-direction: column; gap: 4px; max-height: 680px; overflow: auto; }
+  .palette h3 { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 8px 0 2px; }
+  .palette button { text-align: left; border: 1px solid var(--line); background: var(--panel); border-radius: 6px; padding: 5px 8px; cursor: pointer; font-size: 12.5px; }
+  .palette button:hover { border-color: var(--accent); }
+  .board { position: relative; overflow: auto; background-color: var(--sunk); background-image: radial-gradient(var(--line) 1px, transparent 1px); background-size: 18px 18px; border-radius: var(--r); border: 1px solid var(--line); height: 680px; }
+  .stage { position: relative; width: 1500px; height: 900px; }
+  .stage svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .stage svg path { fill: none; stroke: var(--muted); stroke-width: 2; cursor: pointer; pointer-events: stroke; }
+  .stage svg path:hover { stroke: var(--bad); stroke-width: 3; }
+  .stage svg path.live { stroke: var(--accent); stroke-width: 3; }
+  .node { position: absolute; width: 220px; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; box-shadow: 0 1px 3px rgba(0,0,0,.08); font-size: 12.5px; user-select: none; }
+  .node.sel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+  .node.run { border-color: var(--good); box-shadow: 0 0 0 3px var(--good-soft); }
+  .node.bad { border-color: var(--bad); }
+  .node .hd { display: flex; align-items: center; gap: 7px; padding: 7px 9px; border-bottom: 1px solid var(--line); cursor: grab; font-weight: 600; }
+  .node .hd i { width: 20px; height: 20px; border-radius: 5px; display: grid; place-items: center; font: 700 10px var(--mono); color: #fff; font-style: normal; flex: none; }
+  .node .cat { font-size: 10.5px; color: var(--muted); padding: 4px 9px 0; }
+  .port { position: relative; display: flex; align-items: center; padding: 3px 9px; gap: 6px; color: var(--muted); }
+  .port.out { justify-content: flex-end; }
+  .dot { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: var(--panel); border: 2px solid var(--accent); cursor: crosshair; top: 50%; transform: translateY(-50%); }
+  .port.in .dot { left: -7px; } .port.out .dot { right: -7px; }
+  .dot.pending { background: var(--accent); }
+  .port .ty { font: 10px var(--mono); }
+  .chat { display: flex; flex-direction: column; gap: 8px; max-height: 420px; overflow: auto; }
+  .msg { padding: 8px 10px; border-radius: 9px; max-width: 92%; white-space: pre-wrap; word-break: break-word; }
+  .msg.user { align-self: flex-end; background: var(--accent); color: var(--accent-ink); }
+  .msg.bot { align-self: flex-start; background: var(--sunk); }
+  .msg .src { font-size: 11.5px; color: var(--muted); margin-top: 6px; }
+  .steps { font: 11.5px/1.5 var(--mono); display: flex; flex-direction: column; gap: 3px; }
+  .steps div { display: flex; gap: 8px; } .steps b { color: var(--good); font-weight: 500; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+  .card h3 { font-size: 14.5px; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">Fw</span><h1>Flowise Flow Studio</h1><span class="tag">Build LLM apps and agents by wiring nodes on a canvas</span>
+      <span class="links"><a href="https://github.com/FlowiseAI/Flowise" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/flowise" target="_blank" rel="noopener">Run the real server</a></span></div>
+    <nav class="tabs" aria-label="Sections">
+      <button data-tab="flows">Chatflows &amp; Agentflows</button><button data-tab="canvas">Canvas</button><button data-tab="docstores">Document Stores</button>
+      <button data-tab="marketplace">Marketplace</button><button data-tab="tools">Tools</button><button data-tab="credentials">Credentials &amp; Variables</button>
+      <button data-tab="executions">Executions</button><button data-tab="api">API &amp; Embed</button><button data-tab="how">How it works</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">An interactive model of Flowise's features, not affiliated with FlowiseAI. Flows really execute here: documents load, split, embed (TF-IDF), and retrieve in your browser. Model calls are answered by an extractive stand-in that quotes the retrieved text, since the page holds no API keys.</p>
+
+  <section data-panel="flows">
+    <div class="row"><button class="btn primary" id="f-newchat">New chatflow</button><button class="btn" id="f-newagent">New agentflow</button></div>
+    <div class="cards" id="f-cards"></div>
+  </section>
+
+  <section data-panel="canvas" hidden>
+    <div class="row"><b id="c-name"></b><span class="pill" id="c-type"></span><span class="grow"></span><span class="note" id="c-valid"></span>
+      <button class="btn small" id="c-auto">Tidy layout</button><button class="btn small" id="c-save">Save</button></div>
+    <div class="studio">
+      <div class="panel palette" id="c-palette"></div>
+      <div class="board" id="c-board"><div class="stage" id="c-stage"><svg id="c-edges"></svg></div></div>
+      <div class="stack">
+        <div class="panel" id="c-inspector"><h2>Inspector</h2><p class="note">Select a node to edit its settings. Drag a node by its title. Connect by clicking an output dot, then a matching input dot. Click a wire to remove it.</p></div>
+        <div class="panel"><header><h2 class="grow">Chat</h2><button class="btn small" id="c-clear">Clear</button></header>
+          <div class="chat" id="c-chat"></div>
+          <form class="row" id="c-form"><input type="text" id="c-q" class="grow" placeholder="Ask the flow" autocomplete="off"><button class="btn primary">Send</button></form>
+          <div class="row" id="c-suggest"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section data-panel="docstores" hidden>
+    <div class="grid cols-side">
+      <div class="panel"><h2>Document store</h2>
+        <label class="field">Name <input type="text" id="ds-name" value="contracts"></label>
+        <label class="field">Loader <select id="ds-src"><option value="both">Both documents</option><option value="agreement">Text: Master Services Agreement</option><option value="dpa">Text: Data Processing Addendum</option></select></label>
+        <label class="field">Splitter <select id="ds-split"><option value="recursive">Recursive Character Text Splitter</option><option value="markdown">Markdown Text Splitter</option><option value="token">Token Text Splitter</option></select></label>
+        <div class="grid cols-2"><label class="field">Chunk size <input type="number" id="ds-size" value="500" min="100" step="50"></label><label class="field">Overlap <input type="number" id="ds-ov" value="50" min="0" step="10"></label></div>
+        <label class="field inline"><input type="checkbox" id="ds-meta" checked> Add metadata: source, section</label>
+        <div class="row"><button class="btn" id="ds-preview">Preview chunks</button><button class="btn primary" id="ds-upsert">Upsert to vector store</button></div>
+        <div id="ds-status" class="note"></div>
+        <h2>Retrieval test</h2>
+        <div class="row"><input type="text" id="ds-q" class="grow" value="How fast must breaches be reported?"><button class="btn" id="ds-search">Search</button></div>
+      </div>
+      <div class="panel"><header><h2 class="grow">Chunks</h2><span class="note" id="ds-count"></span></header><div class="chunks" id="ds-chunks"><div class="empty">Choose a loader and splitter, then preview.</div></div></div>
+    </div>
+  </section>
+
+  <section data-panel="marketplace" hidden><div class="cards" id="m-cards"></div></section>
+
+  <section data-panel="tools" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Tools available to agents</h2><div id="t-list" class="stack"></div></div>
+      <div class="panel" id="t-test"></div>
+    </div>
+  </section>
+
+  <section data-panel="credentials" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Credentials</h2><p class="note">Encrypted at rest on the server; nodes reference them by name.</p>
+        <div class="row"><select id="cr-type"><option>Anthropic API</option><option>OpenAI API</option><option>Pinecone API</option><option>Postgres</option></select><input type="text" id="cr-name" placeholder="Name" class="grow"><input type="text" id="cr-key" placeholder="Key"><button class="btn primary" id="cr-add">Add</button></div>
+        <div class="table-wrap"><table class="data" id="cr-table"></table></div></div>
+      <div class="panel"><h2>Variables</h2><p class="note">Use in any node as <code>$vars.name</code>. Runtime variables can be overridden per request.</p>
+        <div class="row"><input type="text" id="v-name" placeholder="name"><input type="text" id="v-val" placeholder="value" class="grow"><select id="v-type"><option>static</option><option>runtime</option></select><button class="btn primary" id="v-add">Add</button></div>
+        <div class="table-wrap"><table class="data" id="v-table"></table></div></div>
+    </div>
+  </section>
+
+  <section data-panel="executions" hidden>
+    <div class="grid cols-side"><div class="panel"><h2>Executions</h2><div class="table-wrap"><table class="data" id="x-table"></table></div></div><div class="panel" id="x-detail"><div class="empty">Every chat message runs the flow; runs appear here with each node's output.</div></div></div>
+  </section>
+
+  <section data-panel="api" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><header><h2 class="grow">Prediction API</h2><select id="a-lang"><option value="curl">cURL</option><option value="py">Python</option><option value="js">JavaScript</option></select><button class="btn small" id="a-copy">Copy</button></header><pre class="code" id="a-code"></pre></div>
+      <div class="panel"><header><h2 class="grow">Embed a chat bubble</h2><button class="btn small" id="a-copy2">Copy</button></header><pre class="code" id="a-embed"></pre>
+        <p class="note">The bubble posts to the same prediction endpoint; flows can be made public or protected with an API key.</p></div>
+    </div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Architecture</h2>
+<pre class="mermaid">
+flowchart LR
+  UI["React UI<br/>canvas, chat, stores"] -->|"REST /api/v1"| SRV["Express server"]
+  EMB["Embedded chat / API clients"] -->|"POST /prediction/:id"| SRV
+  SRV --> COMP["Node components<br/>(LangChain.js, LlamaIndex)"]
+  SRV <--> DB[("SQLite / Postgres / MySQL<br/>flows, credentials, messages")]
+  SRV -->|"queue mode"| Q[("Redis / BullMQ")] --> W["Workers"]
+  COMP --> LLM["Model providers"]
+  COMP --> VS[("Vector stores")]
+</pre></div>
+      <div class="panel"><h2>What happens when you send a message</h2>
+<pre class="mermaid">
+sequenceDiagram
+  participant C as Chat
+  participant S as Server
+  participant G as Flow graph
+  C->>S: POST /prediction/:id {question}
+  S->>G: build graph from flowData, find the ending node
+  G->>G: init nodes in dependency order (loaders, splitters, embeddings, vector store)
+  G->>G: run ending node (chain or agent) with question and memory
+  G-->>S: answer + source documents + used tools
+  S-->>C: stream tokens, then the final message
+</pre></div>
+      <div class="panel"><h2>Agentflow execution</h2>
+<pre class="mermaid">
+flowchart LR
+  START(["Start"]) --> CLASS{"Condition<br/>is it about a clause?"}
+  CLASS -->|"yes"| RET["Retriever"] --> AG["Agent"] --> HUM{{"Human input<br/>approve the answer"}}
+  CLASS -->|"no"| DR1["Direct reply"]
+  HUM -->|"approved"| DR2["Direct reply"]
+  HUM -->|"rejected"| AG
+</pre></div>
+      <div class="panel"><h2>What each section here maps to</h2><dl class="kv">
+        <dt>Canvas</dt><dd>Chatflows (LangChain nodes with typed inputs) and Agentflows (step nodes with branches and human approval).</dd>
+        <dt>Document Stores</dt><dd>Loaders and splitters with chunk preview, upsert into a vector store, retrieval testing.</dd>
+        <dt>Marketplace</dt><dd>Ready-made flows you load onto the canvas and adapt.</dd>
+        <dt>Tools</dt><dd>Built-in and custom tools that agents may call.</dd>
+        <dt>Executions</dt><dd>Each run with the output of every node, for debugging.</dd>
+        <dt>API &amp; Embed</dt><dd>The prediction endpoint and the embeddable chat widget.</dd></dl></div>
+    </div>
+  </section>
+</main>
+<p class="footer">The real Flowise server is tested in <code>systems/flowise</code> (owner sign-up, API keys, flows, document stores and predictions over its REST API).</p>
+<script>
+/* Systems Lab shared runtime: DOM helpers, text tools, chunkers, metrics,
+   a force-directed graph and a pdf.js loader. Inlined into every page. */
+const $ = (s, root = document) => root.querySelector(s);
+const $$ = (s, root = document) => [...root.querySelectorAll(s)];
+function el(tag, props = {}, ...kids) {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') n.className = v;
+    else if (k === 'style' && typeof v === 'object') Object.assign(n.style, v);
+    else if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
+    else if (k === 'html') n.innerHTML = v;
+    else if (k === 'value' || k === 'checked' || k === 'disabled' || k === 'selected') n[k] = v;
+    else if (k in n && typeof v !== 'string') n[k] = v;
+    else n.setAttribute(k, v === true ? '' : v);
+  }
+  for (const kid of kids.flat()) if (kid != null && kid !== false) n.append(kid.nodeType ? kid : String(kid));
+  return n;
+}
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmt = (n, d = 0) => Number(n).toLocaleString('en-US', { maximumFractionDigits: d, minimumFractionDigits: d });
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const uid = (p = 'id') => p + '-' + Math.random().toString(36).slice(2, 10);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* storage unavailable */ } },
+};
+
+function toast(msg) {
+  let t = $('.toast');
+  if (!t) document.body.append(t = el('div', { class: 'toast', role: 'status' }));
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+async function copyText(text, what = 'Copied') {
+  try { await navigator.clipboard.writeText(text); toast(what); }
+  catch { toast('Copy is blocked here: select the text and copy it'); }
+}
+
+/* Tabs: <nav class="tabs"><button data-tab="x"> with <section data-panel="x">. */
+function initTabs(onShow) {
+  const buttons = $$('.tabs button');
+  const show = (name) => {
+    if (!buttons.some((b) => b.dataset.tab === name)) name = buttons[0].dataset.tab;
+    buttons.forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === name)));
+    $$('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== name; });
+    store.set('tab:' + document.title, name);
+    onShow && onShow(name);
+  };
+  buttons.forEach((b) => { b.setAttribute('role', 'tab'); b.addEventListener('click', () => show(b.dataset.tab)); });
+  const fromHash = /^[\w.~-]+$/.test(location.hash.slice(1)) ? location.hash.slice(1) : null;
+  show(fromHash || store.get('tab:' + document.title, buttons[0].dataset.tab));
+  return show;
+}
+
+/* ------------------------------------------------------------ text */
+const Text = {
+  tokens(doc) { return [...doc.matchAll(/\S+/g)].map((m) => [m.index, m.index + m[0].length]); },
+  strip(doc, s, e) { while (s < e && /\s/.test(doc[s])) s++; while (e > s && /\s/.test(doc[e - 1])) e--; return e > s ? [s, e] : null; },
+  sentences(doc) {
+    const out = []; let start = 0;
+    const re = /(?<=[.!?])["')\]]*\s+(?=[A-Z0-9"'(\[#*-])|\n\s*\n/g;
+    for (const m of doc.matchAll(re)) { const sp = Text.strip(doc, start, m.index); if (sp) out.push(sp); start = m.index + m[0].length; }
+    const sp = Text.strip(doc, start, doc.length); if (sp) out.push(sp);
+    return out;
+  },
+  paragraphs(doc) {
+    const out = []; let start = 0;
+    for (const m of doc.matchAll(/\n\s*\n/g)) { const sp = Text.strip(doc, start, m.index); if (sp) out.push(sp); start = m.index + m[0].length; }
+    const sp = Text.strip(doc, start, doc.length); if (sp) out.push(sp);
+    return out;
+  },
+  headings(doc) { return [...doc.matchAll(/^(#{1,6})\s+(.+)$/gm)].map((m) => ({ at: m.index, level: m[1].length, title: m[2].replace(/\*/g, '').trim() })); },
+  headingPath(heads, at) {
+    let path = [];
+    for (const h of heads) { if (h.at > at) break; path = path.filter((p) => p.level < h.level).concat([h]); }
+    return path.map((p) => p.title);
+  },
+  STOP: new Set('a an and are as at be by for from has have in is it its of on or that the this to was were will with shall may any all such each other than not no under which who whom their there these those into upon if then'.split(' ')),
+  terms(text) { return (text.toLowerCase().match(/[a-z][a-z'-]+/g) || []).filter((w) => w.length > 2 && !Text.STOP.has(w)); },
+  tfidf(texts) {
+    const docs = texts.map((t) => { const c = new Map(); for (const w of Text.terms(t)) c.set(w, (c.get(w) || 0) + 1); return c; });
+    const df = new Map(); docs.forEach((d) => d.forEach((_, w) => df.set(w, (df.get(w) || 0) + 1)));
+    const n = docs.length;
+    return docs.map((d) => {
+      const total = [...d.values()].reduce((a, b) => a + b, 0) || 1; const v = new Map(); let norm = 0;
+      d.forEach((c, w) => { const x = (c / total) * Math.log((1 + n) / (1 + df.get(w)) + 1); v.set(w, x); norm += x * x; });
+      norm = Math.sqrt(norm) || 1; v.forEach((x, w) => v.set(w, x / norm)); return v;
+    });
+  },
+  cos(a, b) { if (a.size > b.size) [a, b] = [b, a]; let s = 0; a.forEach((x, w) => { s += x * (b.get(w) || 0); }); return s; },
+  topTerms(text, k = 3) { const c = new Map(); for (const w of Text.terms(text)) c.set(w, (c.get(w) || 0) + 1); return [...c].sort((a, b) => b[1] - a[1]).slice(0, k).map((x) => x[0]); },
+  entities(text) {
+    const out = new Set();
+    for (const m of text.matchAll(/"([A-Z][A-Za-z ]+)"|\b((?:[A-Z][a-z]+|[A-Z]{2,})(?:\s+(?:[A-Z][a-z]+|[A-Z]{2,}|LLC|Ltd\.?|Inc\.?|GmbH))+)/g)) out.add((m[1] || m[2]).trim());
+    return out;
+  },
+  words(t) { return (t.match(/\S+/g) || []).length; },
+};
+
+/* ------------------------------------------------------------ chunkers
+   The 20 methods of itsual/Chunking-Methods-for-RAG (same algorithms as
+   systems/chunking-methods/chunking_methods.py). Each returns
+   [{text, start, end, meta}] with text === doc.slice(start, end) unless
+   meta.added_context says otherwise. */
+const C = (doc, s, e, meta = {}) => ({ text: doc.slice(s, e), start: s, end: e, meta });
+const CS = (doc, s, e, meta) => { const sp = Text.strip(doc, s, e); return sp ? C(doc, sp[0], sp[1], meta) : null; };
+function pack(doc, units, max, method) {
+  const out = []; let cur = null;
+  for (const [s, e] of units) { if (cur && e - cur[0] > max) { out.push(C(doc, cur[0], cur[1], { method })); cur = null; } cur = cur ? [cur[0], e] : [s, e]; }
+  if (cur) out.push(C(doc, cur[0], cur[1], { method }));
+  return out;
+}
+const SEPARATORS = ['\n## ', '\n### ', '\n\n', '\n', '. ', ' '];
+const Chunkers = {
+  fixed_size(doc, { size = 500 } = {}) { const o = []; for (let i = 0; i < doc.length; i += size) o.push(C(doc, i, Math.min(i + size, doc.length), { method: 'fixed_size' })); return o; },
+  token_based(doc, { max_tokens = 100 } = {}) { const t = Text.tokens(doc), o = []; for (let i = 0; i < t.length; i += max_tokens) { const j = Math.min(i + max_tokens, t.length); o.push(C(doc, t[i][0], t[j - 1][1], { method: 'token_based', tokens: j - i })); } return o; },
+  sentence_based(doc, { max_sentences = 4 } = {}) { const s = Text.sentences(doc), o = []; for (let i = 0; i < s.length; i += max_sentences) o.push(C(doc, s[i][0], s[Math.min(i + max_sentences, s.length) - 1][1], { method: 'sentence_based' })); return o; },
+  paragraph_based(doc, { max_chars = 1200 } = {}) { return pack(doc, Text.paragraphs(doc), max_chars, 'paragraph_based'); },
+  page_based(doc) { const o = []; let pos = 0; doc.split('\f').forEach((p, i) => { const c = CS(doc, pos, pos + p.length, { method: 'page_based', page: i + 1 }); if (c) o.push(c); pos += p.length + 1; }); return o; },
+  sliding_window(doc, { window = 600, step = 400 } = {}) { step = Math.max(1, Math.min(step, window)); const o = []; for (let i = 0; ; i += step) { o.push(C(doc, i, Math.min(i + window, doc.length), { method: 'sliding_window' })); if (i + window >= doc.length) break; } return o; },
+  fixed_token_overlap(doc, { max_tokens = 100, overlap = 20 } = {}) {
+    overlap = Math.min(overlap, max_tokens - 1); const t = Text.tokens(doc), o = []; let i = 0;
+    while (i < t.length) { const j = Math.min(i + max_tokens, t.length); o.push(C(doc, t[i][0], t[j - 1][1], { method: 'fixed_token_overlap', overlap_tokens: i ? overlap : 0 })); if (j === t.length) break; i = j - overlap; }
+    return o;
+  },
+  recursive(doc, { max_chars = 800, separators = SEPARATORS } = {}) {
+    const split = (s, e, lvl) => {
+      if (e - s <= max_chars || lvl >= separators.length) return [[s, e]];
+      const sep = separators[lvl], pieces = []; let cur = s;
+      for (;;) { const k = doc.indexOf(sep, cur + 1); if (k < 0 || k >= e) break; pieces.push([cur, k]); cur = k; }
+      pieces.push([cur, e]);
+      return pieces.length === 1 ? split(s, e, lvl + 1) : pieces.flatMap(([a, b]) => split(a, b, lvl + 1));
+    };
+    return pack(doc, split(0, doc.length, 0), max_chars, 'recursive').map((c) => CS(doc, c.start, c.end, { method: 'recursive' })).filter(Boolean);
+  },
+  recursive_python(code, { max_chars = 1200 } = {}) {
+    return Chunkers.recursive(code, { max_chars, separators: ['\nclass ', '\ndef ', '\n    def ', '\n\n', '\n', ' '] }).map((c) => ({ ...c, meta: { method: 'recursive_python' } }));
+  },
+  context_enriched(doc, { max_chars = 800, neighbour_chars = 120 } = {}) {
+    const base = Chunkers.recursive(doc, { max_chars }), heads = Text.headings(doc);
+    return base.map((c, i) => {
+      const path = Text.headingPath(heads, c.start), prev = i ? base[i - 1].text.slice(-neighbour_chars).trim() : '';
+      const prefix = (path.length ? `[Section: ${path.join(' > ')}]\n` : '') + (prev ? `[Previously: …${prev}]\n` : '');
+      return { text: prefix + c.text, start: c.start, end: c.end, meta: { method: 'context_enriched', section: path, position: `${i + 1}/${base.length}`, added_context: prefix.length } };
+    });
+  },
+  semantic(doc, { threshold = 0.08, window = 2, max_chars = 1500 } = {}) {
+    const s = Text.sentences(doc); if (s.length < 2) return [C(doc, 0, doc.length, { method: 'semantic' })];
+    const groups = s.map((_, i) => doc.slice(s[Math.max(0, i - window + 1)][0], s[i][1]));
+    const v = Text.tfidf(groups), sims = s.slice(0, -1).map((_, i) => Text.cos(v[i], v[i + 1]));
+    const o = []; let start = 0;
+    sims.forEach((sim, i) => {
+      const localMin = sim <= Math.min(...sims.slice(Math.max(0, i - 1), i + 2));
+      if ((sim < threshold && localMin) || s[i][1] - s[start][0] > max_chars) { o.push(C(doc, s[start][0], s[i][1], { method: 'semantic', boundary_similarity: +sim.toFixed(3) })); start = i + 1; }
+    });
+    o.push(C(doc, s[start][0], s[s.length - 1][1], { method: 'semantic' }));
+    return o;
+  },
+  topic_based(doc, { max_topics = 6 } = {}) {
+    const p = Text.paragraphs(doc); if (p.length <= 1) return [C(doc, 0, doc.length, { method: 'topic_based' })];
+    const v = Text.tfidf(p.map(([a, b]) => doc.slice(a, b))), sims = p.slice(0, -1).map((_, i) => Text.cos(v[i], v[i + 1]));
+    const depth = sims.map((sim, i) => (Math.max(...sims.slice(0, i + 1)) - sim) + (Math.max(...sims.slice(i)) - sim));
+    const cuts = [...sims.keys()].sort((a, b) => depth[b] - depth[a]).slice(0, max_topics - 1).sort((a, b) => a - b);
+    const bounds = [0, ...cuts.map((c) => c + 1), p.length], o = [];
+    for (let i = 0; i < bounds.length - 1; i++) { const a = bounds[i], b = bounds[i + 1]; if (a === b) continue; o.push(C(doc, p[a][0], p[b - 1][1], { method: 'topic_based', topic: Text.topTerms(doc.slice(p[a][0], p[b - 1][1])) })); }
+    return o;
+  },
+  entity_based(doc, { max_chars = 1200 } = {}) {
+    const s = Text.sentences(doc), o = []; let start = 0, ents = new Set();
+    s.forEach(([a, b], i) => {
+      const e = Text.entities(doc.slice(a, b)), shared = [...e].some((x) => ents.has(x));
+      if (i > start && ((e.size && !shared) || b - s[start][0] > max_chars)) { o.push(C(doc, s[start][0], s[i - 1][1], { method: 'entity_based', entities: [...ents].sort() })); start = i; ents = new Set(); }
+      e.forEach((x) => ents.add(x));
+    });
+    o.push(C(doc, s[start][0], s[s.length - 1][1], { method: 'entity_based', entities: [...ents].sort() }));
+    return o;
+  },
+  keyword_based(doc, { keywords = 'Section, Article, Clause, WHEREAS, Schedule' } = {}) {
+    const alts = String(keywords).split(',').map((k) => k.trim()).filter(Boolean).map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') || '(?!)';
+    const re = new RegExp(`^(?:#+\\s*)?\\**(?:(?:${alts})\\b|\\d+(?:\\.\\d+)*\\.?(?=\\s))`, 'gm');
+    const starts = [...new Set([0, ...[...doc.matchAll(re)].map((m) => m.index)])].sort((a, b) => a - b);
+    return starts.map((a, i) => CS(doc, a, starts[i + 1] ?? doc.length, { method: 'keyword_based', keyword: doc.slice(a, a + 60).trim().split('\n')[0] })).filter(Boolean);
+  },
+  hierarchical(doc, { max_chars = 800 } = {}) {
+    let heads = Text.headings(doc); const o = [];
+    if (!heads.length) return Chunkers.recursive(doc, { max_chars }).map((c) => ({ ...c, meta: { method: 'hierarchical', level: 'child', parent: null } }));
+    if (heads[0].at !== 0) heads = [{ at: 0, level: 0, title: '(preamble)' }, ...heads];
+    heads.forEach((h, i) => {
+      let end = doc.length;
+      for (const later of heads.slice(i + 1)) if (later.level <= h.level || h.level === 0) { end = later.at; break; }
+      const parent = CS(doc, h.at, end, { method: 'hierarchical', level: 'parent', id: 's' + i, title: h.title, depth: h.level });
+      if (!parent) return; o.push(parent);
+      const own = heads[i + 1] ? heads[i + 1].at : doc.length, sub = doc.slice(h.at, own);
+      Chunkers.recursive(sub, { max_chars }).forEach((c) => o.push(C(doc, h.at + c.start, h.at + c.end, { method: 'hierarchical', level: 'child', parent: 's' + i })));
+    });
+    return o;
+  },
+  modality_specific(doc, { max_chars = 800 } = {}) {
+    const spans = [];
+    for (const m of doc.matchAll(/(?:^\|.*\|[ \t]*\n?)+/gm)) spans.push([m.index, m.index + m[0].length, 'table']);
+    for (const m of doc.matchAll(/^```[\s\S]*?^```[ \t]*\n?/gm)) spans.push([m.index, m.index + m[0].length, 'code']);
+    for (const m of doc.matchAll(/!\[[^\]]*\]\([^)]+\)/g)) spans.push([m.index, m.index + m[0].length, 'image']);
+    spans.sort((a, b) => a[0] - b[0]);
+    const o = []; let pos = 0;
+    const prose = (a, b) => Chunkers.recursive(doc.slice(a, b), { max_chars }).forEach((c) => o.push(C(doc, a + c.start, a + c.end, { method: 'modality_specific', modality: 'text' })));
+    for (const [a, b, kind] of spans) { if (a < pos) continue; prose(pos, a); const c = CS(doc, a, b, { method: 'modality_specific', modality: kind }); if (c) o.push(c); pos = b; }
+    prose(pos, doc.length);
+    return o;
+  },
+  table_aware(doc, { max_rows = 20, max_chars = 800 } = {}) {
+    const o = []; let pos = 0;
+    const prose = (a, b) => Chunkers.recursive(doc.slice(a, b), { max_chars }).forEach((c) => o.push(C(doc, a + c.start, a + c.end, { method: 'table_aware', kind: 'text' })));
+    for (const m of doc.matchAll(/(?:^\|.*\|[ \t]*\n?)+/gm)) {
+      prose(pos, m.index);
+      const lines = [...m[0].matchAll(/^.*\S.*$/gm)].map((x) => [m.index + x.index, m.index + x.index + x[0].length]);
+      const hdr = lines.length > 1 && /^[|\-: ]+$/.test(doc.slice(...lines[1])) ? lines.slice(0, 2) : lines.slice(0, 1);
+      const body = lines.slice(hdr.length);
+      if (body.length <= max_rows) o.push(C(doc, lines[0][0], lines[lines.length - 1][1], { method: 'table_aware', kind: 'table', rows: body.length }));
+      else for (let i = 0; i < body.length; i += max_rows) { const part = body.slice(i, i + max_rows); o.push(C(doc, part[0][0], part[part.length - 1][1], { method: 'table_aware', kind: 'table_part', rows: part.length, header: hdr.map((l) => doc.slice(...l)).join('\n') })); }
+      pos = m.index + m[0].length;
+    }
+    prose(pos, doc.length);
+    return o;
+  },
+  agentic(doc, { starts } = {}) {
+    // `starts`: sentence indices chosen by an agent (the page supplies them).
+    const s = Text.sentences(doc), st = [...new Set([0, ...(starts || [])])].filter((i) => i < s.length).sort((a, b) => a - b);
+    return st.map((a, i) => C(doc, s[a][0], s[(st[i + 1] ?? s.length) - 1][1], { method: 'agentic', sentences: `${a}-${(st[i + 1] ?? s.length) - 1}` }));
+  },
+  subdocument(doc, { max_chars = 800 } = {}) {
+    const heads = Text.headings(doc).filter((h) => h.level <= 2), title = (heads.find((h) => h.level === 1) || {}).title || doc.trim().split('\n')[0].slice(0, 80);
+    const starts = [0, ...heads.filter((h) => h.level === 2).map((h) => h.at), doc.length], o = [];
+    starts.slice(0, -1).forEach((a, n) => {
+      const b = starts[n + 1]; if (a === b) return; const sec = doc.slice(a, b), ss = Text.sentences(sec);
+      const summary = (ss.slice(1, 2).length ? ss.slice(1, 2) : ss.slice(0, 1)).map(([x, y]) => sec.slice(x, y)).join(' ').slice(0, 300);
+      const subTitle = (heads.find((h) => h.at === a) || {}).title || '(preamble)';
+      Chunkers.recursive(sec, { max_chars }).forEach((c) => o.push(C(doc, a + c.start, a + c.end, { method: 'subdocument', document: title, subdocument: subTitle, summary })));
+    });
+    return o;
+  },
+  hybrid(doc, { max_chars = 800, min_chars = 200 } = {}) {
+    const heads = Text.headings(doc), starts = [...new Set([0, ...heads.filter((h) => h.level <= 2).map((h) => h.at)])].sort((a, b) => a - b).concat(doc.length), o = [];
+    starts.slice(0, -1).forEach((a, i) => {
+      const b = starts[i + 1], section = Text.headingPath(heads, a).slice(-1)[0] || '(preamble)', merged = [];
+      for (const c0 of Chunkers.modality_specific(doc.slice(a, b), { max_chars })) {
+        const c = C(doc, a + c0.start, a + c0.end, { method: 'hybrid', modality: c0.meta.modality, section }), last = merged[merged.length - 1];
+        const pair = last && last.meta.modality === 'text' && c.meta.modality === 'text' && Math.min(last.text.length, c.text.length) < min_chars;
+        const note = last && last.meta.modality === 'table' && c.meta.modality === 'text' && c.text.length < min_chars;
+        if ((pair || note) && c.end - last.start <= max_chars) merged[merged.length - 1] = C(doc, last.start, c.end, last.meta); else merged.push(c);
+      }
+      o.push(...merged);
+    });
+    return o;
+  },
+};
+
+/* Chunk quality metrics in the spirit of ChunckerFlow's evaluators. */
+const Metrics = {
+  semantic_coherence(chunks) { // mean similarity of sentences to their own chunk
+    const scores = chunks.map((c) => { const s = Text.sentences(c.text).map(([a, b]) => c.text.slice(a, b)); if (s.length < 2) return 1; const v = Text.tfidf([c.text, ...s]); return s.reduce((acc, _, i) => acc + Text.cos(v[0], v[i + 1]), 0) / s.length; });
+    return scores.reduce((a, b) => a + b, 0) / (scores.length || 1);
+  },
+  boundary_quality(chunks) { // share of chunks ending at a sentence or structural boundary
+    const ok = chunks.filter((c) => /[.!?:"')\]|]\s*$|^#.*$/m.test(c.text.trimEnd().split('\n').pop()) || /\n\s*$/.test(c.text));
+    return ok.length / (chunks.length || 1);
+  },
+  chunk_stickiness(chunks) { // neighbour similarity: lower means cleaner topic separation
+    if (chunks.length < 2) return 0; const v = Text.tfidf(chunks.map((c) => c.text)); let s = 0;
+    for (let i = 0; i < v.length - 1; i++) s += Text.cos(v[i], v[i + 1]); return s / (v.length - 1);
+  },
+  topic_diversity(chunks) { // distinct top terms across chunks
+    const tops = chunks.map((c) => Text.topTerms(c.text, 3)).flat(); return tops.length ? new Set(tops).size / tops.length : 0;
+  },
+  size_stats(chunks) { const s = chunks.map((c) => c.text.length); const mean = s.reduce((a, b) => a + b, 0) / (s.length || 1); const sd = Math.sqrt(s.reduce((a, x) => a + (x - mean) ** 2, 0) / (s.length || 1)); return { count: s.length, min: Math.min(...s), max: Math.max(...s), mean, cv: mean ? sd / mean : 0 }; },
+};
+
+/* Render chunks over the source text as coloured marks (overlap hatched). */
+function renderOverlay(container, doc, chunks, { onPick } = {}) {
+  container.replaceChildren();
+  const marks = new Array(doc.length).fill(-1), count = new Uint8Array(doc.length);
+  chunks.forEach((c, i) => { for (let k = c.start; k < c.end; k++) { if (marks[k] < 0) marks[k] = i; count[k]++; } });
+  let i = 0;
+  while (i < doc.length) {
+    let j = i; while (j < doc.length && marks[j] === marks[i] && (count[j] > 1) === (count[i] > 1)) j++;
+    const text = doc.slice(i, j), m = marks[i];
+    if (m < 0) container.append(text);
+    else {
+      const mk = el('mark', { class: count[i] > 1 ? 'ov' : '', title: `Chunk ${m + 1}`, style: { background: `var(--c${m % 8})` } }, text);
+      if (onPick) { mk.style.cursor = 'pointer'; mk.addEventListener('click', () => onPick(m)); }
+      container.append(mk);
+    }
+    i = j;
+  }
+}
+
+function renderChunkCards(container, chunks, { limit = 200, extra } = {}) {
+  container.replaceChildren(...(chunks.length ? chunks.slice(0, limit).map((c, i) => el('div', { class: 'chunk', style: { borderLeftColor: `var(--e${i % 8})` }, id: 'chunk-' + i },
+    el('div', { class: 'meta' }, el('b', {}, `#${i + 1}`), el('span', {}, `${c.text.length} chars`), el('span', {}, `${Text.words(c.text)} words`),
+      ...Object.entries(c.meta || {}).filter(([k, v]) => k !== 'method' && v !== '' && v != null && !(Array.isArray(v) && !v.length)).slice(0, 4)
+        .map(([k, v]) => el('span', {}, `${k}: ${Array.isArray(v) ? v.join(', ') : String(v).slice(0, 70)}`)), extra ? extra(c, i) : null),
+    el('pre', {}, c.text))) : [el('div', { class: 'empty' }, 'No chunks')]));
+}
+
+/* ------------------------------------------------------------ graph */
+function forceGraph(canvas, { nodes, edges, color = () => 'var(--e0)', label = (n) => n.id, onSelect } = {}) {
+  const ctx = canvas.getContext('2d'); let W = 0, H = 0, selected = null, drag = null, alpha = 1, raf;
+  const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v.replace(/^var\((.*)\)$/, '$1')).trim() || v;
+  const byId = new Map(nodes.map((n) => [n.id, n]));
+  const resize = () => { const r = canvas.getBoundingClientRect(), d = devicePixelRatio || 1; W = r.width; H = r.height; canvas.width = W * d; canvas.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0); };
+  resize();
+  nodes.forEach((n, i) => { const a = (i / Math.max(1, nodes.length)) * Math.PI * 2; n.x ??= W / 2 + Math.cos(a) * W * 0.3; n.y ??= H / 2 + Math.sin(a) * H * 0.3; n.vx = 0; n.vy = 0; n.r = 5 + Math.min(9, Math.sqrt((n.degree || 1)) * 2.4); });
+  const E = edges.map((e) => ({ ...e, a: byId.get(e.source), b: byId.get(e.target) })).filter((e) => e.a && e.b);
+  function tick() {
+    if (alpha > 0.005) {
+      for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j]; let dx = b.x - a.x, dy = b.y - a.y; const d2 = dx * dx + dy * dy + 0.01, f = Math.min(2200 / d2, 6);
+        a.vx -= dx * f * 0.05; a.vy -= dy * f * 0.05; b.vx += dx * f * 0.05; b.vy += dy * f * 0.05;
+      }
+      for (const e of E) { const dx = e.b.x - e.a.x, dy = e.b.y - e.a.y, d = Math.sqrt(dx * dx + dy * dy) || 1, f = (d - 90) * 0.012; e.a.vx += dx / d * f * d * 0.05; e.a.vy += dy / d * f * d * 0.05; e.b.vx -= dx / d * f * d * 0.05; e.b.vy -= dy / d * f * d * 0.05; }
+      for (const n of nodes) { if (n === drag) continue; n.vx += (W / 2 - n.x) * 0.003; n.vy += (H / 2 - n.y) * 0.003; n.x += n.vx * alpha; n.y += n.vy * alpha; n.vx *= 0.6; n.vy *= 0.6; n.x = Math.max(20, Math.min(W - 20, n.x)); n.y = Math.max(20, Math.min(H - 20, n.y)); }
+      alpha *= 0.985;
+    }
+    draw(); raf = requestAnimationFrame(tick);
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const near = selected ? new Set(E.filter((e) => e.a === selected || e.b === selected).flatMap((e) => [e.a, e.b])) : null;
+    for (const e of E) { ctx.strokeStyle = css('--muted'); ctx.globalAlpha = near && !(near.has(e.a) && near.has(e.b) && (e.a === selected || e.b === selected)) ? 0.12 : 0.45; ctx.lineWidth = e === selected ? 2 : 1; ctx.beginPath(); ctx.moveTo(e.a.x, e.a.y); ctx.lineTo(e.b.x, e.b.y); ctx.stroke(); }
+    ctx.globalAlpha = 1; ctx.font = '11px ' + css('--font'); ctx.textAlign = 'center';
+    nodes.forEach((n, i) => {
+      ctx.globalAlpha = near && !near.has(n) ? 0.25 : 1; ctx.fillStyle = css(color(n)); ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); ctx.fill();
+      if (n === selected) { ctx.strokeStyle = css('--ink'); ctx.lineWidth = 2; ctx.stroke(); }
+      if (nodes.length < 60 || n.degree > 1 || n === selected) { ctx.fillStyle = css('--ink'); const t = label(n); ctx.fillText(t.length > 26 ? t.slice(0, 25) + '…' : t, n.x, i % 2 ? n.y + n.r + 12 : n.y - n.r - 4); }
+    });
+    ctx.globalAlpha = 1;
+  }
+  const at = (ev) => { const r = canvas.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top; return nodes.find((n) => (n.x - x) ** 2 + (n.y - y) ** 2 < (n.r + 4) ** 2); };
+  canvas.onpointerdown = (ev) => { const n = at(ev); if (n) { drag = n; selected = n; onSelect && onSelect(n); canvas.setPointerCapture(ev.pointerId); alpha = Math.max(alpha, 0.3); } };
+  canvas.onpointermove = (ev) => { if (!drag) return; const r = canvas.getBoundingClientRect(); drag.x = ev.clientX - r.left; drag.y = ev.clientY - r.top; };
+  canvas.onpointerup = () => { drag = null; };
+  window.addEventListener('resize', () => { resize(); alpha = 0.5; });
+  cancelAnimationFrame(canvas._raf); tick(); canvas._raf = raf;
+  return { select(id) { selected = byId.get(id) || null; onSelect && selected && onSelect(selected); }, reheat() { alpha = 1; }, stop() { cancelAnimationFrame(raf); } };
+}
+
+/* ------------------------------------------------------------ pdf.js */
+let _pdfjs;
+function loadPdfJs() {
+  // The worker script is loaded as a plain script, so pdf.js runs on the
+  // main thread (cross-origin workers are not allowed in this frame).
+  if (_pdfjs) return _pdfjs;
+  const add = (src) => new Promise((ok, fail) => document.head.append(el('script', { src, onload: ok, onerror: () => fail(new Error('Could not load ' + src)) })));
+  const base = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+  _pdfjs = add(base + 'pdf.min.js').then(() => add(base + 'pdf.worker.min.js')).then(() => window.pdfjsLib);
+  return _pdfjs;
+}
+const b64bytes = (b64) => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+async function pdfPages(bytes) {
+  const lib = await loadPdfJs(), pdf = await lib.getDocument({ data: bytes }).promise, pages = [];
+  for (let p = 1; p <= pdf.numPages; p++) {
+    const page = await pdf.getPage(p), vp = page.getViewport({ scale: 1 }), tc = await page.getTextContent();
+    const items = tc.items.filter((it) => it.str.trim()).map((it) => ({ str: it.str, x: it.transform[4], y: vp.height - it.transform[5], h: Math.abs(it.transform[3]) || it.height, w: it.width, font: it.fontName, bold: /bold|black|semibold/i.test((tc.styles[it.fontName] || {}).fontFamily || '') || /Bold/i.test(it.fontName) }));
+    pages.push({ page, number: p, width: vp.width, height: vp.height, items });
+  }
+  return pages;
+}
+async function renderPdfPage(page, canvas, scale = 1.3) {
+  const vp = page.getViewport({ scale }), d = devicePixelRatio || 1;
+  canvas.width = vp.width * d; canvas.height = vp.height * d; canvas.style.width = vp.width + 'px'; canvas.style.maxWidth = '100%';
+  const ctx = canvas.getContext('2d'); ctx.setTransform(d, 0, 0, d, 0, 0);
+  await page.render({ canvasContext: ctx, viewport: vp }).promise;
+  return vp;
+}
+/* Group positioned text items into lines (by baseline) in reading order. */
+function pdfLines(items) {
+  const sorted = [...items].sort((a, b) => a.y - b.y || a.x - b.x), lines = [];
+  for (const it of sorted) {
+    const last = lines[lines.length - 1];
+    if (last && Math.abs(last.y - it.y) < Math.max(2, it.h * 0.4)) { last.items.push(it); last.h = Math.max(last.h, it.h); last.bold = last.bold && it.bold; }
+    else lines.push({ y: it.y, h: it.h, bold: it.bold, items: [it] });
+  }
+  return lines.map((l) => { l.items.sort((a, b) => a.x - b.x); l.x = l.items[0].x; l.right = Math.max(...l.items.map((i) => i.x + i.w)); l.text = l.items.map((i, k) => (k && i.x - (l.items[k - 1].x + l.items[k - 1].w) > 1.5 ? (i.x - (l.items[k - 1].x + l.items[k - 1].w) > 14 ? '\t' : ' ') : '') + i.str).join('').replace(/ {2,}/g, ' '); return l; });
+}
+
+async function sha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+/* Bar chart into an SVG element: rows [{label, value}] */
+function barChart(svg, rows, { max, fmtv = (v) => fmt(v, 2), height = 22 } = {}) {
+  const W = 520, lw = 150, top = Math.max(1e-9, max ?? Math.max(...rows.map((r) => r.value)));
+  svg.setAttribute('viewBox', `0 0 ${W} ${rows.length * height + 6}`);
+  svg.innerHTML = rows.map((r, i) => {
+    const w = Math.max(1, (r.value / top) * (W - lw - 60)), y = i * height + 4;
+    return `<text x="${lw - 8}" y="${y + 13}" text-anchor="end" font-size="11.5" fill="var(--muted)">${esc(r.label)}</text>
+      <rect x="${lw}" y="${y + 2}" width="${w}" height="${height - 8}" rx="3" fill="${r.color || 'var(--accent)'}"></rect>
+      <text x="${lw + w + 6}" y="${y + 13}" font-size="11.5" fill="var(--ink)">${esc(fmtv(r.value))}</text>`;
+  }).join('');
+}
+
+/* Sparkline/area chart: values over time */
+function areaChart(svg, values, { labels = [], color = 'var(--accent)', h = 120, fmtv = (v) => fmt(v) } = {}) {
+  const W = 520, H = h, pad = 22, left = 40, max = Math.max(1e-9, ...values), n = values.length;
+  const x = (i) => left + (i / Math.max(1, n - 1)) * (W - left - pad), y = (v) => H - pad - (v / max) * (H - pad * 2);
+  const pts = values.map((v, i) => `${x(i)},${y(v)}`).join(' ');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.innerHTML = `${[0, 0.5, 1].map((f) => `<line x1="${left}" x2="${W - pad}" y1="${y(max * f)}" y2="${y(max * f)}" stroke="var(--line)"/><text x="${left - 5}" y="${y(max * f) + 4}" text-anchor="end" font-size="10" fill="var(--muted)">${esc(fmtv(max * f))}</text>`).join('')}
+    <polygon points="${x(0)},${H - pad} ${pts} ${x(n - 1)},${H - pad}" fill="${color}" opacity=".16"/>
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2"/>
+    <circle cx="${x(n - 1)}" cy="${y(values[n - 1])}" r="3.5" fill="${color}"/>
+    ${labels.map((l, i) => (i % Math.ceil(n / 6) === 0 ? `<text x="${x(i)}" y="${H - 6}" text-anchor="middle" font-size="10" fill="var(--muted)">${esc(l)}</text>` : '')).join('')}`;
+}
+
+const SAMPLES = {"agreement": "# Master Services Agreement\n\nThis Master Services Agreement (\"Agreement\") is entered into between Northwind Legal Technologies Ltd. (\"Provider\") and Contoso Holdings LLC (\"Client\"). It governs the document automation and retrieval services the Provider delivers to the Client under one or more statements of work.\n\n## 1. Definitions\n\n### 1.1 Confidential Information\n\n\"Confidential Information\" means any non-public information disclosed by one party to the other, whether orally or in writing, that is marked as confidential or that a reasonable person would understand to be confidential given the nature of the information and the circumstances of disclosure.\n\n### 1.2 Deliverables\n\n\"Deliverables\" means the software configurations, reports, trained retrieval indexes and documentation the Provider produces for the Client under a statement of work, excluding any pre-existing Provider tools.\n\n## 2. Services\n\n### 2.1 Scope\n\nThe Provider will ingest, parse and index the Client's contract repository, and will expose a retrieval interface that returns the clauses most relevant to a natural-language question. The Provider will keep the parsed corpus synchronised with the Client's document management system at least once every twenty-four hours.\n\n### 2.2 Service Levels\n\n| Metric | Target | Service Credit |\n|--------|--------|----------------|\n| Monthly uptime | 99.5% | 5% of monthly fee |\n| Query latency (p95) | 800 ms | 2% of monthly fee |\n| Ingestion delay | 24 hours | 3% of monthly fee |\n\nService credits are the Client's sole and exclusive remedy for a failure to meet the targets in the table above.\n\n## 3. Fees and Payment\n\nThe Client will pay a monthly fee of USD 12,500, invoiced in advance. Invoices are due within thirty (30) days of receipt. Late amounts accrue interest at the lesser of 1.5% per month or the maximum rate permitted by law.\n\n## 4. Confidentiality\n\nEach party will protect the other party's Confidential Information with at least the same degree of care it uses for its own information of a similar nature, and in no event less than reasonable care. The obligations in this section survive termination of this Agreement for five (5) years.\n\n## 5. Limitation of Liability\n\nExcept for breaches of Section 4 or a party's indemnification obligations, neither party's aggregate liability arising out of this Agreement will exceed the fees paid by the Client in the twelve (12) months preceding the event giving rise to the claim. Neither party is liable for indirect, incidental or consequential damages.\n\n## 6. Term and Termination\n\n### 6.1 Term\n\nThis Agreement starts on the Effective Date and continues for an initial term of twenty-four (24) months, renewing automatically for successive twelve (12) month terms unless either party gives ninety (90) days' written notice of non-renewal.\n\n### 6.2 Termination for Cause\n\nEither party may terminate this Agreement on written notice if the other party materially breaches it and fails to cure the breach within thirty (30) days of receiving notice describing it.\n\n## 7. Governing Law\n\nThis Agreement is governed by the laws of the State of New York, without regard to its conflict of laws principles. The parties submit to the exclusive jurisdiction of the state and federal courts located in New York County.\n", "agreement_html": "<!doctype html><html><head><meta charset='utf-8'><title>Master Services Agreement</title><style>body{font-family:Helvetica,sans-serif;font-size:10pt}table{border-collapse:collapse}td,th{border:1px solid #444;padding:3px 6px}</style></head><body><h1>Master Services Agreement</h1>\n<p>This Master Services Agreement (&quot;Agreement&quot;) is entered into between Northwind Legal Technologies Ltd. (&quot;Provider&quot;) and Contoso Holdings LLC (&quot;Client&quot;). It governs the document automation and retrieval services the Provider delivers to the Client under one or more statements of work.</p>\n<h2>1. Definitions</h2>\n<h3>1.1 Confidential Information</h3>\n<p>&quot;Confidential Information&quot; means any non-public information disclosed by one party to the other, whether orally or in writing, that is marked as confidential or that a reasonable person would understand to be confidential given the nature of the information and the circumstances of disclosure.</p>\n<h3>1.2 Deliverables</h3>\n<p>&quot;Deliverables&quot; means the software configurations, reports, trained retrieval indexes and documentation the Provider produces for the Client under a statement of work, excluding any pre-existing Provider tools.</p>\n<h2>2. Services</h2>\n<h3>2.1 Scope</h3>\n<p>The Provider will ingest, parse and index the Client&#x27;s contract repository, and will expose a retrieval interface that returns the clauses most relevant to a natural-language question. The Provider will keep the parsed corpus synchronised with the Client&#x27;s document management system at least once every twenty-four hours.</p>\n<h3>2.2 Service Levels</h3>\n<table><thead><tr><th>Metric</th><th>Target</th><th>Service Credit</th></tr></thead><tbody><tr><td>Monthly uptime</td><td>99.5%</td><td>5% of monthly fee</td></tr><tr><td>Query latency (p95)</td><td>800 ms</td><td>2% of monthly fee</td></tr><tr><td>Ingestion delay</td><td>24 hours</td><td>3% of monthly fee</td></tr></tbody></table>\n<p>Service credits are the Client&#x27;s sole and exclusive remedy for a failure to meet the targets in the table above.</p>\n<h2>3. Fees and Payment</h2>\n<p>The Client will pay a monthly fee of USD 12,500, invoiced in advance. Invoices are due within thirty (30) days of receipt. Late amounts accrue interest at the lesser of 1.5% per month or the maximum rate permitted by law.</p>\n<h2>4. Confidentiality</h2>\n<p>Each party will protect the other party&#x27;s Confidential Information with at least the same degree of care it uses for its own information of a similar nature, and in no event less than reasonable care. The obligations in this section survive termination of this Agreement for five (5) years.</p>\n<h2>5. Limitation of Liability</h2>\n<p>Except for breaches of Section 4 or a party&#x27;s indemnification obligations, neither party&#x27;s aggregate liability arising out of this Agreement will exceed the fees paid by the Client in the twelve (12) months preceding the event giving rise to the claim. Neither party is liable for indirect, incidental or consequential damages.</p>\n<h2>6. Term and Termination</h2>\n<h3>6.1 Term</h3>\n<p>This Agreement starts on the Effective Date and continues for an initial term of twenty-four (24) months, renewing automatically for successive twelve (12) month terms unless either party gives ninety (90) days&#x27; written notice of non-renewal.</p>\n<h3>6.2 Termination for Cause</h3>\n<p>Either party may terminate this Agreement on written notice if the other party materially breaches it and fails to cure the breach within thirty (30) days of receiving notice describing it.</p>\n<h2>7. Governing Law</h2>\n<p>This Agreement is governed by the laws of the State of New York, without regard to its conflict of laws principles. The parties submit to the exclusive jurisdiction of the state and federal courts located in New York County.</p></body></html>", "dpa": "# Data Processing Addendum\n\nThis Data Processing Addendum (\"Addendum\") forms part of the Master Services Agreement between Northwind Legal Technologies Ltd. (\"Processor\") and Contoso Holdings LLC (\"Controller\"). It applies whenever the Processor handles Personal Data on behalf of the Controller.\n\n## 1. Scope and Roles\n\n### 1.1 Roles of the Parties\n\nThe Controller determines the purposes and means of processing. The Processor processes Personal Data only on the documented instructions of the Controller, including with regard to transfers to a third country.\n\n### 1.2 Categories of Data\n\nThe Processor will handle contact details of Controller staff, the names of counterparties appearing in contracts, and metadata describing those contracts. No special category data is processed under this Addendum.\n\n## 2. Security Measures\n\nThe Processor will maintain technical and organisational measures appropriate to the risk, including encryption of data at rest with AES-256, encryption in transit with TLS 1.2 or later, role-based access control, and quarterly access reviews.\n\nSecurity incidents affecting Personal Data will be reported to the Controller without undue delay and in any event within forty-eight (48) hours of discovery.\n\n## 3. Sub-processors\n\nThe Controller authorises the following sub-processors. The Processor will give thirty (30) days' notice before adding or replacing a sub-processor, during which the Controller may object on reasonable grounds.\n\n| Sub-processor | Service | Location |\n|---------------|---------|----------|\n| Fabrikam Cloud GmbH | Hosting and storage | Frankfurt, Germany |\n| Tailspin Search Inc. | Search indexing | Dublin, Ireland |\n| Litware Mail Ltd. | Transactional email | London, United Kingdom |\n\n## 4. Data Subject Requests\n\nThe Processor will promptly forward any request from a data subject to the Controller and will not respond directly unless instructed. The Processor will assist the Controller in responding within the statutory deadlines, at no additional charge for up to ten (10) requests per month.\n\n## 5. International Transfers\n\nPersonal Data will be stored in the European Economic Area. Any transfer outside it requires the Controller's prior written consent and must rely on the Standard Contractual Clauses adopted by the European Commission.\n\n## 6. Audits\n\nThe Controller may audit the Processor's compliance once per calendar year on thirty (30) days' written notice. The Processor may instead provide a current ISO/IEC 27001 certificate and its most recent SOC 2 Type II report.\n\n## 7. Return and Deletion\n\nOn termination of the Agreement, the Processor will, at the Controller's choice, return or delete all Personal Data within sixty (60) days, unless retention is required by law, and will certify the deletion in writing.\n", "python": "\"\"\"The 20 chunking methods from itsual/Chunking-Methods-for-RAG, implemented.\n\nThe upstream repository is a guide (a method list and a decision tree) with no\ncode; this module is a working implementation of every method it names, plus\n`choose()`, its decision tree. Pure standard library: the \"semantic\" methods\nuse TF-IDF vectors so they run offline, and `agentic()` takes any callable LLM\n(`claude_boundaries` uses Claude when ANTHROPIC_API_KEY is set).\n\nEvery method returns a list of Chunk(text, start, end, meta) where\ntext == document[start:end] unless the method adds context on purpose\n(context_enriched, subdocument), which it records in meta.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport json\nimport math\nimport os\nimport re\nfrom collections import Counter\nfrom dataclasses import dataclass, field\nfrom typing import Callable, Iterable\n\n\n@dataclass\nclass Chunk:\n    text: str\n    start: int\n    end: int\n    meta: dict = field(default_factory=dict)\n\n\ndef _span(doc: str, start: int, end: int, **meta) -> Chunk:\n    return Chunk(doc[start:end], start, end, meta)\n\n\ndef _strip(doc: str, start: int, end: int, **meta) -> Chunk | None:\n    \"\"\"Trim whitespace off a span, keeping offsets exact. None if empty.\"\"\"\n    while start < end and doc[start].isspace():\n        start += 1\n    while end > start and doc[end - 1].isspace():\n        end -= 1\n    return _span(doc, start, end, **meta) if end > start else None\n\n\n# ---------------------------------------------------------------- units\n\nWORD = re.compile(r\"\\S+\")\nSENTENCE_END = re.compile(r\"(?<=[.!?])[\\\"')\\]]*\\s+(?=[A-Z0-9\\\"'(\\[#*-])|\\n\\s*\\n\")\n\n\ndef tokens(doc: str) -> list[tuple[int, int]]:\n    \"\"\"Whitespace-delimited tokens with offsets (a tokenizer-free stand-in for\n    model tokens: roughly 0.75 of a GPT token each).\"\"\"\n    return [m.span() for m in WORD.finditer(doc)]\n\n\ndef sentences(doc: str) -> list[tuple[int, int]]:\n    spans, start = [], 0\n    for m in SENTENCE_END.finditer(doc):\n        spans.append((start, m.start()))\n        start = m.end()\n    spans.append((start, len(doc)))\n    out = []\n    for s, e in spans:\n        c = _strip(doc, s, e)\n        if c:\n            out.append((c.start, c.end))\n    return out\n\n\ndef paragraphs(doc: str) -> list[tuple[int, int]]:\n    out, start = [], 0\n    for m in re.finditer(r\"\\n\\s*\\n\", doc):\n        c = _strip(doc, start, m.start())\n        if c:\n            out.append((c.start, c.end))\n        start = m.end()\n    c = _strip(doc, start, len(doc))\n    if c:\n        out.append((c.start, c.end))\n    return out\n\n\ndef _pack(doc: str, units: list[tuple[int, int]], max_chars: int, method: str) -> list[Chunk]:\n    \"\"\"Greedily join consecutive units into chunks of at most max_chars\n    (a single oversized unit becomes its own chunk).\"\"\"\n    chunks, cur = [], None\n    for s, e in units:\n        if cur and e - cur[0] > max_chars:\n            chunks.append(_span(doc, cur[0], cur[1], method=method))\n            cur = None\n        cur = (cur[0], e) if cur else (s, e)\n    if cur:\n        chunks.append(_span(doc, cur[0], cur[1], method=method))\n    return chunks\n\n\n# ---------------------------------------------------------------- 1. basic\n\ndef fixed_size(doc: str, size: int = 500) -> list[Chunk]:\n    \"\"\"Fixed-Size: cut every `size` characters, ignoring structure.\"\"\"\n    return [_span(doc, i, min(i + size, len(doc)), method=\"fixed_size\") for i in range(0, len(doc), size)]\n\n\ndef token_based(doc: str, max_tokens: int = 100) -> list[Chunk]:\n    \"\"\"Token-Based: `max_tokens` tokens per chunk, never splitting a token.\"\"\"\n    t = tokens(doc)\n    return [_span(doc, t[i][0], t[min(i + max_tokens, len(t)) - 1][1], method=\"token_based\", tokens=len(t[i:i + max_tokens]))\n            for i in range(0, len(t), max_tokens)]\n\n\ndef sentence_based(doc: str, max_sentences: int = 4) -> list[Chunk]:\n    \"\"\"Sentence-Based: whole sentences, `max_sentences` per chunk.\"\"\"\n    s = sentences(doc)\n    return [_span(doc, s[i][0], s[min(i + max_sentences, len(s)) - 1][1], method=\"sentence_based\")\n            for i in range(0, len(s), max_sentences)]\n\n\ndef paragraph_based(doc: str, max_chars: int = 1200) -> list[Chunk]:\n    \"\"\"Paragraph-Based: whole paragraphs, merged up to `max_chars`.\"\"\"\n    return _pack(doc, paragraphs(doc), max_chars, \"paragraph_based\")\n\n\ndef page_based(doc: str, pages: list[str] | None = None) -> list[Chunk]:\n    \"\"\"Page-Based: one chunk per page. Pages are split on form feeds, or\n    passed in (e.g. one string per PDF page).\"\"\"\n    if pages is None:\n        pages = doc.split(\"\\f\")\n    out, pos = [], 0\n    for i, page in enumerate(pages, 1):\n        at = doc.find(page, pos) if page else -1\n        if at < 0:\n            at = pos\n        c = _strip(doc, at, at + len(page), method=\"page_based\", page=i)\n        if c:\n            out.append(c)\n        pos = at + len(page)\n    return out\n\n\n# ---------------------------------------------------------------- 2. context-preserving\n\ndef sliding_window(doc: str, window: int = 600, step: int = 400) -> list[Chunk]:\n    \"\"\"Sliding Window: windows of `window` chars every `step` chars, so\n    consecutive chunks share window - step chars.\"\"\"\n    if step <= 0 or step > window:\n        raise ValueError(\"need 0 < step <= window\")\n    out = []\n    for i in range(0, max(len(doc) - window + step, 1), step):\n        out.append(_span(doc, i, min(i + window, len(doc)), method=\"sliding_window\"))\n        if i + window >= len(doc):\n            break\n    return out\n\n\ndef fixed_token_overlap(doc: str, max_tokens: int = 100, overlap: int = 20) -> list[Chunk]:\n    \"\"\"Fixed Token with Overlap: token windows sharing `overlap` tokens.\"\"\"\n    if not 0 <= overlap < max_tokens:\n        raise ValueError(\"need 0 <= overlap < max_tokens\")\n    t, out, i = tokens(doc), [], 0\n    while i < len(t):\n        j = min(i + max_tokens, len(t))\n        out.append(_span(doc, t[i][0], t[j - 1][1], method=\"fixed_token_overlap\", overlap_tokens=overlap if i else 0))\n        if j == len(t):\n            break\n        i = j - overlap\n    return out\n\n\nDEFAULT_SEPARATORS = [\"\\n## \", \"\\n### \", \"\\n\\n\", \"\\n\", \". \", \" \"]\n\n\ndef recursive(doc: str, max_chars: int = 800, separators: list[str] | None = None) -> list[Chunk]:\n    \"\"\"Recursive: split on the coarsest separator that keeps pieces under\n    `max_chars`, recursing into finer separators for pieces still too big,\n    then re-merge neighbours while they fit.\"\"\"\n    seps = DEFAULT_SEPARATORS if separators is None else separators\n\n    def split(s: int, e: int, level: int) -> list[tuple[int, int]]:\n        if e - s <= max_chars or level >= len(seps):\n            return [(s, e)]\n        sep, pieces, cur = seps[level], [], s\n        while True:\n            k = doc.find(sep, cur + 1, e)\n            if k < 0:\n                break\n            pieces.append((cur, k))\n            cur = k\n        pieces.append((cur, e))\n        if len(pieces) == 1:\n            return split(s, e, level + 1)\n        return [p for a, b in pieces for p in split(a, b, level + 1)]\n\n    out = []\n    for c in _pack(doc, split(0, len(doc), 0), max_chars, \"recursive\"):\n        c = _strip(doc, c.start, c.end, method=\"recursive\")\n        if c:\n            out.append(c)\n    return out\n\n\ndef recursive_python(code: str, max_chars: int = 1200) -> list[Chunk]:\n    \"\"\"Recursive Python-Specific: split on class and def boundaries first,\n    then blank lines, then lines (LangChain's Python separators).\"\"\"\n    return [Chunk(c.text, c.start, c.end, {**c.meta, \"method\": \"recursive_python\"})\n            for c in recursive(code, max_chars, [\"\\nclass \", \"\\ndef \", \"\\n\\tdef \", \"\\n    def \", \"\\n\\n\", \"\\n\", \" \"])]\n\n\ndef _headings(doc: str) -> list[tuple[int, int, str]]:\n    \"\"\"Markdown headings as (offset, level, title).\"\"\"\n    return [(m.start(), len(m.group(1)), m.group(2).strip(\" *\"))\n            for m in re.finditer(r\"^(#{1,6})\\s+(.+)$\", doc, re.M)]\n\n\ndef _heading_path(heads: list[tuple[int, int, str]], at: int) -> list[str]:\n    path: list[tuple[int, str]] = []\n    for off, level, title in heads:\n        if off > at:\n            break\n        path = [p for p in path if p[0] < level] + [(level, title)]\n    return [t for _, t in path]\n\n\ndef context_enriched(doc: str, max_chars: int = 800, neighbour_chars: int = 120) -> list[Chunk]:\n    \"\"\"Context-Enriched: recursive chunks carrying metadata (heading path,\n    position) and a prefix naming their section plus the tail of the previous\n    chunk, so each chunk reads on its own.\"\"\"\n    base, heads, out = recursive(doc, max_chars), _headings(doc), []\n    for i, c in enumerate(base):\n        path = _heading_path(heads, c.start)\n        prev = base[i - 1].text[-neighbour_chars:] if i else \"\"\n        prefix = (f\"[Section: {' > '.join(path)}]\\n\" if path else \"\") + (f\"[Previously: \u2026{prev.strip()}]\\n\" if prev else \"\")\n        out.append(Chunk(prefix + c.text, c.start, c.end, {\"method\": \"context_enriched\", \"section\": path,\n                                                            \"position\": f\"{i + 1}/{len(base)}\", \"added_context\": len(prefix)}))\n    return out\n\n\n"};
+</script>
+<script>
+/* ---------- node catalogue ---------- */
+const CATS = { 'Document Loaders': 'var(--e1)', 'Text Splitters': 'var(--e4)', Embeddings: 'var(--e5)', 'Vector Stores': 'var(--e2)', 'Chat Models': 'var(--e0)', Prompts: 'var(--e6)', Memory: 'var(--e3)', Chains: 'var(--e7)', Agents: 'var(--e7)', Tools: 'var(--e1)', Agentflow: 'var(--e6)' };
+const DEFS = {
+  textFile: { label: 'Text File', cat: 'Document Loaders', ab: 'TX', inputs: [{ name: 'splitter', type: 'TextSplitter', optional: true }], outputs: [{ name: 'document', type: 'Document' }], params: { source: { type: 'select', options: ['agreement', 'dpa'], value: 'agreement' } } },
+  recursiveSplitter: { label: 'Recursive Character Text Splitter', cat: 'Text Splitters', ab: 'RC', inputs: [], outputs: [{ name: 'splitter', type: 'TextSplitter' }], params: { chunkSize: { type: 'number', value: 500 }, chunkOverlap: { type: 'number', value: 50 } } },
+  markdownSplitter: { label: 'Markdown Text Splitter', cat: 'Text Splitters', ab: 'MD', inputs: [], outputs: [{ name: 'splitter', type: 'TextSplitter' }], params: { chunkSize: { type: 'number', value: 800 } } },
+  localEmbeddings: { label: 'Local Embeddings (TF-IDF)', cat: 'Embeddings', ab: 'EM', inputs: [], outputs: [{ name: 'embeddings', type: 'Embeddings' }], params: {} },
+  memoryVectorStore: { label: 'In-Memory Vector Store', cat: 'Vector Stores', ab: 'VS', inputs: [{ name: 'document', type: 'Document', list: true }, { name: 'embeddings', type: 'Embeddings' }], outputs: [{ name: 'retriever', type: 'BaseRetriever' }], params: { topK: { type: 'number', value: 3 } } },
+  chatAnthropic: { label: 'ChatAnthropic', cat: 'Chat Models', ab: 'CA', inputs: [], outputs: [{ name: 'model', type: 'BaseChatModel' }], params: { model: { type: 'select', options: ['claude-opus-5-5', 'claude-sonnet-5-5', 'claude-haiku-5-5'], value: 'claude-opus-5-5' }, temperature: { type: 'number', value: 0 }, credential: { type: 'text', value: 'anthropic-prod' } } },
+  chatOpenAI: { label: 'ChatOpenAI', cat: 'Chat Models', ab: 'CO', inputs: [], outputs: [{ name: 'model', type: 'BaseChatModel' }], params: { model: { type: 'select', options: ['gpt-4o', 'gpt-4o-mini'], value: 'gpt-4o-mini' }, temperature: { type: 'number', value: 0.2 }, credential: { type: 'text', value: 'openai-dev' } } },
+  promptTemplate: { label: 'Prompt Template', cat: 'Prompts', ab: 'PT', inputs: [], outputs: [{ name: 'prompt', type: 'PromptTemplate' }], params: { template: { type: 'textarea', value: 'Explain {topic} in the {document} for a non-lawyer, in two sentences.' } } },
+  bufferMemory: { label: 'Buffer Memory', cat: 'Memory', ab: 'BM', inputs: [], outputs: [{ name: 'memory', type: 'BaseMemory' }], params: { window: { type: 'number', value: 5 } } },
+  retrievalQA: { label: 'Conversational Retrieval QA Chain', cat: 'Chains', ab: 'QA', ending: true, inputs: [{ name: 'model', type: 'BaseChatModel' }, { name: 'retriever', type: 'BaseRetriever' }, { name: 'memory', type: 'BaseMemory', optional: true }], outputs: [], params: { returnSources: { type: 'checkbox', value: true }, systemMessage: { type: 'textarea', value: 'Answer only from the context. Cite the section.' } } },
+  llmChain: { label: 'LLM Chain', cat: 'Chains', ab: 'LC', ending: true, inputs: [{ name: 'model', type: 'BaseChatModel' }, { name: 'prompt', type: 'PromptTemplate' }], outputs: [], params: {} },
+  toolAgent: { label: 'Tool Agent', cat: 'Agents', ab: 'AG', ending: true, inputs: [{ name: 'model', type: 'BaseChatModel' }, { name: 'tools', type: 'Tool', list: true }, { name: 'memory', type: 'BaseMemory', optional: true }], outputs: [], params: { maxIterations: { type: 'number', value: 4 } } },
+  calculator: { label: 'Calculator', cat: 'Tools', ab: 'CL', inputs: [], outputs: [{ name: 'tool', type: 'Tool' }], params: {} },
+  clauseRetrieverTool: { label: 'Retriever Tool: contract clauses', cat: 'Tools', ab: 'RT', inputs: [{ name: 'retriever', type: 'BaseRetriever' }], outputs: [{ name: 'tool', type: 'Tool' }], params: { name: { type: 'text', value: 'search_contract' } } },
+  dateTool: { label: 'Date Calculator', cat: 'Tools', ab: 'DT', inputs: [], outputs: [{ name: 'tool', type: 'Tool' }], params: {} },
+  afStart: { label: 'Start', cat: 'Agentflow', ab: '▶', af: true, inputs: [], outputs: [{ name: 'next', type: 'Flow' }], params: { input: { type: 'select', options: ['Chat input'], value: 'Chat input' } } },
+  afCondition: { label: 'Condition', cat: 'Agentflow', ab: '?', af: true, inputs: [{ name: 'in', type: 'Flow' }], outputs: [{ name: 'yes', type: 'Flow' }, { name: 'no', type: 'Flow' }], params: { contains: { type: 'text', value: 'clause, term, liability, law, notice, data, audit, fee' } } },
+  afRetriever: { label: 'Retriever', cat: 'Agentflow', ab: 'R', af: true, inputs: [{ name: 'in', type: 'Flow' }], outputs: [{ name: 'next', type: 'Flow' }], params: { store: { type: 'select', options: ['contracts'], value: 'contracts' }, topK: { type: 'number', value: 3 } } },
+  afAgent: { label: 'Agent', cat: 'Agentflow', ab: 'A', af: true, inputs: [{ name: 'in', type: 'Flow' }], outputs: [{ name: 'next', type: 'Flow' }], params: { model: { type: 'select', options: ['claude-opus-5-5', 'gpt-4o'], value: 'claude-opus-5-5' }, instructions: { type: 'textarea', value: 'Answer from the retrieved clauses and cite them.' } } },
+  afHuman: { label: 'Human Input', cat: 'Agentflow', ab: 'H', af: true, inputs: [{ name: 'in', type: 'Flow' }], outputs: [{ name: 'approved', type: 'Flow' }, { name: 'rejected', type: 'Flow' }], params: { prompt: { type: 'text', value: 'Send this answer to the client?' } } },
+  afReply: { label: 'Direct Reply', cat: 'Agentflow', ab: 'DR', af: true, inputs: [{ name: 'in', type: 'Flow' }], outputs: [], params: { message: { type: 'textarea', value: '{{previous}}' } } },
+};
+const mk = (type, x, y, over = {}) => ({ id: uid(type), type, x, y, params: Object.fromEntries(Object.entries(DEFS[type].params).map(([k, p]) => [k, over[k] ?? p.value])) });
+function autoLayout(f) {
+  const depth = {}, d = (id, seen = new Set()) => { if (id in depth) return depth[id]; if (seen.has(id)) return 0; seen.add(id); const ins = f.edges.filter((e) => e.to === id); return depth[id] = ins.length ? 1 + Math.max(...ins.map((e) => d(e.from, seen))) : 0; };
+  f.nodes.forEach((n) => d(n.id)); const cols = {};
+  f.nodes.forEach((n) => { const c = depth[n.id] || 0; cols[c] = (cols[c] || 0) + 1; n.x = 24 + c * 255; n.y = 24 + (cols[c] - 1) * 175; });
+  return f;
+}
+const template = (kind) => autoLayout(template0(kind));
+function template0(kind) {
+  if (kind === 'rag') {
+    const n = [mk('textFile', 40, 60), mk('recursiveSplitter', 40, 260), mk('textFile', 40, 420, { source: 'dpa' }), mk('localEmbeddings', 300, 520), mk('memoryVectorStore', 320, 200), mk('chatAnthropic', 600, 40), mk('bufferMemory', 600, 520), mk('retrievalQA', 880, 220)];
+    return { nodes: n, edges: [[n[1], 'splitter', n[0], 'splitter'], [n[1], 'splitter', n[2], 'splitter'], [n[0], 'document', n[4], 'document'], [n[2], 'document', n[4], 'document'], [n[3], 'embeddings', n[4], 'embeddings'], [n[5], 'model', n[7], 'model'], [n[4], 'retriever', n[7], 'retriever'], [n[6], 'memory', n[7], 'memory']].map(([a, ao, b, bi]) => ({ id: uid('e'), from: a.id, out: ao, to: b.id, in: bi })) };
+  }
+  if (kind === 'llm') {
+    const n = [mk('chatOpenAI', 60, 80), mk('promptTemplate', 60, 300), mk('llmChain', 420, 180)];
+    return { nodes: n, edges: [{ id: uid('e'), from: n[0].id, out: 'model', to: n[2].id, in: 'model' }, { id: uid('e'), from: n[1].id, out: 'prompt', to: n[2].id, in: 'prompt' }] };
+  }
+  if (kind === 'agent') {
+    const n = [mk('textFile', 40, 60), mk('markdownSplitter', 40, 260), mk('localEmbeddings', 40, 420), mk('memoryVectorStore', 300, 180), mk('clauseRetrieverTool', 560, 180), mk('calculator', 560, 340), mk('dateTool', 560, 460), mk('chatAnthropic', 560, 20), mk('toolAgent', 860, 200)];
+    return { nodes: n, edges: [[n[1], 'splitter', n[0], 'splitter'], [n[0], 'document', n[3], 'document'], [n[2], 'embeddings', n[3], 'embeddings'], [n[3], 'retriever', n[4], 'retriever'], [n[4], 'tool', n[8], 'tools'], [n[5], 'tool', n[8], 'tools'], [n[6], 'tool', n[8], 'tools'], [n[7], 'model', n[8], 'model']].map(([a, ao, b, bi]) => ({ id: uid('e'), from: a.id, out: ao, to: b.id, in: bi })) };
+  }
+  const n = [mk('afStart', 30, 200), mk('afCondition', 280, 200), mk('afRetriever', 540, 80), mk('afAgent', 800, 80), mk('afHuman', 1060, 80), mk('afReply', 1060, 300, { message: '{{previous}}' }), mk('afReply', 540, 380, { message: 'I can help with questions about the agreement and the addendum: terms, fees, liability, data handling.' })];
+  return { nodes: n, edges: [[0, 'next', 1, 'in'], [1, 'yes', 2, 'in'], [1, 'no', 6, 'in'], [2, 'next', 3, 'in'], [3, 'next', 4, 'in'], [4, 'approved', 5, 'in'], [4, 'rejected', 3, 'in']].map(([a, ao, b, bi]) => ({ id: uid('e'), from: n[a].id, out: ao, to: n[b].id, in: bi })) };
+}
+const FLOWS = store.get('fw:flows', null) || [
+  { id: 'cf-1', name: 'Contract Q&A (RAG)', kind: 'CHATFLOW', desc: 'Retrieval QA over the agreement and the addendum, with memory.', ...template('rag'), updated: Date.now() - 864e5 * 2 },
+  { id: 'cf-2', name: 'Clause explainer', kind: 'CHATFLOW', desc: 'LLM chain with a prompt template.', ...template('llm'), updated: Date.now() - 864e5 * 5 },
+  { id: 'cf-3', name: 'Contract tool agent', kind: 'CHATFLOW', desc: 'Agent with a clause search tool, a calculator and a date tool.', ...template('agent'), updated: Date.now() - 864e5 * 3 },
+  { id: 'af-1', name: 'Clause answer with approval', kind: 'AGENTFLOW', desc: 'Routes by topic, retrieves, drafts, and waits for a human to approve.', ...template('af'), updated: Date.now() - 864e5 },
+];
+const saveFlows = () => store.set('fw:flows', FLOWS);
+let flow = FLOWS[0], sel = null, pending = null;
+const EXECUTIONS = [];
+
+/* ---------- flows list ---------- */
+function flowsView() {
+  $('#f-cards').replaceChildren(...FLOWS.map((f) => el('div', { class: 'card' },
+    el('div', { class: 'row' }, el('h3', { class: 'grow' }, f.name), el('span', { class: 'pill ' + (f.kind === 'AGENTFLOW' ? 'accent' : '') }, f.kind === 'AGENTFLOW' ? 'Agentflow' : 'Chatflow')),
+    el('span', { class: 'note' }, f.desc), el('span', { class: 'note' }, `${f.nodes.length} nodes · ${f.edges.length} connections`),
+    el('div', { class: 'row' }, el('button', { class: 'btn small primary', onclick: () => { flow = f; sel = null; show('canvas'); } }, 'Open'),
+      el('button', { class: 'btn small', onclick: () => { const c = JSON.parse(JSON.stringify(f)); c.id = uid('cf'); c.name = f.name + ' (copy)'; FLOWS.push(c); saveFlows(); flowsView(); } }, 'Duplicate'),
+      el('button', { class: 'btn small', onclick: () => { if (FLOWS.length > 1) { FLOWS.splice(FLOWS.indexOf(f), 1); saveFlows(); flowsView(); } } }, 'Delete')))));
+}
+$('#f-newchat').onclick = () => { flow = { id: uid('cf'), name: 'Untitled chatflow', kind: 'CHATFLOW', desc: 'Built in the canvas', nodes: [], edges: [], updated: Date.now() }; FLOWS.push(flow); show('canvas'); };
+$('#f-newagent').onclick = () => { flow = { id: uid('af'), name: 'Untitled agentflow', kind: 'AGENTFLOW', desc: 'Built in the canvas', nodes: [mk('afStart', 40, 200)], edges: [], updated: Date.now() }; FLOWS.push(flow); show('canvas'); };
+
+/* ---------- canvas ---------- */
+const nodeById = (id) => flow.nodes.find((n) => n.id === id);
+function validate() {
+  const problems = [], af = flow.kind === 'AGENTFLOW';
+  if (!af && flow.nodes.filter((n) => DEFS[n.type].ending).length !== 1) problems.push('needs exactly one ending node (a chain or an agent)');
+  if (af && !flow.nodes.some((n) => n.type === 'afStart')) problems.push('needs a Start node');
+  flow.nodes.forEach((n) => DEFS[n.type].inputs.forEach((i) => { if (!i.optional && !(af && n.type === 'afStart') && !flow.edges.some((e) => e.to === n.id && e.in === i.name)) problems.push(`${DEFS[n.type].label}: connect “${i.name}”`); }));
+  return problems;
+}
+function canvas() {
+  $('#c-name').textContent = flow.name; $('#c-type').textContent = flow.kind === 'AGENTFLOW' ? 'Agentflow' : 'Chatflow';
+  const af = flow.kind === 'AGENTFLOW', groups = {};
+  Object.entries(DEFS).filter(([, d]) => !!d.af === af).forEach(([k, d]) => (groups[d.cat] ||= []).push([k, d]));
+  $('#c-palette').replaceChildren(el('h2', {}, 'Add nodes'), ...Object.entries(groups).flatMap(([cat, items]) => [el('h3', {}, cat), ...items.map(([k, d]) => el('button', { onclick: () => { const b = $('#c-board'); const n = mk(k, b.scrollLeft + 60 + Math.random() * 80, b.scrollTop + 60 + Math.random() * 80); flow.nodes.push(n); sel = n.id; canvas(); } }, d.label))]));
+  const stage = $('#c-stage'); $$('.node', stage).forEach((x) => x.remove());
+  const problems = validate();
+  $('#c-valid').replaceChildren(problems.length ? el('span', { class: 'pill warn', title: problems.join('\n') }, `${problems.length} to fix: ${problems[0]}`) : el('span', { class: 'pill good' }, 'Ready to run'));
+  for (const n of flow.nodes) {
+    const d = DEFS[n.type], missing = d.inputs.some((i) => !i.optional && n.type !== 'afStart' && !flow.edges.some((e) => e.to === n.id && e.in === i.name));
+    const box = el('div', { class: 'node' + (n.id === sel ? ' sel' : '') + (missing ? ' bad' : ''), style: { left: n.x + 'px', top: n.y + 'px' }, 'data-id': n.id },
+      el('div', { class: 'hd' }, el('i', { style: { background: CATS[d.cat] } }, d.ab), d.label),
+      el('div', { class: 'cat' }, d.cat + (d.ending ? ' · ending node' : '')),
+      ...d.inputs.map((i) => el('div', { class: 'port in' }, el('span', { class: 'dot', 'data-port': 'in:' + i.name, title: i.type, onclick: (ev) => { ev.stopPropagation(); connect(n, i); } }), i.name + (i.optional ? '' : ' *'), el('span', { class: 'ty' }, i.type + (i.list ? '[]' : '')))),
+      ...d.outputs.map((o) => el('div', { class: 'port out' }, el('span', { class: 'ty' }, o.type), o.name, el('span', { class: 'dot' + (pending && pending.node === n.id && pending.out === o.name ? ' pending' : ''), 'data-port': 'out:' + o.name, title: o.type, onclick: (ev) => { ev.stopPropagation(); pending = { node: n.id, out: o.name, type: o.type }; canvas(); toast(`Now click an input that takes ${o.type}`); } }))),
+      el('div', { style: { height: '6px' } }));
+    box.addEventListener('pointerdown', (ev) => { if (ev.target.classList.contains('dot')) return; sel = n.id; inspector(); $$('.node', stage).forEach((x) => x.classList.toggle('sel', x.dataset.id === n.id)); });
+    drag(box.querySelector('.hd'), n, box);
+    stage.append(box);
+  }
+  edges(); inspector();
+}
+function connect(n, input) {
+  if (!pending) return toast('Click an output dot first');
+  if (pending.type !== input.type) { toast(`Type mismatch: ${pending.type} cannot connect to ${input.type}`); pending = null; return canvas(); }
+  if (pending.node === n.id) { pending = null; return canvas(); }
+  if (!input.list) flow.edges = flow.edges.filter((e) => !(e.to === n.id && e.in === input.name));
+  flow.edges.push({ id: uid('e'), from: pending.node, out: pending.out, to: n.id, in: input.name }); pending = null; canvas();
+}
+function drag(handle, n, box) {
+  handle.addEventListener('pointerdown', (ev) => {
+    const sx = ev.clientX - n.x, sy = ev.clientY - n.y; handle.setPointerCapture(ev.pointerId); handle.style.cursor = 'grabbing';
+    const move = (e) => { n.x = Math.max(0, Math.min(1280, e.clientX - sx)); n.y = Math.max(0, Math.min(820, e.clientY - sy)); box.style.left = n.x + 'px'; box.style.top = n.y + 'px'; edges(); };
+    const up = () => { handle.removeEventListener('pointermove', move); handle.removeEventListener('pointerup', up); handle.style.cursor = ''; };
+    handle.addEventListener('pointermove', move); handle.addEventListener('pointerup', up);
+  });
+}
+function portXY(nodeId, port) {
+  const box = $(`.node[data-id="${nodeId}"]`), dot = box && box.querySelector(`[data-port="${port}"]`); if (!dot) return null;
+  const s = $('#c-stage').getBoundingClientRect(), r = dot.getBoundingClientRect(); return [r.left + r.width / 2 - s.left, r.top + r.height / 2 - s.top];
+}
+function edges(live = new Set()) {
+  const svg = $('#c-edges'); svg.replaceChildren();
+  for (const e of flow.edges) {
+    const a = portXY(e.from, 'out:' + e.out), b = portXY(e.to, 'in:' + e.in); if (!a || !b) continue;
+    const dx = Math.max(60, Math.abs(b[0] - a[0]) / 2), p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('d', `M${a[0]},${a[1]} C${a[0] + dx},${a[1]} ${b[0] - dx},${b[1]} ${b[0]},${b[1]}`);
+    if (live.has(e.id)) p.classList.add('live');
+    p.addEventListener('click', () => { flow.edges = flow.edges.filter((x) => x !== e); canvas(); toast('Connection removed'); });
+    p.append(Object.assign(document.createElementNS('http://www.w3.org/2000/svg', 'title'), { textContent: `${e.out} → ${e.in} (click to remove)` }));
+    svg.append(p);
+  }
+}
+function inspector() {
+  const n = sel && nodeById(sel), box = $('#c-inspector');
+  if (!n) return box.replaceChildren(el('h2', {}, 'Inspector'), el('p', { class: 'note' }, 'Select a node to edit its settings. Drag a node by its title. Connect by clicking an output dot, then a matching input dot. Click a wire to remove it.'));
+  const d = DEFS[n.type];
+  box.replaceChildren(el('header', {}, el('h2', { class: 'grow' }, d.label), el('button', { class: 'btn small', onclick: () => { flow.nodes = flow.nodes.filter((x) => x !== n); flow.edges = flow.edges.filter((e) => e.from !== n.id && e.to !== n.id); sel = null; canvas(); } }, 'Delete')),
+    ...Object.entries(d.params).map(([k, p]) => {
+      const set = (v) => { n.params[k] = v; const pr = validate(); $('#c-valid').firstChild && ($('#c-valid').firstChild.textContent = pr.length ? `${pr.length} to fix: ${pr[0]}` : 'Ready to run'); };
+      if (p.type === 'select') return el('label', { class: 'field' }, k, el('select', { onchange: (e) => set(e.target.value) }, ...p.options.map((o) => el('option', { value: o, selected: n.params[k] === o }, o))));
+      if (p.type === 'checkbox') return el('label', { class: 'field inline' }, el('input', { type: 'checkbox', checked: !!n.params[k], onchange: (e) => set(e.target.checked) }), k);
+      if (p.type === 'textarea') return el('label', { class: 'field' }, k, el('textarea', { rows: 4, value: n.params[k], oninput: (e) => set(e.target.value) }));
+      return el('label', { class: 'field' }, k, el('input', { type: p.type === 'number' ? 'number' : 'text', value: n.params[k], oninput: (e) => set(p.type === 'number' ? +e.target.value : e.target.value) }));
+    }),
+    !Object.keys(d.params).length ? el('p', { class: 'note' }, 'No settings.') : null,
+    el('p', { class: 'note' }, 'Inputs: ' + (d.inputs.map((i) => `${i.name} (${i.type}${i.optional ? ', optional' : ''})`).join(', ') || 'none')));
+}
+$('#c-board').addEventListener('click', (e) => { if (e.target.id === 'c-board' || e.target.id === 'c-stage' || e.target.id === 'c-edges') { sel = null; pending = null; canvas(); } });
+$('#c-save').onclick = () => { flow.updated = Date.now(); saveFlows(); toast('Flow saved in this browser'); };
+$('#c-auto').onclick = () => { autoLayout(flow); canvas(); };
+
+/* ---------- running a flow ---------- */
+function buildStore(docs, splitterNode) {
+  const p = splitterNode ? splitterNode.params : { chunkSize: 500, chunkOverlap: 50 };
+  const chunks = docs.flatMap((src) => {
+    const doc = SAMPLES[src], heads = Text.headings(doc);
+    const parts = splitterNode && splitterNode.type === 'markdownSplitter' ? Chunkers.hybrid(doc, { max_chars: p.chunkSize, min_chars: 150 })
+      : Chunkers.recursive(doc, { max_chars: p.chunkSize });
+    return parts.map((c) => ({ text: c.text, source: src === 'dpa' ? 'Data Processing Addendum' : 'Master Services Agreement', section: Text.headingPath(heads, c.start).slice(-1)[0] || '' }));
+  });
+  return { chunks, vecs: Text.tfidf(chunks.map((c) => c.text)) };
+}
+function search(st, q, k) {
+  const v = Text.tfidf([...st.chunks.map((c) => c.text), q]), qv = v[v.length - 1];
+  return st.chunks.map((c, i) => ({ ...c, score: Text.cos(qv, v[i]) })).sort((a, b) => b.score - a.score).slice(0, k);
+}
+function extractive(q, docs) { // the stand-in model: best-matching sentences from the context
+  const sents = docs.flatMap((d) => Text.sentences(d.text).map(([a, b]) => ({ s: d.text.slice(a, b).replace(/^#+\s*/, ''), d }))).filter((x) => x.s.length > 25 && !/^\|/.test(x.s));
+  if (!sents.length) return 'The documents do not cover that.';
+  const v = Text.tfidf([...sents.map((x) => x.s), q]), qv = v[v.length - 1];
+  const top = sents.map((x, i) => ({ ...x, sc: Text.cos(qv, v[i]) })).sort((a, b) => b.sc - a.sc).slice(0, 2).filter((x) => x.sc > 0.02);
+  return top.length ? top.map((x) => x.s).join(' ') + (top[0].d.section ? ` (${top[0].d.source}, ${top[0].d.section})` : '') : 'The documents do not cover that question.';
+}
+const memory = [];
+async function runChatflow(q) {
+  const steps = [], t0 = performance.now(), live = new Set(), mark = async (n, out) => { steps.push({ node: DEFS[n.type].label, ms: Math.round(performance.now() - t0), out }); const b = $(`.node[data-id="${n.id}"]`); b && b.classList.add('run'); flow.edges.filter((e) => e.to === n.id || e.from === n.id).forEach((e) => live.add(e.id)); edges(live); await sleep(140); };
+  const ending = flow.nodes.find((n) => DEFS[n.type].ending), into = (n, name) => flow.edges.filter((e) => e.to === n.id && e.in === name).map((e) => nodeById(e.from));
+  const getRetriever = async (vsNode) => {
+    const loaders = into(vsNode, 'document'); for (const l of loaders) { const sp = into(l, 'splitter')[0]; if (sp) await mark(sp, `${sp.params.chunkSize} chars per chunk`); await mark(l, `loaded ${l.params.source === 'dpa' ? 'Data Processing Addendum' : 'Master Services Agreement'}`); }
+    const sp = loaders.map((l) => into(l, 'splitter')[0]).find(Boolean), st = buildStore(loaders.map((l) => l.params.source), sp);
+    const em = into(vsNode, 'embeddings')[0]; if (em) await mark(em, `embedded ${st.chunks.length} chunks`);
+    await mark(vsNode, `indexed ${st.chunks.length} chunks`); return (query) => search(st, query, +vsNode.params.topK || 3);
+  };
+  let answer, sources = [];
+  if (ending.type === 'retrievalQA') {
+    const model = into(ending, 'model')[0], mem = into(ending, 'memory')[0], ret = await getRetriever(into(ending, 'retriever')[0]);
+    let query = q; if (mem && memory.length && /\b(it|that|this|they|them)\b/i.test(q)) { query = memory[memory.length - 1].q + ' ' + q; await mark(mem, `rephrased with history: “${query.slice(0, 60)}”`); } else if (mem) await mark(mem, `${memory.length} earlier turns`);
+    sources = ret(query); await mark(model, `${model.params.model} answering from ${sources.length} chunks`);
+    answer = extractive(query, sources); await mark(ending, 'returned answer' + (ending.params.returnSources ? ' with sources' : ''));
+    if (!ending.params.returnSources) sources = [];
+  } else if (ending.type === 'llmChain') {
+    const model = into(ending, 'model')[0], prompt = into(ending, 'prompt')[0];
+    const vars = Object.fromEntries([...prompt.params.template.matchAll(/\{(\w+)\}/g)].map((m) => [m[1], m[1] === 'document' ? 'agreement' : q]));
+    const compiled = prompt.params.template.replace(/\{(\w+)\}/g, (_, k) => vars[k]); await mark(prompt, compiled);
+    const st = buildStore(['agreement', 'dpa']); sources = search(st, q, 2); await mark(model, `${model.params.model} (temperature ${model.params.temperature})`);
+    answer = extractive(q, sources); sources = []; await mark(ending, 'completed');
+  } else {
+    const model = into(ending, 'model')[0], tools = into(ending, 'tools'); await mark(model, `${model.params.model} planning with ${tools.length} tools`);
+    const math = q.match(/(\d[\d,.]*)\s*([x×*+\-/]|times|percent of|% of)\s*(\d[\d,.]*)/i), date = /\bdate|deadline|when (is|would)|days from\b/i.test(q);
+    if (math && tools.some((t) => t.type === 'calculator')) {
+      const [a, op, b] = [parseFloat(math[1].replace(/,/g, '')), math[2].toLowerCase(), parseFloat(math[3].replace(/,/g, ''))];
+      const r = /x|×|\*|times/.test(op) ? a * b : op === '+' ? a + b : op === '-' ? a - b : op === '/' ? a / b : (a / 100) * b;
+      await mark(tools.find((t) => t.type === 'calculator'), `calculator(${a} ${op} ${b}) = ${r}`); answer = `That comes to ${fmt(r, 2)}.`;
+    } else if (date && tools.some((t) => t.type === 'dateTool')) {
+      const days = +(q.match(/(\d+)\s*days/) || [0, 30])[1], d = new Date(Date.now() + days * 864e5).toISOString().slice(0, 10);
+      await mark(tools.find((t) => t.type === 'dateTool'), `today + ${days} days = ${d}`); answer = `${days} days from today is ${d}.`;
+    } else {
+      const tool = tools.find((t) => t.type === 'clauseRetrieverTool'); if (!tool) answer = 'I have no tool that can answer that.';
+      else { const ret = await getRetriever(into(tool, 'retriever')[0]); sources = ret(q); await mark(tool, `${tool.params.name}(“${q.slice(0, 40)}”) → ${sources.length} clauses`); answer = extractive(q, sources); }
+    }
+    await mark(ending, 'final answer');
+  }
+  memory.push({ q, a: answer });
+  setTimeout(() => { $$('.node.run').forEach((x) => x.classList.remove('run')); edges(); }, 1600);
+  return { answer, sources, steps };
+}
+let waiting = null;
+async function runAgentflow(q, resume) {
+  const steps = resume ? resume.steps : [], t0 = performance.now(), live = new Set();
+  const mark = async (n, out) => { steps.push({ node: DEFS[n.type].label, ms: Math.round(performance.now() - t0), out }); $(`.node[data-id="${n.id}"]`)?.classList.add('run'); await sleep(220); };
+  const next = (n, out) => { const e = flow.edges.find((x) => x.from === n.id && x.out === out); if (e) { live.add(e.id); edges(live); } return e && nodeById(e.to); };
+  let n = resume ? resume.node : flow.nodes.find((x) => x.type === 'afStart'), ctx = resume ? resume.ctx : { q, previous: q, docs: [] }, guard = 0;
+  if (resume) n = next(n, resume.decision);
+  while (n && guard++ < 20) {
+    const p = n.params;
+    if (n.type === 'afStart') { await mark(n, `input: ${ctx.q}`); n = next(n, 'next'); }
+    else if (n.type === 'afCondition') { const words = p.contains.split(',').map((w) => w.trim().toLowerCase()).filter(Boolean), hit = words.find((w) => ctx.q.toLowerCase().includes(w)); await mark(n, hit ? `matched “${hit}” → yes` : 'no keyword matched → no'); n = next(n, hit ? 'yes' : 'no'); }
+    else if (n.type === 'afRetriever') { ctx.docs = search(buildStore(['agreement', 'dpa']), ctx.q, +p.topK || 3); await mark(n, `${ctx.docs.length} chunks: ${ctx.docs.map((d) => d.section).join('; ')}`); n = next(n, 'next'); }
+    else if (n.type === 'afAgent') { ctx.previous = extractive(ctx.q, ctx.docs.length ? ctx.docs : search(buildStore(['agreement', 'dpa']), ctx.q, 3)); ctx.docs = ctx.docs.length ? ctx.docs : []; await mark(n, `${p.model}: ${ctx.previous.slice(0, 80)}…`); n = next(n, 'next'); }
+    else if (n.type === 'afHuman') { await mark(n, 'waiting for approval'); waiting = { node: n, ctx, steps, prompt: p.prompt }; return { waiting: true, steps, draft: ctx.previous, prompt: p.prompt }; }
+    else if (n.type === 'afReply') { const msg = p.message.replace('{{previous}}', ctx.previous); await mark(n, 'replied'); setTimeout(() => $$('.node.run').forEach((x) => x.classList.remove('run')), 1600); return { answer: msg, sources: ctx.docs, steps }; }
+    else n = null;
+  }
+  return { answer: 'The flow ended without a reply node.', steps, sources: [] };
+}
+function chatMsg(who, text, extra) { const m = el('div', { class: 'msg ' + who }, text, extra || null); $('#c-chat').append(m); $('#c-chat').scrollTop = 1e6; return m; }
+function stepsEl(steps) { return el('details', { class: 'src' }, el('summary', {}, `${steps.length} steps`), el('div', { class: 'steps' }, ...steps.map((s) => el('div', {}, el('b', {}, `${s.ms}ms`), el('span', {}, `${s.node}: ${s.out}`))))); }
+function logExec(q, r) { EXECUTIONS.unshift({ id: uid('ex'), flow: flow.name, q, ...r, at: new Date() }); }
+async function ask(q) {
+  const problems = validate(); if (problems.length) return toast('Fix the flow first: ' + problems[0]);
+  chatMsg('user', q);
+  if (flow.kind === 'AGENTFLOW') {
+    const r = await runAgentflow(q);
+    if (r.waiting) return approval(q, r);
+    chatMsg('bot', r.answer, stepsEl(r.steps)); logExec(q, r);
+  } else {
+    const r = await runChatflow(q);
+    chatMsg('bot', r.answer, el('div', {}, r.sources.length ? el('div', { class: 'src' }, 'Sources: ' + r.sources.map((s) => `${s.section || s.source} (${s.score.toFixed(2)})`).join(' · ')) : null, stepsEl(r.steps))); logExec(q, r);
+  }
+}
+function approval(q, r) {
+  const box = chatMsg('bot', `Draft: ${r.draft}\n\n${r.prompt}`, el('div', { class: 'row', style: { marginTop: '6px' } },
+    el('button', { class: 'btn small primary', onclick: async () => { box.querySelector('.row').remove(); const res = await runAgentflow(q, { ...waiting, decision: 'approved' }); chatMsg('bot', res.answer, stepsEl(res.steps)); logExec(q, res); } }, 'Approve'),
+    el('button', { class: 'btn small', onclick: async () => { box.querySelector('.row').remove(); chatMsg('user', 'Rejected: redraft'); const res = await runAgentflow(q, { ...waiting, decision: 'rejected' }); if (res.waiting) approval(q, res); else { chatMsg('bot', res.answer, stepsEl(res.steps)); logExec(q, res); } } }, 'Reject')));
+}
+$('#c-form').addEventListener('submit', (e) => { e.preventDefault(); const q = $('#c-q').value.trim(); if (q) { $('#c-q').value = ''; ask(q); } });
+$('#c-clear').onclick = () => { $('#c-chat').replaceChildren(); memory.length = 0; };
+function suggestions() {
+  const s = flow.kind === 'AGENTFLOW' ? ['What is the liability cap?', 'Can data leave the EEA?', 'Tell me a joke'] : flow.nodes.some((n) => n.type === 'toolAgent') ? ['What is 12 x 4,500?', 'What date is 30 days from today?', 'Who are the sub-processors?'] : ['How long is the initial term?', 'Can it be renewed?', 'How fast must security incidents be reported?'];
+  $('#c-suggest').replaceChildren(...s.map((q) => el('button', { class: 'btn small', onclick: () => ask(q) }, q)));
+}
+
+/* ---------- document stores ---------- */
+let dsChunks = [], dsIndex = null;
+function dsSplit() {
+  const srcs = $('#ds-src').value === 'both' ? ['agreement', 'dpa'] : [$('#ds-src').value], size = +$('#ds-size').value, ov = Math.min(+$('#ds-ov').value, size - 1), kind = $('#ds-split').value;
+  return srcs.flatMap((src) => {
+    const doc = SAMPLES[src], heads = Text.headings(doc);
+    const parts = kind === 'markdown' ? Chunkers.hybrid(doc, { max_chars: size, min_chars: 120 }) : kind === 'token' ? Chunkers.fixed_token_overlap(doc, { max_tokens: Math.round(size / 6), overlap: Math.round(ov / 6) }) : Chunkers.recursive(doc, { max_chars: size });
+    return parts.map((c) => ({ ...c, meta: $('#ds-meta').checked ? { source: src === 'dpa' ? 'dpa.md' : 'service_agreement.md', section: Text.headingPath(heads, c.start).slice(-1)[0] || '' } : {} }));
+  });
+}
+$('#ds-preview').onclick = () => { dsChunks = dsSplit(); $('#ds-count').textContent = `${dsChunks.length} chunks`; renderChunkCards($('#ds-chunks'), dsChunks); };
+$('#ds-upsert').onclick = async () => { dsChunks = dsSplit(); $('#ds-status').textContent = 'Embedding…'; await sleep(300); dsIndex = { chunks: dsChunks.map((c) => ({ text: c.text, source: c.meta.source, section: c.meta.section })), vecs: null }; $('#ds-status').textContent = `Upserted ${dsChunks.length} chunks into “${$('#ds-name').value}” (in-memory vector store, TF-IDF embeddings).`; $('#ds-count').textContent = `${dsChunks.length} chunks`; renderChunkCards($('#ds-chunks'), dsChunks); };
+$('#ds-search').onclick = () => {
+  if (!dsIndex) return toast('Upsert the documents first');
+  const res = search(dsIndex, $('#ds-q').value, 4);
+  renderChunkCards($('#ds-chunks'), res.map((r) => ({ text: r.text, meta: { score: r.score.toFixed(3), section: r.section } })));
+  $('#ds-count').textContent = `top ${res.length} for “${$('#ds-q').value}”`;
+};
+
+/* ---------- marketplace ---------- */
+function marketplace() {
+  const T = [['rag', 'Conversational Retrieval QA', 'Chat with your documents: loader, splitter, embeddings, vector store and a QA chain with memory.', 'CHATFLOW'], ['llm', 'Prompt chain', 'A prompt template and a chat model in an LLM chain.', 'CHATFLOW'], ['agent', 'Tool agent', 'An agent that chooses between a retriever tool, a calculator and a date tool.', 'CHATFLOW'], ['af', 'Human in the loop', 'Agentflow that routes by topic and waits for approval before replying.', 'AGENTFLOW']];
+  $('#m-cards').replaceChildren(...T.map(([k, name, desc, kind]) => el('div', { class: 'card' }, el('div', { class: 'row' }, el('h3', { class: 'grow' }, name), el('span', { class: 'pill' }, kind === 'AGENTFLOW' ? 'Agentflow' : 'Chatflow')), el('span', { class: 'note' }, desc),
+    el('span', { class: 'note' }, template(k).nodes.map((n) => DEFS[n.type].label).filter((v, i, a) => a.indexOf(v) === i).join(' · ')),
+    el('div', {}, el('button', { class: 'btn small primary', onclick: () => { flow = { id: uid('cf'), name: name + ' (from template)', kind, desc, ...template(k), updated: Date.now() }; FLOWS.push(flow); saveFlows(); show('canvas'); } }, 'Use template')))));
+}
+
+/* ---------- tools ---------- */
+const TOOLS = [
+  { name: 'calculator', desc: 'Evaluates arithmetic in questions like “12 x 4,500”.', run: (x) => { const m = x.match(/(\d[\d,.]*)\s*([x×*+\-/])\s*(\d[\d,.]*)/); if (!m) return 'No arithmetic found'; const a = parseFloat(m[1].replace(/,/g, '')), b = parseFloat(m[3].replace(/,/g, '')); return String({ x: a * b, '×': a * b, '*': a * b, '+': a + b, '-': a - b, '/': a / b }[m[2]]); }, sample: '12 x 4,500' },
+  { name: 'date_calculator', desc: 'Adds days to today, for notice periods and deadlines.', run: (x) => { const d = +(x.match(/\d+/) || [0])[0]; return new Date(Date.now() + d * 864e5).toDateString(); }, sample: '90 days' },
+  { name: 'search_contract', desc: 'Retriever tool over the agreement and the addendum.', run: (x) => search(buildStore(['agreement', 'dpa']), x, 2).map((r) => `[${r.section}] ${r.text.slice(0, 160)}…`).join('\n\n'), sample: 'sub-processor notice' },
+  { name: 'clause_extractor (custom)', desc: 'Custom tool: returns every numbered clause title with its first sentence.', run: (x) => Text.headings(SAMPLES[x.includes('dpa') ? 'dpa' : 'agreement']).filter((h) => /^\d/.test(h.title)).map((h) => '• ' + h.title).join('\n'), sample: 'agreement' },
+];
+let tsel = TOOLS[0];
+function tools() {
+  $('#t-list').replaceChildren(...TOOLS.map((t) => el('div', { class: 'ver' + (t === tsel ? ' sel' : ''), style: { cursor: 'pointer', padding: '8px', borderRadius: '6px', background: t === tsel ? 'var(--accent-soft)' : '' }, onclick: () => { tsel = t; tools(); } }, el('b', {}, t.name), el('div', { class: 'note' }, t.desc))));
+  const out = el('pre', { class: 'io code', style: { whiteSpace: 'pre-wrap' } });
+  $('#t-test').replaceChildren(el('h2', {}, 'Test ' + tsel.name), el('div', { class: 'row' }, el('input', { type: 'text', id: 't-in', class: 'grow', value: tsel.sample }), el('button', { class: 'btn primary', onclick: () => { out.textContent = tsel.run($('#t-in').value); } }, 'Run')), out);
+}
+
+/* ---------- credentials & variables ---------- */
+const CREDS = store.get('fw:creds', [{ type: 'Anthropic API', name: 'anthropic-prod', key: 'sk-ant-…3f9a' }, { type: 'OpenAI API', name: 'openai-dev', key: 'sk-…b21c' }]);
+const VARS = store.get('fw:vars', [{ name: 'company', value: 'Northwind Legal Technologies', type: 'static' }, { name: 'matterId', value: 'M-1042', type: 'runtime' }]);
+function creds() {
+  $('#cr-table').replaceChildren(el('tr', {}, el('th', {}, 'Name'), el('th', {}, 'Type'), el('th', {}, 'Key'), el('th', {}, '')), ...CREDS.map((c, i) => el('tr', {}, el('td', {}, c.name), el('td', {}, c.type), el('td', { class: 'mono' }, c.key), el('td', {}, el('button', { class: 'btn small', onclick: () => { CREDS.splice(i, 1); store.set('fw:creds', CREDS); creds(); } }, 'Delete')))));
+  $('#v-table').replaceChildren(el('tr', {}, el('th', {}, 'Name'), el('th', {}, 'Value'), el('th', {}, 'Type'), el('th', {}, 'Use as')), ...VARS.map((v) => el('tr', {}, el('td', {}, v.name), el('td', {}, v.value), el('td', {}, el('span', { class: 'pill' }, v.type)), el('td', { class: 'mono' }, `$vars.${v.name}`))));
+}
+$('#cr-add').onclick = () => { const k = $('#cr-key').value; if (!$('#cr-name').value || !k) return toast('Give the credential a name and a key'); CREDS.push({ type: $('#cr-type').value, name: $('#cr-name').value, key: k.slice(0, 4) + '…' + k.slice(-4) }); store.set('fw:creds', CREDS); $('#cr-key').value = ''; creds(); toast('Credential saved (only the last 4 characters are kept here)'); };
+$('#v-add').onclick = () => { if (!$('#v-name').value) return; VARS.push({ name: $('#v-name').value, value: $('#v-val').value, type: $('#v-type').value }); store.set('fw:vars', VARS); creds(); };
+
+/* ---------- executions ---------- */
+function executions(sel) {
+  $('#x-table').replaceChildren(el('tr', {}, el('th', {}, 'Time'), el('th', {}, 'Flow'), el('th', {}, 'Input'), el('th', {}, 'Steps')),
+    ...(EXECUTIONS.length ? EXECUTIONS.map((x) => el('tr', { class: 'click' + (x === sel ? ' sel' : ''), onclick: () => executions(x) }, el('td', { class: 'mono' }, x.at.toTimeString().slice(0, 8)), el('td', {}, x.flow), el('td', {}, x.q.slice(0, 40)), el('td', {}, x.steps.length))) : [el('tr', {}, el('td', { colspan: 4, class: 'note' }, 'No runs yet: send a message in the Canvas chat.'))]));
+  if (sel) $('#x-detail').replaceChildren(el('h2', {}, sel.q), el('div', { class: 'msg bot' }, sel.answer || '(waiting for approval)'), el('div', { class: 'steps' }, ...sel.steps.map((s) => el('div', {}, el('b', {}, `${s.ms}ms`), el('span', {}, `${s.node}: ${s.out}`)))));
+}
+
+/* ---------- API ---------- */
+function api() {
+  const id = flow.id, host = 'http://localhost:3000';
+  const C = { curl: `curl ${host}/api/v1/prediction/${id} \\\n  -H "Authorization: Bearer $FLOWISE_API_KEY" \\\n  -H "Content-Type: application/json" \\\n  -d '{"question": "How long is the initial term?", "overrideConfig": {"vars": {"matterId": "M-1042"}}}'`,
+    py: `import requests\n\nr = requests.post("${host}/api/v1/prediction/${id}",\n    headers={"Authorization": f"Bearer {FLOWISE_API_KEY}"},\n    json={"question": "How long is the initial term?", "streaming": False})\nprint(r.json()["text"])\nfor doc in r.json().get("sourceDocuments", []):\n    print(doc["metadata"])`,
+    js: `const r = await fetch("${host}/api/v1/prediction/${id}", {\n  method: "POST",\n  headers: { "Content-Type": "application/json", Authorization: \`Bearer \${FLOWISE_API_KEY}\` },\n  body: JSON.stringify({ question: "How long is the initial term?" }),\n});\nconst { text, sourceDocuments } = await r.json();` };
+  $('#a-code').textContent = C[$('#a-lang').value];
+  $('#a-embed').textContent = `<script type="module">\n  import Chatbot from "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js";\n  Chatbot.init({\n    chatflowid: "${id}",\n    apiHost: "${host}",\n    theme: { button: { backgroundColor: "#4a52c9" }, chatWindow: { title: "Contract assistant" } },\n  });\n<\/script>`;
+}
+$('#a-lang').onchange = api; $('#a-copy').onclick = () => copyText($('#a-code').textContent); $('#a-copy2').onclick = () => copyText($('#a-embed').textContent);
+
+const RENDER = { flows: flowsView, canvas: () => { canvas(); suggestions(); }, marketplace, tools, credentials: creds, executions: () => executions(), api };
+const show = initTabs((name) => RENDER[name] && RENDER[name]());
+</script>

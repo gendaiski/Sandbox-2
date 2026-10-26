@@ -1,0 +1,1065 @@
+<title>Langfuse Workbench</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap"><meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Systems Lab shell: one family for every system page.
+   Layout: app bar, tab strip, working area; each page sets --accent. */
+:root {
+  --bg: #f3f5f8; --panel: #ffffff; --sunk: #eceff4; --ink: #151a23; --muted: #596273; --line: #dce1e9;
+  --accent: #2f5bd3; --accent-ink: #ffffff; --accent-soft: #e5ecfc;
+  --good: #19794a; --good-soft: #e1f3e8; --warn: #946200; --warn-soft: #fbf0d6; --bad: #b42831; --bad-soft: #fbe3e4;
+  --c0: #dbe7ff; --c1: #ffe3c8; --c2: #d6f2df; --c3: #f6d9ef; --c4: #fff2b8; --c5: #d5f0f4; --c6: #e6dcff; --c7: #ffd9d6;
+  --e0: #4f7ae6; --e1: #d9822b; --e2: #2f9d5a; --e3: #b8509a; --e4: #b08f00; --e5: #1f93a5; --e6: #7d5bd6; --e7: #d14d43;
+  --font: "Schibsted Grotesk", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --r: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1116; --panel: #161a21; --sunk: #1d222b; --ink: #e5e8ee; --muted: #97a0ae; --line: #2a303b;
+    --accent-soft: #1d2a4a; --good: #67d197; --good-soft: #15301f; --warn: #eec266; --warn-soft: #362b11; --bad: #f08a8f; --bad-soft: #3c1b1d;
+    --c0: #1f2d4d; --c1: #3d2b18; --c2: #18352a; --c3: #3a2136; --c4: #3a3413; --c5: #143438; --c6: #2b2448; --c7: #3d2220;
+    --e0: #86a5f2; --e1: #f0a45e; --e2: #6cc98f; --e3: #e08bc8; --e4: #e3c64e; --e5: #67c6d4; --e6: #ad93f0; --e7: #f08a80;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1116; --panel: #161a21; --sunk: #1d222b; --ink: #e5e8ee; --muted: #97a0ae; --line: #2a303b;
+  --accent-soft: #1d2a4a; --good: #67d197; --good-soft: #15301f; --warn: #eec266; --warn-soft: #362b11; --bad: #f08a8f; --bad-soft: #3c1b1d;
+  --c0: #1f2d4d; --c1: #3d2b18; --c2: #18352a; --c3: #3a2136; --c4: #3a3413; --c5: #143438; --c6: #2b2448; --c7: #3d2220;
+  --e0: #86a5f2; --e1: #f0a45e; --e2: #6cc98f; --e3: #e08bc8; --e4: #e3c64e; --e5: #67c6d4; --e6: #ad93f0; --e7: #f08a80;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { min-height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14.5px/1.5 var(--font); }
+a { color: var(--accent); }
+code, pre, .mono { font-family: var(--mono); font-size: 12.5px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.appbar { background: var(--panel); border-bottom: 1px solid var(--line); }
+.appbar .wrap { max-width: 1320px; margin: 0 auto; padding-block: 14px 0; display: flex; flex-direction: column; gap: 10px; }
+.brand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.brand h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+.brand .tag { color: var(--muted); }
+.brand .links { margin-left: auto; display: flex; gap: 14px; font-size: 13px; flex-wrap: wrap; }
+.mark { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; background: var(--accent); color: var(--accent-ink);
+  font: 700 13px var(--mono); align-self: center; }
+.tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+.tabs button { border: 0; background: none; padding: 9px 13px 11px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; white-space: nowrap; font-weight: 500; }
+.tabs button:hover { color: var(--ink); }
+.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+main.wrap { max-width: 1320px; margin: 0 auto; padding-block: 18px 40px; }
+[data-panel] { display: flex; flex-direction: column; gap: 16px; }
+.note { font-size: 12.5px; color: var(--muted); }
+.banner { font-size: 12.5px; color: var(--muted); background: var(--sunk); border-radius: var(--r); padding: 8px 12px; }
+
+.grid { display: grid; gap: 16px; }
+.cols-2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.cols-side { grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); }
+.cols-side-r { grid-template-columns: minmax(0, 1fr) minmax(280px, 380px); }
+.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 900px) { .cols-2, .cols-side, .cols-side-r, .cols-3 { grid-template-columns: minmax(0, 1fr); } .cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.panel > h2, .panel > header h2 { font-size: 14.5px; font-weight: 600; }
+.panel > header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.panel > header .grow { flex: 1; }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.stack { display: flex; flex-direction: column; gap: 8px; }
+.grow { flex: 1; min-width: 0; }
+
+.btn { border: 1px solid var(--line); background: var(--panel); border-radius: 7px; padding: 6px 12px; cursor: pointer; font-weight: 500; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.small { padding: 3px 9px; font-size: 12.5px; }
+.btn:disabled { opacity: .5; cursor: default; }
+label.field { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--muted); min-width: 0; }
+label.field.inline { flex-direction: row; align-items: center; gap: 8px; }
+input[type=text], input[type=number], input[type=search], input[type=url], select, textarea {
+  border: 1px solid var(--line); background: var(--panel); border-radius: 7px; padding: 6px 9px; min-width: 0; color: var(--ink); }
+textarea { font-family: var(--mono); font-size: 12.5px; line-height: 1.5; resize: vertical; width: 100%; }
+input[type=range] { accent-color: var(--accent); }
+
+.pill { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 600; padding: 1px 8px; border-radius: 99px; background: var(--sunk); color: var(--muted); white-space: nowrap; }
+.pill.good { background: var(--good-soft); color: var(--good); } .pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); } .pill.accent { background: var(--accent-soft); color: var(--accent); }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.kpi { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; }
+.kpi b { display: block; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.kpi span { font-size: 12px; color: var(--muted); }
+
+.table-wrap { overflow-x: auto; }
+table.data { border-collapse: collapse; width: 100%; font-size: 13px; }
+table.data th { text-align: left; font-weight: 600; color: var(--muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; padding: 7px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.data td { padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; font-variant-numeric: tabular-nums; }
+table.data tr.click { cursor: pointer; } table.data tr.click:hover td { background: var(--sunk); }
+table.data tr.sel td { background: var(--accent-soft); }
+
+.chunks { display: flex; flex-direction: column; gap: 8px; }
+.chunk { border: 1px solid var(--line); border-left: 4px solid var(--e0); border-radius: 6px; padding: 8px 10px; background: var(--panel); }
+.chunk .meta { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11.5px; color: var(--muted); margin-bottom: 4px; }
+.chunk pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-size: 12px; max-height: 220px; overflow: auto; }
+.overlay { white-space: pre-wrap; word-break: break-word; font: 12.5px/1.65 var(--mono); background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px; max-height: 560px; overflow: auto; }
+.overlay mark { color: inherit; border-radius: 3px; padding: 1px 0; }
+.overlay .ov { background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgba(127,127,127,.25) 4px 6px); }
+
+pre.code { background: var(--sunk); border-radius: 7px; padding: 10px 12px; margin: 0; overflow-x: auto; white-space: pre; }
+pre.mermaid { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; margin: 0; overflow-x: auto; text-align: center; }
+.toast { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 9px 14px; border-radius: 8px; font-size: 13px; opacity: 0; transform: translateY(8px); transition: .2s; pointer-events: none; z-index: 50; }
+.toast.show { opacity: 1; transform: none; }
+.empty { color: var(--muted); font-size: 13px; padding: 18px; text-align: center; border: 1px dashed var(--line); border-radius: var(--r); }
+.bar { height: 8px; background: var(--sunk); border-radius: 99px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
+.kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 12px; font-size: 13px; }
+.kv dt { color: var(--muted); } .kv dd { margin: 0; word-break: break-word; }
+canvas.graph { width: 100%; height: 460px; background: var(--sunk); border-radius: var(--r); display: block; touch-action: none; }
+.footer { color: var(--muted); font-size: 12px; text-align: center; padding-block: 8px 24px; }
+
+</style>
+<style>
+  :root { --accent: #0d7a6f; --accent-soft: #dcf1ee; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #45c2b1; --accent-ink: #06201c; --accent-soft: #123430; } }
+  :root[data-theme="dark"] { --accent: #45c2b1; --accent-ink: #06201c; --accent-soft: #123430; }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: end; }
+  .tree { display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+  .obs { display: grid; grid-template-columns: minmax(150px, 260px) minmax(0, 1fr) 70px; gap: 10px; align-items: center; padding: 4px 6px; border-radius: 6px; cursor: pointer; }
+  .obs:hover { background: var(--sunk); } .obs.sel { background: var(--accent-soft); }
+  .obs .nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .obs .lane { position: relative; height: 12px; background: var(--sunk); border-radius: 3px; }
+  .obs .lane i { position: absolute; top: 0; bottom: 0; border-radius: 3px; }
+  .obs .ms { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; font-size: 12px; }
+  .type { font: 600 10px var(--mono); padding: 1px 5px; border-radius: 4px; margin-right: 6px; background: var(--sunk); color: var(--muted); }
+  .type.GENERATION { background: var(--c0); color: var(--e0); } .type.RETRIEVER { background: var(--c2); color: var(--e2); }
+  .type.TOOL { background: var(--c1); color: var(--e1); } .type.AGENT { background: var(--c6); color: var(--e6); }
+  .type.EVALUATOR { background: var(--c3); color: var(--e3); } .type.GUARDRAIL { background: var(--c7); color: var(--e7); }
+  .type.CHAIN, .type.SPAN { background: var(--c5); color: var(--e5); }
+  .io { background: var(--sunk); border-radius: 6px; padding: 8px 10px; white-space: pre-wrap; word-break: break-word; font: 12px/1.5 var(--mono); max-height: 240px; overflow: auto; margin: 0; }
+  .turn { border-left: 3px solid var(--line); padding: 4px 0 4px 12px; display: flex; flex-direction: column; gap: 4px; }
+  .turn .q { font-weight: 600; } .turn .a { color: var(--ink); }
+  .ver { display: flex; gap: 8px; align-items: center; padding: 6px 8px; border-radius: 6px; cursor: pointer; }
+  .ver:hover { background: var(--sunk); } .ver.sel { background: var(--accent-soft); }
+  .diff { font: 12px/1.55 var(--mono); white-space: pre-wrap; word-break: break-word; background: var(--sunk); border-radius: 6px; padding: 8px 10px; margin: 0; }
+  .diff .add { background: var(--good-soft); color: var(--good); display: block; } .diff .del { background: var(--bad-soft); color: var(--bad); display: block; text-decoration: line-through; }
+  .scorechips { display: flex; gap: 6px; flex-wrap: wrap; }
+  svg.chart { width: 100%; height: auto; display: block; }
+  .secret { font: 12.5px var(--mono); background: var(--sunk); padding: 6px 9px; border-radius: 6px; word-break: break-all; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand">
+      <span class="mark">Lf</span>
+      <h1>Langfuse Workbench</h1>
+      <span class="tag">LLM observability, prompts and evaluation for a contract assistant</span>
+      <span class="links"><a href="https://github.com/langfuse/langfuse" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/langfuse" target="_blank" rel="noopener">Run the real server</a></span>
+    </div>
+    <nav class="tabs" aria-label="Sections">
+      <button data-tab="dashboard">Dashboard</button><button data-tab="tracing">Tracing</button><button data-tab="sessions">Sessions</button>
+      <button data-tab="users">Users</button><button data-tab="prompts">Prompts</button><button data-tab="datasets">Datasets</button>
+      <button data-tab="evaluation">Evaluation</button><button data-tab="settings">API keys &amp; SDK</button><button data-tab="how">How it works</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">An interactive model of Langfuse's features, built for this review and not affiliated with Langfuse. It runs in your browser on example traffic from a contract assistant (14 days, 3 apps). Your scores, prompt versions and experiment runs stay in this browser.</p>
+
+  <section data-panel="dashboard">
+    <div class="row"><label class="field inline">Range <select id="d-range"><option value="14">Last 14 days</option><option value="7">Last 7 days</option><option value="1">Last 24 hours</option></select></label>
+      <label class="field inline">App <select id="d-name"><option value="">All apps</option></select></label></div>
+    <div class="kpis" id="d-kpis"></div>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Traces per day</h2><svg class="chart" id="d-traces"></svg></div>
+      <div class="panel"><h2>Cost per day (USD)</h2><svg class="chart" id="d-cost"></svg></div>
+      <div class="panel"><h2>Cost by model</h2><svg class="chart" id="d-model"></svg></div>
+      <div class="panel"><h2>Latency by app (p50 / p95, seconds)</h2><div class="table-wrap"><table class="data" id="d-latency"></table></div></div>
+      <div class="panel"><h2>Faithfulness score distribution</h2><svg class="chart" id="d-scores"></svg></div>
+      <div class="panel"><h2>User feedback</h2><svg class="chart" id="d-feedback"></svg></div>
+    </div>
+  </section>
+
+  <section data-panel="tracing" hidden>
+    <div class="filters">
+      <label class="field">Search <input type="search" id="t-q" placeholder="question, answer or trace id"></label>
+      <label class="field">App <select id="t-name"><option value="">All</option></select></label>
+      <label class="field">User <select id="t-user"><option value="">All</option></select></label>
+      <label class="field">Model <select id="t-model"><option value="">All</option></select></label>
+      <label class="field">Tag <select id="t-tag"><option value="">All</option></select></label>
+      <label class="field inline"><input type="checkbox" id="t-err"> Errors only</label>
+      <span class="note" id="t-count"></span>
+    </div>
+    <div class="grid cols-side-r">
+      <div class="panel"><div class="table-wrap"><table class="data" id="t-table"></table></div><div class="row" id="t-pager"></div></div>
+      <div class="panel" id="t-detail"><div class="empty">Select a trace to see its observations, timing, cost and scores.</div></div>
+    </div>
+  </section>
+
+  <section data-panel="sessions" hidden>
+    <div class="grid cols-side">
+      <div class="panel"><h2>Sessions</h2><div class="table-wrap"><table class="data" id="s-table"></table></div></div>
+      <div class="panel" id="s-detail"></div>
+    </div>
+  </section>
+
+  <section data-panel="users" hidden>
+    <div class="panel"><h2>Users</h2><p class="note">Traces carry a user id, so usage and cost roll up per user.</p><div class="table-wrap"><table class="data" id="u-table"></table></div></div>
+  </section>
+
+  <section data-panel="prompts" hidden>
+    <div class="grid cols-side">
+      <div class="panel"><header><h2 class="grow">Prompts</h2><button class="btn small" id="p-new">New prompt</button></header><div id="p-list" class="stack"></div></div>
+      <div class="stack" id="p-detail"></div>
+    </div>
+  </section>
+
+  <section data-panel="datasets" hidden>
+    <div class="grid cols-side">
+      <div class="panel"><h2>Datasets</h2><div id="ds-list" class="stack"></div>
+        <p class="note">Items can also be added from any trace: open a trace in Tracing and choose “Add to dataset”.</p></div>
+      <div class="stack" id="ds-detail"></div>
+    </div>
+  </section>
+
+  <section data-panel="evaluation" hidden>
+    <div class="grid cols-2">
+      <div class="panel" id="e-queue"></div>
+      <div class="panel" id="e-judge"></div>
+    </div>
+    <div class="panel"><h2>Score configs</h2><p class="note">Configs define the scores people and evaluators can attach to traces.</p><div class="table-wrap"><table class="data" id="e-configs"></table></div></div>
+  </section>
+
+  <section data-panel="settings" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Project API keys</h2><p class="note">SDKs authenticate with a public and a secret key. The secret is shown once.</p>
+        <div class="row"><input type="text" id="k-note" placeholder="Note, e.g. production backend" class="grow"><button class="btn primary" id="k-create">Create keys</button></div>
+        <div id="k-new"></div><div class="table-wrap"><table class="data" id="k-table"></table></div></div>
+      <div class="panel"><header><h2 class="grow">Instrument your app</h2><select id="k-lang"><option value="py">Python</option><option value="ts">TypeScript</option><option value="otel">OpenTelemetry</option></select><button class="btn small" id="k-copy">Copy</button></header><pre class="code" id="k-snippet"></pre></div>
+    </div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Self-hosted architecture</h2>
+<pre class="mermaid">
+flowchart LR
+  APP["Your app<br/>(Python / JS SDK, OpenTelemetry)"] -->|"batched events"| WEB["langfuse-web<br/>UI + public API"]
+  WEB -->|"queue"| REDIS[("Redis")]
+  REDIS --> WORKER["langfuse-worker"]
+  WEB -->|"raw events"| S3[("MinIO / S3")]
+  WORKER -->|"traces, observations, scores"| CH[("ClickHouse")]
+  WEB <-->|"prompts, datasets, users, keys"| PG[("Postgres")]
+  WEB -->|"dashboards, trace views"| CH
+  WORKER -->|"LLM-as-a-judge runs"| LLM["Model provider"]
+</pre>
+        <p class="note">This is the stack that <code>systems/langfuse/setup.sh</code> starts with Docker: six services from upstream's compose file.</p></div>
+      <div class="panel"><h2>Data model</h2>
+<pre class="mermaid">
+flowchart TB
+  SESSION["Session"] --> TRACE["Trace<br/>user, tags, input, output"]
+  TRACE --> OBS["Observations<br/>span, generation, agent, tool,<br/>retriever, evaluator, guardrail"]
+  OBS --> OBS
+  TRACE --> SCORE["Scores<br/>numeric, boolean, categorical"]
+  OBS --> SCORE
+  PROMPT["Prompt version<br/>labels: production, staging"] -.->|"linked to"| OBS
+  DATASET["Dataset item"] -->|"experiment run"| TRACE
+</pre></div>
+      <div class="panel"><h2>Prompt release flow</h2>
+<pre class="mermaid">
+sequenceDiagram
+  participant Dev as Developer
+  participant LF as Langfuse
+  participant App as App (SDK cache)
+  Dev->>LF: create version 3 (label: staging)
+  Dev->>LF: run experiment on dataset with v3
+  LF-->>Dev: scores vs v2
+  Dev->>LF: move label production to v3
+  App->>LF: get_prompt("contract-qa", label="production")
+  LF-->>App: v3 (cached, refreshed in background)
+</pre></div>
+      <div class="panel"><h2>What each section here maps to</h2>
+        <dl class="kv">
+          <dt>Tracing</dt><dd>Nested observations with timing, token usage, cost, levels and linked prompt versions.</dd>
+          <dt>Sessions</dt><dd>Traces grouped by session id, replayed as a conversation.</dd>
+          <dt>Prompts</dt><dd>Versioned prompts with labels, variables, config and diffs; compiled in a playground.</dd>
+          <dt>Datasets</dt><dd>Golden items, experiment runs over prompt versions, evaluator scores per run.</dd>
+          <dt>Evaluation</dt><dd>Human annotation queues, score configs, and LLM-as-a-judge evaluators on live traces.</dd>
+          <dt>API keys</dt><dd>Project-scoped key pairs and the SDK setup that sends traces.</dd>
+        </dl></div>
+    </div>
+  </section>
+</main>
+<p class="footer">Example data generated in the page. The real Langfuse runs from <code>systems/langfuse/serve.sh</code> with seeded demo data.</p>
+<script>
+/* Systems Lab shared runtime: DOM helpers, text tools, chunkers, metrics,
+   a force-directed graph and a pdf.js loader. Inlined into every page. */
+const $ = (s, root = document) => root.querySelector(s);
+const $$ = (s, root = document) => [...root.querySelectorAll(s)];
+function el(tag, props = {}, ...kids) {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') n.className = v;
+    else if (k === 'style' && typeof v === 'object') Object.assign(n.style, v);
+    else if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
+    else if (k === 'html') n.innerHTML = v;
+    else if (k === 'value' || k === 'checked' || k === 'disabled' || k === 'selected') n[k] = v;
+    else if (k in n && typeof v !== 'string') n[k] = v;
+    else n.setAttribute(k, v === true ? '' : v);
+  }
+  for (const kid of kids.flat()) if (kid != null && kid !== false) n.append(kid.nodeType ? kid : String(kid));
+  return n;
+}
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmt = (n, d = 0) => Number(n).toLocaleString('en-US', { maximumFractionDigits: d, minimumFractionDigits: d });
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const uid = (p = 'id') => p + '-' + Math.random().toString(36).slice(2, 10);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* storage unavailable */ } },
+};
+
+function toast(msg) {
+  let t = $('.toast');
+  if (!t) document.body.append(t = el('div', { class: 'toast', role: 'status' }));
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+async function copyText(text, what = 'Copied') {
+  try { await navigator.clipboard.writeText(text); toast(what); }
+  catch { toast('Copy is blocked here: select the text and copy it'); }
+}
+
+/* Tabs: <nav class="tabs"><button data-tab="x"> with <section data-panel="x">. */
+function initTabs(onShow) {
+  const buttons = $$('.tabs button');
+  const show = (name) => {
+    if (!buttons.some((b) => b.dataset.tab === name)) name = buttons[0].dataset.tab;
+    buttons.forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === name)));
+    $$('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== name; });
+    store.set('tab:' + document.title, name);
+    onShow && onShow(name);
+  };
+  buttons.forEach((b) => { b.setAttribute('role', 'tab'); b.addEventListener('click', () => show(b.dataset.tab)); });
+  const fromHash = /^[\w.~-]+$/.test(location.hash.slice(1)) ? location.hash.slice(1) : null;
+  show(fromHash || store.get('tab:' + document.title, buttons[0].dataset.tab));
+  return show;
+}
+
+/* ------------------------------------------------------------ text */
+const Text = {
+  tokens(doc) { return [...doc.matchAll(/\S+/g)].map((m) => [m.index, m.index + m[0].length]); },
+  strip(doc, s, e) { while (s < e && /\s/.test(doc[s])) s++; while (e > s && /\s/.test(doc[e - 1])) e--; return e > s ? [s, e] : null; },
+  sentences(doc) {
+    const out = []; let start = 0;
+    const re = /(?<=[.!?])["')\]]*\s+(?=[A-Z0-9"'(\[#*-])|\n\s*\n/g;
+    for (const m of doc.matchAll(re)) { const sp = Text.strip(doc, start, m.index); if (sp) out.push(sp); start = m.index + m[0].length; }
+    const sp = Text.strip(doc, start, doc.length); if (sp) out.push(sp);
+    return out;
+  },
+  paragraphs(doc) {
+    const out = []; let start = 0;
+    for (const m of doc.matchAll(/\n\s*\n/g)) { const sp = Text.strip(doc, start, m.index); if (sp) out.push(sp); start = m.index + m[0].length; }
+    const sp = Text.strip(doc, start, doc.length); if (sp) out.push(sp);
+    return out;
+  },
+  headings(doc) { return [...doc.matchAll(/^(#{1,6})\s+(.+)$/gm)].map((m) => ({ at: m.index, level: m[1].length, title: m[2].replace(/\*/g, '').trim() })); },
+  headingPath(heads, at) {
+    let path = [];
+    for (const h of heads) { if (h.at > at) break; path = path.filter((p) => p.level < h.level).concat([h]); }
+    return path.map((p) => p.title);
+  },
+  STOP: new Set('a an and are as at be by for from has have in is it its of on or that the this to was were will with shall may any all such each other than not no under which who whom their there these those into upon if then'.split(' ')),
+  terms(text) { return (text.toLowerCase().match(/[a-z][a-z'-]+/g) || []).filter((w) => w.length > 2 && !Text.STOP.has(w)); },
+  tfidf(texts) {
+    const docs = texts.map((t) => { const c = new Map(); for (const w of Text.terms(t)) c.set(w, (c.get(w) || 0) + 1); return c; });
+    const df = new Map(); docs.forEach((d) => d.forEach((_, w) => df.set(w, (df.get(w) || 0) + 1)));
+    const n = docs.length;
+    return docs.map((d) => {
+      const total = [...d.values()].reduce((a, b) => a + b, 0) || 1; const v = new Map(); let norm = 0;
+      d.forEach((c, w) => { const x = (c / total) * Math.log((1 + n) / (1 + df.get(w)) + 1); v.set(w, x); norm += x * x; });
+      norm = Math.sqrt(norm) || 1; v.forEach((x, w) => v.set(w, x / norm)); return v;
+    });
+  },
+  cos(a, b) { if (a.size > b.size) [a, b] = [b, a]; let s = 0; a.forEach((x, w) => { s += x * (b.get(w) || 0); }); return s; },
+  topTerms(text, k = 3) { const c = new Map(); for (const w of Text.terms(text)) c.set(w, (c.get(w) || 0) + 1); return [...c].sort((a, b) => b[1] - a[1]).slice(0, k).map((x) => x[0]); },
+  entities(text) {
+    const out = new Set();
+    for (const m of text.matchAll(/"([A-Z][A-Za-z ]+)"|\b((?:[A-Z][a-z]+|[A-Z]{2,})(?:\s+(?:[A-Z][a-z]+|[A-Z]{2,}|LLC|Ltd\.?|Inc\.?|GmbH))+)/g)) out.add((m[1] || m[2]).trim());
+    return out;
+  },
+  words(t) { return (t.match(/\S+/g) || []).length; },
+};
+
+/* ------------------------------------------------------------ chunkers
+   The 20 methods of itsual/Chunking-Methods-for-RAG (same algorithms as
+   systems/chunking-methods/chunking_methods.py). Each returns
+   [{text, start, end, meta}] with text === doc.slice(start, end) unless
+   meta.added_context says otherwise. */
+const C = (doc, s, e, meta = {}) => ({ text: doc.slice(s, e), start: s, end: e, meta });
+const CS = (doc, s, e, meta) => { const sp = Text.strip(doc, s, e); return sp ? C(doc, sp[0], sp[1], meta) : null; };
+function pack(doc, units, max, method) {
+  const out = []; let cur = null;
+  for (const [s, e] of units) { if (cur && e - cur[0] > max) { out.push(C(doc, cur[0], cur[1], { method })); cur = null; } cur = cur ? [cur[0], e] : [s, e]; }
+  if (cur) out.push(C(doc, cur[0], cur[1], { method }));
+  return out;
+}
+const SEPARATORS = ['\n## ', '\n### ', '\n\n', '\n', '. ', ' '];
+const Chunkers = {
+  fixed_size(doc, { size = 500 } = {}) { const o = []; for (let i = 0; i < doc.length; i += size) o.push(C(doc, i, Math.min(i + size, doc.length), { method: 'fixed_size' })); return o; },
+  token_based(doc, { max_tokens = 100 } = {}) { const t = Text.tokens(doc), o = []; for (let i = 0; i < t.length; i += max_tokens) { const j = Math.min(i + max_tokens, t.length); o.push(C(doc, t[i][0], t[j - 1][1], { method: 'token_based', tokens: j - i })); } return o; },
+  sentence_based(doc, { max_sentences = 4 } = {}) { const s = Text.sentences(doc), o = []; for (let i = 0; i < s.length; i += max_sentences) o.push(C(doc, s[i][0], s[Math.min(i + max_sentences, s.length) - 1][1], { method: 'sentence_based' })); return o; },
+  paragraph_based(doc, { max_chars = 1200 } = {}) { return pack(doc, Text.paragraphs(doc), max_chars, 'paragraph_based'); },
+  page_based(doc) { const o = []; let pos = 0; doc.split('\f').forEach((p, i) => { const c = CS(doc, pos, pos + p.length, { method: 'page_based', page: i + 1 }); if (c) o.push(c); pos += p.length + 1; }); return o; },
+  sliding_window(doc, { window = 600, step = 400 } = {}) { step = Math.max(1, Math.min(step, window)); const o = []; for (let i = 0; ; i += step) { o.push(C(doc, i, Math.min(i + window, doc.length), { method: 'sliding_window' })); if (i + window >= doc.length) break; } return o; },
+  fixed_token_overlap(doc, { max_tokens = 100, overlap = 20 } = {}) {
+    overlap = Math.min(overlap, max_tokens - 1); const t = Text.tokens(doc), o = []; let i = 0;
+    while (i < t.length) { const j = Math.min(i + max_tokens, t.length); o.push(C(doc, t[i][0], t[j - 1][1], { method: 'fixed_token_overlap', overlap_tokens: i ? overlap : 0 })); if (j === t.length) break; i = j - overlap; }
+    return o;
+  },
+  recursive(doc, { max_chars = 800, separators = SEPARATORS } = {}) {
+    const split = (s, e, lvl) => {
+      if (e - s <= max_chars || lvl >= separators.length) return [[s, e]];
+      const sep = separators[lvl], pieces = []; let cur = s;
+      for (;;) { const k = doc.indexOf(sep, cur + 1); if (k < 0 || k >= e) break; pieces.push([cur, k]); cur = k; }
+      pieces.push([cur, e]);
+      return pieces.length === 1 ? split(s, e, lvl + 1) : pieces.flatMap(([a, b]) => split(a, b, lvl + 1));
+    };
+    return pack(doc, split(0, doc.length, 0), max_chars, 'recursive').map((c) => CS(doc, c.start, c.end, { method: 'recursive' })).filter(Boolean);
+  },
+  recursive_python(code, { max_chars = 1200 } = {}) {
+    return Chunkers.recursive(code, { max_chars, separators: ['\nclass ', '\ndef ', '\n    def ', '\n\n', '\n', ' '] }).map((c) => ({ ...c, meta: { method: 'recursive_python' } }));
+  },
+  context_enriched(doc, { max_chars = 800, neighbour_chars = 120 } = {}) {
+    const base = Chunkers.recursive(doc, { max_chars }), heads = Text.headings(doc);
+    return base.map((c, i) => {
+      const path = Text.headingPath(heads, c.start), prev = i ? base[i - 1].text.slice(-neighbour_chars).trim() : '';
+      const prefix = (path.length ? `[Section: ${path.join(' > ')}]\n` : '') + (prev ? `[Previously: …${prev}]\n` : '');
+      return { text: prefix + c.text, start: c.start, end: c.end, meta: { method: 'context_enriched', section: path, position: `${i + 1}/${base.length}`, added_context: prefix.length } };
+    });
+  },
+  semantic(doc, { threshold = 0.08, window = 2, max_chars = 1500 } = {}) {
+    const s = Text.sentences(doc); if (s.length < 2) return [C(doc, 0, doc.length, { method: 'semantic' })];
+    const groups = s.map((_, i) => doc.slice(s[Math.max(0, i - window + 1)][0], s[i][1]));
+    const v = Text.tfidf(groups), sims = s.slice(0, -1).map((_, i) => Text.cos(v[i], v[i + 1]));
+    const o = []; let start = 0;
+    sims.forEach((sim, i) => {
+      const localMin = sim <= Math.min(...sims.slice(Math.max(0, i - 1), i + 2));
+      if ((sim < threshold && localMin) || s[i][1] - s[start][0] > max_chars) { o.push(C(doc, s[start][0], s[i][1], { method: 'semantic', boundary_similarity: +sim.toFixed(3) })); start = i + 1; }
+    });
+    o.push(C(doc, s[start][0], s[s.length - 1][1], { method: 'semantic' }));
+    return o;
+  },
+  topic_based(doc, { max_topics = 6 } = {}) {
+    const p = Text.paragraphs(doc); if (p.length <= 1) return [C(doc, 0, doc.length, { method: 'topic_based' })];
+    const v = Text.tfidf(p.map(([a, b]) => doc.slice(a, b))), sims = p.slice(0, -1).map((_, i) => Text.cos(v[i], v[i + 1]));
+    const depth = sims.map((sim, i) => (Math.max(...sims.slice(0, i + 1)) - sim) + (Math.max(...sims.slice(i)) - sim));
+    const cuts = [...sims.keys()].sort((a, b) => depth[b] - depth[a]).slice(0, max_topics - 1).sort((a, b) => a - b);
+    const bounds = [0, ...cuts.map((c) => c + 1), p.length], o = [];
+    for (let i = 0; i < bounds.length - 1; i++) { const a = bounds[i], b = bounds[i + 1]; if (a === b) continue; o.push(C(doc, p[a][0], p[b - 1][1], { method: 'topic_based', topic: Text.topTerms(doc.slice(p[a][0], p[b - 1][1])) })); }
+    return o;
+  },
+  entity_based(doc, { max_chars = 1200 } = {}) {
+    const s = Text.sentences(doc), o = []; let start = 0, ents = new Set();
+    s.forEach(([a, b], i) => {
+      const e = Text.entities(doc.slice(a, b)), shared = [...e].some((x) => ents.has(x));
+      if (i > start && ((e.size && !shared) || b - s[start][0] > max_chars)) { o.push(C(doc, s[start][0], s[i - 1][1], { method: 'entity_based', entities: [...ents].sort() })); start = i; ents = new Set(); }
+      e.forEach((x) => ents.add(x));
+    });
+    o.push(C(doc, s[start][0], s[s.length - 1][1], { method: 'entity_based', entities: [...ents].sort() }));
+    return o;
+  },
+  keyword_based(doc, { keywords = 'Section, Article, Clause, WHEREAS, Schedule' } = {}) {
+    const alts = String(keywords).split(',').map((k) => k.trim()).filter(Boolean).map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') || '(?!)';
+    const re = new RegExp(`^(?:#+\\s*)?\\**(?:(?:${alts})\\b|\\d+(?:\\.\\d+)*\\.?(?=\\s))`, 'gm');
+    const starts = [...new Set([0, ...[...doc.matchAll(re)].map((m) => m.index)])].sort((a, b) => a - b);
+    return starts.map((a, i) => CS(doc, a, starts[i + 1] ?? doc.length, { method: 'keyword_based', keyword: doc.slice(a, a + 60).trim().split('\n')[0] })).filter(Boolean);
+  },
+  hierarchical(doc, { max_chars = 800 } = {}) {
+    let heads = Text.headings(doc); const o = [];
+    if (!heads.length) return Chunkers.recursive(doc, { max_chars }).map((c) => ({ ...c, meta: { method: 'hierarchical', level: 'child', parent: null } }));
+    if (heads[0].at !== 0) heads = [{ at: 0, level: 0, title: '(preamble)' }, ...heads];
+    heads.forEach((h, i) => {
+      let end = doc.length;
+      for (const later of heads.slice(i + 1)) if (later.level <= h.level || h.level === 0) { end = later.at; break; }
+      const parent = CS(doc, h.at, end, { method: 'hierarchical', level: 'parent', id: 's' + i, title: h.title, depth: h.level });
+      if (!parent) return; o.push(parent);
+      const own = heads[i + 1] ? heads[i + 1].at : doc.length, sub = doc.slice(h.at, own);
+      Chunkers.recursive(sub, { max_chars }).forEach((c) => o.push(C(doc, h.at + c.start, h.at + c.end, { method: 'hierarchical', level: 'child', parent: 's' + i })));
+    });
+    return o;
+  },
+  modality_specific(doc, { max_chars = 800 } = {}) {
+    const spans = [];
+    for (const m of doc.matchAll(/(?:^\|.*\|[ \t]*\n?)+/gm)) spans.push([m.index, m.index + m[0].length, 'table']);
+    for (const m of doc.matchAll(/^```[\s\S]*?^```[ \t]*\n?/gm)) spans.push([m.index, m.index + m[0].length, 'code']);
+    for (const m of doc.matchAll(/!\[[^\]]*\]\([^)]+\)/g)) spans.push([m.index, m.index + m[0].length, 'image']);
+    spans.sort((a, b) => a[0] - b[0]);
+    const o = []; let pos = 0;
+    const prose = (a, b) => Chunkers.recursive(doc.slice(a, b), { max_chars }).forEach((c) => o.push(C(doc, a + c.start, a + c.end, { method: 'modality_specific', modality: 'text' })));
+    for (const [a, b, kind] of spans) { if (a < pos) continue; prose(pos, a); const c = CS(doc, a, b, { method: 'modality_specific', modality: kind }); if (c) o.push(c); pos = b; }
+    prose(pos, doc.length);
+    return o;
+  },
+  table_aware(doc, { max_rows = 20, max_chars = 800 } = {}) {
+    const o = []; let pos = 0;
+    const prose = (a, b) => Chunkers.recursive(doc.slice(a, b), { max_chars }).forEach((c) => o.push(C(doc, a + c.start, a + c.end, { method: 'table_aware', kind: 'text' })));
+    for (const m of doc.matchAll(/(?:^\|.*\|[ \t]*\n?)+/gm)) {
+      prose(pos, m.index);
+      const lines = [...m[0].matchAll(/^.*\S.*$/gm)].map((x) => [m.index + x.index, m.index + x.index + x[0].length]);
+      const hdr = lines.length > 1 && /^[|\-: ]+$/.test(doc.slice(...lines[1])) ? lines.slice(0, 2) : lines.slice(0, 1);
+      const body = lines.slice(hdr.length);
+      if (body.length <= max_rows) o.push(C(doc, lines[0][0], lines[lines.length - 1][1], { method: 'table_aware', kind: 'table', rows: body.length }));
+      else for (let i = 0; i < body.length; i += max_rows) { const part = body.slice(i, i + max_rows); o.push(C(doc, part[0][0], part[part.length - 1][1], { method: 'table_aware', kind: 'table_part', rows: part.length, header: hdr.map((l) => doc.slice(...l)).join('\n') })); }
+      pos = m.index + m[0].length;
+    }
+    prose(pos, doc.length);
+    return o;
+  },
+  agentic(doc, { starts } = {}) {
+    // `starts`: sentence indices chosen by an agent (the page supplies them).
+    const s = Text.sentences(doc), st = [...new Set([0, ...(starts || [])])].filter((i) => i < s.length).sort((a, b) => a - b);
+    return st.map((a, i) => C(doc, s[a][0], s[(st[i + 1] ?? s.length) - 1][1], { method: 'agentic', sentences: `${a}-${(st[i + 1] ?? s.length) - 1}` }));
+  },
+  subdocument(doc, { max_chars = 800 } = {}) {
+    const heads = Text.headings(doc).filter((h) => h.level <= 2), title = (heads.find((h) => h.level === 1) || {}).title || doc.trim().split('\n')[0].slice(0, 80);
+    const starts = [0, ...heads.filter((h) => h.level === 2).map((h) => h.at), doc.length], o = [];
+    starts.slice(0, -1).forEach((a, n) => {
+      const b = starts[n + 1]; if (a === b) return; const sec = doc.slice(a, b), ss = Text.sentences(sec);
+      const summary = (ss.slice(1, 2).length ? ss.slice(1, 2) : ss.slice(0, 1)).map(([x, y]) => sec.slice(x, y)).join(' ').slice(0, 300);
+      const subTitle = (heads.find((h) => h.at === a) || {}).title || '(preamble)';
+      Chunkers.recursive(sec, { max_chars }).forEach((c) => o.push(C(doc, a + c.start, a + c.end, { method: 'subdocument', document: title, subdocument: subTitle, summary })));
+    });
+    return o;
+  },
+  hybrid(doc, { max_chars = 800, min_chars = 200 } = {}) {
+    const heads = Text.headings(doc), starts = [...new Set([0, ...heads.filter((h) => h.level <= 2).map((h) => h.at)])].sort((a, b) => a - b).concat(doc.length), o = [];
+    starts.slice(0, -1).forEach((a, i) => {
+      const b = starts[i + 1], section = Text.headingPath(heads, a).slice(-1)[0] || '(preamble)', merged = [];
+      for (const c0 of Chunkers.modality_specific(doc.slice(a, b), { max_chars })) {
+        const c = C(doc, a + c0.start, a + c0.end, { method: 'hybrid', modality: c0.meta.modality, section }), last = merged[merged.length - 1];
+        const pair = last && last.meta.modality === 'text' && c.meta.modality === 'text' && Math.min(last.text.length, c.text.length) < min_chars;
+        const note = last && last.meta.modality === 'table' && c.meta.modality === 'text' && c.text.length < min_chars;
+        if ((pair || note) && c.end - last.start <= max_chars) merged[merged.length - 1] = C(doc, last.start, c.end, last.meta); else merged.push(c);
+      }
+      o.push(...merged);
+    });
+    return o;
+  },
+};
+
+/* Chunk quality metrics in the spirit of ChunckerFlow's evaluators. */
+const Metrics = {
+  semantic_coherence(chunks) { // mean similarity of sentences to their own chunk
+    const scores = chunks.map((c) => { const s = Text.sentences(c.text).map(([a, b]) => c.text.slice(a, b)); if (s.length < 2) return 1; const v = Text.tfidf([c.text, ...s]); return s.reduce((acc, _, i) => acc + Text.cos(v[0], v[i + 1]), 0) / s.length; });
+    return scores.reduce((a, b) => a + b, 0) / (scores.length || 1);
+  },
+  boundary_quality(chunks) { // share of chunks ending at a sentence or structural boundary
+    const ok = chunks.filter((c) => /[.!?:"')\]|]\s*$|^#.*$/m.test(c.text.trimEnd().split('\n').pop()) || /\n\s*$/.test(c.text));
+    return ok.length / (chunks.length || 1);
+  },
+  chunk_stickiness(chunks) { // neighbour similarity: lower means cleaner topic separation
+    if (chunks.length < 2) return 0; const v = Text.tfidf(chunks.map((c) => c.text)); let s = 0;
+    for (let i = 0; i < v.length - 1; i++) s += Text.cos(v[i], v[i + 1]); return s / (v.length - 1);
+  },
+  topic_diversity(chunks) { // distinct top terms across chunks
+    const tops = chunks.map((c) => Text.topTerms(c.text, 3)).flat(); return tops.length ? new Set(tops).size / tops.length : 0;
+  },
+  size_stats(chunks) { const s = chunks.map((c) => c.text.length); const mean = s.reduce((a, b) => a + b, 0) / (s.length || 1); const sd = Math.sqrt(s.reduce((a, x) => a + (x - mean) ** 2, 0) / (s.length || 1)); return { count: s.length, min: Math.min(...s), max: Math.max(...s), mean, cv: mean ? sd / mean : 0 }; },
+};
+
+/* Render chunks over the source text as coloured marks (overlap hatched). */
+function renderOverlay(container, doc, chunks, { onPick } = {}) {
+  container.replaceChildren();
+  const marks = new Array(doc.length).fill(-1), count = new Uint8Array(doc.length);
+  chunks.forEach((c, i) => { for (let k = c.start; k < c.end; k++) { if (marks[k] < 0) marks[k] = i; count[k]++; } });
+  let i = 0;
+  while (i < doc.length) {
+    let j = i; while (j < doc.length && marks[j] === marks[i] && (count[j] > 1) === (count[i] > 1)) j++;
+    const text = doc.slice(i, j), m = marks[i];
+    if (m < 0) container.append(text);
+    else {
+      const mk = el('mark', { class: count[i] > 1 ? 'ov' : '', title: `Chunk ${m + 1}`, style: { background: `var(--c${m % 8})` } }, text);
+      if (onPick) { mk.style.cursor = 'pointer'; mk.addEventListener('click', () => onPick(m)); }
+      container.append(mk);
+    }
+    i = j;
+  }
+}
+
+function renderChunkCards(container, chunks, { limit = 200, extra } = {}) {
+  container.replaceChildren(...(chunks.length ? chunks.slice(0, limit).map((c, i) => el('div', { class: 'chunk', style: { borderLeftColor: `var(--e${i % 8})` }, id: 'chunk-' + i },
+    el('div', { class: 'meta' }, el('b', {}, `#${i + 1}`), el('span', {}, `${c.text.length} chars`), el('span', {}, `${Text.words(c.text)} words`),
+      ...Object.entries(c.meta || {}).filter(([k, v]) => k !== 'method' && v !== '' && v != null && !(Array.isArray(v) && !v.length)).slice(0, 4)
+        .map(([k, v]) => el('span', {}, `${k}: ${Array.isArray(v) ? v.join(', ') : String(v).slice(0, 70)}`)), extra ? extra(c, i) : null),
+    el('pre', {}, c.text))) : [el('div', { class: 'empty' }, 'No chunks')]));
+}
+
+/* ------------------------------------------------------------ graph */
+function forceGraph(canvas, { nodes, edges, color = () => 'var(--e0)', label = (n) => n.id, onSelect } = {}) {
+  const ctx = canvas.getContext('2d'); let W = 0, H = 0, selected = null, drag = null, alpha = 1, raf;
+  const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v.replace(/^var\((.*)\)$/, '$1')).trim() || v;
+  const byId = new Map(nodes.map((n) => [n.id, n]));
+  const resize = () => { const r = canvas.getBoundingClientRect(), d = devicePixelRatio || 1; W = r.width; H = r.height; canvas.width = W * d; canvas.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0); };
+  resize();
+  nodes.forEach((n, i) => { const a = (i / Math.max(1, nodes.length)) * Math.PI * 2; n.x ??= W / 2 + Math.cos(a) * W * 0.3; n.y ??= H / 2 + Math.sin(a) * H * 0.3; n.vx = 0; n.vy = 0; n.r = 5 + Math.min(9, Math.sqrt((n.degree || 1)) * 2.4); });
+  const E = edges.map((e) => ({ ...e, a: byId.get(e.source), b: byId.get(e.target) })).filter((e) => e.a && e.b);
+  function tick() {
+    if (alpha > 0.005) {
+      for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j]; let dx = b.x - a.x, dy = b.y - a.y; const d2 = dx * dx + dy * dy + 0.01, f = Math.min(2200 / d2, 6);
+        a.vx -= dx * f * 0.05; a.vy -= dy * f * 0.05; b.vx += dx * f * 0.05; b.vy += dy * f * 0.05;
+      }
+      for (const e of E) { const dx = e.b.x - e.a.x, dy = e.b.y - e.a.y, d = Math.sqrt(dx * dx + dy * dy) || 1, f = (d - 90) * 0.012; e.a.vx += dx / d * f * d * 0.05; e.a.vy += dy / d * f * d * 0.05; e.b.vx -= dx / d * f * d * 0.05; e.b.vy -= dy / d * f * d * 0.05; }
+      for (const n of nodes) { if (n === drag) continue; n.vx += (W / 2 - n.x) * 0.003; n.vy += (H / 2 - n.y) * 0.003; n.x += n.vx * alpha; n.y += n.vy * alpha; n.vx *= 0.6; n.vy *= 0.6; n.x = Math.max(20, Math.min(W - 20, n.x)); n.y = Math.max(20, Math.min(H - 20, n.y)); }
+      alpha *= 0.985;
+    }
+    draw(); raf = requestAnimationFrame(tick);
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const near = selected ? new Set(E.filter((e) => e.a === selected || e.b === selected).flatMap((e) => [e.a, e.b])) : null;
+    for (const e of E) { ctx.strokeStyle = css('--muted'); ctx.globalAlpha = near && !(near.has(e.a) && near.has(e.b) && (e.a === selected || e.b === selected)) ? 0.12 : 0.45; ctx.lineWidth = e === selected ? 2 : 1; ctx.beginPath(); ctx.moveTo(e.a.x, e.a.y); ctx.lineTo(e.b.x, e.b.y); ctx.stroke(); }
+    ctx.globalAlpha = 1; ctx.font = '11px ' + css('--font'); ctx.textAlign = 'center';
+    nodes.forEach((n, i) => {
+      ctx.globalAlpha = near && !near.has(n) ? 0.25 : 1; ctx.fillStyle = css(color(n)); ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); ctx.fill();
+      if (n === selected) { ctx.strokeStyle = css('--ink'); ctx.lineWidth = 2; ctx.stroke(); }
+      if (nodes.length < 60 || n.degree > 1 || n === selected) { ctx.fillStyle = css('--ink'); const t = label(n); ctx.fillText(t.length > 26 ? t.slice(0, 25) + '…' : t, n.x, i % 2 ? n.y + n.r + 12 : n.y - n.r - 4); }
+    });
+    ctx.globalAlpha = 1;
+  }
+  const at = (ev) => { const r = canvas.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top; return nodes.find((n) => (n.x - x) ** 2 + (n.y - y) ** 2 < (n.r + 4) ** 2); };
+  canvas.onpointerdown = (ev) => { const n = at(ev); if (n) { drag = n; selected = n; onSelect && onSelect(n); canvas.setPointerCapture(ev.pointerId); alpha = Math.max(alpha, 0.3); } };
+  canvas.onpointermove = (ev) => { if (!drag) return; const r = canvas.getBoundingClientRect(); drag.x = ev.clientX - r.left; drag.y = ev.clientY - r.top; };
+  canvas.onpointerup = () => { drag = null; };
+  window.addEventListener('resize', () => { resize(); alpha = 0.5; });
+  cancelAnimationFrame(canvas._raf); tick(); canvas._raf = raf;
+  return { select(id) { selected = byId.get(id) || null; onSelect && selected && onSelect(selected); }, reheat() { alpha = 1; }, stop() { cancelAnimationFrame(raf); } };
+}
+
+/* ------------------------------------------------------------ pdf.js */
+let _pdfjs;
+function loadPdfJs() {
+  // The worker script is loaded as a plain script, so pdf.js runs on the
+  // main thread (cross-origin workers are not allowed in this frame).
+  if (_pdfjs) return _pdfjs;
+  const add = (src) => new Promise((ok, fail) => document.head.append(el('script', { src, onload: ok, onerror: () => fail(new Error('Could not load ' + src)) })));
+  const base = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+  _pdfjs = add(base + 'pdf.min.js').then(() => add(base + 'pdf.worker.min.js')).then(() => window.pdfjsLib);
+  return _pdfjs;
+}
+const b64bytes = (b64) => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+async function pdfPages(bytes) {
+  const lib = await loadPdfJs(), pdf = await lib.getDocument({ data: bytes }).promise, pages = [];
+  for (let p = 1; p <= pdf.numPages; p++) {
+    const page = await pdf.getPage(p), vp = page.getViewport({ scale: 1 }), tc = await page.getTextContent();
+    const items = tc.items.filter((it) => it.str.trim()).map((it) => ({ str: it.str, x: it.transform[4], y: vp.height - it.transform[5], h: Math.abs(it.transform[3]) || it.height, w: it.width, font: it.fontName, bold: /bold|black|semibold/i.test((tc.styles[it.fontName] || {}).fontFamily || '') || /Bold/i.test(it.fontName) }));
+    pages.push({ page, number: p, width: vp.width, height: vp.height, items });
+  }
+  return pages;
+}
+async function renderPdfPage(page, canvas, scale = 1.3) {
+  const vp = page.getViewport({ scale }), d = devicePixelRatio || 1;
+  canvas.width = vp.width * d; canvas.height = vp.height * d; canvas.style.width = vp.width + 'px'; canvas.style.maxWidth = '100%';
+  const ctx = canvas.getContext('2d'); ctx.setTransform(d, 0, 0, d, 0, 0);
+  await page.render({ canvasContext: ctx, viewport: vp }).promise;
+  return vp;
+}
+/* Group positioned text items into lines (by baseline) in reading order. */
+function pdfLines(items) {
+  const sorted = [...items].sort((a, b) => a.y - b.y || a.x - b.x), lines = [];
+  for (const it of sorted) {
+    const last = lines[lines.length - 1];
+    if (last && Math.abs(last.y - it.y) < Math.max(2, it.h * 0.4)) { last.items.push(it); last.h = Math.max(last.h, it.h); last.bold = last.bold && it.bold; }
+    else lines.push({ y: it.y, h: it.h, bold: it.bold, items: [it] });
+  }
+  return lines.map((l) => { l.items.sort((a, b) => a.x - b.x); l.x = l.items[0].x; l.right = Math.max(...l.items.map((i) => i.x + i.w)); l.text = l.items.map((i, k) => (k && i.x - (l.items[k - 1].x + l.items[k - 1].w) > 1.5 ? (i.x - (l.items[k - 1].x + l.items[k - 1].w) > 14 ? '\t' : ' ') : '') + i.str).join('').replace(/ {2,}/g, ' '); return l; });
+}
+
+async function sha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+/* Bar chart into an SVG element: rows [{label, value}] */
+function barChart(svg, rows, { max, fmtv = (v) => fmt(v, 2), height = 22 } = {}) {
+  const W = 520, lw = 150, top = Math.max(1e-9, max ?? Math.max(...rows.map((r) => r.value)));
+  svg.setAttribute('viewBox', `0 0 ${W} ${rows.length * height + 6}`);
+  svg.innerHTML = rows.map((r, i) => {
+    const w = Math.max(1, (r.value / top) * (W - lw - 60)), y = i * height + 4;
+    return `<text x="${lw - 8}" y="${y + 13}" text-anchor="end" font-size="11.5" fill="var(--muted)">${esc(r.label)}</text>
+      <rect x="${lw}" y="${y + 2}" width="${w}" height="${height - 8}" rx="3" fill="${r.color || 'var(--accent)'}"></rect>
+      <text x="${lw + w + 6}" y="${y + 13}" font-size="11.5" fill="var(--ink)">${esc(fmtv(r.value))}</text>`;
+  }).join('');
+}
+
+/* Sparkline/area chart: values over time */
+function areaChart(svg, values, { labels = [], color = 'var(--accent)', h = 120, fmtv = (v) => fmt(v) } = {}) {
+  const W = 520, H = h, pad = 22, left = 40, max = Math.max(1e-9, ...values), n = values.length;
+  const x = (i) => left + (i / Math.max(1, n - 1)) * (W - left - pad), y = (v) => H - pad - (v / max) * (H - pad * 2);
+  const pts = values.map((v, i) => `${x(i)},${y(v)}`).join(' ');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.innerHTML = `${[0, 0.5, 1].map((f) => `<line x1="${left}" x2="${W - pad}" y1="${y(max * f)}" y2="${y(max * f)}" stroke="var(--line)"/><text x="${left - 5}" y="${y(max * f) + 4}" text-anchor="end" font-size="10" fill="var(--muted)">${esc(fmtv(max * f))}</text>`).join('')}
+    <polygon points="${x(0)},${H - pad} ${pts} ${x(n - 1)},${H - pad}" fill="${color}" opacity=".16"/>
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2"/>
+    <circle cx="${x(n - 1)}" cy="${y(values[n - 1])}" r="3.5" fill="${color}"/>
+    ${labels.map((l, i) => (i % Math.ceil(n / 6) === 0 ? `<text x="${x(i)}" y="${H - 6}" text-anchor="middle" font-size="10" fill="var(--muted)">${esc(l)}</text>` : '')).join('')}`;
+}
+
+const SAMPLES = {"agreement": "# Master Services Agreement\n\nThis Master Services Agreement (\"Agreement\") is entered into between Northwind Legal Technologies Ltd. (\"Provider\") and Contoso Holdings LLC (\"Client\"). It governs the document automation and retrieval services the Provider delivers to the Client under one or more statements of work.\n\n## 1. Definitions\n\n### 1.1 Confidential Information\n\n\"Confidential Information\" means any non-public information disclosed by one party to the other, whether orally or in writing, that is marked as confidential or that a reasonable person would understand to be confidential given the nature of the information and the circumstances of disclosure.\n\n### 1.2 Deliverables\n\n\"Deliverables\" means the software configurations, reports, trained retrieval indexes and documentation the Provider produces for the Client under a statement of work, excluding any pre-existing Provider tools.\n\n## 2. Services\n\n### 2.1 Scope\n\nThe Provider will ingest, parse and index the Client's contract repository, and will expose a retrieval interface that returns the clauses most relevant to a natural-language question. The Provider will keep the parsed corpus synchronised with the Client's document management system at least once every twenty-four hours.\n\n### 2.2 Service Levels\n\n| Metric | Target | Service Credit |\n|--------|--------|----------------|\n| Monthly uptime | 99.5% | 5% of monthly fee |\n| Query latency (p95) | 800 ms | 2% of monthly fee |\n| Ingestion delay | 24 hours | 3% of monthly fee |\n\nService credits are the Client's sole and exclusive remedy for a failure to meet the targets in the table above.\n\n## 3. Fees and Payment\n\nThe Client will pay a monthly fee of USD 12,500, invoiced in advance. Invoices are due within thirty (30) days of receipt. Late amounts accrue interest at the lesser of 1.5% per month or the maximum rate permitted by law.\n\n## 4. Confidentiality\n\nEach party will protect the other party's Confidential Information with at least the same degree of care it uses for its own information of a similar nature, and in no event less than reasonable care. The obligations in this section survive termination of this Agreement for five (5) years.\n\n## 5. Limitation of Liability\n\nExcept for breaches of Section 4 or a party's indemnification obligations, neither party's aggregate liability arising out of this Agreement will exceed the fees paid by the Client in the twelve (12) months preceding the event giving rise to the claim. Neither party is liable for indirect, incidental or consequential damages.\n\n## 6. Term and Termination\n\n### 6.1 Term\n\nThis Agreement starts on the Effective Date and continues for an initial term of twenty-four (24) months, renewing automatically for successive twelve (12) month terms unless either party gives ninety (90) days' written notice of non-renewal.\n\n### 6.2 Termination for Cause\n\nEither party may terminate this Agreement on written notice if the other party materially breaches it and fails to cure the breach within thirty (30) days of receiving notice describing it.\n\n## 7. Governing Law\n\nThis Agreement is governed by the laws of the State of New York, without regard to its conflict of laws principles. The parties submit to the exclusive jurisdiction of the state and federal courts located in New York County.\n", "agreement_html": "<!doctype html><html><head><meta charset='utf-8'><title>Master Services Agreement</title><style>body{font-family:Helvetica,sans-serif;font-size:10pt}table{border-collapse:collapse}td,th{border:1px solid #444;padding:3px 6px}</style></head><body><h1>Master Services Agreement</h1>\n<p>This Master Services Agreement (&quot;Agreement&quot;) is entered into between Northwind Legal Technologies Ltd. (&quot;Provider&quot;) and Contoso Holdings LLC (&quot;Client&quot;). It governs the document automation and retrieval services the Provider delivers to the Client under one or more statements of work.</p>\n<h2>1. Definitions</h2>\n<h3>1.1 Confidential Information</h3>\n<p>&quot;Confidential Information&quot; means any non-public information disclosed by one party to the other, whether orally or in writing, that is marked as confidential or that a reasonable person would understand to be confidential given the nature of the information and the circumstances of disclosure.</p>\n<h3>1.2 Deliverables</h3>\n<p>&quot;Deliverables&quot; means the software configurations, reports, trained retrieval indexes and documentation the Provider produces for the Client under a statement of work, excluding any pre-existing Provider tools.</p>\n<h2>2. Services</h2>\n<h3>2.1 Scope</h3>\n<p>The Provider will ingest, parse and index the Client&#x27;s contract repository, and will expose a retrieval interface that returns the clauses most relevant to a natural-language question. The Provider will keep the parsed corpus synchronised with the Client&#x27;s document management system at least once every twenty-four hours.</p>\n<h3>2.2 Service Levels</h3>\n<table><thead><tr><th>Metric</th><th>Target</th><th>Service Credit</th></tr></thead><tbody><tr><td>Monthly uptime</td><td>99.5%</td><td>5% of monthly fee</td></tr><tr><td>Query latency (p95)</td><td>800 ms</td><td>2% of monthly fee</td></tr><tr><td>Ingestion delay</td><td>24 hours</td><td>3% of monthly fee</td></tr></tbody></table>\n<p>Service credits are the Client&#x27;s sole and exclusive remedy for a failure to meet the targets in the table above.</p>\n<h2>3. Fees and Payment</h2>\n<p>The Client will pay a monthly fee of USD 12,500, invoiced in advance. Invoices are due within thirty (30) days of receipt. Late amounts accrue interest at the lesser of 1.5% per month or the maximum rate permitted by law.</p>\n<h2>4. Confidentiality</h2>\n<p>Each party will protect the other party&#x27;s Confidential Information with at least the same degree of care it uses for its own information of a similar nature, and in no event less than reasonable care. The obligations in this section survive termination of this Agreement for five (5) years.</p>\n<h2>5. Limitation of Liability</h2>\n<p>Except for breaches of Section 4 or a party&#x27;s indemnification obligations, neither party&#x27;s aggregate liability arising out of this Agreement will exceed the fees paid by the Client in the twelve (12) months preceding the event giving rise to the claim. Neither party is liable for indirect, incidental or consequential damages.</p>\n<h2>6. Term and Termination</h2>\n<h3>6.1 Term</h3>\n<p>This Agreement starts on the Effective Date and continues for an initial term of twenty-four (24) months, renewing automatically for successive twelve (12) month terms unless either party gives ninety (90) days&#x27; written notice of non-renewal.</p>\n<h3>6.2 Termination for Cause</h3>\n<p>Either party may terminate this Agreement on written notice if the other party materially breaches it and fails to cure the breach within thirty (30) days of receiving notice describing it.</p>\n<h2>7. Governing Law</h2>\n<p>This Agreement is governed by the laws of the State of New York, without regard to its conflict of laws principles. The parties submit to the exclusive jurisdiction of the state and federal courts located in New York County.</p></body></html>", "dpa": "# Data Processing Addendum\n\nThis Data Processing Addendum (\"Addendum\") forms part of the Master Services Agreement between Northwind Legal Technologies Ltd. (\"Processor\") and Contoso Holdings LLC (\"Controller\"). It applies whenever the Processor handles Personal Data on behalf of the Controller.\n\n## 1. Scope and Roles\n\n### 1.1 Roles of the Parties\n\nThe Controller determines the purposes and means of processing. The Processor processes Personal Data only on the documented instructions of the Controller, including with regard to transfers to a third country.\n\n### 1.2 Categories of Data\n\nThe Processor will handle contact details of Controller staff, the names of counterparties appearing in contracts, and metadata describing those contracts. No special category data is processed under this Addendum.\n\n## 2. Security Measures\n\nThe Processor will maintain technical and organisational measures appropriate to the risk, including encryption of data at rest with AES-256, encryption in transit with TLS 1.2 or later, role-based access control, and quarterly access reviews.\n\nSecurity incidents affecting Personal Data will be reported to the Controller without undue delay and in any event within forty-eight (48) hours of discovery.\n\n## 3. Sub-processors\n\nThe Controller authorises the following sub-processors. The Processor will give thirty (30) days' notice before adding or replacing a sub-processor, during which the Controller may object on reasonable grounds.\n\n| Sub-processor | Service | Location |\n|---------------|---------|----------|\n| Fabrikam Cloud GmbH | Hosting and storage | Frankfurt, Germany |\n| Tailspin Search Inc. | Search indexing | Dublin, Ireland |\n| Litware Mail Ltd. | Transactional email | London, United Kingdom |\n\n## 4. Data Subject Requests\n\nThe Processor will promptly forward any request from a data subject to the Controller and will not respond directly unless instructed. The Processor will assist the Controller in responding within the statutory deadlines, at no additional charge for up to ten (10) requests per month.\n\n## 5. International Transfers\n\nPersonal Data will be stored in the European Economic Area. Any transfer outside it requires the Controller's prior written consent and must rely on the Standard Contractual Clauses adopted by the European Commission.\n\n## 6. Audits\n\nThe Controller may audit the Processor's compliance once per calendar year on thirty (30) days' written notice. The Processor may instead provide a current ISO/IEC 27001 certificate and its most recent SOC 2 Type II report.\n\n## 7. Return and Deletion\n\nOn termination of the Agreement, the Processor will, at the Controller's choice, return or delete all Personal Data within sixty (60) days, unless retention is required by law, and will certify the deletion in writing.\n", "python": "\"\"\"The 20 chunking methods from itsual/Chunking-Methods-for-RAG, implemented.\n\nThe upstream repository is a guide (a method list and a decision tree) with no\ncode; this module is a working implementation of every method it names, plus\n`choose()`, its decision tree. Pure standard library: the \"semantic\" methods\nuse TF-IDF vectors so they run offline, and `agentic()` takes any callable LLM\n(`claude_boundaries` uses Claude when ANTHROPIC_API_KEY is set).\n\nEvery method returns a list of Chunk(text, start, end, meta) where\ntext == document[start:end] unless the method adds context on purpose\n(context_enriched, subdocument), which it records in meta.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport json\nimport math\nimport os\nimport re\nfrom collections import Counter\nfrom dataclasses import dataclass, field\nfrom typing import Callable, Iterable\n\n\n@dataclass\nclass Chunk:\n    text: str\n    start: int\n    end: int\n    meta: dict = field(default_factory=dict)\n\n\ndef _span(doc: str, start: int, end: int, **meta) -> Chunk:\n    return Chunk(doc[start:end], start, end, meta)\n\n\ndef _strip(doc: str, start: int, end: int, **meta) -> Chunk | None:\n    \"\"\"Trim whitespace off a span, keeping offsets exact. None if empty.\"\"\"\n    while start < end and doc[start].isspace():\n        start += 1\n    while end > start and doc[end - 1].isspace():\n        end -= 1\n    return _span(doc, start, end, **meta) if end > start else None\n\n\n# ---------------------------------------------------------------- units\n\nWORD = re.compile(r\"\\S+\")\nSENTENCE_END = re.compile(r\"(?<=[.!?])[\\\"')\\]]*\\s+(?=[A-Z0-9\\\"'(\\[#*-])|\\n\\s*\\n\")\n\n\ndef tokens(doc: str) -> list[tuple[int, int]]:\n    \"\"\"Whitespace-delimited tokens with offsets (a tokenizer-free stand-in for\n    model tokens: roughly 0.75 of a GPT token each).\"\"\"\n    return [m.span() for m in WORD.finditer(doc)]\n\n\ndef sentences(doc: str) -> list[tuple[int, int]]:\n    spans, start = [], 0\n    for m in SENTENCE_END.finditer(doc):\n        spans.append((start, m.start()))\n        start = m.end()\n    spans.append((start, len(doc)))\n    out = []\n    for s, e in spans:\n        c = _strip(doc, s, e)\n        if c:\n            out.append((c.start, c.end))\n    return out\n\n\ndef paragraphs(doc: str) -> list[tuple[int, int]]:\n    out, start = [], 0\n    for m in re.finditer(r\"\\n\\s*\\n\", doc):\n        c = _strip(doc, start, m.start())\n        if c:\n            out.append((c.start, c.end))\n        start = m.end()\n    c = _strip(doc, start, len(doc))\n    if c:\n        out.append((c.start, c.end))\n    return out\n\n\ndef _pack(doc: str, units: list[tuple[int, int]], max_chars: int, method: str) -> list[Chunk]:\n    \"\"\"Greedily join consecutive units into chunks of at most max_chars\n    (a single oversized unit becomes its own chunk).\"\"\"\n    chunks, cur = [], None\n    for s, e in units:\n        if cur and e - cur[0] > max_chars:\n            chunks.append(_span(doc, cur[0], cur[1], method=method))\n            cur = None\n        cur = (cur[0], e) if cur else (s, e)\n    if cur:\n        chunks.append(_span(doc, cur[0], cur[1], method=method))\n    return chunks\n\n\n# ---------------------------------------------------------------- 1. basic\n\ndef fixed_size(doc: str, size: int = 500) -> list[Chunk]:\n    \"\"\"Fixed-Size: cut every `size` characters, ignoring structure.\"\"\"\n    return [_span(doc, i, min(i + size, len(doc)), method=\"fixed_size\") for i in range(0, len(doc), size)]\n\n\ndef token_based(doc: str, max_tokens: int = 100) -> list[Chunk]:\n    \"\"\"Token-Based: `max_tokens` tokens per chunk, never splitting a token.\"\"\"\n    t = tokens(doc)\n    return [_span(doc, t[i][0], t[min(i + max_tokens, len(t)) - 1][1], method=\"token_based\", tokens=len(t[i:i + max_tokens]))\n            for i in range(0, len(t), max_tokens)]\n\n\ndef sentence_based(doc: str, max_sentences: int = 4) -> list[Chunk]:\n    \"\"\"Sentence-Based: whole sentences, `max_sentences` per chunk.\"\"\"\n    s = sentences(doc)\n    return [_span(doc, s[i][0], s[min(i + max_sentences, len(s)) - 1][1], method=\"sentence_based\")\n            for i in range(0, len(s), max_sentences)]\n\n\ndef paragraph_based(doc: str, max_chars: int = 1200) -> list[Chunk]:\n    \"\"\"Paragraph-Based: whole paragraphs, merged up to `max_chars`.\"\"\"\n    return _pack(doc, paragraphs(doc), max_chars, \"paragraph_based\")\n\n\ndef page_based(doc: str, pages: list[str] | None = None) -> list[Chunk]:\n    \"\"\"Page-Based: one chunk per page. Pages are split on form feeds, or\n    passed in (e.g. one string per PDF page).\"\"\"\n    if pages is None:\n        pages = doc.split(\"\\f\")\n    out, pos = [], 0\n    for i, page in enumerate(pages, 1):\n        at = doc.find(page, pos) if page else -1\n        if at < 0:\n            at = pos\n        c = _strip(doc, at, at + len(page), method=\"page_based\", page=i)\n        if c:\n            out.append(c)\n        pos = at + len(page)\n    return out\n\n\n# ---------------------------------------------------------------- 2. context-preserving\n\ndef sliding_window(doc: str, window: int = 600, step: int = 400) -> list[Chunk]:\n    \"\"\"Sliding Window: windows of `window` chars every `step` chars, so\n    consecutive chunks share window - step chars.\"\"\"\n    if step <= 0 or step > window:\n        raise ValueError(\"need 0 < step <= window\")\n    out = []\n    for i in range(0, max(len(doc) - window + step, 1), step):\n        out.append(_span(doc, i, min(i + window, len(doc)), method=\"sliding_window\"))\n        if i + window >= len(doc):\n            break\n    return out\n\n\ndef fixed_token_overlap(doc: str, max_tokens: int = 100, overlap: int = 20) -> list[Chunk]:\n    \"\"\"Fixed Token with Overlap: token windows sharing `overlap` tokens.\"\"\"\n    if not 0 <= overlap < max_tokens:\n        raise ValueError(\"need 0 <= overlap < max_tokens\")\n    t, out, i = tokens(doc), [], 0\n    while i < len(t):\n        j = min(i + max_tokens, len(t))\n        out.append(_span(doc, t[i][0], t[j - 1][1], method=\"fixed_token_overlap\", overlap_tokens=overlap if i else 0))\n        if j == len(t):\n            break\n        i = j - overlap\n    return out\n\n\nDEFAULT_SEPARATORS = [\"\\n## \", \"\\n### \", \"\\n\\n\", \"\\n\", \". \", \" \"]\n\n\ndef recursive(doc: str, max_chars: int = 800, separators: list[str] | None = None) -> list[Chunk]:\n    \"\"\"Recursive: split on the coarsest separator that keeps pieces under\n    `max_chars`, recursing into finer separators for pieces still too big,\n    then re-merge neighbours while they fit.\"\"\"\n    seps = DEFAULT_SEPARATORS if separators is None else separators\n\n    def split(s: int, e: int, level: int) -> list[tuple[int, int]]:\n        if e - s <= max_chars or level >= len(seps):\n            return [(s, e)]\n        sep, pieces, cur = seps[level], [], s\n        while True:\n            k = doc.find(sep, cur + 1, e)\n            if k < 0:\n                break\n            pieces.append((cur, k))\n            cur = k\n        pieces.append((cur, e))\n        if len(pieces) == 1:\n            return split(s, e, level + 1)\n        return [p for a, b in pieces for p in split(a, b, level + 1)]\n\n    out = []\n    for c in _pack(doc, split(0, len(doc), 0), max_chars, \"recursive\"):\n        c = _strip(doc, c.start, c.end, method=\"recursive\")\n        if c:\n            out.append(c)\n    return out\n\n\ndef recursive_python(code: str, max_chars: int = 1200) -> list[Chunk]:\n    \"\"\"Recursive Python-Specific: split on class and def boundaries first,\n    then blank lines, then lines (LangChain's Python separators).\"\"\"\n    return [Chunk(c.text, c.start, c.end, {**c.meta, \"method\": \"recursive_python\"})\n            for c in recursive(code, max_chars, [\"\\nclass \", \"\\ndef \", \"\\n\\tdef \", \"\\n    def \", \"\\n\\n\", \"\\n\", \" \"])]\n\n\ndef _headings(doc: str) -> list[tuple[int, int, str]]:\n    \"\"\"Markdown headings as (offset, level, title).\"\"\"\n    return [(m.start(), len(m.group(1)), m.group(2).strip(\" *\"))\n            for m in re.finditer(r\"^(#{1,6})\\s+(.+)$\", doc, re.M)]\n\n\ndef _heading_path(heads: list[tuple[int, int, str]], at: int) -> list[str]:\n    path: list[tuple[int, str]] = []\n    for off, level, title in heads:\n        if off > at:\n            break\n        path = [p for p in path if p[0] < level] + [(level, title)]\n    return [t for _, t in path]\n\n\ndef context_enriched(doc: str, max_chars: int = 800, neighbour_chars: int = 120) -> list[Chunk]:\n    \"\"\"Context-Enriched: recursive chunks carrying metadata (heading path,\n    position) and a prefix naming their section plus the tail of the previous\n    chunk, so each chunk reads on its own.\"\"\"\n    base, heads, out = recursive(doc, max_chars), _headings(doc), []\n    for i, c in enumerate(base):\n        path = _heading_path(heads, c.start)\n        prev = base[i - 1].text[-neighbour_chars:] if i else \"\"\n        prefix = (f\"[Section: {' > '.join(path)}]\\n\" if path else \"\") + (f\"[Previously: \u2026{prev.strip()}]\\n\" if prev else \"\")\n        out.append(Chunk(prefix + c.text, c.start, c.end, {\"method\": \"context_enriched\", \"section\": path,\n                                                            \"position\": f\"{i + 1}/{len(base)}\", \"added_context\": len(prefix)}))\n    return out\n\n\n"};
+</script>
+<script>
+/* ---------- example data, deterministic ---------- */
+let seed = 20261026;
+const rnd = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+const pick = (a) => a[Math.floor(rnd() * a.length)];
+const PRICE = { 'claude-opus-5-5': [5, 25], 'claude-sonnet-5-5': [3, 15], 'gpt-4o-mini': [0.15, 0.6], 'claude-haiku-5-5': [1, 5] }; // USD per 1M tokens in/out
+const USERS = ['maria@northwind.example', 'dev@contoso.example', 'sam@northwind.example', 'legal-ops@contoso.example', 'priya@fabrikam.example'];
+const QA = [
+  ['How long is the initial term?', 'Twenty-four months, renewing for 12-month periods unless 90 days\' notice is given.', 'agreement', '6.1 Term'],
+  ['What is the cap on aggregate liability?', 'Fees paid in the twelve months before the claim, excluding confidentiality breaches.', 'agreement', '5. Limitation of Liability'],
+  ['Which law governs the agreement?', 'The laws of the State of New York.', 'agreement', '7. Governing Law'],
+  ['What uptime does the provider commit to?', '99.5% monthly uptime, with a 5% service credit if missed.', 'agreement', '2.2 Service Levels'],
+  ['How fast must security incidents be reported?', 'Without undue delay and within 48 hours of discovery.', 'dpa', '2. Security Measures'],
+  ['Who are the approved sub-processors?', 'Fabrikam Cloud GmbH, Tailspin Search Inc. and Litware Mail Ltd.', 'dpa', '3. Sub-processors'],
+  ['How much notice before a new sub-processor?', 'Thirty days, during which the controller may object.', 'dpa', '3. Sub-processors'],
+  ['Can data leave the EEA?', 'Only with prior written consent and under the Standard Contractual Clauses.', 'dpa', '5. International Transfers'],
+  ['How often can the controller audit?', 'Once per calendar year on 30 days\' notice, or via ISO 27001 and SOC 2 reports.', 'dpa', '6. Audits'],
+  ['When is data deleted after termination?', 'Returned or deleted within 60 days, with written certification.', 'dpa', '7. Return and Deletion'],
+  ['Is there a liquidated damages clause?', 'Yes, damages are fixed at twice the annual fees.', 'agreement', '5. Limitation of Liability'],
+];
+function section(doc, title) {
+  const d = SAMPLES[doc], heads = Text.headings(d), h = heads.find((x) => x.title.startsWith(title.split(' ')[0]) && x.title.includes(title.split(' ').slice(1).join(' ').slice(0, 8)));
+  if (!h) return d.slice(0, 300);
+  const next = heads.find((x) => x.at > h.at && x.level <= h.level); return d.slice(h.at, next ? next.at : d.length).trim();
+}
+const NOW = Date.UTC(2026, 9, 26, 15, 0);
+function makeTraces() {
+  const traces = [];
+  for (let i = 0; i < 120; i++) {
+    const app = rnd() < 0.62 ? 'contract-qa' : rnd() < 0.6 ? 'clause-extract' : 'redline-agent';
+    const user = pick(USERS), day = Math.floor(rnd() ** 1.3 * 14), ts = NOW - day * 864e5 - Math.floor(rnd() * 864e5);
+    const model = app === 'clause-extract' ? pick(['claude-sonnet-5-5', 'gpt-4o-mini']) : pick(['claude-opus-5-5', 'claude-opus-5-5', 'claude-sonnet-5-5', 'gpt-4o-mini']);
+    const qa = pick(QA), hallucinated = qa[0].includes('liquidated') || rnd() < 0.05, failed = rnd() < 0.045;
+    const id = 't-' + Math.floor(rnd() * 1e12).toString(16).padStart(10, '0');
+    const obs = []; let t = 0;
+    const add = (name, type, dur, extra = {}, parent = 'root') => { const o = { id: id + '-' + obs.length, name, type, start: t, dur, parent, ...extra }; obs.push(o); t += dur + Math.floor(rnd() * 30); return o; };
+    const gen = (name, mdl, inTok, outTok, input, output, extra = {}) => { const [pi, po] = PRICE[mdl]; return add(name, 'GENERATION', Math.floor(outTok * (mdl.includes('opus') ? 28 : 14) + 300 + rnd() * 500), { model: mdl, usage: { input: inTok, output: outTok }, cost: (inTok * pi + outTok * po) / 1e6, input, output, ...extra }); };
+    const ctx = section(qa[2], qa[3]);
+    let input, output;
+    if (app === 'contract-qa') {
+      input = { question: qa[0] };
+      gen('classify-question', 'gpt-4o-mini', 64, 3, [{ role: 'user', content: qa[0] }], qa[3].split(' ').slice(1).join(' ').toLowerCase());
+      add('search-clauses', 'RETRIEVER', 90 + Math.floor(rnd() * 160), { input: { query: qa[0], top_k: 3 }, output: { chunks: [ctx.slice(0, 260)], scores: [+(0.7 + rnd() * 0.25).toFixed(2)] } });
+      add('lookup-matter', 'TOOL', 40 + Math.floor(rnd() * 90), { input: { matter: 'M-' + (1000 + Math.floor(rnd() * 90)) }, output: { client: user.split('@')[1], status: 'open' } });
+      output = failed ? null : { answer: hallucinated ? qa[1] : qa[1] };
+      const g = gen('answer', model, 420 + Math.floor(rnd() * 300), 40 + Math.floor(rnd() * 50), [{ role: 'system', content: 'You are a contracts analyst...' }, { role: 'user', content: `Clause: ${ctx.slice(0, 160)}…\nQuestion: ${qa[0]}` }], failed ? null : qa[1], { prompt: { name: 'contract-qa', version: day > 6 ? 1 : 2 } });
+      if (failed) { g.level = 'ERROR'; g.status = 'Upstream timeout after 30s'; }
+    } else if (app === 'clause-extract') {
+      input = { document: qa[2] === 'dpa' ? 'data-processing-addendum.pdf' : 'master-services-agreement.pdf' };
+      add('parse-pdf', 'SPAN', 600 + Math.floor(rnd() * 900), { input, output: { pages: 2, blocks: 41 } });
+      gen('extract-clauses', model, 2900 + Math.floor(rnd() * 900), 600 + Math.floor(rnd() * 300), [{ role: 'user', content: 'Extract every clause as JSON…' }], '[{"clause": "Term", "value": "24 months"}, {"clause": "Liability cap", "value": "12 months of fees"}, …]', { prompt: { name: 'clause-extractor', version: 1 } });
+      add('pii-check', 'GUARDRAIL', 70 + Math.floor(rnd() * 60), { input: { fields: 12 }, output: { pii_found: rnd() < 0.2 ? ['email'] : [] } });
+      output = { clauses: 12 };
+      if (failed) { obs[1].level = 'ERROR'; obs[1].status = 'Model returned invalid JSON'; output = null; }
+    } else {
+      input = { document: 'vendor-msa-draft.docx', playbook: 'standard-buy-side' };
+      gen('plan-review', model, 900, 140, [{ role: 'user', content: 'Plan the redline review…' }], '1. Liability cap 2. Indemnity 3. Governing law');
+      add('fetch-playbook', 'TOOL', 120, { input: { playbook: 'standard-buy-side' }, output: { rules: 18 } });
+      gen('redline-liability', model, 1500, 380, [{ role: 'user', content: 'Redline clause 5 against the playbook…' }], 'Replace "twelve (12) months" with "twenty-four (24) months"…');
+      gen('redline-governing-law', model, 1100, 210, [{ role: 'user', content: 'Redline clause 7…' }], 'Accept: New York law is on the approved list.');
+      add('self-check', 'EVALUATOR', 300, { input: { redlines: 2 }, output: { consistent: true } });
+      output = { redlines: 2 };
+    }
+    const total = t, gens = obs.filter((o) => o.type === 'GENERATION');
+    const root = { id: id + '-root', name: app, type: app === 'clause-extract' ? 'CHAIN' : 'AGENT', start: 0, dur: total, parent: null, input, output, level: obs.some((o) => o.level === 'ERROR') ? 'ERROR' : 'DEFAULT' };
+    const scores = [];
+    if (app === 'contract-qa' && !failed) {
+      const f = hallucinated ? 0.12 + rnd() * 0.2 : 0.78 + rnd() * 0.21;
+      scores.push({ name: 'faithfulness', value: +f.toFixed(2), source: 'EVAL' });
+      if (rnd() < 0.55) scores.push({ name: 'user-feedback', value: hallucinated ? 0 : rnd() < 0.92 ? 1 : 0, source: 'API' });
+    }
+    traces.push({ id, name: app, ts, user, session: `${user.split('@')[0]}-${Math.floor(day / 3)}`, tags: [app, model.split('-').slice(0, 2).join('-'), ...(failed ? ['error'] : [])], model,
+      input, output, obs: [root, ...obs], scores, qa, latency: total / 1000,
+      tokens: gens.reduce((a, g) => a + g.usage.input + g.usage.output, 0), cost: gens.reduce((a, g) => a + g.cost, 0), level: root.level });
+  }
+  return traces.sort((a, b) => b.ts - a.ts);
+}
+const TRACES = makeTraces();
+const saved = store.get('lf:annotations', {});
+TRACES.forEach((t) => (saved[t.id] || []).forEach((s) => t.scores.push(s)));
+const saveScore = (t, s) => { t.scores.push(s); const all = store.get('lf:annotations', {}); (all[t.id] ||= []).push(s); store.set('lf:annotations', all); };
+const uniq = (a) => [...new Set(a)].sort();
+const day = (ts) => new Date(ts).toISOString().slice(5, 10);
+const pct = (arr, p) => { const s = [...arr].sort((a, b) => a - b); return s.length ? s[Math.min(s.length - 1, Math.floor(p * s.length))] : 0; };
+const usd = (v) => '$' + (v < 0.01 ? v.toFixed(4) : v.toFixed(2));
+const scoreChip = (s) => el('span', { class: 'pill ' + (s.name === 'user-feedback' ? (s.value ? 'good' : 'bad') : typeof s.value === 'number' ? (s.value >= 0.7 ? 'good' : s.value >= 0.4 ? 'warn' : 'bad') : 'accent') }, `${s.name}: ${s.value}`);
+
+/* ---------- dashboard ---------- */
+const fill = (sel, values, all = 'All') => { const s = $(sel); s.replaceChildren(el('option', { value: '' }, all), ...values.map((v) => el('option', { value: v }, v))); };
+fill('#d-name', uniq(TRACES.map((t) => t.name)), 'All apps');
+function dashboard() {
+  const days = +$('#d-range').value, name = $('#d-name').value, from = NOW - days * 864e5;
+  const ts = TRACES.filter((t) => t.ts >= from && (!name || t.name === name));
+  const faith = ts.flatMap((t) => t.scores.filter((s) => s.name === 'faithfulness').map((s) => s.value));
+  $('#d-kpis').replaceChildren(
+    el('div', { class: 'kpi' }, el('b', {}, fmt(ts.length)), el('span', {}, 'traces')),
+    el('div', { class: 'kpi' }, el('b', {}, usd(ts.reduce((a, t) => a + t.cost, 0))), el('span', {}, 'model cost')),
+    el('div', { class: 'kpi' }, el('b', {}, fmt(ts.reduce((a, t) => a + t.tokens, 0))), el('span', {}, 'tokens')),
+    el('div', { class: 'kpi' }, el('b', {}, fmt(pct(ts.map((t) => t.latency), 0.95), 1) + ' s'), el('span', {}, 'p95 latency')),
+    el('div', { class: 'kpi' }, el('b', {}, faith.length ? fmt(faith.reduce((a, b) => a + b, 0) / faith.length, 2) : '–'), el('span', {}, 'mean faithfulness')),
+    el('div', { class: 'kpi' }, el('b', { style: { color: 'var(--bad)' } }, fmt(ts.filter((t) => t.level === 'ERROR').length)), el('span', {}, 'errors')));
+  const nd = Math.max(days, 1), labels = [...Array(nd)].map((_, i) => day(NOW - (nd - 1 - i) * 864e5));
+  const per = (f) => labels.map((l) => ts.filter((t) => day(t.ts) === l).reduce((a, t) => a + f(t), 0));
+  areaChart($('#d-traces'), per(() => 1), { labels });
+  areaChart($('#d-cost'), per((t) => t.cost), { labels, color: 'var(--e1)', fmtv: (v) => '$' + v.toFixed(2) });
+  const byModel = {}; ts.forEach((t) => t.obs.filter((o) => o.model).forEach((o) => { byModel[o.model] = (byModel[o.model] || 0) + o.cost; }));
+  barChart($('#d-model'), Object.entries(byModel).sort((a, b) => b[1] - a[1]).map(([label, value], i) => ({ label, value, color: `var(--e${i})` })), { fmtv: (v) => '$' + v.toFixed(2) });
+  $('#d-latency').replaceChildren(el('tr', {}, el('th', {}, 'App'), el('th', {}, 'Traces'), el('th', {}, 'p50'), el('th', {}, 'p95'), el('th', {}, 'Errors')),
+    ...uniq(ts.map((t) => t.name)).map((n) => { const l = ts.filter((t) => t.name === n); return el('tr', {}, el('td', {}, n), el('td', {}, l.length), el('td', {}, fmt(pct(l.map((t) => t.latency), 0.5), 2)), el('td', {}, fmt(pct(l.map((t) => t.latency), 0.95), 2)), el('td', {}, l.filter((t) => t.level === 'ERROR').length)); }));
+  const bins = [...Array(10)].map((_, i) => ({ label: `${(i / 10).toFixed(1)}–${((i + 1) / 10).toFixed(1)}`, value: faith.filter((v) => Math.min(9, Math.floor(v * 10)) === i).length, color: i < 4 ? 'var(--bad)' : i < 7 ? 'var(--warn)' : 'var(--good)' }));
+  barChart($('#d-scores'), bins, { fmtv: (v) => v, height: 18 });
+  const fb = ts.flatMap((t) => t.scores.filter((s) => s.name === 'user-feedback'));
+  barChart($('#d-feedback'), [{ label: 'Thumbs up', value: fb.filter((s) => s.value).length, color: 'var(--good)' }, { label: 'Thumbs down', value: fb.filter((s) => !s.value).length, color: 'var(--bad)' }], { fmtv: (v) => v });
+}
+['#d-range', '#d-name'].forEach((s) => $(s).addEventListener('change', dashboard));
+
+/* ---------- tracing ---------- */
+fill('#t-name', uniq(TRACES.map((t) => t.name))); fill('#t-user', USERS); fill('#t-model', uniq(TRACES.map((t) => t.model))); fill('#t-tag', uniq(TRACES.flatMap((t) => t.tags)));
+let selTrace = null, selObs = null, page = 0;
+const PAGE = 20;
+function traceTable() {
+  const q = $('#t-q').value.toLowerCase(), f = { name: $('#t-name').value, user: $('#t-user').value, model: $('#t-model').value, tag: $('#t-tag').value };
+  const rows = TRACES.filter((t) => (!f.name || t.name === f.name) && (!f.user || t.user === f.user) && (!f.model || t.model === f.model) && (!f.tag || t.tags.includes(f.tag))
+    && (!$('#t-err').checked || t.level === 'ERROR') && (!q || (t.id + JSON.stringify(t.input) + JSON.stringify(t.output)).toLowerCase().includes(q)));
+  page = Math.min(page, Math.max(0, Math.ceil(rows.length / PAGE) - 1));
+  $('#t-count').textContent = `${rows.length} of ${TRACES.length} traces`;
+  $('#t-pager').replaceChildren(el('button', { class: 'btn small', disabled: page === 0, onclick: () => { page--; traceTable(); } }, 'Previous'),
+    el('span', { class: 'note' }, `Page ${page + 1} of ${Math.max(1, Math.ceil(rows.length / PAGE))}`),
+    el('button', { class: 'btn small', disabled: (page + 1) * PAGE >= rows.length, onclick: () => { page++; traceTable(); } }, 'Next'));
+  $('#t-table').replaceChildren(el('tr', {}, ...['Time', 'App', 'Input', 'User', 'Latency', 'Cost', 'Scores'].map((h) => el('th', {}, h))),
+    ...rows.slice(page * PAGE, page * PAGE + PAGE).map((t) => el('tr', { class: 'click' + (t === selTrace ? ' sel' : ''), onclick: () => { selTrace = t; selObs = t.obs[0]; traceTable(); traceDetail(); } },
+      el('td', { class: 'mono' }, new Date(t.ts).toISOString().slice(5, 16).replace('T', ' ')),
+      el('td', {}, t.name, t.level === 'ERROR' ? el('span', { class: 'pill bad', style: { marginLeft: '6px' } }, 'error') : null),
+      el('td', {}, String(t.input.question || t.input.document).slice(0, 48)),
+      el('td', { class: 'note' }, t.user.split('@')[0]), el('td', {}, t.latency.toFixed(2) + 's'), el('td', {}, usd(t.cost)),
+      el('td', {}, el('div', { class: 'scorechips' }, ...t.scores.map((s) => el('span', { class: 'pill' + (typeof s.value === 'number' && s.name === 'faithfulness' ? (s.value >= .7 ? ' good' : ' bad') : '') }, `${s.name.slice(0, 5)} ${s.value}`)))))));
+}
+['#t-q', '#t-name', '#t-user', '#t-model', '#t-tag', '#t-err'].forEach((s) => $(s).addEventListener('input', () => { page = 0; traceTable(); }));
+function depth(t, o) { let d = 0, p = o.parent; while (p) { d++; p = p === 'root' ? null : (t.obs.find((x) => x.id === p) || {}).parent; } return d; }
+function traceDetail() {
+  const t = selTrace, box = $('#t-detail'); if (!t) return;
+  const total = t.obs[0].dur || 1, o = selObs;
+  box.replaceChildren(
+    el('header', {}, el('h2', { class: 'grow' }, `${t.name} · ${t.id}`), el('span', { class: 'pill' }, t.user), el('span', { class: 'pill' }, 'session ' + t.session)),
+    el('div', { class: 'row' }, ...t.tags.map((g) => el('span', { class: 'pill accent' }, g)), el('span', { class: 'note' }, `${t.latency.toFixed(2)} s · ${fmt(t.tokens)} tokens · ${usd(t.cost)}`)),
+    el('div', { class: 'tree' }, ...t.obs.map((x) => el('div', { class: 'obs' + (x === o ? ' sel' : ''), onclick: () => { selObs = x; traceDetail(); } },
+      el('div', { class: 'nm', style: { paddingLeft: depth(t, x) * 14 + 'px' } }, el('span', { class: 'type ' + x.type }, x.type.slice(0, 4)), x.name, x.level === 'ERROR' ? ' ⚠' : ''),
+      el('div', { class: 'lane' }, el('i', { style: { left: (x.start / total * 100) + '%', width: Math.max(0.6, x.dur / total * 100) + '%', background: x.level === 'ERROR' ? 'var(--bad)' : `var(--e${['GENERATION', 'SPAN', 'TOOL', 'EVALUATOR', 'GUARDRAIL', 'RETRIEVER', 'AGENT', 'CHAIN'].indexOf(x.type)})` } })),
+      el('div', { class: 'ms' }, x.dur + ' ms')))),
+    el('div', { class: 'stack' },
+      el('div', { class: 'row' }, el('b', {}, o.name), el('span', { class: 'type ' + o.type }, o.type), o.model ? el('span', { class: 'pill' }, o.model) : null, o.prompt ? el('span', { class: 'pill accent' }, `prompt ${o.prompt.name} v${o.prompt.version}`) : null, o.level === 'ERROR' ? el('span', { class: 'pill bad' }, o.status) : null),
+      o.usage ? el('div', { class: 'note' }, `Usage: ${o.usage.input} input + ${o.usage.output} output tokens · cost ${usd(o.cost)}`) : null,
+      el('div', { class: 'grid cols-2' }, el('div', { class: 'stack' }, el('span', { class: 'note' }, 'Input'), el('pre', { class: 'io' }, JSON.stringify(o.input, null, 2))),
+        el('div', { class: 'stack' }, el('span', { class: 'note' }, 'Output'), el('pre', { class: 'io' }, o.output == null ? '(none)' : typeof o.output === 'string' ? o.output : JSON.stringify(o.output, null, 2))))),
+    el('div', { class: 'stack' }, el('span', { class: 'note' }, 'Scores'), el('div', { class: 'scorechips' }, ...(t.scores.length ? t.scores.map(scoreChip) : [el('span', { class: 'note' }, 'No scores yet')]))),
+    el('div', { class: 'row' },
+      el('select', { id: 'a-name' }, ...SCORE_CONFIGS.map((c) => el('option', { value: c.name }, c.name))),
+      el('select', { id: 'a-val' }, ...[1, 0.75, 0.5, 0.25, 0].map((v) => el('option', { value: v }, v))),
+      el('button', { class: 'btn', onclick: () => { saveScore(t, { name: $('#a-name').value, value: +$('#a-val').value, source: 'ANNOTATION' }); traceDetail(); traceTable(); toast('Score added to the trace'); } }, 'Add score'),
+      el('button', { class: 'btn', onclick: () => { addDatasetItem(t); } }, 'Add to dataset')));
+}
+
+/* ---------- sessions ---------- */
+let selSession = null;
+function sessions() {
+  const groups = {}; TRACES.forEach((t) => (groups[t.session] ||= []).push(t));
+  const list = Object.entries(groups).sort((a, b) => Math.max(...b[1].map((t) => t.ts)) - Math.max(...a[1].map((t) => t.ts)));
+  selSession ||= list[0][0];
+  $('#s-table').replaceChildren(el('tr', {}, el('th', {}, 'Session'), el('th', {}, 'Traces'), el('th', {}, 'Cost')),
+    ...list.map(([id, ts]) => el('tr', { class: 'click' + (id === selSession ? ' sel' : ''), onclick: () => { selSession = id; sessions(); } }, el('td', {}, id), el('td', {}, ts.length), el('td', {}, usd(ts.reduce((a, t) => a + t.cost, 0))))));
+  const ts = groups[selSession].slice().sort((a, b) => a.ts - b.ts);
+  $('#s-detail').replaceChildren(el('header', {}, el('h2', { class: 'grow' }, 'Session ' + selSession), el('span', { class: 'pill' }, ts[0].user)),
+    ...ts.map((t) => el('div', { class: 'turn', style: { borderLeftColor: t.level === 'ERROR' ? 'var(--bad)' : 'var(--accent)' } },
+      el('span', { class: 'note' }, new Date(t.ts).toISOString().slice(0, 16).replace('T', ' ') + ' · ' + t.name),
+      el('div', { class: 'q' }, t.input.question || 'Process ' + t.input.document),
+      el('div', { class: 'a' }, t.output ? (t.output.answer || JSON.stringify(t.output)) : el('span', { style: { color: 'var(--bad)' } }, (t.obs.find((o) => o.level === 'ERROR') || {}).status)),
+      el('div', { class: 'row' }, ...t.scores.map(scoreChip), el('button', { class: 'btn small', onclick: () => { selTrace = t; selObs = t.obs[0]; showTab('tracing'); traceTable(); traceDetail(); } }, 'Open trace')))));
+}
+
+/* ---------- users ---------- */
+function users() {
+  $('#u-table').replaceChildren(el('tr', {}, ...['User', 'Traces', 'Tokens', 'Cost', 'Errors', 'First seen', 'Last seen'].map((h) => el('th', {}, h))),
+    ...USERS.map((u) => { const ts = TRACES.filter((t) => t.user === u); return el('tr', {}, el('td', {}, u), el('td', {}, ts.length), el('td', {}, fmt(ts.reduce((a, t) => a + t.tokens, 0))), el('td', {}, usd(ts.reduce((a, t) => a + t.cost, 0))), el('td', {}, ts.filter((t) => t.level === 'ERROR').length), el('td', { class: 'mono' }, day(Math.min(...ts.map((t) => t.ts)))), el('td', { class: 'mono' }, day(Math.max(...ts.map((t) => t.ts))))); }));
+}
+
+/* ---------- prompts ---------- */
+const PROMPTS = store.get('lf:prompts', [
+  { name: 'contract-qa', type: 'text', versions: [
+    { version: 1, labels: [], text: 'Answer the question from the clause below.\n\nClause: {{clause}}\n\nQuestion: {{question}}', config: { model: 'claude-sonnet-5-5', temperature: 0 }, message: 'First draft', at: NOW - 12 * 864e5 },
+    { version: 2, labels: ['production', 'latest'], text: 'You are a contracts analyst. Using ONLY the clause below, answer in one sentence and quote the clause number.\nIf the clause does not answer the question, say so.\n\nClause: {{clause}}\n\nQuestion: {{question}}', config: { model: 'claude-opus-5-5', temperature: 0, max_tokens: 400 }, message: 'Ground answers in the clause; refuse when unsupported', at: NOW - 6 * 864e5 }] },
+  { name: 'clause-extractor', type: 'text', versions: [
+    { version: 1, labels: ['production', 'latest'], text: 'Extract every clause from the {{document_type}} below as JSON objects with "clause", "value" and "section".\n\n{{document}}', config: { model: 'claude-sonnet-5-5', response_format: 'json' }, message: 'Initial', at: NOW - 13 * 864e5 }] },
+  { name: 'redline-playbook', type: 'chat', versions: [
+    { version: 1, labels: ['production', 'latest'], text: 'system: You review vendor contracts against the {{playbook}} playbook.\nuser: Redline this clause and explain each change:\n{{clause}}', config: { model: 'claude-opus-5-5' }, message: 'Initial', at: NOW - 10 * 864e5 }] },
+]);
+const savePrompts = () => store.set('lf:prompts', PROMPTS);
+let selPrompt = PROMPTS[0].name, selVersion = null;
+const vars = (text) => [...new Set([...text.matchAll(/\{\{\s*(\w+)\s*\}\}/g)].map((m) => m[1]))];
+function lineDiff(a, b) {
+  const A = a.split('\n'), B = b.split('\n'), dp = A.map(() => new Array(B.length + 1).fill(0)); dp.push(new Array(B.length + 1).fill(0));
+  for (let i = A.length - 1; i >= 0; i--) for (let j = B.length - 1; j >= 0; j--) dp[i][j] = A[i] === B[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+  const out = []; let i = 0, j = 0;
+  while (i < A.length || j < B.length) {
+    if (i < A.length && j < B.length && A[i] === B[j]) { out.push(el('span', {}, '  ' + A[i] + '\n')); i++; j++; }
+    else if (j < B.length && (i >= A.length || dp[i][j + 1] >= dp[i + 1][j])) { out.push(el('span', { class: 'add' }, '+ ' + B[j])); j++; }
+    else { out.push(el('span', { class: 'del' }, '- ' + A[i])); i++; }
+  }
+  return out;
+}
+function prompts() {
+  $('#p-list').replaceChildren(...PROMPTS.map((p) => el('div', { class: 'ver' + (p.name === selPrompt ? ' sel' : ''), onclick: () => { selPrompt = p.name; selVersion = null; prompts(); } },
+    el('b', { class: 'grow' }, p.name), el('span', { class: 'pill' }, p.type), el('span', { class: 'note' }, `${p.versions.length} v`))));
+  const p = PROMPTS.find((x) => x.name === selPrompt), v = p.versions.find((x) => x.version === selVersion) || p.versions.find((x) => x.labels.includes('production')) || p.versions[p.versions.length - 1];
+  selVersion = v.version;
+  const prev = p.versions.find((x) => x.version === v.version - 1);
+  const play = el('div', { class: 'stack' }); const out = el('pre', { class: 'io' });
+  const compile = () => { let s = v.text; vars(v.text).forEach((k) => { s = s.replaceAll(new RegExp(`\\{\\{\\s*${k}\\s*\\}\\}`, 'g'), $('#pv-' + k).value || `{{${k}}}`); }); out.textContent = s; };
+  const DEF = { clause: section('agreement', '5. Limitation of Liability'), question: 'What is the cap on aggregate liability?', document_type: 'data processing addendum', document: SAMPLES.dpa.slice(0, 400) + '…', playbook: 'standard buy-side' };
+  play.append(...vars(v.text).map((k) => el('label', { class: 'field' }, k, el(k === 'clause' || k === 'document' ? 'textarea' : 'input', { type: 'text', id: 'pv-' + k, rows: 4, value: DEF[k] || '', oninput: compile }))));
+  const editor = el('textarea', { id: 'p-edit', rows: 7 }, v.text);
+  $('#p-detail').replaceChildren(
+    el('div', { class: 'panel' }, el('header', {}, el('h2', { class: 'grow' }, p.name), el('span', { class: 'note' }, 'Fetch in code:'), el('code', {}, `langfuse.get_prompt("${p.name}", label="production")`)),
+      el('div', { class: 'stack' }, ...p.versions.slice().reverse().map((x) => el('div', { class: 'ver' + (x === v ? ' sel' : ''), onclick: () => { selVersion = x.version; prompts(); } },
+        el('b', {}, 'v' + x.version), ...x.labels.map((l) => el('span', { class: 'pill ' + (l === 'production' ? 'good' : l === 'staging' ? 'warn' : '') }, l)), el('span', { class: 'grow note' }, x.message), el('span', { class: 'note mono' }, day(x.at)))))),
+    el('div', { class: 'grid cols-2' },
+      el('div', { class: 'panel' }, el('h2', {}, `Version ${v.version}`), el('pre', { class: 'io' }, v.text), el('div', { class: 'note' }, 'Config: ', el('code', {}, JSON.stringify(v.config))),
+        el('div', { class: 'row' }, el('span', { class: 'note' }, 'Variables:'), ...vars(v.text).map((k) => el('span', { class: 'pill accent' }, k))),
+        el('div', { class: 'row' }, ...['production', 'staging'].map((l) => el('button', { class: 'btn small', disabled: v.labels.includes(l), onclick: () => { p.versions.forEach((x) => { x.labels = x.labels.filter((y) => y !== l); }); v.labels.push(l); savePrompts(); prompts(); toast(`Label ${l} now points to v${v.version}`); } }, `Set ${l}`)))),
+      el('div', { class: 'panel' }, el('h2', {}, prev ? `Changes from v${prev.version}` : 'First version'), prev ? el('pre', { class: 'diff' }, ...lineDiff(prev.text, v.text)) : el('p', { class: 'note' }, 'No earlier version to compare.'))),
+    el('div', { class: 'grid cols-2' },
+      el('div', { class: 'panel' }, el('h2', {}, 'Playground'), play, el('span', { class: 'note' }, 'Compiled prompt'), out),
+      el('div', { class: 'panel' }, el('h2', {}, 'New version'), editor, el('input', { type: 'text', id: 'p-msg', placeholder: 'What changed' }),
+        el('div', { class: 'row' }, el('label', { class: 'field inline' }, el('input', { type: 'checkbox', id: 'p-stage', checked: true }), 'Label as staging'),
+          el('button', { class: 'btn primary', onclick: () => {
+            const text = $('#p-edit').value.trim(); if (!text || text === v.text) return toast('Change the text to save a new version');
+            const n = Math.max(...p.versions.map((x) => x.version)) + 1; p.versions.forEach((x) => { x.labels = x.labels.filter((l) => l !== 'latest' && !($('#p-stage').checked && l === 'staging')); });
+            p.versions.push({ version: n, labels: ['latest', ...($('#p-stage').checked ? ['staging'] : [])], text, config: v.config, message: $('#p-msg').value || 'Edited in the workbench', at: Date.now() });
+            selVersion = n; savePrompts(); prompts(); toast(`Saved v${n}`);
+          } }, 'Save version')))));
+  compile();
+}
+$('#p-new').addEventListener('click', () => {
+  const name = 'prompt-' + (PROMPTS.length + 1);
+  PROMPTS.push({ name, type: 'text', versions: [{ version: 1, labels: ['latest'], text: 'Summarise {{clause}} for a non-lawyer in two sentences.', config: { model: 'claude-haiku-5-5' }, message: 'Created in the workbench', at: Date.now() }] });
+  selPrompt = name; selVersion = null; savePrompts(); prompts();
+});
+
+/* ---------- datasets & experiments ---------- */
+const EXPECTED = ['Twenty-four months', 'Fees paid in the twelve months', 'State of New York', '99.5%', 'within 48 hours', 'Fabrikam Cloud GmbH', 'Thirty days', 'Standard Contractual Clauses', 'Once per calendar year', 'within 60 days'];
+const DATASETS = store.get('lf:datasets', [{ name: 'contract-qa-golden', description: 'Reviewed answers on the sample agreement and addendum',
+  items: QA.slice(0, 10).map(([q, a, doc, sec], i) => ({ id: 'item-' + i, input: { question: q, clause: sec }, expected: EXPECTED[i], doc })), runs: [] }]);
+const saveDatasets = () => store.set('lf:datasets', DATASETS);
+let selDataset = DATASETS[0].name;
+function addDatasetItem(t) {
+  const ds = DATASETS[0];
+  ds.items.push({ id: uid('item'), input: t.input, expected: t.output ? (t.output.answer || JSON.stringify(t.output)) : '', source: t.id });
+  saveDatasets(); toast(`Added to ${ds.name} (${ds.items.length} items)`);
+}
+/* The experiment task: a deterministic stand-in for running the prompt
+   version over each item. v2's grounding instruction raises accuracy. */
+function runTask(item, version) {
+  const qa = QA.find((x) => x[0] === item.input.question), base = qa ? qa[1] : '';
+  const h = [...(item.input.question || '') + version].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
+  const correct = (h % 100) < (version >= 2 ? 90 : 62);
+  return correct ? base : 'The agreement does not say; it is probably the standard market position.';
+}
+const EVALUATORS = {
+  contains_expected: (out, exp) => (out.toLowerCase().includes(String(exp).toLowerCase().slice(0, 18)) ? 1 : 0),
+  grounded: (out) => (/probably|standard market/.test(out) ? 0 : 1),
+};
+function datasets() {
+  $('#ds-list').replaceChildren(...DATASETS.map((d) => el('div', { class: 'ver' + (d.name === selDataset ? ' sel' : ''), onclick: () => { selDataset = d.name; datasets(); } }, el('b', { class: 'grow' }, d.name), el('span', { class: 'note' }, `${d.items.length} items · ${d.runs.length} runs`))));
+  const d = DATASETS.find((x) => x.name === selDataset), qaPrompt = PROMPTS.find((p) => p.name === 'contract-qa');
+  const runs = d.runs;
+  $('#ds-detail').replaceChildren(
+    el('div', { class: 'panel' }, el('header', {}, el('h2', { class: 'grow' }, d.name), el('span', { class: 'note' }, d.description)),
+      el('div', { class: 'row' }, el('label', { class: 'field inline' }, 'Prompt version', el('select', { id: 'ds-ver' }, ...qaPrompt.versions.map((v) => el('option', { value: v.version }, `contract-qa v${v.version} ${v.labels.join(' ')}`)))),
+        el('button', { class: 'btn primary', onclick: async (e) => {
+          e.target.disabled = true; const version = +$('#ds-ver').value, results = [];
+          for (const item of d.items) { await sleep(60); const out = runTask(item, version); results.push({ item: item.id, output: out, scores: Object.fromEntries(Object.entries(EVALUATORS).map(([k, f]) => [k, f(out, item.expected)])) }); }
+          runs.push({ name: `v${version}-run-${runs.length + 1}`, version, at: Date.now(), results }); saveDatasets(); datasets(); toast('Experiment finished');
+        } }, 'Run experiment')),
+      el('div', { class: 'table-wrap' }, el('table', { class: 'data' }, el('tr', {}, el('th', {}, 'Input'), el('th', {}, 'Expected'), ...runs.slice(-3).map((r) => el('th', {}, r.name))),
+        ...d.items.map((it) => el('tr', {}, el('td', {}, it.input.question || JSON.stringify(it.input)), el('td', {}, it.expected),
+          ...runs.slice(-3).map((r) => { const res = r.results.find((x) => x.item === it.id); return el('td', {}, res ? el('div', { class: 'stack' }, el('span', {}, res.output.slice(0, 70)), el('div', { class: 'scorechips' }, ...Object.entries(res.scores).map(([k, v]) => el('span', { class: 'pill ' + (v ? 'good' : 'bad') }, `${k} ${v}`)))) : el('span', { class: 'note' }, 'not in run')); })))))),
+    el('div', { class: 'panel' }, el('h2', {}, 'Run comparison'), runs.length ? el('div', { class: 'table-wrap' }, el('table', { class: 'data' },
+      el('tr', {}, el('th', {}, 'Run'), el('th', {}, 'Prompt'), el('th', {}, 'Items'), ...Object.keys(EVALUATORS).map((k) => el('th', {}, k))),
+      ...runs.map((r) => el('tr', {}, el('td', {}, r.name), el('td', {}, 'v' + r.version), el('td', {}, r.results.length),
+        ...Object.keys(EVALUATORS).map((k) => { const m = r.results.reduce((a, x) => a + x.scores[k], 0) / r.results.length; return el('td', {}, el('div', { class: 'row' }, el('div', { class: 'bar', style: { width: '80px' } }, el('i', { style: { width: m * 100 + '%', background: m >= .8 ? 'var(--good)' : 'var(--warn)' } })), fmt(m, 2))); })))))
+      : el('div', { class: 'empty' }, 'No runs yet. Run v1, then v2, to compare prompt versions on the same items.')));
+}
+
+/* ---------- evaluation ---------- */
+const SCORE_CONFIGS = [
+  { name: 'correctness', type: 'NUMERIC', range: '0–1', description: 'Answer matches the contract' },
+  { name: 'helpfulness', type: 'NUMERIC', range: '0–1', description: 'Usable by a non-lawyer' },
+  { name: 'faithfulness', type: 'NUMERIC', range: '0–1', description: 'Every claim supported by the retrieved clause (LLM judge)' },
+  { name: 'user-feedback', type: 'BOOLEAN', range: '0 / 1', description: 'Thumbs up or down from the app' },
+];
+function evaluation() {
+  const queue = TRACES.filter((t) => t.name === 'contract-qa' && t.output && !t.scores.some((s) => s.source === 'ANNOTATION')).slice(0, 12);
+  const t = queue[0];
+  $('#e-queue').replaceChildren(el('header', {}, el('h2', { class: 'grow' }, 'Annotation queue'), el('span', { class: 'pill warn' }, `${queue.length} to review`)),
+    t ? el('div', { class: 'stack' }, el('div', { class: 'turn' }, el('div', { class: 'q' }, t.input.question), el('div', {}, t.output.answer), el('span', { class: 'note' }, 'Retrieved: ' + t.obs.find((o) => o.type === 'RETRIEVER').output.chunks[0].slice(0, 220) + '…')),
+      ...['correctness', 'helpfulness'].map((n) => el('div', { class: 'row' }, el('span', { style: { width: '110px' } }, n), ...[0, 0.5, 1].map((v) => el('button', { class: 'btn small', onclick: () => { saveScore(t, { name: n, value: v, source: 'ANNOTATION' }); toast(`${n} = ${v}`); evaluation(); } }, String(v)))))) : el('div', { class: 'empty' }, 'Queue is empty.'));
+  const judge = el('div', { class: 'stack' });
+  $('#e-judge').replaceChildren(el('h2', {}, 'LLM-as-a-judge: faithfulness'),
+    el('pre', { class: 'io' }, 'Score from 0 to 1 how well every claim in the answer is supported by the context.\nContext: {{context}}\nAnswer: {{answer}}'),
+    el('div', { class: 'row' }, el('label', { class: 'field inline' }, 'Target', el('select', {}, el('option', {}, 'contract-qa traces'))), el('label', { class: 'field inline' }, 'Sample', el('select', { id: 'j-n' }, ...[10, 25, 50].map((n) => el('option', { value: n }, `last ${n}`))))),
+    el('button', { class: 'btn primary', onclick: () => {
+      // Stand-in judge: share of the answer's content words found in the retrieved clause.
+      const rows = TRACES.filter((x) => x.name === 'contract-qa' && x.output).slice(0, +$('#j-n').value).map((x) => {
+        const ctx = new Set(Text.terms(x.qa ? section(x.qa[2], x.qa[3]) : '')), words = Text.terms(x.output.answer);
+        const f = words.length ? words.filter((w) => ctx.has(w) || /\d/.test(w)).length / words.length : 0; return [x, +f.toFixed(2)];
+      });
+      judge.replaceChildren(el('div', { class: 'table-wrap' }, el('table', { class: 'data' }, el('tr', {}, el('th', {}, 'Question'), el('th', {}, 'Judge score'), el('th', {}, 'Stored score')),
+        ...rows.map(([x, f]) => el('tr', {}, el('td', {}, x.input.question), el('td', {}, el('span', { class: 'pill ' + (f >= .5 ? 'good' : 'bad') }, f)), el('td', {}, (x.scores.find((s) => s.name === 'faithfulness') || {}).value ?? '–'))))));
+    } }, 'Run evaluator'), judge,
+    el('p', { class: 'note' }, 'Here the judge is a word-overlap stand-in so it runs offline; in Langfuse the worker sends this template to the model you configure.'));
+  $('#e-configs').replaceChildren(el('tr', {}, ...['Name', 'Type', 'Range', 'Description'].map((h) => el('th', {}, h))), ...SCORE_CONFIGS.map((c) => el('tr', {}, el('td', {}, c.name), el('td', {}, el('span', { class: 'pill' }, c.type)), el('td', {}, c.range), el('td', {}, c.description))));
+}
+
+/* ---------- keys & SDK ---------- */
+const KEYS = store.get('lf:keys', [{ pk: 'pk-lf-harness-public', note: 'Seeded by setup.sh', created: NOW - 14 * 864e5 }]);
+function keys() {
+  $('#k-table').replaceChildren(el('tr', {}, el('th', {}, 'Public key'), el('th', {}, 'Note'), el('th', {}, 'Created'), el('th', {}, '')),
+    ...KEYS.map((k, i) => el('tr', {}, el('td', { class: 'mono' }, k.pk), el('td', {}, k.note), el('td', { class: 'mono' }, day(k.created)), el('td', {}, i ? el('button', { class: 'btn small', onclick: () => { KEYS.splice(i, 1); store.set('lf:keys', KEYS); keys(); toast('Key revoked'); } }, 'Revoke') : ''))));
+  const k = KEYS[KEYS.length - 1].pk, host = 'http://localhost:3000';
+  const SNIP = {
+    py: `pip install langfuse\n\nfrom langfuse import Langfuse, propagate_attributes\n\nlf = Langfuse(public_key="${k}", secret_key="sk-lf-…", base_url="${host}")\n\nwith propagate_attributes(user_id="maria@northwind.example", session_id="matter-1042"):\n    with lf.start_as_current_observation(name="contract-qa", as_type="agent") as root:\n        with lf.start_as_current_observation(name="answer", as_type="generation",\n                                             model="claude-opus-5-5") as gen:\n            gen.update(output="Fees paid in the prior 12 months.",\n                       usage_details={"input": 420, "output": 40})\nlf.flush()`,
+    ts: `npm install @langfuse/tracing @langfuse/otel\n\nimport { startActiveObservation } from "@langfuse/tracing";\n\nawait startActiveObservation("contract-qa", async (span) => {\n  span.update({ input: { question } });\n  const answer = await askModel(question);\n  span.update({ output: { answer } });\n});\n\n// LANGFUSE_PUBLIC_KEY=${k}  LANGFUSE_BASE_URL=${host}`,
+    otel: `# Any OpenTelemetry exporter can send traces\nOTEL_EXPORTER_OTLP_ENDPOINT="${host}/api/public/otel"\nOTEL_EXPORTER_OTLP_HEADERS="Authorization=Basic $(echo -n ${k}:sk-lf-… | base64)"`,
+  };
+  $('#k-snippet').textContent = SNIP[$('#k-lang').value];
+}
+$('#k-lang').addEventListener('change', keys);
+$('#k-copy').addEventListener('click', () => copyText($('#k-snippet').textContent, 'Snippet copied'));
+$('#k-create').addEventListener('click', () => {
+  const hex = () => [...crypto.getRandomValues(new Uint8Array(12))].map((b) => b.toString(16).padStart(2, '0')).join('');
+  const pk = 'pk-lf-' + hex(), sk = 'sk-lf-' + hex();
+  KEYS.push({ pk, note: $('#k-note').value || 'Created in the workbench', created: Date.now() }); store.set('lf:keys', KEYS);
+  $('#k-new').replaceChildren(el('div', { class: 'stack' }, el('span', { class: 'note' }, 'Copy the secret key now; it is not shown again.'), el('div', { class: 'secret' }, pk), el('div', { class: 'secret' }, sk), el('button', { class: 'btn small', onclick: () => copyText(`LANGFUSE_PUBLIC_KEY=${pk}\nLANGFUSE_SECRET_KEY=${sk}`, 'Keys copied') }, 'Copy as env vars')));
+  keys();
+});
+
+const RENDER = { dashboard, tracing: () => { traceTable(); if (!selTrace) { selTrace = TRACES.find((t) => t.name === 'contract-qa'); selObs = selTrace.obs[0]; } traceDetail(); traceTable(); }, sessions, users, prompts, datasets, evaluation, settings: keys };
+const showTab = initTabs((name) => RENDER[name] && RENDER[name]());
+</script>

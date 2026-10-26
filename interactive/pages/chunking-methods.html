@@ -1,0 +1,223 @@
+<title>Chunking Methods Lab</title>
+{{HEAD}}
+<style>
+  :root { --accent: #b24c1f; --accent-soft: #fbe6dc; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #f09062; --accent-ink: #2b1207; --accent-soft: #3b2216; } }
+  :root[data-theme="dark"] { --accent: #f09062; --accent-ink: #2b1207; --accent-soft: #3b2216; }
+  .methods { display: flex; flex-direction: column; gap: 3px; }
+  .methods h3 { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 10px 0 2px; }
+  .methods button { text-align: left; border: 0; background: none; padding: 5px 8px; border-radius: 6px; cursor: pointer; }
+  .methods button:hover { background: var(--sunk); } .methods button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .params { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+  .params output { font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
+  .tree { display: flex; flex-direction: column; gap: 14px; }
+  .choices { display: flex; flex-wrap: wrap; gap: 8px; }
+  .choices button { border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 9px 13px; cursor: pointer; text-align: left; max-width: 300px; }
+  .choices button:hover { border-color: var(--accent); }
+  .choices button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+  .answer { border: 1px solid var(--accent); border-radius: var(--r); padding: 14px; background: var(--accent-soft); display: flex; flex-direction: column; gap: 8px; }
+  svg.chart { width: 100%; height: auto; }
+  td.num { text-align: right; }
+  .heat { border-radius: 4px; padding: 1px 6px; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">CM</span><h1>Chunking Methods Lab</h1><span class="tag">All 20 methods from the guide, running on real documents</span>
+      <span class="links"><a href="https://github.com/itsual/Chunking-Methods-for-RAG" target="_blank" rel="noopener">The guide</a><a href="https://github.com/gendaiski/Sandbox-2/blob/claude/loving-cannon-2y609d/systems/chunking-methods/chunking_methods.py" target="_blank" rel="noopener">Python implementation</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="try">Try a method</button><button data-tab="compare">Compare all 20</button><button data-tab="choose">Choose a method</button><button data-tab="how">Decision tree</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">itsual/Chunking-Methods-for-RAG is a guide without code. Every method it lists is implemented here in JavaScript (and in Python in Sandbox-2, with tests) and runs on the documents below. Semantic methods use TF-IDF vectors so they run offline.</p>
+
+  <section data-panel="try">
+    <div class="grid cols-side">
+      <div class="panel"><h2>Method</h2><div class="methods" id="m-list"></div></div>
+      <div class="stack">
+        <div class="panel"><header><h2 class="grow" id="m-title"></h2><span class="pill accent" id="m-family"></span></header>
+          <p id="m-desc" style="margin:0"></p>
+          <div class="row"><label class="field inline">Document <select id="m-doc"><option value="agreement">Master Services Agreement</option><option value="dpa">Data Processing Addendum</option><option value="python">Python source (chunking_methods.py)</option><option value="mixed">Agreement + code + image</option><option value="custom">Paste your own</option></select></label></div>
+          <textarea id="m-custom" rows="6" hidden placeholder="Paste text or Markdown"></textarea>
+          <div class="params" id="m-params"></div></div>
+        <div class="kpis" id="m-stats"></div>
+        <div class="grid cols-2">
+          <div class="panel"><h2>Chunks on the document</h2><p class="note">Each colour is one chunk; hatching marks text in more than one chunk. Click a span to jump to its chunk.</p><div class="overlay" id="m-overlay"></div></div>
+          <div class="panel"><h2>Chunks</h2><div class="chunks" id="m-chunks" style="max-height:620px;overflow:auto"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-panel="compare" hidden>
+    <div class="panel"><header><h2 class="grow">Every method on the same document</h2><label class="field inline">Document <select id="c-doc"><option value="agreement">Master Services Agreement</option><option value="dpa">Data Processing Addendum</option></select></label></header>
+      <p class="note">Defaults for each method; sizes target about 600 characters where a method has a size. Coherence: how similar sentences are to their own chunk. Boundaries: share of chunks ending at a sentence or heading. Stickiness: similarity of neighbouring chunks (lower separates topics better). Recursive Python-Specific is for source code, so it is left out of this table.</p>
+      <div class="table-wrap"><table class="data" id="c-table"></table></div></div>
+    <div class="grid cols-2"><div class="panel"><h2>Coherence by method</h2><svg class="chart" id="c-chart"></svg></div><div class="panel"><h2>Chunk count by method</h2><svg class="chart" id="c-count"></svg></div></div>
+  </section>
+
+  <section data-panel="choose" hidden>
+    <div class="panel tree" id="t-tree"></div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="panel"><h2>The guide's decision tree</h2>
+<pre class="mermaid">
+flowchart LR
+  Start["What is your primary need?"] --> Basic["Simple and uniform"]
+  Start --> Context["Preserve context across boundaries"]
+  Start --> Semantic["AI-driven, based on meaning"]
+  Start --> Structured["Structured or specialized content"]
+  Start --> TaskSpec["Task-specific or role-based"]
+  Start --> Hybrid["Combine methods"]
+  Basic --> B1{"Fixed-size?"} --> Fixed["Fixed-Size"]
+  Basic --> B2{"Token limits?"} --> Token["Token-Based"]
+  Basic --> B3{"Full sentences?"} --> Sentence["Sentence-Based"]
+  Basic --> B4{"Paragraph level?"} --> Para["Paragraph-Based"]
+  Basic --> B5{"Page structure?"} --> Page["Page-Based"]
+  Context --> C1{"Overlap?"} --> Sliding["Sliding Window"]
+  Context --> C2{"Fixed tokens + overlap?"} --> FTO["Fixed Token with Overlap"]
+  Context --> C3{"Adaptive separators?"} --> Rec["Recursive"]
+  Context --> C4{"Python docs?"} --> Py["Recursive Python"]
+  Context --> C5{"Metadata with chunks?"} --> Enr["Context-Enriched"]
+  Semantic --> S1{"Split by meaning?"} --> Sem["Semantic"]
+  Semantic --> S2{"Distinct topics?"} --> Top["Topic-Based"]
+  Semantic --> S3{"Named entities?"} --> Ent["Entity-Based"]
+  Semantic --> S4{"Keywords?"} --> Key["Keyword-Based"]
+  Structured --> ST1{"Multi-level?"} --> Hier["Hierarchical"]
+  Structured --> ST2{"Mixed content?"} --> Mod["Modality-Specific"]
+  Structured --> ST3{"Tables?"} --> Tab["Table-Aware"]
+  TaskSpec --> T1{"Agent driven?"} --> Ag["Agentic"]
+  TaskSpec --> T2{"Logical sub-sections?"} --> Sub["Subdocument"]
+  Hybrid --> H1{"Multiple strategies?"} --> Hyb["Hybrid"]
+</pre>
+      <p class="note">The same tree drives the “Choose a method” tab, and the Python test checks that every leaf reaches an implemented method.</p></div>
+    <div class="panel"><h2>How the implementation is checked</h2>
+<pre class="mermaid">
+flowchart LR
+  README["Upstream README<br/>(method list + tree)"] -->|"parsed by the test"| T["test_chunking_methods.py"]
+  PY["chunking_methods.py<br/>20 methods"] --> T
+  DOCS["Sample agreement, its PDF pages,<br/>a Python module, a long table"] --> T
+  T -->|"25 checks: offsets, coverage,<br/>sizes, overlaps, structure"| R["CI report"]
+</pre></div>
+  </section>
+</main>
+<p class="footer">Same algorithms as <code>systems/chunking-methods/chunking_methods.py</code>.</p>
+{{LIB}}
+<script>
+const FAMILIES = { Basic: ['fixed_size', 'token_based', 'sentence_based', 'paragraph_based', 'page_based'], 'Context-preserving': ['sliding_window', 'fixed_token_overlap', 'recursive', 'recursive_python', 'context_enriched'], 'Semantic & AI-driven': ['semantic', 'topic_based', 'entity_based', 'keyword_based'], 'Structured data': ['hierarchical', 'modality_specific', 'table_aware'], 'Task-specific': ['agentic', 'subdocument'], Hybrid: ['hybrid'] };
+const INFO = {
+  fixed_size: ['Fixed-Size', 'Cuts every N characters regardless of structure. Fast and predictable; it will split words and sentences.', { size: [100, 1500, 50, 500] }],
+  token_based: ['Token-Based', 'N tokens per chunk, never splitting a token. Use when a model has a hard token limit.', { max_tokens: [20, 300, 10, 90] }],
+  sentence_based: ['Sentence-Based', 'Whole sentences only, N per chunk. Good for FAQs and short factual text.', { max_sentences: [1, 10, 1, 3] }],
+  paragraph_based: ['Paragraph-Based', 'Whole paragraphs, merged up to a size. Keeps an author\'s own units of thought.', { max_chars: [200, 2000, 50, 700] }],
+  page_based: ['Page-Based', 'One chunk per page, so citations can point to page numbers. Pages here are simulated at paragraph breaks about every 1,200 characters.', {}],
+  sliding_window: ['Sliding Window', 'Windows of a fixed width moved by a smaller step, so neighbours share text and no answer falls on a boundary.', { window: [200, 1200, 50, 600], step: [100, 1200, 50, 400] }],
+  fixed_token_overlap: ['Fixed Token with Overlap', 'Token windows that repeat the last few tokens of the previous chunk.', { max_tokens: [20, 300, 10, 100], overlap: [0, 80, 5, 20] }],
+  recursive: ['Recursive', 'Splits on the coarsest separator that fits (sections, paragraphs, lines, sentences, words), recursing only where a piece is still too big.', { max_chars: [200, 1500, 50, 600] }],
+  recursive_python: ['Recursive Python-Specific', 'Splits code on class and def boundaries first, so functions stay whole.', { max_chars: [300, 3000, 100, 1200] }],
+  context_enriched: ['Context-Enriched', 'Recursive chunks prefixed with their section path and the tail of the previous chunk, so each reads on its own.', { max_chars: [200, 1500, 50, 600], neighbour_chars: [0, 300, 20, 120] }],
+  semantic: ['Semantic', 'Starts a new chunk where the similarity between neighbouring sentences drops to a local minimum below a threshold.', { threshold: [0.01, 0.3, 0.01, 0.08], window: [1, 4, 1, 2] }],
+  topic_based: ['Topic-Based', 'TextTiling: scores the vocabulary shift between paragraphs and cuts at the deepest valleys; labels each topic.', { max_topics: [2, 10, 1, 6] }],
+  entity_based: ['Entity-Based', 'Keeps sentences together while they mention the same named entities, so facts about one party stay in one chunk.', { max_chars: [300, 2000, 50, 1200] }],
+  keyword_based: ['Keyword-Based', 'Starts a chunk at lines beginning with a trigger word or a clause number.', { keywords: 'Section, Article, Clause, WHEREAS, Schedule' }],
+  hierarchical: ['Hierarchical', 'A parent chunk per heading section and child chunks inside it, linked by id, for small-to-big retrieval.', { max_chars: [200, 1500, 50, 400] }],
+  modality_specific: ['Modality-Specific', 'Routes tables, code blocks and images to their own chunks and chunks the prose separately.', { max_chars: [200, 1500, 50, 700] }],
+  table_aware: ['Table-Aware', 'Never cuts a table; long tables split by rows with the header repeated.', { max_rows: [1, 20, 1, 2], max_chars: [200, 1500, 50, 700] }],
+  agentic: ['Agentic', 'An agent reads numbered sentences and picks chunk starts. Here the agent is a stand-in that starts a chunk at each heading and where the topic shifts; the Python version can call Claude.', {}],
+  subdocument: ['Subdocument', 'Splits by top-level section and tags every chunk with the document title and its section summary, for filtering before search.', { max_chars: [200, 1500, 50, 600] }],
+  hybrid: ['Hybrid', 'Structure first (sections, tables, code), recursive splitting inside, then merges small pieces within a section.', { max_chars: [200, 1500, 50, 700], min_chars: [50, 500, 25, 200] }],
+};
+let method = store.get('cm:method', 'recursive');
+const params = {};
+function docText(kind) {
+  if (kind === 'custom') return $('#m-custom').value || SAMPLES.agreement;
+  if (kind === 'mixed') return SAMPLES.agreement + '\n\n## Appendix: integration example\n\n```python\nfrom northwind import Client\nclient = Client(api_key="…")\nprint(client.search("liability cap"))\n```\n\n![Retrieval architecture](architecture.png)\n';
+  return SAMPLES[kind];
+}
+function withPages(doc) { // page breaks at paragraph ends roughly every 1,200 characters
+  let out = '', last = 0; for (const [, e] of Text.paragraphs(doc)) { if (e - last > 1200) { out += doc.slice(last, e) + '\f'; last = e; } } return out + doc.slice(last);
+}
+function agentStarts(doc) {
+  const s = Text.sentences(doc), v = Text.tfidf(s.map(([a, b]) => doc.slice(a, b)));
+  return s.map((x, i) => i).filter((i) => i > 0 && (/^#{1,3} /.test(doc.slice(s[i][0], s[i][0] + 4)) || (Text.cos(v[i - 1], v[i]) < 0.02 && !/^#/.test(doc.slice(s[i - 1][0])))));
+}
+function run(name, doc, p) {
+  if (name === 'page_based') doc = withPages(doc);
+  if (name === 'agentic') return [doc, Chunkers.agentic(doc, { starts: agentStarts(doc) })];
+  return [doc, Chunkers[name](doc, p)];
+}
+function list() {
+  $('#m-list').replaceChildren(...Object.entries(FAMILIES).flatMap(([fam, ms]) => [el('h3', {}, fam), ...ms.map((m) => el('button', { 'aria-pressed': String(m === method), onclick: () => { method = m; store.set('cm:method', m); if (m === 'recursive_python') $('#m-doc').value = 'python'; else if ($('#m-doc').value === 'python') $('#m-doc').value = 'agreement'; if (m === 'table_aware') $('#m-doc').value = 'dpa'; if (m === 'modality_specific') $('#m-doc').value = 'mixed'; list(); paramsUI(); render(); } }, INFO[m][0]))]));
+}
+function paramsUI() {
+  const [title, desc, spec] = INFO[method];
+  $('#m-title').textContent = title; $('#m-desc').textContent = desc; $('#m-family').textContent = Object.keys(FAMILIES).find((f) => FAMILIES[f].includes(method));
+  Object.keys(params).forEach((k) => delete params[k]);
+  $('#m-params').replaceChildren(...Object.entries(spec).map(([k, v]) => {
+    if (typeof v === 'string') { params[k] = v; return el('label', { class: 'field' }, k, el('input', { type: 'text', value: v, oninput: (e) => { params[k] = e.target.value; render(); } })); }
+    const [min, max, step, def] = v; params[k] = def; const out = el('output', {}, def);
+    return el('label', { class: 'field' }, el('span', {}, k.replace(/_/g, ' '), ' ', out), el('input', { type: 'range', min, max, step, value: def, oninput: (e) => { params[k] = +e.target.value; out.textContent = e.target.value; render(); } }));
+  }));
+  if (!Object.keys(spec).length) $('#m-params').append(el('span', { class: 'note' }, 'No parameters.'));
+}
+function render() {
+  $('#m-custom').hidden = $('#m-doc').value !== 'custom';
+  const [doc, chunks] = run(method, docText($('#m-doc').value), { ...params });
+  const st = Metrics.size_stats(chunks), overlapChars = chunks.reduce((a, c) => a + c.text.length, 0) - doc.trim().length;
+  $('#m-stats').replaceChildren(
+    el('div', { class: 'kpi' }, el('b', {}, chunks.length), el('span', {}, 'chunks')),
+    el('div', { class: 'kpi' }, el('b', {}, fmt(st.mean)), el('span', {}, `mean chars (${st.min}–${st.max})`)),
+    el('div', { class: 'kpi' }, el('b', {}, fmt(st.cv, 2)), el('span', {}, 'size variation (CV)')),
+    el('div', { class: 'kpi' }, el('b', {}, fmt(Metrics.semantic_coherence(chunks), 2)), el('span', {}, 'coherence')),
+    el('div', { class: 'kpi' }, el('b', {}, fmt(Metrics.boundary_quality(chunks) * 100) + '%'), el('span', {}, 'clean boundaries')),
+    el('div', { class: 'kpi' }, el('b', {}, fmt(Math.max(0, overlapChars))), el('span', {}, method === 'context_enriched' ? 'context chars added' : 'chars repeated (overlap)')));
+  renderOverlay($('#m-overlay'), doc.replace(/\f/g, '\n'), chunks.filter((c) => !(method === 'hierarchical' && c.meta.level === 'parent')), { onPick: (i) => { const el2 = $('#chunk-' + i); el2 && el2.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } });
+  renderChunkCards($('#m-chunks'), chunks);
+}
+['#m-doc', '#m-custom'].forEach((s) => $(s).addEventListener('input', render));
+
+/* ---------- compare ---------- */
+const DEFAULTS = { fixed_size: { size: 600 }, token_based: { max_tokens: 95 }, sentence_based: { max_sentences: 4 }, paragraph_based: { max_chars: 600 }, sliding_window: { window: 600, step: 450 }, fixed_token_overlap: { max_tokens: 95, overlap: 20 }, recursive: { max_chars: 600 }, recursive_python: { max_chars: 600 }, context_enriched: { max_chars: 600 }, hierarchical: { max_chars: 600 }, modality_specific: { max_chars: 600 }, table_aware: { max_chars: 600 }, subdocument: { max_chars: 600 }, hybrid: { max_chars: 600, min_chars: 200 }, entity_based: { max_chars: 900 } };
+function compare() {
+  const doc = SAMPLES[$('#c-doc').value], rows = Object.values(FAMILIES).flat().filter((m) => m !== 'recursive_python').map((m) => {
+    const [, chunks] = run(m, doc, DEFAULTS[m] || {}), use = m === 'hierarchical' ? chunks.filter((c) => c.meta.level === 'child') : chunks, st = Metrics.size_stats(use);
+    return { m, n: use.length, mean: st.mean, cv: st.cv, coh: Metrics.semantic_coherence(use), bq: Metrics.boundary_quality(use), stick: Metrics.chunk_stickiness(use) };
+  });
+  const heat = (v, lo, hi, good = true) => { const t = Math.max(0, Math.min(1, (v - lo) / (hi - lo || 1))); const g = good ? t : 1 - t; return el('span', { class: 'heat', style: { background: g > 0.66 ? 'var(--good-soft)' : g > 0.33 ? 'var(--warn-soft)' : 'var(--bad-soft)' } }, fmt(v, 2)); };
+  const r = (k) => [Math.min(...rows.map((x) => x[k])), Math.max(...rows.map((x) => x[k]))];
+  $('#c-table').replaceChildren(el('tr', {}, ...['Method', 'Family', 'Chunks', 'Mean chars', 'Size CV', 'Coherence', 'Boundaries', 'Stickiness', ''].map((h) => el('th', {}, h))),
+    ...rows.map((x) => el('tr', {}, el('td', {}, el('b', {}, INFO[x.m][0])), el('td', { class: 'note' }, Object.keys(FAMILIES).find((f) => FAMILIES[f].includes(x.m))), el('td', { class: 'num' }, x.n), el('td', { class: 'num' }, fmt(x.mean)),
+      el('td', {}, heat(x.cv, ...r('cv'), false)), el('td', {}, heat(x.coh, ...r('coh'))), el('td', {}, heat(x.bq, ...r('bq'))), el('td', {}, heat(x.stick, ...r('stick'), false)),
+      el('td', {}, el('button', { class: 'btn small', onclick: () => { method = x.m; $('#m-doc').value = $('#c-doc').value; list(); paramsUI(); show('try'); } }, 'Open')))));
+  barChart($('#c-chart'), rows.slice().sort((a, b) => b.coh - a.coh).map((x) => ({ label: INFO[x.m][0], value: x.coh })), { height: 19 });
+  barChart($('#c-count'), rows.slice().sort((a, b) => b.n - a.n).map((x, i) => ({ label: INFO[x.m][0], value: x.n, color: 'var(--e1)' })), { height: 19, fmtv: (v) => v });
+}
+$('#c-doc').addEventListener('change', compare);
+
+/* ---------- decision tree ---------- */
+const TREE = {
+  'Simple and uniform chunking': { 'Need fixed-size chunks?': 'fixed_size', 'Working with token limits?': 'token_based', 'Preserve full sentences?': 'sentence_based', 'Prefer paragraph level?': 'paragraph_based', 'Page structure matters?': 'page_based' },
+  'Preserving context across boundaries': { 'Need overlapping context?': 'sliding_window', 'Fixed tokens with overlap?': 'fixed_token_overlap', 'Adaptive separator-based?': 'recursive', 'Processing Python docs?': 'recursive_python', 'Need metadata with chunks?': 'context_enriched' },
+  'AI-driven chunking based on meaning': { 'Split by meaning?': 'semantic', 'Distinct topics?': 'topic_based', 'Preserve named entities?': 'entity_based', 'Based on keywords?': 'keyword_based' },
+  'Handling structured or specialized content': { 'Multi-level chunking?': 'hierarchical', 'Mixed content types?': 'modality_specific', 'Separate table processing?': 'table_aware' },
+  'Task-specific or role-based chunking': { 'AI agent driven?': 'agentic', 'Logical sub-sections?': 'subdocument' },
+  'Combining multiple chunking methods': { 'Multiple strategies?': 'hybrid' },
+};
+let need = null, q = null;
+function tree() {
+  const box = $('#t-tree');
+  box.replaceChildren(el('h2', {}, 'What is your primary need for chunking?'),
+    el('div', { class: 'choices' }, ...Object.keys(TREE).map((n) => el('button', { 'aria-pressed': String(n === need), onclick: () => { need = n; q = null; tree(); } }, n))));
+  if (need) box.append(el('h2', {}, 'Which describes your documents best?'), el('div', { class: 'choices' }, ...Object.keys(TREE[need]).map((x) => el('button', { 'aria-pressed': String(x === q), onclick: () => { q = x; tree(); } }, x))));
+  if (q) {
+    const m = TREE[need][q], [title, desc] = INFO[m], [doc, chunks] = run(m, m === 'recursive_python' ? SAMPLES.python : SAMPLES.agreement, DEFAULTS[m] || {});
+    box.append(el('div', { class: 'answer' }, el('div', { class: 'row' }, el('h2', { class: 'grow' }, 'Use ' + title + ' chunking'), el('button', { class: 'btn primary', onclick: () => { method = m; $('#m-doc').value = m === 'recursive_python' ? 'python' : 'agreement'; list(); paramsUI(); show('try'); } }, 'Try it on a document')),
+      el('p', { style: { margin: 0 } }, desc), el('span', { class: 'note' }, `On the sample ${m === 'recursive_python' ? 'Python module' : 'agreement'}: ${chunks.length} chunks, coherence ${fmt(Metrics.semantic_coherence(chunks), 2)}.`)));
+  }
+}
+
+const show = initTabs((name) => { if (name === 'compare') compare(); if (name === 'choose') tree(); });
+list(); paramsUI(); render();
+</script>
