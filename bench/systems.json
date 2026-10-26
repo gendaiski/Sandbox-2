@@ -12,11 +12,49 @@
   "code": "systems/chunknorris",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/chunknorris",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/40364442057/job/121718541060",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/40359492203/job/121700772126",
   "demo_label": "",
   "demo_url": "",
   "finding": "Imports psutil without declaring it; setup adds it.",
-  "ran_at": "2026-10-26T17:00:44+0000"
+  "ran_at": "2026-10-26T16:28:57+0000"
+ },
+ {
+  "job": "chunckerflow-full",
+  "system": "ChunckerFlow (with semantic chunker)",
+  "kind": "Chunking",
+  "status": "Passing",
+  "passed": 12,
+  "failed": 0,
+  "skipped": 1,
+  "upstream": "guybass/chunckerflow",
+  "upstream_url": "https://github.com/guybass/chunckerflow",
+  "code": "systems/chunckerflow",
+  "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/chunckerflow",
+  "ci_label": "View job",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/40359492203/job/121700772333",
+  "demo_label": "",
+  "demo_url": "",
+  "finding": "No issues found.",
+  "ran_at": "2026-10-26T16:30:09+0000"
+ },
+ {
+  "job": "pdfstract",
+  "system": "PDFStract (with embedding models)",
+  "kind": "PDF extraction",
+  "status": "Passing",
+  "passed": 13,
+  "failed": 0,
+  "skipped": 0,
+  "upstream": "AKSarav/pdfstract",
+  "upstream_url": "https://github.com/AKSarav/pdfstract",
+  "code": "systems/pdfstract",
+  "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/pdfstract",
+  "ci_label": "View job",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/40359492203/job/121700772298",
+  "demo_label": "",
+  "demo_url": "",
+  "finding": "pymupdf4llm 2.0 on PyPI is an empty package; setup pins <2.",
+  "ran_at": "2026-10-26T16:31:16+0000"
  },
  {
   "job": "oxr",
@@ -31,11 +69,30 @@
   "code": "systems/oxr",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/oxr",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/40364442057/job/121718541663",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/40359492203/job/121700771850",
   "demo_label": "",
   "demo_url": "",
   "finding": "2 of 622 upstream unit tests fail (demo keep_header_footer default).",
-  "ran_at": "2026-10-26T17:00:50+0000"
+  "ran_at": "2026-10-26T16:29:05+0000"
+ },
+ {
+  "job": "rag-anything",
+  "system": "RAG-Anything",
+  "kind": "Multimodal RAG",
+  "status": "Passing",
+  "passed": 7,
+  "failed": 0,
+  "skipped": 2,
+  "upstream": "HKUDS/RAG-Anything",
+  "upstream_url": "https://github.com/HKUDS/RAG-Anything",
+  "code": "systems/rag-anything",
+  "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/rag-anything",
+  "ci_label": "View job",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/40359492203/job/121700772560",
+  "demo_label": "",
+  "demo_url": "",
+  "finding": "Requires a parser even for pre-parsed content; test registers a stub.",
+  "ran_at": "2026-10-26T16:30:27+0000"
  },
  {
   "job": "prism-ui",
@@ -50,11 +107,11 @@
   "code": "systems/prism-ui",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/prism-ui",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/40364442057/job/121718541091",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/40359492203/job/121700772278",
   "demo_label": "Open demo",
   "demo_url": "https://claude.ai/artifact/R23JKwzoct7jFaKdRVNqot",
   "finding": "No issues found.",
-  "ran_at": "2026-10-26T17:00:41+0000"
+  "ran_at": "2026-10-26T16:28:56+0000"
  },
  {
   "job": "chunking-methods",
@@ -69,10 +126,10 @@
   "code": "systems/chunking-methods",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/chunking-methods",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/40364442057/job/121718541745",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/40359492203/job/121700772202",
   "demo_label": "",
   "demo_url": "",
   "finding": "Upstream is a guide without code; all 20 methods implemented here and tested.",
-  "ran_at": "2026-10-26T17:00:39+0000"
+  "ran_at": "2026-10-26T16:28:54+0000"
  }
 ]

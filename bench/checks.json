@@ -44,7 +44,7 @@
   "system": "ChunkNorris",
   "check": "markdown: token cap with tiktoken",
   "status": "Pass",
-  "seconds": 0.27,
+  "seconds": 0.4,
   "detail": "token counts with cap 120: [57, 114, 81, 73, 27, 69, 67, 75, 115, 55]"
  },
  {
@@ -72,19 +72,227 @@
   "detail": "start pages seen: [0, 1]"
  },
  {
+  "id": "chunckerflow-full:registry lists the built-in strategies",
+  "system": "ChunckerFlow (with semantic chunker)",
+  "check": "registry lists the built-in strategies",
+  "status": "Pass",
+  "seconds": 0.0,
+  "detail": "registered: ['fixed_size', 'recursive', 'markdown', 'html', 'semantic', 'late']"
+ },
+ {
+  "id": "chunckerflow-full:fixed_size: chunk the sample agreement",
+  "system": "ChunckerFlow (with semantic chunker)",
+  "check": "fixed_size: chunk the sample agreement",
+  "status": "Pass",
+  "seconds": 0.0,
+  "detail": "10 chunks, chars min/max 142/400, 0.3 ms"
+ },
+ {
+  "id": "chunckerflow-full:recursive: chunk the sample agreement",
+  "system": "ChunckerFlow (with semantic chunker)",
+  "check": "recursive: chunk the sample agreement",
+  "status": "Pass",
+  "seconds": 0.0,
+  "detail": "11 chunks, chars min/max 258/415, 0.1 ms"
+ },
+ {
+  "id": "chunckerflow-full:markdown: chunk the sample agreement",
+  "system": "ChunckerFlow (with semantic chunker)",
+  "check": "markdown: chunk the sample agreement",
+  "status": "Pass",
+  "seconds": 0.0,
+  "detail": "14 chunks, chars min/max 15/363, 0.3 ms"
+ },
+ {
+  "id": "chunckerflow-full:fixed_size: overlap repeats text across boundaries",
+  "system": "ChunckerFlow (with semantic chunker)",
+  "check": "fixed_size: overlap repeats text across boundaries",
+  "status": "Pass",
+  "seconds": 0.0,
+  "detail": ""
+ },
+ {
+  "id": "chunckerflow-full:html: format-aware chunking",
+  "system": "ChunckerFlow (with semantic chunker)",
+  "check": "html: format-aware chunking",
+  "status": "Pass",
+  "seconds": 0.0,
+  "detail": "25 chunks"
+ },
+ {
+  "id": "chunckerflow-full:invalid config is rejected",
+  "system": "ChunckerFlow (with semantic chunker)",
+  "check": "invalid config is rejected",
+  "status": "Pass",
+  "seconds": 0.0,
+  "detail": "raised ConfigurationError"
+ },
+ {
+  "id": "chunckerflow-full:semantic metrics (no ground truth needed)",
+  "system": "ChunckerFlow (with semantic chunker)",
+  "check": "semantic metrics (no ground truth needed)",
+  "status": "Pass",
+  "seconds": 0.02,
+  "detail": "fixed_size: semantic_coherence=0.556, boundary_quality=0.441, topic_diversity=0.555; recursive: semantic_coherence=0.480, boundary_quality=0.514, topic_diversity=0.599"
+ },
+ {
+  "id": "chunckerflow-full:retrieval metrics: liability query finds the liability chunk",
+  "system": "ChunckerFlow (with semantic chunker)",
+  "check": "retrieval metrics: liability query finds the liability chunk",
+  "status": "Pass",
+  "seconds": 0.0,
+  "detail": "ndcg_at_k=1.000, recall_at_k=1.000, mrr=1.000"
+ },
+ {
+  "id": "chunckerflow-full:StrategyComparator report",
+  "system": "ChunckerFlow (with semantic chunker)",
+  "check": "StrategyComparator report",
+  "status": "Pass",
+  "seconds": 0.0,
+  "detail": ""
+ },
+ {
+  "id": "chunckerflow-full:FastAPI app: /health, /strategies, /chunk",
+  "system": "ChunckerFlow (with semantic chunker)",
+  "check": "FastAPI app: /health, /strategies, /chunk",
+  "status": "Pass",
+  "seconds": 1.31,
+  "detail": "/chunk -> 10 chunks"
+ },
+ {
+  "id": "chunckerflow-full:semantic chunker (sentence-transformers)",
+  "system": "ChunckerFlow (with semantic chunker)",
+  "check": "semantic chunker (sentence-transformers)",
+  "status": "Pass",
+  "seconds": 4.09,
+  "detail": "5 semantic chunks"
+ },
+ {
+  "id": "chunckerflow-full:OpenAI embedding provider (live)",
+  "system": "ChunckerFlow (with semantic chunker)",
+  "check": "OpenAI embedding provider (live)",
+  "status": "Skip",
+  "seconds": 0.0,
+  "detail": "set OPENAI_API_KEY to run this check"
+ },
+ {
+  "id": "pdfstract:base-tier extractors are available",
+  "system": "PDFStract (with embedding models)",
+  "check": "base-tier extractors are available",
+  "status": "Pass",
+  "seconds": 12.99,
+  "detail": "available: ['pymupdf4llm', 'markitdown'];   marker: Unavailable"
+ },
+ {
+  "id": "pdfstract:pymupdf4llm: PDF -> markdown",
+  "system": "PDFStract (with embedding models)",
+  "check": "pymupdf4llm: PDF -> markdown",
+  "status": "Pass",
+  "seconds": 0.4,
+  "detail": "3342 chars, 33 '#' heading marks"
+ },
+ {
+  "id": "pdfstract:markitdown: PDF -> markdown",
+  "system": "PDFStract (with embedding models)",
+  "check": "markitdown: PDF -> markdown",
+  "status": "Pass",
+  "seconds": 0.13,
+  "detail": "3179 chars, 0 '#' heading marks"
+ },
+ {
+  "id": "pdfstract:pymupdf4llm: text and json output formats",
+  "system": "PDFStract (with embedding models)",
+  "check": "pymupdf4llm: text and json output formats",
+  "status": "Pass",
+  "seconds": 0.69,
+  "detail": ""
+ },
+ {
+  "id": "pdfstract:convert rejects a missing file",
+  "system": "PDFStract (with embedding models)",
+  "check": "convert rejects a missing file",
+  "status": "Pass",
+  "seconds": 0.0,
+  "detail": "raised FileNotFoundError"
+ },
+ {
+  "id": "pdfstract:chunker token {'chunk_size': 256, 'chunk_overlap': 20}",
+  "system": "PDFStract (with embedding models)",
+  "check": "chunker token {'chunk_size': 256, 'chunk_overlap': 20}",
+  "status": "Pass",
+  "seconds": 0.92,
+  "detail": "15 chunks, 3622 tokens, largest 256"
+ },
+ {
+  "id": "pdfstract:chunker sentence {'chunk_size': 256}",
+  "system": "PDFStract (with embedding models)",
+  "check": "chunker sentence {'chunk_size': 256}",
+  "status": "Pass",
+  "seconds": 0.0,
+  "detail": "16 chunks, 3342 tokens, largest 256"
+ },
+ {
+  "id": "pdfstract:chunker recursive {'chunk_size': 400}",
+  "system": "PDFStract (with embedding models)",
+  "check": "chunker recursive {'chunk_size': 400}",
+  "status": "Pass",
+  "seconds": 0.0,
+  "detail": "11 chunks, 3342 tokens, largest 384"
+ },
+ {
+  "id": "pdfstract:convert_chunk one-step pipeline",
+  "system": "PDFStract (with embedding models)",
+  "check": "convert_chunk one-step pipeline",
+  "status": "Pass",
+  "seconds": 0.34,
+  "detail": ""
+ },
+ {
+  "id": "pdfstract:batch_convert over a directory",
+  "system": "PDFStract (with embedding models)",
+  "check": "batch_convert over a directory",
+  "status": "Pass",
+  "seconds": 0.24,
+  "detail": ""
+ },
+ {
+  "id": "pdfstract:CLI: pdfstract convert",
+  "system": "PDFStract (with embedding models)",
+  "check": "CLI: pdfstract convert",
+  "status": "Pass",
+  "seconds": 5.64,
+  "detail": "exit 0, files: ['out.md']"
+ },
+ {
+  "id": "pdfstract:web backend: /health, /libraries, /convert, /chunk",
+  "system": "PDFStract (with embedding models)",
+  "check": "web backend: /health, /libraries, /convert, /chunk",
+  "status": "Pass",
+  "seconds": 0.59,
+  "detail": ""
+ },
+ {
+  "id": "pdfstract:semantic chunker + sentence-transformers embeddings (downloads model)",
+  "system": "PDFStract (with embedding models)",
+  "check": "semantic chunker + sentence-transformers embeddings (downloads model)",
+  "status": "Pass",
+  "seconds": 7.19,
+  "detail": "10 semantic chunks, embedding dim 384"
+ },
+ {
   "id": "oxr:offline E2E: /v1/parse/sync with fake models",
   "system": "OXR",
   "check": "offline E2E: /v1/parse/sync with fake models",
   "status": "Pass",
   "seconds": 0.46,
-  "detail": "output keys: ['json', 'markdown']; metadata: {'page_num': 2, 'file_type': '.pdf', 'processing_time_ms': 448}; fake service calls: {'layout_pages': 2, 'chat': 8, 'reading_order': 2}"
+  "detail": "output keys: ['json', 'markdown']; metadata: {'page_num': 2, 'file_type': '.pdf', 'processing_time_ms': 446}; fake service calls: {'layout_pages': 2, 'chat': 8, 'reading_order': 2}"
  },
  {
   "id": "oxr:offline E2E: JSON output carries typed blocks with bboxes",
   "system": "OXR",
   "check": "offline E2E: JSON output carries typed blocks with bboxes",
   "status": "Pass",
-  "seconds": 0.23,
+  "seconds": 0.24,
   "detail": ""
  },
  {
@@ -92,7 +300,7 @@
   "system": "OXR",
   "check": "offline E2E: /v1/parse/async + /v1/parse/async_check",
   "status": "Pass",
-  "seconds": 0.23,
+  "seconds": 0.24,
   "detail": ""
  },
  {
@@ -116,7 +324,7 @@
   "system": "OXR",
   "check": "upstream unit tests (vendor/oxr/tests/unit)",
   "status": "Fail",
-  "seconds": 6.18,
+  "seconds": 6.09,
   "detail": "CheckFailed: upstream tests failing (see FAILED lines)"
  },
  {
@@ -128,11 +336,83 @@
   "detail": "set OXR_BASE_URL to a running OXR API"
  },
  {
+  "id": "rag-anything:offline E2E: insert_content_list with fake LLM + embeddings",
+  "system": "RAG-Anything",
+  "check": "offline E2E: insert_content_list with fake LLM + embeddings",
+  "status": "Pass",
+  "seconds": 0.69,
+  "detail": "content list: 27 items (1 table, 1 equation); storage files: ['graph_chunk_entity_relation.graphml', 'kv_store_doc_status.json', 'kv_store_entity_chunks.json', 'kv_store_full_docs.json', 'kv_store_full_entities.json', 'kv_store_full_relations.json', 'kv_store_llm_response_cache.json', 'kv_store_relation_chunks.json', 'kv_store_text_chunks.json', 'vdb_chunks.json', 'vdb_entities.json', 'vdb_relationships.json']"
+ },
+ {
+  "id": "rag-anything:knowledge graph holds the parties and their relation",
+  "system": "RAG-Anything",
+  "check": "knowledge graph holds the parties and their relation",
+  "status": "Pass",
+  "seconds": 0.0,
+  "detail": "6 graph nodes, e.g. ['Contoso Holdings', 'Master Services Agreement', 'New York', 'Northwind Legal Technologies', 'Service Credit Formula (equation)', 'Service Level Table (table)']"
+ },
+ {
+  "id": "rag-anything:multimodal: table and equation became graph entities",
+  "system": "RAG-Anything",
+  "check": "multimodal: table and equation became graph entities",
+  "status": "Pass",
+  "seconds": 0.0,
+  "detail": "non-text entities: ['Service Credit Formula (equation)', 'Service Level Table (table)']"
+ },
+ {
+  "id": "rag-anything:naive retrieval: liability question finds the liability clause",
+  "system": "RAG-Anything",
+  "check": "naive retrieval: liability question finds the liability clause",
+  "status": "Pass",
+  "seconds": 0.0,
+  "detail": ""
+ },
+ {
+  "id": "rag-anything:hybrid query returns an answer through the LLM",
+  "system": "RAG-Anything",
+  "check": "hybrid query returns an answer through the LLM",
+  "status": "Pass",
+  "seconds": 0.0,
+  "detail": ""
+ },
+ {
+  "id": "rag-anything:re-inserting the same doc_id is idempotent",
+  "system": "RAG-Anything",
+  "check": "re-inserting the same doc_id is idempotent",
+  "status": "Pass",
+  "seconds": 0.0,
+  "detail": ""
+ },
+ {
+  "id": "rag-anything:upstream unit tests (vendor/rag-anything/tests)",
+  "system": "RAG-Anything",
+  "check": "upstream unit tests (vendor/rag-anything/tests)",
+  "status": "Pass",
+  "seconds": 13.22,
+  "detail": "1060 passed, 2 skipped, 1 xfailed in 11.43s"
+ },
+ {
+  "id": "rag-anything:live: OpenAI models answer from the ingested agreement",
+  "system": "RAG-Anything",
+  "check": "live: OpenAI models answer from the ingested agreement",
+  "status": "Skip",
+  "seconds": 0.0,
+  "detail": "set OPENAI_API_KEY to run this check"
+ },
+ {
+  "id": "rag-anything:parser: MinerU parses the sample PDF (setup.sh --full)",
+  "system": "RAG-Anything",
+  "check": "parser: MinerU parses the sample PDF (setup.sh --full)",
+  "status": "Skip",
+  "seconds": 0.0,
+  "detail": "MinerU not installed; run setup.sh --full"
+ },
+ {
   "id": "prism-ui:pnpm install (frozen lockfile)",
   "system": "Prism UI",
   "check": "pnpm install (frozen lockfile)",
   "status": "Pass",
-  "seconds": 0.58,
+  "seconds": 0.86,
   "detail": "@nanisoft/prism-ui ?"
  },
  {
@@ -140,7 +420,7 @@
   "system": "Prism UI",
   "check": "typecheck against Prism's published types (tsc --noEmit)",
   "status": "Pass",
-  "seconds": 0.38,
+  "seconds": 0.51,
   "detail": ""
  },
  {
@@ -148,7 +428,7 @@
   "system": "Prism UI",
   "check": "component tests (vitest + Testing Library)",
   "status": "Pass",
-  "seconds": 2.33,
+  "seconds": 3.43,
   "detail": "14 passed (14)"
  },
  {
@@ -156,7 +436,7 @@
   "system": "Prism UI",
   "check": "production build (vite build)",
   "status": "Pass",
-  "seconds": 0.7,
+  "seconds": 0.93,
   "detail": "css bundle 105 KB"
  },
  {
@@ -212,7 +492,7 @@
   "system": "Chunking Methods for RAG",
   "check": "page-based: one chunk per PDF page",
   "status": "Pass",
-  "seconds": 1.12,
+  "seconds": 1.04,
   "detail": "2 pages"
  },
  {
@@ -268,7 +548,7 @@
   "system": "Chunking Methods for RAG",
   "check": "semantic: accepts real embeddings",
   "status": "Pass",
-  "seconds": 0.03,
+  "seconds": 0.02,
   "detail": ""
  },
  {

@@ -114,7 +114,7 @@ jobs:
     # Systems Test Bench dashboard. [skip ci] keeps the commit from re-running CI.
     name: bench data
     needs: test
-    if: always() && github.event_name != 'pull_request' && github.ref != 'refs/heads/main'
+    if: ${{ !cancelled() && github.event_name != 'pull_request' && github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
