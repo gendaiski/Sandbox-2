@@ -17,3 +17,6 @@ __pycache__/
 systems/rag-anything/data/
 systems/*/.node/
 bench/interactive/*.tmp
+systems/flowise/.npm-global/
+systems/flowise/data/
+systems/flowise/app/
