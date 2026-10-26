@@ -1,0 +1,176 @@
+<title>OXR Layout Lab</title>
+<!-- needs: pdf -->
+{{HEAD}}
+<style>
+  :root { --accent: #0f7d6a; --accent-soft: #dcf2ec; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #4fd0b5; --accent-ink: #032019; --accent-soft: #123630; } }
+  :root[data-theme="dark"] { --accent: #4fd0b5; --accent-ink: #032019; --accent-soft: #123630; }
+  .stagewrap { position: relative; display: inline-block; max-width: 100%; }
+  .stagewrap canvas { display: block; max-width: 100%; height: auto; border-radius: 4px; background: #fff; }
+  .stagewrap svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .stagewrap svg rect { fill-opacity: .12; stroke-width: 1.5; cursor: pointer; }
+  .stagewrap svg rect.sel { fill-opacity: .3; stroke-width: 3; }
+  .stagewrap svg text { font: 600 9px var(--mono); paint-order: stroke; stroke: #fff; stroke-width: 3px; }
+  .classes { display: flex; flex-direction: column; gap: 4px; }
+  .cls { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .cls i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+  .out { white-space: pre-wrap; word-break: break-word; font: 12px/1.55 var(--mono); background: var(--sunk); border-radius: 7px; padding: 10px; max-height: 520px; overflow: auto; margin: 0; }
+  .tbl table { border-collapse: collapse; font-size: 12.5px; } .tbl td, .tbl th { border: 1px solid var(--line); padding: 3px 7px; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">OX</span><h1>OXR Layout Lab</h1><span class="tag">Document layout analysis: find regions, read them in order, export Markdown or JSON</span>
+      <span class="links"><a href="https://github.com/SoMarkAI/OXR" target="_blank" rel="noopener">Upstream project</a><a href="https://free-oxr.somark.ai" target="_blank" rel="noopener">SoMark's hosted demo</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="analyze">Analyze a page</button><button data-tab="export">Export</button><button data-tab="api">API</button><button data-tab="how">How it works</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">An interactive model of OXR's pipeline, not affiliated with SoMark. OXR's own detector is a neural model that needs an NVIDIA GPU; here a rule-based detector runs on the PDF's text layer in your browser so every step (regions, classes, confidence, reading order, export) is live. For OXR's real output, use SoMark's hosted demo or the API tab.</p>
+
+  <section data-panel="analyze">
+    <div class="grid cols-side-r">
+      <div class="panel"><header><h2 class="grow">Page</h2><label class="field inline">Page <select id="a-page"></select></label><label class="btn small">Upload a PDF<input type="file" id="a-up" accept="application/pdf" hidden></label></header>
+        <div class="stagewrap" id="a-stage"><canvas id="a-canvas"></canvas><svg id="a-boxes"></svg></div></div>
+      <div class="stack">
+        <div class="panel"><h2>Classes</h2><div class="classes" id="a-classes"></div>
+          <label class="field">Minimum confidence <input type="range" id="a-conf" min="0" max="0.95" step="0.05" value="0.3"></label>
+          <label class="field inline"><input type="checkbox" id="a-hf"> Keep headers and footers (keep_header_footer)</label>
+          <label class="field inline"><input type="checkbox" id="a-order" checked> Show reading order</label></div>
+        <div class="panel" id="a-detail"><h2>Region</h2><p class="note">Click a box on the page.</p></div>
+        <div class="kpis" id="a-kpis"></div>
+      </div>
+    </div>
+  </section>
+
+  <section data-panel="export" hidden>
+    <div class="row"><label class="field inline">Format <select id="e-fmt"><option value="md">Markdown</option><option value="json">JSON (regions with boxes)</option><option value="html">HTML</option></select></label><button class="btn small" id="e-copy">Copy</button></div>
+    <div class="grid cols-2"><div class="panel"><h2>Output</h2><pre class="out" id="e-out"></pre></div><div class="panel"><h2>Tables as HTML</h2><div class="tbl" id="e-tables"></div></div></div>
+  </section>
+
+  <section data-panel="api" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Run the real model</h2><pre class="code">git clone https://github.com/SoMarkAI/OXR && cd OXR
+pip install -e .            # CUDA GPU required for the model
+python demo.py --input service_agreement.pdf --output out/ \
+  --keep_header_footer false</pre>
+        <p class="note">Sandbox-2's test runs OXR's 622 upstream unit tests (2 fail: the demo's keep_header_footer default) and drives its parsing pipeline against a stand-in layout service, since CI has no GPU.</p></div>
+      <div class="panel"><h2>Free hosted API</h2><pre class="code">curl -X POST https://free-oxr.somark.ai/api/v1/parse \
+  -F "file=@service_agreement.pdf" \
+  -F "output_format=markdown"</pre>
+        <p class="note">This uploads the document to SoMark. The Sandbox-2 CI can do the same when run with the <code>oxr_free_api</code> option.</p></div>
+    </div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>OXR pipeline</h2>
+<pre class="mermaid">
+flowchart LR
+  IN["PDF or image"] --> RAST["Rasterize pages"]
+  RAST --> DET["Layout detector<br/>(OXR model, GPU)"]
+  DET --> REG["Regions with class + confidence<br/>title, text, table, figure,<br/>formula, header, footer"]
+  REG --> REC{"Per-region recognition"}
+  REC --> T["Text OCR"]
+  REC --> TB["Table structure to HTML"]
+  REC --> F["Formula to LaTeX"]
+  T --> ORD["Reading order"]
+  TB --> ORD
+  F --> ORD
+  ORD --> OUT["Markdown / JSON"]
+</pre></div>
+      <div class="panel"><h2>What runs in this page</h2>
+<pre class="mermaid">
+flowchart LR
+  PDF["pdf.js text layer<br/>(glyph boxes, fonts)"] --> LINES["Lines by baseline"]
+  LINES --> BLOCKS["Blocks by vertical gap<br/>and left edge"]
+  BLOCKS --> CLS["Rules: position, size,<br/>weight, columns"]
+  CLS --> ORDER["Order: top to bottom,<br/>column by column"]
+  ORDER --> EXP["Markdown, JSON, HTML"]
+</pre>
+        <p class="note">The rules stand in for the neural detector so the downstream steps can be explored. Scanned pages have no text layer and need the real model.</p></div>
+    </div>
+  </section>
+</main>
+<p class="footer">OXR is GPU-only; this page imitates its stages on the PDF text layer.</p>
+{{LIB}}
+<script>
+const CLASSES = { title: ['Title', 'var(--e6)'], text: ['Text', 'var(--e0)'], table: ['Table', 'var(--e2)'], list: ['List', 'var(--e5)'], header: ['Header', 'var(--e4)'], footer: ['Footer', 'var(--e4)'], page_number: ['Page number', 'var(--e7)'] };
+const on = Object.fromEntries(Object.keys(CLASSES).map((k) => [k, true]));
+let pages = [], pageNo = 1, regions = [], sel = null, scale = 1.5;
+function detect(p) {
+  const lines = pdfLines(p.items), sizes = lines.map((l) => Math.round(l.h)).sort((a, b) => a - b), body = sizes[Math.floor(sizes.length / 2)] || 10;
+  const blocks = [];
+  for (const l of lines) {
+    const last = blocks[blocks.length - 1], isTab = l.text.includes('\t'), big = Math.round(l.h) > body + 0.5, boldShort = l.bold && l.text.length < 80;
+    const kind = isTab ? 'table' : big || boldShort ? 'title' : /^\s*([-•▪]|\d+[.)])\s/.test(l.text) ? 'list' : 'text';
+    if (last && last.kind === kind && kind !== 'title' && l.y - last.bottom < l.h * (kind === 'table' ? 2.4 : 1.15) && (kind === 'table' || Math.abs(l.x - last.x0) < 40)) { last.lines.push(l); last.bottom = l.y + 2; last.x1 = Math.max(last.x1, l.right); last.x0 = Math.min(last.x0, l.x); continue; }
+    blocks.push({ kind, lines: [l], x0: l.x, x1: l.right, top: l.y - l.h, bottom: l.y + 2 });
+  }
+  return blocks.map((b, i) => {
+    let kind = b.kind; const H = p.height;
+    if (b.bottom < H * 0.07) kind = 'header';
+    if (b.top > H * 0.93) kind = /^\s*\d+\s*$/.test(b.lines.map((l) => l.text).join(' ')) ? 'page_number' : 'footer';
+    let text = b.lines.map((l) => l.text.trim()).join(' ');
+    if (kind === 'table') { // cells by the header row's column starts
+      const cols = b.lines[0].items.reduce((a, it) => (a.length && it.x - a[a.length - 1].end < 6 ? (a[a.length - 1].end = it.x + it.w, a) : [...a, { x: it.x, end: it.x + it.w }]), []).map((c) => (c.x + c.end) / 2);
+      text = b.lines.map((l) => { const cells = cols.map(() => []); l.items.forEach((it) => { const mid = it.x + it.w / 2; let k = 0; cols.forEach((x, j) => { if (Math.abs(mid - x) < Math.abs(mid - cols[k])) k = j; }); cells[k].push(it.str.trim()); }); return cells.map((c) => c.join(' ')).join('\t'); }).join('\n');
+    }
+    const conf = Math.min(0.99, (kind === 'text' ? 0.7 + Math.min(0.25, b.lines.length * 0.05) : kind === 'title' ? 0.88 : kind === 'table' ? 0.8 + Math.min(0.15, b.lines.length * 0.03) : 0.75) - (text.length < 12 && kind === 'text' ? 0.4 : 0));
+    return { id: `p${p.number}-r${i}`, page: p.number, kind, text, conf: +conf.toFixed(2), bbox: [b.x0 - 3, b.top - 2, b.x1 + 3, b.bottom + 2].map((v) => Math.round(v)), level: kind === 'title' ? (Math.round(b.lines[0].h) > body + 3 ? 1 : Math.round(b.lines[0].h) > body + 0.5 ? 2 : 3) : null };
+  });
+}
+function visible() { const hf = $('#a-hf').checked, min = +$('#a-conf').value; return regions.filter((r) => r.page === pageNo && on[r.kind] && r.conf >= min && (hf || !['header', 'footer', 'page_number'].includes(r.kind))); }
+function ordered(list) { // single column here; sort top-to-bottom then left-to-right
+  return [...list].sort((a, b) => (Math.abs(a.bbox[1] - b.bbox[1]) < 6 ? a.bbox[0] - b.bbox[0] : a.bbox[1] - b.bbox[1]));
+}
+async function showPage() {
+  const p = pages[pageNo - 1]; if (!p) return;
+  const vp = await renderPdfPage(p.page, $('#a-canvas'), scale);
+  const svg = $('#a-boxes'); svg.setAttribute('viewBox', `0 0 ${p.width} ${p.height}`);
+  draw();
+}
+function draw() {
+  const svg = $('#a-boxes'), vis = ordered(visible()), showOrder = $('#a-order').checked;
+  svg.innerHTML = vis.map((r, i) => { const [x0, y0, x1, y1] = r.bbox, c = CLASSES[r.kind][1]; return `<rect data-id="${r.id}" class="${sel === r.id ? 'sel' : ''}" x="${x0}" y="${y0}" width="${x1 - x0}" height="${y1 - y0}" rx="2" fill="${c}" stroke="${c}"></rect>${showOrder ? `<text x="${x0 + 2}" y="${y0 + 9}" fill="${c}">${i + 1} ${CLASSES[r.kind][0]}</text>` : ''}`; }).join('');
+  svg.querySelectorAll('rect').forEach((rc) => rc.addEventListener('click', () => { sel = rc.dataset.id; draw(); detail(); }));
+  const counts = {}; vis.forEach((r) => { counts[r.kind] = (counts[r.kind] || 0) + 1; });
+  $('#a-kpis').replaceChildren(el('div', { class: 'kpi' }, el('b', {}, vis.length), el('span', {}, 'regions shown')), el('div', { class: 'kpi' }, el('b', {}, counts.title || 0), el('span', {}, 'titles')), el('div', { class: 'kpi' }, el('b', {}, counts.table || 0), el('span', {}, 'tables')), el('div', { class: 'kpi' }, el('b', {}, fmt(vis.reduce((a, r) => a + r.conf, 0) / (vis.length || 1), 2)), el('span', {}, 'mean confidence')));
+  exportOut();
+}
+function detail() {
+  const r = regions.find((x) => x.id === sel); if (!r) return;
+  $('#a-detail').replaceChildren(el('header', {}, el('h2', { class: 'grow' }, CLASSES[r.kind][0]), el('span', { class: 'pill ' + (r.conf >= 0.8 ? 'good' : r.conf >= 0.5 ? 'warn' : 'bad') }, 'confidence ' + r.conf)),
+    el('dl', { class: 'kv' }, el('dt', {}, 'Box'), el('dd', { class: 'mono' }, `[${r.bbox.join(', ')}] pt`), el('dt', {}, 'Page'), el('dd', {}, r.page), r.level ? el('dt', {}, 'Heading') : null, r.level ? el('dd', {}, 'level ' + r.level) : null),
+    el('pre', { class: 'out', style: { maxHeight: '200px' } }, r.text),
+    el('div', { class: 'row' }, el('span', { class: 'note' }, 'Relabel:'), el('select', { onchange: (e) => { r.kind = e.target.value; r.conf = 1; draw(); detail(); } }, ...Object.entries(CLASSES).map(([k, [n]]) => el('option', { value: k, selected: k === r.kind }, n)))));
+}
+function toMd(r) {
+  if (r.kind === 'title') return '#'.repeat(r.level || 2) + ' ' + r.text;
+  if (r.kind === 'table') { const rows = r.text.split('\n').map((l) => l.split('\t').map((c) => c.trim())); return [rows[0], rows[0].map(() => '---'), ...rows.slice(1)].map((c) => '| ' + c.join(' | ') + ' |').join('\n'); }
+  if (r.kind === 'list') return '- ' + r.text;
+  return r.text;
+}
+function tableHtml(r) { const rows = r.text.split('\n').map((l) => l.split('\t').map((c) => esc(c.trim()))); return '<table>' + rows.map((c, i) => '<tr>' + c.map((x) => `<${i ? 'td' : 'th'}>${x}</${i ? 'td' : 'th'}>`).join('') + '</tr>').join('') + '</table>'; }
+function exportOut() {
+  const hf = $('#a-hf').checked, min = +$('#a-conf').value;
+  const all = pages.flatMap((p) => ordered(regions.filter((r) => r.page === p.number && on[r.kind] && r.conf >= min && (hf || !['header', 'footer', 'page_number'].includes(r.kind)))));
+  const f = $('#e-fmt').value;
+  $('#e-out').textContent = f === 'json' ? JSON.stringify({ pages: pages.map((p) => ({ page: p.number, width: Math.round(p.width), height: Math.round(p.height), regions: all.filter((r) => r.page === p.number).map((r, i) => ({ order: i + 1, type: r.kind, bbox: r.bbox, confidence: r.conf, text: r.text })) })) }, null, 1)
+    : f === 'html' ? all.map((r) => r.kind === 'title' ? `<h${r.level || 2}>${esc(r.text)}</h${r.level || 2}>` : r.kind === 'table' ? tableHtml(r) : `<p>${esc(r.text)}</p>`).join('\n') : all.map(toMd).join('\n\n');
+  $('#e-tables').innerHTML = all.filter((r) => r.kind === 'table').map(tableHtml).join('') || '<p class="note">No tables found.</p>';
+}
+function classes() { $('#a-classes').replaceChildren(...Object.entries(CLASSES).map(([k, [n, c]]) => el('label', { class: 'cls' }, el('input', { type: 'checkbox', checked: on[k], onchange: (e) => { on[k] = e.target.checked; draw(); } }), el('i', { style: { background: c } }), n, el('span', { class: 'note' }, `(${regions.filter((r) => r.kind === k).length})`)))); }
+async function load(bytes) {
+  pages = await pdfPages(bytes); regions = pages.flatMap(detect); pageNo = 1; sel = null;
+  $('#a-page').replaceChildren(...pages.map((p) => el('option', { value: p.number }, p.number)));
+  classes(); await showPage();
+}
+$('#a-page').onchange = (e) => { pageNo = +e.target.value; showPage(); };
+['#a-conf', '#a-hf', '#a-order'].forEach((x) => $(x).addEventListener('input', draw));
+$('#e-fmt').onchange = exportOut; $('#e-copy').onclick = () => copyText($('#e-out').textContent);
+$('#a-up').onchange = async (e) => { const f = e.target.files[0]; if (f) load(new Uint8Array(await f.arrayBuffer())); };
+initTabs((n) => { if (n === 'export') exportOut(); });
+load(b64bytes(SAMPLES.pdf)).catch((e) => $('#a-stage').replaceChildren(el('div', { class: 'empty' }, 'Could not load the PDF viewer: ' + e.message)));
+</script>

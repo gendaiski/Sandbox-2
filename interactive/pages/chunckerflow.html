@@ -1,0 +1,196 @@
+<title>ChunckerFlow Bench</title>
+{{HEAD}}
+<style>
+  :root { --accent: #3d6b1f; --accent-soft: #e5f1d9; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #9bd36a; --accent-ink: #132306; --accent-soft: #223318; } }
+  :root[data-theme="dark"] { --accent: #9bd36a; --accent-ink: #132306; --accent-soft: #223318; }
+  .strats { display: flex; flex-wrap: wrap; gap: 6px; }
+  .strats label { border: 1px solid var(--line); border-radius: 7px; padding: 5px 9px; display: flex; gap: 6px; align-items: center; background: var(--panel); cursor: pointer; }
+  svg.chart { width: 100%; height: auto; }
+  td.win { font-weight: 700; color: var(--good); }
+  .q { display: grid; grid-template-columns: minmax(0, 1fr) 90px repeat(3, 70px); gap: 6px; font-size: 12.5px; padding: 4px 0; border-bottom: 1px solid var(--line); }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">CF</span><h1>ChunckerFlow Bench</h1><span class="tag">Chunk with any strategy, score the chunks, benchmark retrieval and pick a winner</span>
+      <span class="links"><a href="https://github.com/guybass/chunckerflow" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/chunckerflow" target="_blank" rel="noopener">Run its Studio and API</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="chunk">Chunk</button><button data-tab="evaluate">Evaluate</button><button data-tab="retrieval">Retrieval benchmark</button><button data-tab="rank">Compare &amp; rank</button><button data-tab="api">API</button><button data-tab="how">How it works</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">An interactive model of ChunckerFlow, not affiliated with its author. Its six strategies and its semantic and retrieval metrics are computed in your browser; embeddings are TF-IDF vectors here, where ChunckerFlow would call a Hugging Face or OpenAI embedding model.</p>
+
+  <section data-panel="chunk">
+    <div class="grid cols-side">
+      <div class="panel"><h2>Strategy</h2>
+        <label class="field">Document <select id="k-doc"><option value="agreement">Master Services Agreement</option><option value="dpa">Data Processing Addendum</option><option value="html">Agreement as HTML</option></select></label>
+        <label class="field">Strategy <select id="k-strat"></select></label><div id="k-params" class="stack"></div><p class="note" id="k-desc"></p></div>
+      <div class="stack"><div class="kpis" id="k-kpis"></div>
+        <div class="grid cols-2"><div class="panel"><h2>On the document</h2><div class="overlay" id="k-over"></div></div><div class="panel"><h2>Chunks</h2><div class="chunks" id="k-list" style="max-height:580px;overflow:auto"></div></div></div></div>
+    </div>
+  </section>
+
+  <section data-panel="evaluate" hidden>
+    <div class="panel"><h2>Semantic metrics for the current chunks</h2><div class="kpis" id="e-kpis"></div>
+      <dl class="kv" id="e-explain"></dl></div>
+    <div class="panel"><h2>Neighbour similarity (stickiness) along the document</h2><svg class="chart" id="e-chart"></svg><p class="note">Each point is the similarity between chunk n and chunk n+1. Peaks mark boundaries that split one topic in two.</p></div>
+  </section>
+
+  <section data-panel="retrieval" hidden>
+    <div class="panel"><header><h2 class="grow">Ground-truth questions</h2><label class="field inline">k <select id="r-k"><option>1</option><option selected>3</option><option>5</option></select></label></header>
+      <p class="note">Each question is labelled with a phrase from the clause that answers it. A retrieved chunk is relevant when it contains that phrase. Retrieval ranks chunks by cosine similarity to the question.</p>
+      <div class="q" style="font-weight:600;color:var(--muted)"><span>Question</span><span>Answer phrase</span><span>Rank</span><span>Hit@k</span><span>RR</span></div><div id="r-list"></div></div>
+    <div class="kpis" id="r-kpis"></div>
+  </section>
+
+  <section data-panel="rank" hidden>
+    <div class="panel"><header><h2 class="grow">Strategies to compare</h2><button class="btn primary" id="c-run">Compare</button></header><div class="strats" id="c-strats"></div>
+      <div class="row"><span class="note">Weights:</span><label class="field inline">coherence <input type="number" id="w-coh" value="1" step="0.5" style="width:60px"></label><label class="field inline">boundaries <input type="number" id="w-bq" value="1" step="0.5" style="width:60px"></label><label class="field inline">NDCG@3 <input type="number" id="w-ndcg" value="2" step="0.5" style="width:60px"></label><label class="field inline">low stickiness <input type="number" id="w-st" value="0.5" step="0.5" style="width:60px"></label></div></div>
+    <div class="panel"><div class="table-wrap"><table class="data" id="c-table"></table></div></div>
+    <div class="grid cols-2"><div class="panel"><h2>Weighted score</h2><svg class="chart" id="c-chart"></svg></div><div class="panel"><h2>NDCG@3 by strategy</h2><svg class="chart" id="c-ndcg"></svg></div></div>
+  </section>
+
+  <section data-panel="api" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>REST API</h2><pre class="code">GET  /health                 status and version
+GET  /strategies             strategies with default_config
+GET  /metrics                metric names by group
+POST /chunk     {text, strategy, config}
+POST /embed     {texts, provider, model}
+POST /evaluate  {chunks, embeddings, metrics, ground_truth?}
+POST /compare   {text, strategies, metrics}</pre></div>
+      <div class="panel"><header><h2 class="grow">Request for the current settings</h2><button class="btn small" id="a-copy">Copy</button></header><pre class="code" id="a-req" style="white-space:pre-wrap"></pre></div>
+      <div class="panel"><h2>Python</h2><pre class="code">from chunk_flow.chunking import StrategyRegistry
+from chunk_flow.evaluation import EvaluationPipeline
+
+chunker = StrategyRegistry.create("recursive", {"chunk_size": 600})
+result = await chunker.chunk(text)
+pipeline = EvaluationPipeline(metrics=["semantic_coherence", "boundary_quality"])
+scores = await pipeline.evaluate(result.chunks, embeddings)</pre></div>
+    </div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Architecture</h2>
+<pre class="mermaid">
+flowchart LR
+  TXT["Text, Markdown, HTML"] --> REG{"Strategy registry<br/>fixed_size, recursive, markdown,<br/>html, semantic, late"}
+  REG --> CH["Chunks"]
+  CH --> EMB["Embedding providers<br/>Hugging Face, OpenAI"]
+  EMB --> EV{"Evaluation pipeline"}
+  EV --> SEM["Semantic: coherence, boundaries,<br/>stickiness, topic diversity"]
+  EV --> RET["Retrieval: NDCG, Recall@k,<br/>Precision@k, MRR"]
+  EV --> RAG["RAG: context relevance, faithfulness,<br/>context precision and recall"]
+  SEM --> CMP["Comparison and ranking"]
+  RET --> CMP
+  RAG --> CMP
+</pre></div>
+      <div class="panel"><h2>Late chunking</h2>
+<pre class="mermaid">
+flowchart TB
+  DOC["Whole document"] --> ENC["Embed the full text once"]
+  ENC --> TOK["Token vectors with document context"]
+  TOK --> POOL["Pool tokens inside each chunk span"]
+  POOL --> V["Chunk vectors that remember their context"]
+</pre>
+        <p class="note">Here late chunking is approximated by mixing each chunk's vector with the document's. Sandbox-2's Studio (<code>systems/chunckerflow/studio</code>) runs the real API with real embeddings.</p></div>
+    </div>
+  </section>
+</main>
+<p class="footer">The real ChunckerFlow API and Studio start with <code>systems/chunckerflow/serve.sh</code>.</p>
+{{LIB}}
+<script>
+const STRATS = {
+  fixed_size: { desc: 'Fixed windows of characters with overlap.', params: { chunk_size: [100, 1500, 50, 500], overlap: [0, 300, 10, 50] }, run: (d, p) => Chunkers.sliding_window(d, { window: p.chunk_size, step: Math.max(1, p.chunk_size - p.overlap) }) },
+  recursive: { desc: 'Recursive character splitting on paragraphs, lines, sentences, words.', params: { chunk_size: [100, 1500, 50, 600] }, run: (d, p) => Chunkers.recursive(d, { max_chars: p.chunk_size }) },
+  markdown: { desc: 'Splits on Markdown headers, keeping tables and code blocks whole.', params: { max_chunk_size: [200, 2000, 50, 900] }, run: (d, p) => Chunkers.hybrid(d, { max_chars: p.max_chunk_size, min_chars: 120 }) },
+  html: { desc: 'Splits HTML by block elements (headings, paragraphs, tables).', params: { max_chunk_size: [200, 2000, 50, 700] }, run: (d, p) => pack(d, [...d.matchAll(/<(h\d|p|table)[^>]*>[\s\S]*?<\/\1>/g)].map((m) => [m.index, m.index + m[0].length]), p.max_chunk_size, 'html') },
+  semantic: { desc: 'Breaks where the similarity between neighbouring sentences drops.', params: { threshold: [0.01, 0.3, 0.01, 0.08] }, run: (d, p) => Chunkers.semantic(d, { threshold: p.threshold }) },
+  late: { desc: 'Recursive spans, embedded with whole-document context (late chunking).', params: { chunk_size: [100, 1500, 50, 600], context_weight: [0, 0.8, 0.1, 0.3] }, run: (d, p) => Chunkers.recursive(d, { max_chars: p.chunk_size }).map((c) => ({ ...c, meta: { method: 'late', context_weight: p.context_weight } })) },
+};
+const QUESTIONS = [
+  ['agreement', 'How long is the initial term?', 'twenty-four (24) months'], ['agreement', 'What is the cap on aggregate liability?', 'aggregate liability'], ['agreement', 'Which law governs the agreement?', 'State of New York'],
+  ['agreement', 'What uptime does the provider commit to?', '99.5%'], ['agreement', 'When are invoices due?', 'thirty (30)'], ['agreement', 'How long do confidentiality obligations last?', 'five (5) years'],
+  ['agreement', 'What counts as a deliverable?', 'trained retrieval indexes'], ['agreement', 'Can either party terminate for breach?', 'materially breaches'],
+  ['dpa', 'How fast must security incidents be reported?', 'forty-eight (48) hours'], ['dpa', 'Who are the sub-processors?', 'Fabrikam Cloud GmbH'], ['dpa', 'Can data leave the EEA?', 'Standard Contractual Clauses'],
+  ['dpa', 'How often can the controller audit?', 'once per calendar year'], ['dpa', 'When is data deleted after termination?', 'sixty (60) days'], ['dpa', 'Is encryption required at rest?', 'AES-256'],
+];
+const params = {};
+const docOf = (v) => (v === 'html' ? SAMPLES.agreement_html : SAMPLES[v]);
+function vectors(chunks, doc, strat, p) {
+  const v = Text.tfidf([...chunks.map((c) => c.text), doc]);
+  if (strat !== 'late') return v.slice(0, -1);
+  const own = v.slice(0, -1), w = p.context_weight; // each chunk keeps some of its neighbours' context
+  return own.map((cv, i) => { const m = new Map(), add = (vec, f) => vec && vec.forEach((x, k) => m.set(k, (m.get(k) || 0) + f * x)); add(cv, 1 - w); add(own[i - 1], w / 2); add(own[i + 1], w / 2); add(v[v.length - 1], 0.05); let n = 0; m.forEach((x) => { n += x * x; }); n = Math.sqrt(n) || 1; m.forEach((x, k) => m.set(k, x / n)); return m; });
+}
+function retrieval(chunks, doc, strat, p, which, k) {
+  const qs = QUESTIONS.filter((q) => which === 'html' ? q[0] === 'agreement' : q[0] === which), vecs = vectors(chunks, doc, strat, p);
+  const rows = qs.map(([, q, phrase]) => {
+    const qv = Text.tfidf([...chunks.map((c) => c.text), q]).pop();
+    const ranked = chunks.map((c, i) => [i, Text.cos(qv, vecs[i])]).sort((a, b) => b[1] - a[1]);
+    const rel = new Set(chunks.map((c, i) => [i, c.text.replace(/<[^>]+>/g, '')]).filter(([, t]) => t.includes(phrase)).map(([i]) => i));
+    const rank = ranked.findIndex(([i]) => rel.has(i)) + 1;
+    const dcg = ranked.slice(0, k).reduce((a, [i], j) => a + (rel.has(i) ? 1 / Math.log2(j + 2) : 0), 0), idcg = [...Array(Math.min(k, rel.size))].reduce((a, _, j) => a + 1 / Math.log2(j + 2), 0) || 1;
+    const hits = ranked.slice(0, k).filter(([i]) => rel.has(i)).length;
+    return { q, phrase, rank, hit: rank > 0 && rank <= k ? 1 : 0, rr: rank ? 1 / rank : 0, ndcg: dcg / idcg, recall: rel.size ? hits / rel.size : 0, precision: hits / k };
+  });
+  const avg = (f) => rows.reduce((a, r) => a + r[f], 0) / (rows.length || 1);
+  return { rows, ndcg: avg('ndcg'), recall: avg('recall'), precision: avg('precision'), mrr: avg('rr'), hit: avg('hit') };
+}
+let cur = {};
+function stratUI() {
+  const s = $('#k-strat').value, spec = STRATS[s];
+  $('#k-desc').textContent = spec.desc;
+  Object.keys(params).forEach((k) => delete params[k]);
+  $('#k-params').replaceChildren(...Object.entries(spec.params).map(([k, [min, max, step, def]]) => { params[k] = def; const o = el('output', {}, def); return el('label', { class: 'field' }, el('span', {}, k + ' ', o), el('input', { type: 'range', min, max, step, value: def, oninput: (e) => { params[k] = +e.target.value; o.textContent = e.target.value; run(); } })); }));
+}
+function run() {
+  const which = $('#k-doc').value, doc = docOf(which), s = $('#k-strat').value;
+  if (s === 'html' && which !== 'html') $('#k-doc').value = 'html';
+  const d = docOf($('#k-doc').value), chunks = STRATS[s].run(d, { ...params }).filter((c) => c.text.trim());
+  cur = { doc: d, chunks, s, which: $('#k-doc').value, p: { ...params } };
+  const st = Metrics.size_stats(chunks);
+  $('#k-kpis').replaceChildren(el('div', { class: 'kpi' }, el('b', {}, chunks.length), el('span', {}, 'chunks')), el('div', { class: 'kpi' }, el('b', {}, fmt(st.mean)), el('span', {}, 'mean characters')), el('div', { class: 'kpi' }, el('b', {}, fmt(1 - Math.min(1, st.cv), 2)), el('span', {}, 'size consistency')));
+  renderOverlay($('#k-over'), d, chunks); renderChunkCards($('#k-list'), chunks);
+  $('#a-req').textContent = `curl -X POST http://localhost:8001/api/chunk \\\n  -H "Content-Type: application/json" \\\n  -d '${JSON.stringify({ text: '<document>', strategy: s, config: cur.p })}'`;
+}
+function evaluate() {
+  const { chunks } = cur, m = { 'semantic coherence': Metrics.semantic_coherence(chunks), 'boundary quality': Metrics.boundary_quality(chunks), 'chunk stickiness': Metrics.chunk_stickiness(chunks), 'topic diversity': Metrics.topic_diversity(chunks) };
+  $('#e-kpis').replaceChildren(...Object.entries(m).map(([k, v]) => el('div', { class: 'kpi' }, el('b', {}, fmt(v, 3)), el('span', {}, k))));
+  $('#e-explain').replaceChildren(el('dt', {}, 'Coherence'), el('dd', {}, 'Mean similarity of each sentence to its own chunk; higher means chunks hold one idea.'), el('dt', {}, 'Boundaries'), el('dd', {}, 'Share of chunks that end at a sentence, heading or table row, not mid-sentence.'), el('dt', {}, 'Stickiness'), el('dd', {}, 'Mean similarity of neighbouring chunks; lower means topics are cleanly separated.'), el('dt', {}, 'Topic diversity'), el('dd', {}, 'Distinct top terms across chunks; higher means less repetition.'));
+  const v = Text.tfidf(chunks.map((c) => c.text)), sims = v.slice(0, -1).map((x, i) => Text.cos(x, v[i + 1]));
+  areaChart($('#e-chart'), sims.length ? sims : [0], { labels: sims.map((_, i) => `${i + 1}|${i + 2}`), fmtv: (x) => x.toFixed(2) });
+}
+function retrievalView() {
+  const k = +$('#r-k').value, r = retrieval(cur.chunks, cur.doc, cur.s, cur.p, cur.which, k);
+  $('#r-list').replaceChildren(...r.rows.map((x) => el('div', { class: 'q' }, el('span', {}, x.q), el('span', { class: 'note' }, x.phrase), el('span', {}, x.rank || '—'), el('span', {}, el('span', { class: 'pill ' + (x.hit ? 'good' : 'bad') }, x.hit ? 'hit' : 'miss')), el('span', {}, fmt(x.rr, 2)))));
+  $('#r-kpis').replaceChildren(...[['NDCG@' + k, r.ndcg], ['Recall@' + k, r.recall], ['Precision@' + k, r.precision], ['MRR', r.mrr], ['Hit rate@' + k, r.hit]].map(([n, v]) => el('div', { class: 'kpi' }, el('b', {}, fmt(v, 3)), el('span', {}, n))));
+}
+function rankUI() { $('#c-strats').replaceChildren(...Object.keys(STRATS).filter((s) => s !== 'html').map((s) => el('label', {}, el('input', { type: 'checkbox', value: s, checked: true }), s))); }
+function compare() {
+  const which = cur.which === 'html' ? 'agreement' : cur.which, doc = SAMPLES[which];
+  const rows = $$('#c-strats input:checked').map((i) => i.value).map((s) => {
+    const p = Object.fromEntries(Object.entries(STRATS[s].params).map(([k, v]) => [k, v[3]])), ch = STRATS[s].run(doc, p).filter((c) => c.text.trim()), r = retrieval(ch, doc, s, p, which, 3);
+    return { s, n: ch.length, coh: Metrics.semantic_coherence(ch), bq: Metrics.boundary_quality(ch), st: Metrics.chunk_stickiness(ch), ndcg: r.ndcg, mrr: r.mrr, recall: r.recall };
+  });
+  const w = { coh: +$('#w-coh').value, bq: +$('#w-bq').value, ndcg: +$('#w-ndcg').value, st: +$('#w-st').value }, tot = w.coh + w.bq + w.ndcg + w.st || 1;
+  rows.forEach((r) => { r.score = (w.coh * r.coh + w.bq * r.bq + w.ndcg * r.ndcg + w.st * (1 - r.st)) / tot; });
+  rows.sort((a, b) => b.score - a.score);
+  const best = (k, hi = true) => Math[hi ? 'max' : 'min'](...rows.map((r) => r[k]));
+  $('#c-table').replaceChildren(el('tr', {}, ...['Rank', 'Strategy', 'Chunks', 'Coherence', 'Boundaries', 'Stickiness', 'NDCG@3', 'MRR', 'Recall@3', 'Score'].map((h) => el('th', {}, h))),
+    ...rows.map((r, i) => el('tr', {}, el('td', {}, i + 1), el('td', {}, el('b', {}, r.s), i === 0 ? el('span', { class: 'pill good', style: { marginLeft: '6px' } }, 'winner') : null), el('td', {}, r.n),
+      ...[['coh', true], ['bq', true], ['st', false], ['ndcg', true], ['mrr', true], ['recall', true], ['score', true]].map(([k, hi]) => el('td', { class: r[k] === best(k, hi) ? 'win' : '' }, fmt(r[k], 3))))));
+  barChart($('#c-chart'), rows.map((r, i) => ({ label: r.s, value: r.score, color: i ? 'var(--accent)' : 'var(--good)' })), { fmtv: (v) => v.toFixed(3) });
+  barChart($('#c-ndcg'), rows.map((r) => ({ label: r.s, value: r.ndcg, color: 'var(--e5)' })), { max: 1, fmtv: (v) => v.toFixed(3) });
+}
+$('#k-strat').replaceChildren(...Object.keys(STRATS).map((s) => el('option', { value: s }, s)));
+$('#k-strat').value = 'recursive';
+$('#k-strat').onchange = () => { stratUI(); run(); };
+$('#k-doc').onchange = run; $('#r-k').onchange = retrievalView; $('#c-run').onclick = compare;
+$('#a-copy').onclick = () => copyText($('#a-req').textContent);
+initTabs((n) => { if (n === 'evaluate') evaluate(); if (n === 'retrieval') retrievalView(); if (n === 'rank') compare(); });
+rankUI(); stratUI(); run();
+</script>

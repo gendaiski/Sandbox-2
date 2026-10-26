@@ -6,11 +6,13 @@
 Each interactive/pages/<id>.html holds the page's markup and script with two
 placeholders: {{HEAD}} (fonts and the shared shell.css) and {{LIB}} (lib.js
 plus the sample documents). A page that needs the sample PDF says
-<!-- needs: pdf --> and gets SAMPLES.pdf (base64). Output: bench/interactive/<id>.html
+<!-- needs: pdf --> and gets SAMPLES.pdf (base64); {{JSON:path}} embeds a JSON
+file from the repository. Output: bench/interactive/<id>.html
 """
 
 import base64
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -42,6 +44,8 @@ def build(page: Path) -> Path:
     lib = ("<script>\n" + (SRC / "lib.js").read_text() + "\nconst SAMPLES = "
            + json.dumps(samples("<!-- needs: pdf -->" in src)) + ";\n</script>")
     html = src.replace("{{HEAD}}", head).replace("{{LIB}}", lib)
+    # {{JSON:path}} embeds a repository JSON file (e.g. an upstream schema) as a JS value.
+    html = re.sub(r"\{\{JSON:([^}]+)\}\}", lambda m: json.dumps(json.loads((ROOT / m.group(1)).read_text())), html)
     OUT.mkdir(parents=True, exist_ok=True)
     out = OUT / page.name
     out.write_text(html)

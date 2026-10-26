@@ -1,0 +1,203 @@
+<title>Chunky Workspace</title>
+<!-- needs: pdf -->
+{{HEAD}}
+<style>
+  :root { --accent: #8a3fb8; --accent-soft: #f1e4f8; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #cf9af0; --accent-ink: #250b33; --accent-soft: #33203f; } }
+  :root[data-theme="dark"] { --accent: #cf9af0; --accent-ink: #250b33; --accent-soft: #33203f; }
+  .ws { display: grid; grid-template-columns: 220px repeat(3, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 1100px) { .ws { grid-template-columns: minmax(0, 1fr); } }
+  .docs { display: flex; flex-direction: column; gap: 4px; }
+  .doc { text-align: left; border: 1px solid var(--line); background: var(--panel); border-radius: 7px; padding: 7px 9px; cursor: pointer; display: flex; flex-direction: column; gap: 2px; }
+  .doc[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+  .pane { height: 640px; overflow: auto; }
+  .pdfwrap { display: flex; flex-direction: column; gap: 10px; align-items: center; background: var(--sunk); border-radius: 7px; padding: 10px; }
+  .pdfwrap canvas { background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.15); }
+  #md { height: 560px; }
+  .chip { font: 11px var(--mono); background: var(--sunk); border-radius: 4px; padding: 1px 5px; }
+  .versions .ver { display: flex; gap: 8px; align-items: center; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--line); }
+  .enr { font-size: 12px; display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 2px 8px; margin-top: 6px; }
+  .enr dt { color: var(--muted); } .enr dd { margin: 0; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">Ck</span><h1>Chunky Workspace</h1><span class="tag">Convert PDFs, clean the Markdown, inspect and enrich chunks before indexing</span>
+      <span class="links"><a href="https://github.com/GiovanniPasq/chunky" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/chunky" target="_blank" rel="noopener">Test of the real backend</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="review">Review workspace</button><button data-tab="compare">Compare strategies</button><button data-tab="versions">Saved versions</button><button data-tab="how">How it works</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">An interactive model of Chunky, not affiliated with its author. The sample PDF is really parsed in your browser (pdf.js) and converted to Markdown; cleanup, chunking, hashing and enrichment run here too. Server-only converters (Docling, MarkItDown, LiteParse, VLM, cloud APIs) are listed but run only on Chunky's backend. Enrichment uses extractive heuristics in place of an LLM.</p>
+
+  <section data-panel="review">
+    <div class="ws">
+      <div class="panel"><h2>Documents</h2><div class="docs" id="d-list"></div>
+        <label class="btn small" style="text-align:center">Upload a PDF<input type="file" id="d-up" accept="application/pdf" hidden></label>
+        <h2>Converter</h2>
+        <select id="d-conv"><option value="pymupdf">PyMuPDF (pymupdf4llm-style)</option><option value="plain">Plain text</option><option disabled>Docling (server)</option><option disabled>MarkItDown (server)</option><option disabled>LiteParse (server)</option><option disabled>VLM (server, needs a model)</option><option disabled>Cloud API (server)</option></select>
+        <button class="btn primary" id="d-convert">Convert to Markdown</button>
+        <h2>Batch</h2><button class="btn" id="d-batch">Convert + chunk all</button><div class="note" id="d-batchout"></div></div>
+      <div class="panel"><header><h2 class="grow">PDF</h2><span class="note" id="p-info"></span></header><div class="pane"><div class="pdfwrap" id="pdf"><div class="note">Loading pdf.js…</div></div></div></div>
+      <div class="panel"><header><h2 class="grow">Markdown</h2><button class="btn small" id="m-clean">Clean up</button><span class="chip" id="m-hash"></span></header>
+        <textarea id="md" spellcheck="false"></textarea><div class="note" id="m-note"></div></div>
+      <div class="panel"><header><h2 class="grow">Chunks</h2><span class="note" id="k-count"></span></header>
+        <div class="row"><select id="k-lib"><option value="langchain">LangChain</option><option value="chonkie">Chonkie</option><option value="docling">Docling</option></select><select id="k-strat"></select></div>
+        <div class="row"><label class="field inline">Size <input type="number" id="k-size" value="500" step="50" min="50" style="width:80px"></label><label class="field inline">Overlap <input type="number" id="k-ov" value="50" step="10" min="0" style="width:70px"></label></div>
+        <div class="row"><button class="btn" id="k-enrich">Enrich chunks</button><button class="btn primary" id="k-save">Save version</button></div>
+        <div class="note" id="k-msg"></div>
+        <div class="chunks pane" id="k-list" style="height:460px"></div></div>
+    </div>
+  </section>
+
+  <section data-panel="compare" hidden>
+    <div class="row"><label class="field inline">A <select id="ca"></select></label><label class="field inline">B <select id="cb"></select></label><label class="field inline">Size <input type="number" id="c-size" value="500" step="50" style="width:80px"></label></div>
+    <div class="kpis" id="c-kpis"></div>
+    <div class="grid cols-2"><div class="panel"><h2 id="ca-t"></h2><div class="overlay" id="ca-o"></div></div><div class="panel"><h2 id="cb-t"></h2><div class="overlay" id="cb-o"></div></div></div>
+  </section>
+
+  <section data-panel="versions" hidden>
+    <div class="panel"><h2>Saved chunk versions</h2><p class="note">Each version records the SHA-256 of the Markdown it came from. Edit the Markdown and the version is marked stale: it stays readable but must be regenerated before it can replace the current one.</p><div class="stack versions" id="v-list"></div></div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Pipeline</h2>
+<pre class="mermaid">
+flowchart LR
+  PDF["PDF upload"] --> CONV{"Converter registry<br/>PyMuPDF, Docling, MarkItDown,<br/>LiteParse, VLM, Cloud"}
+  CONV --> MD["Markdown variant<br/>doc_converter.md"]
+  MD --> CLEAN["Cleanup<br/>deterministic + LLM correction"]
+  CLEAN --> SPLIT{"Splitter registry<br/>LangChain, Chonkie, Docling"}
+  SPLIT --> CH["Chunks with offsets"]
+  CH --> ENR["Enrichment<br/>title, summary, keywords, questions"]
+  ENR --> SAVE[("Saved version JSON<br/>+ Markdown SHA-256")]
+  SAVE --> VS["Your vector store"]
+</pre></div>
+      <div class="panel"><h2>Backend</h2>
+<pre class="mermaid">
+flowchart TB
+  UI["React + Vite UI :5173"] -->|"REST + SSE"| API["FastAPI :8000"]
+  API --> R1["/api/upload, /api/convert (SSE)"]
+  API --> R2["/api/chunk (SSE), /api/chunks/save"]
+  API --> R3["/api/enrich/markdown/pipeline, /api/enrich/chunks"]
+  R1 --> POOL["Process pool per request"]
+  R2 --> POOL
+  API --> FS[("docs/pdfs, docs/mds, docs/chunks")]
+  R3 --> LLM["OpenAI-compatible model"]
+</pre>
+        <p class="note">The Sandbox-2 test drives these endpoints on the real backend: upload, SSE conversion, four splitters, saving and reloading a version, Markdown edits, and upstream's 53 unit tests.</p></div>
+    </div>
+  </section>
+</main>
+<p class="footer">Chunky's real UI runs with <code>vendor/chunky/start_all.sh</code>; its backend is tested in <code>systems/chunky</code>.</p>
+{{LIB}}
+<script>
+const STRATS = { langchain: { recursive: 'Recursive', markdown: 'Markdown headers', token: 'Token', character: 'Character' }, chonkie: { sentence: 'Sentence', recursive: 'Recursive', token: 'Token', table: 'Table', code: 'Code', fast: 'Fast (bytes)' }, docling: { hybrid: 'HybridChunker', line_based: 'Line-based token' } };
+function split(md, lib, strat, size, ov) {
+  if (strat === 'markdown' || strat === 'hybrid') return Chunkers.hybrid(md, { max_chars: size, min_chars: Math.min(200, size / 2) });
+  if (strat === 'recursive') return Chunkers.recursive(md, { max_chars: size });
+  if (strat === 'token' || strat === 'line_based') return lib === 'chonkie' && ov ? Chunkers.fixed_token_overlap(md, { max_tokens: Math.max(5, Math.round(size / 5)), overlap: Math.round(ov / 5) }) : Chunkers.fixed_token_overlap(md, { max_tokens: Math.max(5, Math.round(size / 5)), overlap: Math.min(Math.round(ov / 5), Math.round(size / 5) - 1) });
+  if (strat === 'character' || strat === 'fast') return Chunkers.sliding_window(md, { window: size, step: Math.max(1, size - (strat === 'fast' ? 0 : ov)) });
+  if (strat === 'sentence') return pack(md, Text.sentences(md), size, 'sentence');
+  if (strat === 'table') return Chunkers.table_aware(md, { max_rows: 3, max_chars: size }).filter((c) => c.meta.kind !== 'text');
+  if (strat === 'code') return Chunkers.modality_specific(md, { max_chars: size }).filter((c) => c.meta.modality === 'code');
+  return Chunkers.recursive(md, { max_chars: size });
+}
+const DOCS = [{ id: 'agreement', name: 'service_agreement.pdf', kind: 'pdf', bytes: () => b64bytes(SAMPLES.pdf) }, { id: 'dpa', name: 'data_processing_addendum.md', kind: 'md', md: SAMPLES.dpa }];
+let cur = DOCS[0], pages = null;
+const state = {}; // per doc: md, chunks, enriched, hash
+const VERSIONS = store.get('ck:versions', []);
+
+function cleanup(md) { // deterministic cleanup rules
+  const rules = [[/^(#+)[ \t]*\*\*(.+?)\*\*[ \t]*$/gm, '$1 $2', 'bold headings'], [/[ \t]+$/gm, '', 'trailing spaces'], [/\n{3,}/g, '\n\n', 'extra blank lines'], [/^[•·▪]\s*/gm, '- ', 'bullet glyphs'], [/(\w)-\n(\w)/g, '$1$2', 'hyphenated line breaks'], [/ {2,}/g, ' ', 'double spaces']];
+  const fixes = []; let s = md;
+  for (const [re, to, what] of rules) { const n = (s.match(re) || []).length; if (n) { s = s.replace(re, to); fixes.push(`${n} ${what}`); } }
+  return [s.trim() + '\n', fixes];
+}
+function enrich(c, md) {
+  const heads = Text.headings(md), path = Text.headingPath(heads, c.start), first = Text.sentences(c.text).map(([a, b]) => c.text.slice(a, b)).find((s) => !s.startsWith('#') && s.length > 30) || '';
+  const kw = Text.topTerms(c.text, 4);
+  return { title: path.slice(-1)[0] || kw.slice(0, 2).join(' '), summary: first.slice(0, 180), keywords: kw, questions: [`What does the ${path.slice(-1)[0] || kw[0]} section say?`, kw[1] ? `How does it treat ${kw[1]}?` : null].filter(Boolean) };
+}
+
+async function selectDoc(d) {
+  cur = d; $$('.doc').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === d.id)));
+  const box = $('#pdf'); box.replaceChildren();
+  if (d.kind === 'pdf') {
+    try { pages = await pdfPages(d.bytes()); $('#p-info').textContent = `${pages.length} pages`; for (const p of pages) { const cv = el('canvas'); box.append(cv); await renderPdfPage(p.page, cv, 1.0); } }
+    catch (e) { box.append(el('div', { class: 'empty' }, 'Could not load the PDF viewer: ' + e.message)); pages = null; }
+  } else { pages = null; $('#p-info').textContent = 'Markdown upload'; box.append(el('div', { class: 'empty' }, 'This document was uploaded as Markdown, so there is no PDF to show.')); }
+  if (!state[d.id]) state[d.id] = { md: d.kind === 'md' ? d.md : '' };
+  if (d.kind === 'pdf' && !state[d.id].md && pages) await convert();
+  showMd(); rechunk();
+}
+async function convert() {
+  if (!pages) return toast('Nothing to convert: this document is already Markdown');
+  state[cur.id].md = pdfMarkdown(pages, $('#d-conv').value); showMd(); rechunk(); toast('Converted with ' + $('#d-conv').selectedOptions[0].textContent);
+}
+async function showMd() { const s = state[cur.id]; $('#md').value = s.md; s.hash = await sha256(s.md); $('#m-hash').textContent = 'sha256 ' + s.hash.slice(0, 10); }
+function rechunk() {
+  const s = state[cur.id]; if (!s || !s.md) return;
+  const lib = $('#k-lib').value, strat = $('#k-strat').value, size = +$('#k-size').value, ov = Math.min(+$('#k-ov').value, size - 1);
+  s.chunks = split(s.md, lib, strat, size, ov); s.enriched = null; s.config = { lib, strat, size, ov };
+  $('#k-count').textContent = `${s.chunks.length} chunks`;
+  renderChunkCards($('#k-list'), s.chunks, { extra: (c, i) => (s.enriched ? null : null) });
+  $('#k-msg').textContent = '';
+}
+function strats() { const lib = $('#k-lib').value; $('#k-strat').replaceChildren(...Object.entries(STRATS[lib]).map(([k, v]) => el('option', { value: k }, v))); }
+$('#k-lib').onchange = () => { strats(); rechunk(); };
+['#k-strat', '#k-size', '#k-ov'].forEach((x) => $(x).addEventListener('input', rechunk));
+$('#md').addEventListener('input', async () => { state[cur.id].md = $('#md').value; await showMd(); rechunk(); versions(); });
+$('#m-clean').onclick = async () => { const [s, fixes] = cleanup($('#md').value); state[cur.id].md = s; await showMd(); rechunk(); $('#m-note').textContent = fixes.length ? 'Fixed: ' + fixes.join(', ') : 'Nothing to clean.'; };
+$('#d-convert').onclick = convert;
+$('#k-enrich').onclick = () => {
+  const s = state[cur.id]; s.enriched = s.chunks.map((c) => enrich(c, s.md));
+  $$('#k-list .chunk').forEach((card, i) => { const e = s.enriched[i]; if (!e) return; card.append(el('dl', { class: 'enr' }, el('dt', {}, 'Title'), el('dd', {}, e.title), el('dt', {}, 'Summary'), el('dd', {}, e.summary), el('dt', {}, 'Keywords'), el('dd', {}, e.keywords.join(', ')), el('dt', {}, 'Questions'), el('dd', {}, e.questions.join(' · ')))); });
+  $('#k-msg').textContent = `Enriched ${s.chunks.length} chunks with titles, summaries, keywords and retrieval questions.`;
+};
+$('#k-save').onclick = () => {
+  const s = state[cur.id], c = s.config;
+  const name = `${cur.name.replace(/\.\w+$/, '')}_${cur.kind === 'pdf' ? 'pymupdf4llm' : 'md'}_${c.lib}-${c.strat}_${c.size}_${c.ov}.json`;
+  const existing = VERSIONS.find((v) => v.name === name);
+  if (existing && existing.hash !== s.hash) return toast('A version with these settings came from different Markdown: regenerate it from the Versions tab');
+  VERSIONS.filter((v) => v.name !== name).length; const i = VERSIONS.findIndex((v) => v.name === name); const v = { name, doc: cur.id, hash: s.hash, chunks: s.chunks.map((x) => x.text), enriched: !!s.enriched, at: Date.now(), ...c };
+  if (i >= 0) VERSIONS[i] = v; else VERSIONS.push(v); store.set('ck:versions', VERSIONS); versions(); toast('Saved ' + name);
+};
+$('#d-up').onchange = async (e) => { const f = e.target.files[0]; if (!f) return; const buf = new Uint8Array(await f.arrayBuffer()); const d = { id: uid('doc'), name: f.name, kind: 'pdf', bytes: () => buf.slice() }; DOCS.push(d); docList(); selectDoc(d); };
+$('#d-batch').onclick = async () => {
+  const out = []; for (const d of DOCS) { if (d.kind === 'pdf') { const p = await pdfPages(d.bytes()); state[d.id] = state[d.id] || {}; state[d.id].md = state[d.id].md || pdfMarkdown(p, 'pymupdf'); } else state[d.id] = state[d.id] || { md: d.md }; const n = split(state[d.id].md, $('#k-lib').value, $('#k-strat').value, +$('#k-size').value, +$('#k-ov').value).length; out.push(`${d.name}: ${n} chunks`); }
+  $('#d-batchout').textContent = out.join(' · ');
+};
+function docList() { $('#d-list').replaceChildren(...DOCS.map((d) => el('button', { class: 'doc', 'data-id': d.id, 'aria-pressed': String(d === cur), onclick: () => selectDoc(d) }, el('b', {}, d.name), el('span', { class: 'note' }, d.kind === 'pdf' ? 'PDF' : 'Markdown')))); }
+
+/* compare */
+function compare() {
+  const md = (state[cur.id] && state[cur.id].md) || SAMPLES.agreement, size = +$('#c-size').value;
+  const opts = Object.entries(STRATS).flatMap(([lib, s]) => Object.entries(s).filter(([k]) => !['table', 'code'].includes(k)).map(([k, v]) => [`${lib}:${k}`, `${lib === 'langchain' ? 'LangChain' : lib === 'chonkie' ? 'Chonkie' : 'Docling'} ${v}`]));
+  if (!$('#ca').options.length) { [['#ca', 'langchain:recursive'], ['#cb', 'chonkie:sentence']].forEach(([id, def]) => { $(id).replaceChildren(...opts.map(([k, v]) => el('option', { value: k, selected: k === def }, v))); }); }
+  const run = (id) => { const [lib, st] = $(id).value.split(':'); return split(md, lib, st, size, Math.round(size / 10)); };
+  const A = run('#ca'), B = run('#cb');
+  $('#ca-t').textContent = $('#ca').selectedOptions[0].textContent + ` · ${A.length} chunks`; $('#cb-t').textContent = $('#cb').selectedOptions[0].textContent + ` · ${B.length} chunks`;
+  renderOverlay($('#ca-o'), md, A); renderOverlay($('#cb-o'), md, B);
+  const k = (lbl, a, b, d = 2) => el('div', { class: 'kpi' }, el('b', {}, `${fmt(a, d)} / ${fmt(b, d)}`), el('span', {}, lbl + ' (A / B)'));
+  $('#c-kpis').replaceChildren(k('chunks', A.length, B.length, 0), k('mean chars', Metrics.size_stats(A).mean, Metrics.size_stats(B).mean, 0), k('coherence', Metrics.semantic_coherence(A), Metrics.semantic_coherence(B)), k('clean boundaries', Metrics.boundary_quality(A), Metrics.boundary_quality(B)));
+}
+['#ca', '#cb', '#c-size'].forEach((x) => $(x).addEventListener('input', compare));
+
+function versions() {
+  const box = $('#v-list');
+  if (!VERSIONS.length) return box.replaceChildren(el('div', { class: 'empty' }, 'No saved versions yet. Chunk a document and choose “Save version”.'));
+  box.replaceChildren(...VERSIONS.map((v) => {
+    const live = state[v.doc] && state[v.doc].hash, stale = live && live !== v.hash;
+    return el('div', { class: 'ver' }, el('b', { class: 'grow mono', style: { fontSize: '12.5px' } }, v.name), el('span', { class: 'pill' }, `${v.chunks.length} chunks`), v.enriched ? el('span', { class: 'pill accent' }, 'enriched') : null,
+      el('span', { class: 'chip' }, v.hash.slice(0, 10)), el('span', { class: 'pill ' + (stale ? 'warn' : 'good') }, stale ? 'stale: Markdown changed' : 'current'),
+      stale ? el('button', { class: 'btn small', onclick: () => { const s = state[v.doc]; Object.assign(v, { hash: s.hash, chunks: split(s.md, v.lib, v.strat, v.size, v.ov).map((x) => x.text), at: Date.now() }); store.set('ck:versions', VERSIONS); versions(); toast('Regenerated'); } }, 'Regenerate') : null,
+      el('button', { class: 'btn small', onclick: () => { VERSIONS.splice(VERSIONS.indexOf(v), 1); store.set('ck:versions', VERSIONS); versions(); } }, 'Delete'));
+  }));
+}
+
+initTabs((n) => { if (n === 'compare') compare(); if (n === 'versions') versions(); });
+strats(); docList(); selectDoc(DOCS[0]);
+</script>

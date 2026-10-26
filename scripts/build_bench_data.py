@@ -94,7 +94,7 @@ SYSTEMS = {
         job_name="flowise",
         system="Flowise", kind="Agent builder", upstream="FlowiseAI/Flowise",
         code="systems/flowise",
-        finding="",
+        finding="The 3.1.4 Docker image crashes at start-up on its default SQLite database; runs on Postgres.",
     ),
 }
 

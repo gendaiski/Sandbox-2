@@ -1,0 +1,175 @@
+<title>ChunkNorris Studio</title>
+<!-- needs: pdf -->
+{{HEAD}}
+<style>
+  :root { --accent: #b4232f; --accent-soft: #fbe3e5; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #f07d86; --accent-ink: #2d070b; --accent-soft: #3d1c20; } }
+  :root[data-theme="dark"] { --accent: #f07d86; --accent-ink: #2d070b; --accent-soft: #3d1c20; }
+  .toc { font-size: 13px; display: flex; flex-direction: column; gap: 2px; }
+  .toc div { padding: 2px 6px; border-radius: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .toc .w { color: var(--muted); font-size: 11.5px; margin-left: 6px; }
+  .toc .big { color: var(--bad); }
+  .hdr { font: 11.5px var(--mono); color: var(--accent); }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">CN</span><h1>ChunkNorris Studio</h1><span class="tag">Header-aware chunking of Markdown, HTML and PDF for retrieval</span>
+      <span class="links"><a href="https://github.com/wikit-ai/chunknorris" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/chunknorris" target="_blank" rel="noopener">Run its Streamlit app</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="chunk">Parse &amp; chunk</button><button data-tab="toc">Table of contents</button><button data-tab="json">Chunks as JSON</button><button data-tab="code">Python</button><button data-tab="how">How it works</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">An interactive model of ChunkNorris, not affiliated with wikit-ai. The MarkdownChunker algorithm is ported line for line (ToC tree, recursive section packing, hard-max newline splits that keep tables and lists whole, minimum-size filtering). Markdown, HTML and the sample PDF are parsed in your browser.</p>
+
+  <section data-panel="chunk">
+    <div class="grid cols-side">
+      <div class="panel"><h2>Source</h2>
+        <label class="field">Document <select id="s-doc"><option value="md">Markdown: Data Processing Addendum</option><option value="md2">Markdown: Master Services Agreement</option><option value="html">HTML: Master Services Agreement</option><option value="pdf">PDF: service_agreement.pdf</option><option value="paste">Paste Markdown</option></select></label>
+        <textarea id="s-paste" rows="6" hidden placeholder="# Title\n\n## Section\n\nText…"></textarea>
+        <h2>MarkdownChunker</h2>
+        <label class="field">max_headers_to_use <select id="p-h"><option>h1</option><option>h2</option><option>h3</option><option selected>h4</option><option>h5</option><option>h6</option></select></label>
+        <label class="field">max_chunk_word_count <output id="o-max">200</output><input type="range" id="p-max" min="20" max="600" step="10" value="200"></label>
+        <label class="field">hard_max_chunk_word_count <output id="o-hard">400</output><input type="range" id="p-hard" min="30" max="1000" step="10" value="400"></label>
+        <label class="field">min_chunk_word_count <output id="o-min">15</output><input type="range" id="p-min" min="0" max="100" step="1" value="15"></label>
+        <label class="field inline"><input type="checkbox" id="p-prepend" checked> prepend headers to chunk text</label>
+        <div class="kpis" id="s-kpis"></div></div>
+      <div class="panel"><header><h2 class="grow">Chunks</h2><span class="note" id="s-count"></span></header><div class="chunks" id="s-chunks"></div></div>
+    </div>
+  </section>
+
+  <section data-panel="toc" hidden><div class="grid cols-2"><div class="panel"><h2>ToC tree</h2><p class="note">Headers up to max_headers_to_use build the tree. Word counts include descendants; red sections exceed max_chunk_word_count and are subdivided.</p><div class="toc" id="t-tree"></div></div><div class="panel"><h2>Parsed Markdown</h2><pre class="code" id="t-md" style="white-space:pre-wrap;max-height:640px;overflow:auto"></pre></div></div></section>
+
+  <section data-panel="json" hidden><div class="panel"><header><h2 class="grow">Chunks</h2><button class="btn small" id="j-copy">Copy</button></header><pre class="code" id="j-out" style="white-space:pre-wrap;max-height:640px;overflow:auto"></pre></div></section>
+
+  <section data-panel="code" hidden><div class="panel"><h2>The same run in Python</h2><pre class="code" id="c-code"></pre><p class="note">Sandbox-2's test runs ChunkNorris itself on the sample agreement in Markdown, HTML and PDF, and checks page numbers on PDF chunks.</p></div></section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Pipeline</h2>
+<pre class="mermaid">
+flowchart LR
+  SRC["PDF, DOCX, HTML, Markdown,<br/>XLSX, Jupyter"] --> P{"Parser"}
+  P --> MD["MarkdownDoc<br/>(lines, pages)"]
+  MD --> TOC["ToC tree from headers<br/>up to max_headers_to_use"]
+  TOC --> PACK["Pack sections that fit<br/>max_chunk_word_count"]
+  PACK --> SPLIT["Split above hard max on newlines<br/>(not inside tables, lists, code)"]
+  SPLIT --> DROP["Drop chunks under<br/>min_chunk_word_count"]
+  DROP --> OUT["Chunks with header context<br/>and page numbers"]
+</pre></div>
+      <div class="panel"><h2>Section packing</h2>
+<pre class="mermaid">
+flowchart TB
+  S{"Section words<br/>(with children)<br/>> max?"} -->|"no"| ONE["One chunk:<br/>title + content + children"]
+  S -->|"yes"| OWN["Chunk of its own content<br/>(with parent headers)"]
+  OWN --> KIDS["Recurse into each child"]
+  KIDS --> S
+</pre></div>
+    </div>
+  </section>
+</main>
+<p class="footer">Its Streamlit app runs with <code>systems/chunknorris/serve.sh</code>.</p>
+{{LIB}}
+<script>
+/* ---------- parsers ---------- */
+function htmlToMd(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html'), out = [];
+  const walk = (n) => {
+    for (const c of n.children) {
+      const t = c.tagName.toLowerCase(), txt = c.textContent.replace(/\s+/g, ' ').trim();
+      if (/^h[1-6]$/.test(t)) out.push('#'.repeat(+t[1]) + ' ' + txt);
+      else if (t === 'p') out.push(txt);
+      else if (t === 'ul' || t === 'ol') out.push([...c.children].map((li, i) => (t === 'ol' ? `${i + 1}. ` : '- ') + li.textContent.trim()).join('\n'));
+      else if (t === 'table') { const rows = [...c.querySelectorAll('tr')].map((r) => [...r.children].map((x) => x.textContent.trim())); out.push([rows[0], rows[0].map(() => '---'), ...rows.slice(1)].map((r) => '| ' + r.join(' | ') + ' |').join('\n')); }
+      else if (c.children.length) walk(c); else if (txt) out.push(txt);
+    }
+  };
+  walk(doc.body); return out.join('\n\n');
+}
+let pdfPagesCache = null;
+async function source() {
+  const v = $('#s-doc').value;
+  if (v === 'md') return { md: SAMPLES.dpa };
+  if (v === 'md2') return { md: SAMPLES.agreement };
+  if (v === 'html') return { md: htmlToMd(SAMPLES.agreement_html) };
+  if (v === 'paste') return { md: $('#s-paste').value || '# Empty\n\nPaste Markdown above.' };
+  pdfPagesCache ||= await pdfPages(b64bytes(SAMPLES.pdf));
+  const per = pdfPagesCache.map((p) => pdfMarkdown([p]).replace(/\*\*/g, ''));
+  return { md: per.join('\n\n'), pageStarts: per.reduce((a, s, i) => (a.push(i ? a[i - 1] + per[i - 1].split('\n').length + 1 : 0), a), []) };
+}
+
+/* ---------- MarkdownChunker (port) ---------- */
+function lines(md) {
+  let inCode = false;
+  return md.split('\n').map((text, i) => { if (/^```/.test(text)) inCode = !inCode; const h = !inCode && text.match(/^(#{1,6})\s+/); return { text, idx: i, header: h ? h[1].length : 0, code: inCode || /^```/.test(text), table: /^\s*\|/.test(text), bullet: /^\s*([-*+]|\d+\.)\s/.test(text) }; });
+}
+const words = (ls) => ls.reduce((a, l) => a + (l.text.match(/\S+/g) || []).length, 0);
+function tocTree(ls, maxLevel) {
+  const root = { title: { text: '', idx: -1, header: 0 }, content: [], children: [], parent: null };
+  let cur = root;
+  for (const l of ls) {
+    if (l.header && l.header <= maxLevel) { while (cur.parent && l.header <= cur.title.header) cur = cur.parent; const node = { title: l, content: [], children: [], parent: cur }; cur.children.push(node); cur = node; }
+    else cur.content.push(l);
+  }
+  return root;
+}
+const treeWords = (n) => words([n.title, ...n.content]) + n.children.reduce((a, c) => a + treeWords(c), 0);
+const flat = (n) => [n.title, ...n.content, ...n.children.flatMap(flat)].filter((l) => l.idx >= 0);
+function build(n, parents, out, max) {
+  if (treeWords(n) > max) {
+    const hs = n.title.text ? [...parents, n.title] : parents;
+    if (n.content.some((l) => l.text.trim())) out.push({ headers: hs, content: n.content, start: n.title.idx });
+    n.children.forEach((c) => build(c, hs, out, max));
+  } else out.push({ headers: parents, content: flat(n), start: n.title.idx });
+}
+function splitHard(ch, hard) {
+  const wc = words(ch.content); if (wc < hard) return [ch];
+  const size = Math.floor(wc / (Math.floor(wc / hard) + 1)), out = []; let buf = [], cnt = 0, seen = new Array(7).fill(null), startSeen = seen.slice();
+  for (const l of ch.content) {
+    buf.push(l); cnt += (l.text.match(/\S+/g) || []).length;
+    if (l.header) { for (let i = l.header + 1; i < 7; i++) seen[i] = null; seen[l.header] = l; continue; }
+    if (l.bullet || l.code || l.table) continue;
+    if (cnt > size) { out.push({ headers: [...ch.headers, ...startSeen.filter(Boolean)], content: buf, start: buf[0].idx, split: true }); buf = []; startSeen = seen.slice(); cnt = 0; }
+  }
+  if (buf.length) out.push({ headers: [...ch.headers, ...seen.filter(Boolean)], content: buf, start: buf[0].idx, split: true });
+  return out;
+}
+function chunk(md, p) {
+  const ls = lines(md), tree = tocTree(ls, +p.h[1]), out = [];
+  build(tree, [], out, p.max);
+  return { tree, chunks: out.flatMap((c) => splitHard(c, p.hard)).filter((c) => words(c.content) >= p.min) };
+}
+const textOf = (c, prepend) => (prepend && c.headers.length ? c.headers.map((h) => h.text).join('\n\n') + '\n\n' : '') + c.content.map((l) => l.text).join('\n').trim();
+
+let state = {};
+async function run() {
+  $('#s-paste').hidden = $('#s-doc').value !== 'paste';
+  const p = { h: $('#p-h').value, max: +$('#p-max').value, hard: Math.max(+$('#p-hard').value, +$('#p-max').value), min: +$('#p-min').value };
+  ['max', 'hard', 'min'].forEach((k) => { $('#o-' + k).textContent = $('#p-' + k).value; });
+  const src = await source(), { tree, chunks } = chunk(src.md, p), prepend = $('#p-prepend').checked;
+  const pageOf = (idx) => src.pageStarts ? src.pageStarts.filter((s) => s <= idx).length - 1 : null;
+  state = { src, tree, chunks, p, prepend, pageOf };
+  const wc = chunks.map((c) => words(c.content));
+  $('#s-count').textContent = `${chunks.length} chunks`;
+  $('#s-kpis').replaceChildren(el('div', { class: 'kpi' }, el('b', {}, chunks.length), el('span', {}, 'chunks')), el('div', { class: 'kpi' }, el('b', {}, wc.length ? Math.max(...wc) : 0), el('span', {}, 'largest (words)')), el('div', { class: 'kpi' }, el('b', {}, chunks.filter((c) => c.split).length), el('span', {}, 'split at hard max')));
+  $('#s-chunks').replaceChildren(...chunks.map((c, i) => el('div', { class: 'chunk', style: { borderLeftColor: `var(--e${i % 8})` } },
+    el('div', { class: 'meta' }, el('b', {}, '#' + (i + 1)), el('span', {}, words(c.content) + ' words'), el('span', {}, 'line ' + (c.start + 1)), src.pageStarts ? el('span', {}, 'page ' + pageOf(Math.max(0, c.content[0]?.idx ?? 0))) : null, c.split ? el('span', { class: 'pill warn' }, 'split') : null),
+    c.headers.length ? el('div', { class: 'hdr' }, c.headers.map((h) => h.text.replace(/^#+\s*/, '')).join(' › ')) : null,
+    el('pre', {}, textOf(c, prepend)))));
+  toc(); json(); code();
+}
+function toc() {
+  const { tree, p } = state, rows = [];
+  const walk = (n, d) => { n.children.forEach((c) => { const w = treeWords(c); rows.push(el('div', { style: { paddingLeft: d * 16 + 6 + 'px' }, class: w > p.max ? 'big' : '' }, c.title.text.replace(/^#+\s*/, ''), el('span', { class: 'w' }, `${w} words`))); walk(c, d + 1); }); };
+  walk(tree, 0); $('#t-tree').replaceChildren(...rows); $('#t-md').textContent = state.src.md;
+}
+function json() { $('#j-out').textContent = JSON.stringify(state.chunks.map((c, i) => ({ id: i, headers: c.headers.map((h) => h.text), text: textOf(c, state.prepend), word_count: words(c.content), start_line: c.start, ...(state.src.pageStarts ? { start_page: state.pageOf(c.content[0]?.idx ?? 0), end_page: state.pageOf(c.content[c.content.length - 1]?.idx ?? 0) } : {}) })), null, 1); }
+function code() {
+  const v = $('#s-doc').value, parser = v === 'pdf' ? 'PdfParser' : v === 'html' ? 'HTMLParser' : 'MarkdownParser', file = v === 'pdf' ? 'service_agreement.pdf' : v === 'html' ? 'service_agreement.html' : 'document.md', p = state.p;
+  $('#c-code').textContent = `from chunknorris.parsers import ${parser}\nfrom chunknorris.chunkers import MarkdownChunker\nfrom chunknorris.pipelines import ${v === 'pdf' ? 'PdfPipeline' : 'BasePipeline'}\n\nchunker = MarkdownChunker(\n    max_headers_to_use="${p.h}",\n    max_chunk_word_count=${p.max},\n    hard_max_chunk_word_count=${p.hard},\n    min_chunk_word_count=${p.min},\n)\npipeline = ${v === 'pdf' ? 'PdfPipeline' : 'BasePipeline'}(${parser}(), chunker)\nchunks = pipeline.chunk_file("${file}")\nfor chunk in chunks:\n    print(chunk.get_text(prepend_headers=${state.prepend ? 'True' : 'False'})[:80])`;
+}
+['#s-doc', '#s-paste', '#p-h', '#p-max', '#p-hard', '#p-min', '#p-prepend'].forEach((x) => $(x).addEventListener('input', run));
+$('#j-copy').onclick = () => copyText($('#j-out').textContent);
+initTabs(); run();
+</script>

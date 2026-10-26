@@ -1,0 +1,253 @@
+<title>OpenFlow Workflow Studio</title>
+{{HEAD}}
+<style>
+  :root { --accent: #0b6fa4; --accent-soft: #dceefa; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #5ab8ea; --accent-ink: #04192a; --accent-soft: #14303f; } }
+  :root[data-theme="dark"] { --accent: #5ab8ea; --accent-ink: #04192a; --accent-soft: #14303f; }
+  .board { position: relative; height: 430px; overflow: auto; background-color: var(--sunk); background-image: radial-gradient(var(--line) 1px, transparent 1px); background-size: 18px 18px; border: 1px solid var(--line); border-radius: var(--r); }
+  .stage { position: relative; width: 1100px; height: 520px; }
+  .stage svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .stage svg path { fill: none; stroke: var(--muted); stroke-width: 2; cursor: pointer; }
+  .stage svg path:hover { stroke: var(--bad); }
+  .stage svg path.live { stroke: var(--accent); stroke-width: 3; }
+  .node { position: absolute; width: 190px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; user-select: none; cursor: grab; font-size: 12.5px; }
+  .node.sel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+  .node.running { border-color: var(--warn); box-shadow: 0 0 0 3px var(--warn-soft); }
+  .node.done { border-color: var(--good); }
+  .node.waiting { border-color: var(--e1); box-shadow: 0 0 0 3px var(--c1); }
+  .node b { display: block; font-size: 13px; }
+  .node .lay { font: 10.5px var(--mono); color: var(--muted); }
+  .node .port { position: absolute; top: 50%; width: 12px; height: 12px; border-radius: 50%; background: var(--panel); border: 2px solid var(--accent); transform: translateY(-50%); cursor: crosshair; }
+  .node .in { left: -7px; } .node .out { right: -7px; } .port.pending { background: var(--accent); }
+  .gantt { display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
+  .gantt .row2 { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 8px; align-items: center; }
+  .gantt .lane { position: relative; height: 16px; background: var(--sunk); border-radius: 4px; }
+  .gantt .lane i { position: absolute; top: 0; bottom: 0; border-radius: 4px; background: var(--accent); }
+  .gantt .lane i.wait { background: var(--e1); opacity: .6; }
+  .io { white-space: pre-wrap; word-break: break-word; font: 11.5px/1.5 var(--mono); background: var(--sunk); border-radius: 6px; padding: 8px; max-height: 260px; overflow: auto; margin: 0; }
+  .msg { padding: 7px 10px; border-radius: 8px; background: var(--sunk); font-size: 13px; }
+  .msg.you { background: var(--accent); color: var(--accent-ink); align-self: flex-end; }
+  .approve code { white-space: pre-wrap; word-break: break-all; }
+  .approve { border: 1px solid var(--e1); background: var(--c1); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">OF</span><h1>OpenFlow Workflow Studio</h1><span class="tag">Multi-agent workflows with handoffs, parallel layers and human approval</span>
+      <span class="links"><a href="https://github.com/philbotar/OpenFlow" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/openflow" target="_blank" rel="noopener">Run the desktop app</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="canvas">Canvas</button><button data-tab="run">Run</button><button data-tab="build">Build with AI</button><button data-tab="providers">Providers</button><button data-tab="json">Workflow JSON</button><button data-tab="how">How it works</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">An interactive model of OpenFlow, not affiliated with its author. It loads the same contract-review workflow file that Sandbox-2's test runs through OpenFlow's real engine. Here each agent's work is done by deterministic extractors over the sample contract, so runs, layers, approvals and structured outputs behave like the app without model keys.</p>
+
+  <section data-panel="canvas">
+    <div class="row"><b id="w-name"></b><span id="w-valid"></span><span class="grow"></span><button class="btn small" id="w-add">Add agent</button><button class="btn small" id="w-tidy">Lay out by layer</button></div>
+    <div class="grid cols-side-r">
+      <div class="board"><div class="stage" id="stage"><svg id="edges"></svg></div></div>
+      <div class="panel" id="insp"><h2>Inspector</h2><p class="note">Select an agent. Drag to move. Click a right-hand dot, then a left-hand dot, to add a handoff; click a line to remove it.</p></div>
+    </div>
+  </section>
+
+  <section data-panel="run" hidden>
+    <div class="row"><button class="btn primary" id="r-start">Run workflow</button><label class="field inline">Approval mode <select id="r-mode"><option value="ask">Ask before tool calls</option><option value="auto">Auto-approve all</option></select></label><span class="note" id="r-status"></span></div>
+    <div class="grid cols-side-r">
+      <div class="stack"><div class="panel"><h2>Timeline</h2><div class="gantt" id="r-gantt"><div class="empty">Run the workflow to see layers execute; agents in the same layer run at the same time.</div></div></div>
+        <div class="panel" id="r-review" hidden></div></div>
+      <div class="stack"><div class="panel"><header><h2 class="grow">Node chat</h2><select id="r-node"></select></header><div class="stack" id="r-chat"></div></div>
+        <div class="panel"><h2>Output</h2><pre class="io" id="r-out">No run yet.</pre></div></div>
+    </div>
+  </section>
+
+  <section data-panel="build" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Describe the workflow</h2><textarea id="b-in" rows="6">Intake the NDA, then check confidentiality terms and check the non-solicit clause in parallel, then draft a summary for the client.</textarea>
+        <div class="row"><button class="btn primary" id="b-go">Draft workflow</button></div>
+        <p class="note">Steps separated by “then” become layers; “and … in parallel” makes parallel agents. This stands in for OpenFlow's model-written drafts.</p></div>
+      <div class="panel"><h2>Draft</h2><div id="b-out" class="stack"><div class="empty">The draft appears here; apply it to replace the canvas.</div></div></div>
+    </div>
+  </section>
+
+  <section data-panel="providers" hidden><div class="panel"><h2>Model providers</h2><p class="note">Each node can use a different provider and model. Keys stay in the desktop app's settings.</p><div class="table-wrap"><table class="data" id="p-table"></table></div></div></section>
+
+  <section data-panel="json" hidden><div class="panel"><header><h2 class="grow">contract_review.workflow.json</h2><button class="btn small" id="j-copy">Copy</button></header><pre class="code" id="j-out" style="white-space:pre-wrap;max-height:640px;overflow:auto"></pre></div></section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Architecture</h2>
+<pre class="mermaid">
+flowchart LR
+  UI["Desktop UI<br/>(SolidJS in Tauri)"] -->|"invoke"| CORE["Rust core"]
+  CORE --> WS["Workspace: projects,<br/>workflows, chats"]
+  CORE --> ORCH["Orchestration engine"]
+  ORCH --> LAY["Dependency layers"]
+  LAY --> AG["Agents run per node<br/>(parallel within a layer)"]
+  AG --> PROV["Providers: OpenAI, Anthropic,<br/>Bedrock, OpenRouter, Groq, ..."]
+  AG --> TOOLS["Tools: files, shell, search, MCP"]
+  TOOLS -->|"approval mode"| UI
+  ORCH --> REV["Post-run review"]
+</pre></div>
+      <div class="panel"><h2>This workflow's layers</h2>
+<pre class="mermaid">
+flowchart LR
+  subgraph L0["Layer 0"]
+    I["Intake contract"]
+  end
+  subgraph L1["Layer 1 (parallel)"]
+    C["Extract key clauses"]
+    R["Flag risks"]
+  end
+  subgraph L2["Layer 2"]
+    M["Review memo"]
+  end
+  I -->|"handoff: parties, type, law"| C
+  I --> R
+  C -->|"clauses"| M
+  R -->|"risks"| M
+</pre>
+        <p class="note">Sandbox-2's test builds a Rust probe against OpenFlow's crates, validates this workflow and runs the orchestration end to end headless; <code>serve.sh</code> starts the real desktop app.</p></div>
+    </div>
+  </section>
+</main>
+<p class="footer">Workflow file: <code>systems/openflow/workflows/contract_review.workflow.json</code></p>
+{{LIB}}
+<script>
+let wf = store.get('of:wf', null) || {{JSON:systems/openflow/workflows/contract_review.workflow.json}};
+const PROVIDERS = [['OpenAI', 'gpt-5.5, gpt-4o'], ['Anthropic', 'claude-opus-5-5, claude-sonnet-5-5, claude-haiku-5-5'], ['ChatGPT (Codex)', 'codex'], ['Amazon Bedrock', 'Claude and Llama on AWS'], ['OpenRouter', 'any routed model'], ['Groq', 'llama, mixtral'], ['Together AI', 'open models'], ['Fireworks AI', 'open models'], ['DeepSeek', 'deepseek-chat'], ['xAI / Grok', 'grok'], ['Mistral AI', 'mistral-large'], ['Perplexity', 'sonar'], ['Gemini', 'gemini']];
+const MODELS = ['gpt-5.5', 'gpt-4o', 'claude-opus-5-5', 'claude-sonnet-5-5', 'claude-haiku-5-5', 'gemini', 'mistral-large'];
+wf.nodes.forEach((n, i) => { n.agent.tools ||= i === 0 ? ['read_file'] : []; });
+const save = () => store.set('of:wf', wf);
+let sel = null, pend = null;
+function layers() {
+  const indeg = Object.fromEntries(wf.nodes.map((n) => [n.id, 0])); wf.edges.forEach((e) => { if (e.to in indeg) indeg[e.to]++; });
+  const out = [], seen = new Set(); let front = wf.nodes.filter((n) => !indeg[n.id]).map((n) => n.id);
+  while (front.length) { out.push(front); front.forEach((id) => seen.add(id)); const next = []; wf.edges.filter((e) => front.includes(e.from)).forEach((e) => { if (--indeg[e.to] === 0) next.push(e.to); }); front = [...new Set(next)]; }
+  return { layers: out, cycle: seen.size < wf.nodes.length };
+}
+function validate() { const p = []; const { cycle } = layers(); if (cycle) p.push('the graph has a cycle'); wf.edges.forEach((e) => { if (!wf.nodes.some((n) => n.id === e.from) || !wf.nodes.some((n) => n.id === e.to)) p.push(`broken edge ${e.id}`); }); wf.nodes.forEach((n) => { if (!n.agent.task_prompt) p.push(`${n.label} has no task`); }); return p; }
+function canvas() {
+  $('#w-name').textContent = wf.name; const pr = validate(), L = layers();
+  $('#w-valid').replaceChildren(pr.length ? el('span', { class: 'pill bad' }, 'Run blocked: ' + pr[0]) : el('span', { class: 'pill good' }, `${L.layers.length} layers · ready to run`));
+  const st = $('#stage'); $$('.node', st).forEach((x) => x.remove());
+  for (const n of wf.nodes) {
+    const li = L.layers.findIndex((l) => l.includes(n.id));
+    const box = el('div', { class: 'node' + (n.id === sel ? ' sel' : ''), 'data-id': n.id, style: { left: n.position.x + 'px', top: n.position.y + 'px' } },
+      el('span', { class: 'port in', title: 'input', onclick: (e) => { e.stopPropagation(); if (pend && pend !== n.id) { wf.edges.push({ id: `${pend}-${n.id}`, from: pend, to: n.id }); pend = null; save(); canvas(); } } }),
+      el('b', {}, n.label), el('span', { class: 'lay' }, `${n.agent.model} · layer ${li < 0 ? '?' : li}${n.agent.tools.length ? ' · tools: ' + n.agent.tools.join(',') : ''}`),
+      el('span', { class: 'port out' + (pend === n.id ? ' pending' : ''), title: 'output', onclick: (e) => { e.stopPropagation(); pend = n.id; canvas(); toast('Now click another agent\'s left dot'); } }));
+    box.addEventListener('pointerdown', (ev) => {
+      if (ev.target.classList.contains('port')) return; sel = n.id; inspector(); $$('.node').forEach((x) => x.classList.toggle('sel', x.dataset.id === n.id));
+      const sx = ev.clientX - n.position.x, sy = ev.clientY - n.position.y; box.setPointerCapture(ev.pointerId);
+      const mv = (e) => { n.position.x = Math.max(0, Math.min(900, e.clientX - sx)); n.position.y = Math.max(0, Math.min(460, e.clientY - sy)); box.style.left = n.position.x + 'px'; box.style.top = n.position.y + 'px'; edges(); };
+      const up = () => { box.removeEventListener('pointermove', mv); box.removeEventListener('pointerup', up); save(); }; box.addEventListener('pointermove', mv); box.addEventListener('pointerup', up);
+    });
+    st.append(box);
+  }
+  edges(); inspector(); nodeSelect();
+}
+function edges(live = new Set()) {
+  const svg = $('#edges'), s = $('#stage').getBoundingClientRect(); svg.replaceChildren();
+  for (const e of wf.edges) {
+    const a = $(`.node[data-id="${e.from}"] .out`), b = $(`.node[data-id="${e.to}"] .in`); if (!a || !b) continue;
+    const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(), x1 = ra.left + 6 - s.left, y1 = ra.top + 6 - s.top, x2 = rb.left + 6 - s.left, y2 = rb.top + 6 - s.top, dx = Math.max(50, Math.abs(x2 - x1) / 2);
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.setAttribute('d', `M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}`); if (live.has(e.id)) p.classList.add('live');
+    p.addEventListener('click', () => { wf.edges = wf.edges.filter((x) => x !== e); save(); canvas(); }); svg.append(p);
+  }
+}
+function inspector() {
+  const n = wf.nodes.find((x) => x.id === sel), box = $('#insp');
+  if (!n) return box.replaceChildren(el('h2', {}, 'Inspector'), el('p', { class: 'note' }, 'Select an agent. Drag to move. Click a right-hand dot, then a left-hand dot, to add a handoff; click a line to remove it.'));
+  const set = (k, v) => { n.agent[k] = v; save(); canvas(); };
+  box.replaceChildren(el('header', {}, el('h2', { class: 'grow' }, n.label), el('button', { class: 'btn small', onclick: () => { wf.nodes = wf.nodes.filter((x) => x !== n); wf.edges = wf.edges.filter((e) => e.from !== n.id && e.to !== n.id); sel = null; save(); canvas(); } }, 'Delete')),
+    el('label', { class: 'field' }, 'Label', el('input', { type: 'text', value: n.label, onchange: (e) => { n.label = e.target.value; save(); canvas(); } })),
+    el('label', { class: 'field' }, 'Model', el('select', { onchange: (e) => set('model', e.target.value) }, ...MODELS.map((m) => el('option', { selected: m === n.agent.model }, m)))),
+    el('label', { class: 'field' }, 'System prompt', el('textarea', { rows: 2, value: n.agent.system_prompt, onchange: (e) => set('system_prompt', e.target.value) })),
+    el('label', { class: 'field' }, 'Task', el('textarea', { rows: 3, value: n.agent.task_prompt, onchange: (e) => set('task_prompt', e.target.value) })),
+    el('label', { class: 'field inline' }, el('input', { type: 'checkbox', checked: n.agent.tools.includes('read_file'), onchange: (e) => set('tools', e.target.checked ? ['read_file'] : []) }), 'Tool: read_file (needs approval)'),
+    el('label', { class: 'field inline' }, el('input', { type: 'checkbox', checked: !!n.agent.requestUserInput, onchange: (e) => set('requestUserInput', e.target.checked) }), 'Ask the user a question before finishing'),
+    el('span', { class: 'note' }, 'Output schema'), el('pre', { class: 'io' }, JSON.stringify(n.agent.output_schema, null, 1)));
+}
+$('#stage').addEventListener('click', (e) => { if (e.target.id === 'stage' || e.target.id === 'edges') { sel = null; pend = null; canvas(); } });
+$('#w-add').onclick = () => { const id = 'agent-' + (wf.nodes.length + 1); wf.nodes.push({ id, label: 'New agent', kind: 'agent', position: { x: 60, y: 380 }, agent: { system_prompt: 'You are a careful reviewer.', task_prompt: 'Summarise the upstream output in three bullet points.', model: 'claude-sonnet-5-5', requestUserInput: false, tools: [], output_schema: { type: 'object', properties: { summary: { type: 'string' } }, required: ['summary'] } } }); sel = id; save(); canvas(); };
+$('#w-tidy').onclick = () => { const L = layers(); L.layers.forEach((ids, i) => ids.forEach((id, j) => { const n = wf.nodes.find((x) => x.id === id); n.position = { x: 40 + i * 250, y: 40 + j * 150 + (ids.length === 1 ? 100 : 0) }; })); save(); canvas(); };
+
+/* ---------- agents' work: deterministic extractors over the contract ---------- */
+const DOC = SAMPLES.agreement;
+const sectionText = (title) => { const h = Text.headings(DOC), x = h.find((y) => y.title.includes(title)); if (!x) return ''; const nx = h.find((y) => y.at > x.at && y.level <= x.level); return DOC.slice(x.at, nx ? nx.at : DOC.length).replace(/^#+.*\n+/, '').trim(); };
+function work(n, inputs) {
+  const label = n.label.toLowerCase(), task = n.agent.task_prompt.toLowerCase();
+  const kinds = [['intake', /intake|triage|parties/], ['memo', /memo|summary|draft|combine/], ['clauses', /clause/], ['risks', /risk/]];
+  const kind = (kinds.find(([, re]) => re.test(label)) || kinds.find(([, re]) => re.test(task)) || [])[0], t = kind || '';
+  if (t === 'memo') { const all = Object.values(inputs); const risks = all.flatMap((o) => o.risks || []); return { summary: `Review of the ${all.find((o) => o.contract_type)?.contract_type || 'agreement'}: ${risks.length} client-side risks found across liability, remedies, renewal and termination.`, redlines: risks.map((r) => 'Propose a change: ' + r) }; }
+  if (t === 'intake') return { parties: [...DOC.matchAll(/between ([A-Z][\w .]+?) \("Provider"\) and ([A-Z][\w .]+?) \("Client"\)/g)][0].slice(1), contract_type: 'Master Services Agreement', governing_law: (DOC.match(/laws of the ([^.,]+)/) || [])[1] };
+  if (t === 'clauses') return { liability: sectionText('Limitation of Liability'), termination: sectionText('Termination for Cause'), confidentiality: sectionText('4. Confidentiality') };
+  if (t === 'risks') return { risks: [/twelve \(12\) months/.test(DOC) && 'Liability cap: 12 months of fees is low for a data-heavy service; ask for 24 months or a fixed floor.', /sole and exclusive remedy/.test(DOC) && 'Service credits are the sole remedy for missed SLAs; no termination right for repeated failures.', /ninety \(90\) days/.test(DOC) && 'Auto-renewal with a 90-day notice window is easy to miss.', /thirty \(30\) days/.test(DOC) && 'Only a 30-day cure period before termination for breach.'].filter(Boolean) };
+  const props = Object.keys(n.agent.output_schema.properties || { summary: 1 }); return Object.fromEntries(props.map((p) => [p, `(${n.label}) ${Text.sentences(DOC).slice(0, 2).map(([a, b]) => DOC.slice(a, b)).join(' ')}`]));
+}
+function checkSchema(schema, out) { const miss = (schema.required || []).filter((k) => !(k in out)); const extra = schema.additionalProperties === false ? Object.keys(out).filter((k) => !(k in schema.properties)) : []; return [...miss.map((k) => `missing ${k}`), ...extra.map((k) => `unexpected ${k}`)]; }
+const chats = {};
+const say = (id, who, text) => { (chats[id] ||= []).push({ who, text }); if ($('#r-node').value === id) chatView(); };
+function nodeSelect() { const v = $('#r-node').value; $('#r-node').replaceChildren(...wf.nodes.map((n) => el('option', { value: n.id, selected: n.id === v }, n.label))); }
+function chatView() { const id = $('#r-node').value; $('#r-chat').replaceChildren(...(chats[id] || [{ who: 'sys', text: 'No messages yet.' }]).map((m) => m.node || el('div', { class: 'msg' + (m.who === 'you' ? ' you' : '') }, m.text))); }
+$('#r-node').onchange = chatView;
+let running = false;
+$('#r-start').onclick = async () => {
+  const pr = validate(); if (pr.length) return toast('Fix the workflow first: ' + pr[0]); if (running) return;
+  running = true; Object.keys(chats).forEach((k) => delete chats[k]);
+  const L = layers().layers, outputs = {}, times = {}, t0 = performance.now(), rel = () => performance.now() - t0;
+  $('#r-status').textContent = 'Running…'; $$('.node').forEach((x) => x.classList.remove('done', 'running'));
+  const runNode = async (id) => {
+    const n = wf.nodes.find((x) => x.id === id), box = $(`.node[data-id="${id}"]`), ins = Object.fromEntries(wf.edges.filter((e) => e.to === id).map((e) => [e.from, outputs[e.from]]));
+    times[id] = { start: rel() }; box && box.classList.add('running');
+    say(id, 'agent', `Started with ${Object.keys(ins).length ? 'handoffs from ' + Object.keys(ins).join(', ') : 'the contract'} on ${n.agent.model}.`);
+    if (n.agent.tools.includes('read_file')) {
+      if ($('#r-mode').value === 'ask') {
+        box && box.classList.add('waiting'); times[id].wait = rel(); $('#r-node').value = id; chatView();
+        await new Promise((ok) => { const card = el('div', { class: 'approve' }, el('b', {}, `${n.label} wants to call read_file`), el('code', {}, 'read_file("contracts/master_services_agreement.md")'), el('div', { class: 'row' }, el('button', { class: 'btn small primary', onclick: () => decide('Approved read_file.') }, 'Approve'), el('button', { class: 'btn small', onclick: () => decide('Denied read_file; the agent continues with the pasted text.') }, 'Deny')));
+          const decide = (text) => { const list = chats[id], i = list.findIndex((m) => m.node === card); list[i] = { who: 'agent', text }; chatView(); ok(); }; (chats[id] ||= []).push({ node: card }); chatView(); show('run'); });
+        times[id].waitEnd = rel(); box && box.classList.remove('waiting');
+      } else say(id, 'agent', 'read_file auto-approved.');
+    }
+    await sleep(500 + Math.random() * 900);
+    outputs[id] = work(n, ins); const errs = checkSchema(n.agent.output_schema, outputs[id]);
+    say(id, 'agent', errs.length ? 'Output failed the schema: ' + errs.join(', ') : 'Returned structured output matching its schema.');
+    times[id].end = rel(); box && (box.classList.remove('running'), box.classList.add('done'));
+    edges(new Set(wf.edges.filter((e) => e.from === id).map((e) => e.id)));
+    gantt(times, L);
+  };
+  for (const layer of L) await Promise.all(layer.map(runNode));
+  running = false; const last = L[L.length - 1][0];
+  $('#r-out').textContent = JSON.stringify(outputs[last], null, 2); $('#r-status').textContent = `Finished in ${(rel() / 1000).toFixed(1)} s across ${L.length} layers.`;
+  review(times, L, outputs); nodeSelect(); chatView();
+};
+function gantt(times, L) {
+  const end = Math.max(...Object.values(times).map((t) => t.end || performance.now()), 1), total = Math.max(...Object.values(times).map((t) => t.end || 0)) || 1;
+  $('#r-gantt').replaceChildren(...L.flatMap((layer, li) => layer.map((id) => { const t = times[id], n = wf.nodes.find((x) => x.id === id); return el('div', { class: 'row2' }, el('span', {}, `L${li} · ${n.label}`), el('div', { class: 'lane' }, t ? el('i', { style: { left: t.start / total * 100 + '%', width: Math.max(1, ((t.end || total) - t.start) / total * 100) + '%' } }) : null, t && t.wait ? el('i', { class: 'wait', style: { left: t.wait / total * 100 + '%', width: Math.max(1, ((t.waitEnd || total) - t.wait) / total * 100) + '%' } }) : null)); })));
+}
+function review(times, L, outputs) {
+  const tips = [], dur = (id) => times[id].end - times[id].start;
+  L.forEach((layer, i) => { if (layer.length > 1) { const d = layer.map(dur), slow = layer[d.indexOf(Math.max(...d))]; tips.push(`Layer ${i} ran ${layer.length} agents in parallel; the next layer waited on “${wf.nodes.find((n) => n.id === slow).label}” (${(Math.max(...d) / 1000).toFixed(1)} s).`); } });
+  wf.nodes.filter((n) => /intake|triage/.test(n.label.toLowerCase()) && /opus|gpt-5/.test(n.agent.model)).forEach((n) => tips.push(`“${n.label}” only extracts three fields; a smaller model (claude-haiku-5-5) would cut cost and latency.`));
+  Object.entries(times).filter(([, t]) => t.wait).forEach(([id, t]) => tips.push(`“${wf.nodes.find((n) => n.id === id).label}” waited ${((t.waitEnd - t.wait) / 1000).toFixed(1)} s for approval; pre-approve read_file for trusted folders.`));
+  if (wf.nodes.some((n) => !n.agent.output_schema.additionalProperties === false)) tips.push('Set additionalProperties: false on every output schema so handoffs stay predictable.');
+  $('#r-review').hidden = false;
+  $('#r-review').replaceChildren(el('h2', {}, 'Run review'), el('p', { class: 'note' }, 'Advisory suggestions after a successful run; they do not change the result.'), el('ul', {}, ...tips.map((t) => el('li', {}, t))));
+}
+/* ---------- build with AI (rule-based stand-in) ---------- */
+$('#b-go').onclick = () => {
+  const text = $('#b-in').value.trim(), steps = text.split(/\bthen\b/i).map((s) => s.replace(/^[,\s]+|[,.\s]+$/g, '')).filter(Boolean);
+  const nodes = [], edges2 = []; let prev = [];
+  steps.forEach((s, i) => {
+    const parts = /in parallel|\band\b/i.test(s) && i > 0 ? s.replace(/in parallel/i, '').split(/\band\b|,/i).map((x) => x.trim()).filter(Boolean) : [s];
+    const ids = parts.map((p, j) => { const id = p.toLowerCase().replace(/[^a-z]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) || `step-${i}-${j}`; nodes.push({ id, label: p.charAt(0).toUpperCase() + p.slice(1, 40), kind: 'agent', position: { x: 40 + i * 250, y: 40 + j * 150 + (parts.length === 1 ? 100 : 0) }, agent: { system_prompt: 'You are a contracts specialist.', task_prompt: p, model: 'claude-sonnet-5-5', requestUserInput: false, tools: [], output_schema: { type: 'object', additionalProperties: false, properties: { result: { type: 'string' } }, required: ['result'] } } }); return id; });
+    prev.forEach((a) => ids.forEach((b) => edges2.push({ id: `${a}-${b}`, from: a, to: b }))); prev = ids;
+  });
+  $('#b-out').replaceChildren(el('div', { class: 'stack' }, ...nodes.map((n) => el('div', { class: 'msg' }, el('b', {}, n.label), ' ← ', edges2.filter((e) => e.to === n.id).map((e) => e.from).join(', ') || 'start'))),
+    el('div', { class: 'row' }, el('button', { class: 'btn primary', onclick: () => { wf = { id: 'drafted', name: 'Drafted workflow', nodes, edges: edges2 }; save(); canvas(); show('canvas'); toast('Workflow applied'); } }, 'Create workflow')));
+};
+$('#p-table').replaceChildren(el('tr', {}, el('th', {}, 'Provider'), el('th', {}, 'Models'), el('th', {}, 'Used by')), ...PROVIDERS.map(([p, m]) => el('tr', {}, el('td', {}, el('b', {}, p)), el('td', {}, m), el('td', {}, wf.nodes.filter((n) => (p === 'Anthropic' && n.agent.model.startsWith('claude')) || (p === 'OpenAI' && n.agent.model.startsWith('gpt'))).map((n) => n.label).join(', ') || '—'))));
+$('#j-copy').onclick = () => copyText($('#j-out').textContent);
+const show = initTabs((n) => { if (n === 'canvas') canvas(); if (n === 'json') $('#j-out').textContent = JSON.stringify(wf, (k, v) => (k === 'tools' && !v.length ? undefined : v), 2); if (n === 'run') { nodeSelect(); chatView(); } });
+canvas();
+</script>

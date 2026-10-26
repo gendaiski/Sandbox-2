@@ -1,0 +1,229 @@
+<title>Pake App Builder</title>
+{{HEAD}}
+<style>
+  :root { --accent: #c2410c; --accent-soft: #fde7da; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #fb9a61; --accent-ink: #2d1005; --accent-soft: #3a2116; } }
+  :root[data-theme="dark"] { --accent: #fb9a61; --accent-ink: #2d1005; --accent-soft: #3a2116; }
+  .opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px 14px; }
+  details.group { border: 1px solid var(--line); border-radius: var(--r); padding: 8px 12px; background: var(--panel); }
+  details.group summary { cursor: pointer; font-weight: 600; padding: 4px 0; }
+  details.group[open] summary { margin-bottom: 8px; }
+  .opt { display: flex; flex-direction: column; gap: 3px; font-size: 12.5px; }
+  .opt .d { color: var(--muted); font-size: 11.5px; }
+  .opt.bool { flex-direction: row; align-items: flex-start; gap: 8px; }
+  .opt.err input { border-color: var(--bad); }
+  .desk { background: linear-gradient(160deg, var(--c0), var(--c6)); border-radius: var(--r); padding: 22px; display: grid; place-items: center; min-height: 380px; position: relative; overflow: hidden; }
+  .win { background: #fff; color: #111; border-radius: 10px; box-shadow: 0 18px 40px rgba(0,0,0,.28); overflow: hidden; display: flex; flex-direction: column; max-width: 100%; transition: width .25s, height .25s; }
+  .win.dark { background: #1d1f24; color: #e8e8e8; }
+  .win .bar { height: 30px; display: flex; align-items: center; gap: 7px; padding: 0 11px; background: #ececee; border-bottom: 1px solid #d6d6da; font: 12px var(--font); color: #333; flex: none; }
+  .win.dark .bar { background: #2a2c31; border-color: #3a3c42; color: #ddd; }
+  .win .bar i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .win .bar .t { flex: 1; text-align: center; margin-right: 40px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .win .page { flex: 1; overflow: auto; padding: 18px 22px; font: 14px/1.5 Georgia, serif; }
+  .win .page h1 { font-size: 22px; } .win .page table { border-collapse: collapse; } .win .page td, .win .page th { border: 1px solid #bbb; padding: 3px 6px; }
+  .win .site { flex: 1; display: grid; place-items: center; font-size: 13px; padding: 16px; text-align: center; }
+  .badges { position: absolute; left: 12px; top: 12px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .tray { position: absolute; right: 12px; top: 10px; background: rgba(0,0,0,.35); color: #fff; border-radius: 6px; padding: 2px 8px; font-size: 11px; }
+  .log { font: 12px/1.6 var(--mono); background: var(--sunk); border-radius: 7px; padding: 10px; max-height: 280px; overflow: auto; white-space: pre-wrap; margin: 0; }
+  .apps { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+  .app { border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); padding: 10px 12px; display: flex; gap: 10px; align-items: center; cursor: pointer; text-align: left; }
+  .app:hover { border-color: var(--accent); }
+  .app .ic { width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center; color: #fff; font-weight: 700; flex: none; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">Pk</span><h1>Pake App Builder</h1><span class="tag">Turn a web page or a local build into a small desktop app</span>
+      <span class="links"><a href="https://github.com/tw93/Pake" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/pake" target="_blank" rel="noopener">Real build test</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="build">Build an app</button><button data-tab="config">Config file</button><button data-tab="gallery">Popular packages</button><button data-tab="platforms">Platforms</button><button data-tab="how">How it works</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">An interactive model of Pake's CLI, not affiliated with its author. The options and their rules come from Pake's own config schema (schema/pake.schema.json), and validation follows its agent contract: one JSON result, exit code 2 for invalid input. The build itself is simulated here; Sandbox-2's CI really builds the sample contract page into a 4.8 MB Linux .deb.</p>
+
+  <section data-panel="build">
+    <div class="grid cols-side-r">
+      <div class="stack">
+        <div class="panel"><h2>App</h2>
+          <div class="grid cols-2"><label class="field">URL, HTML file or folder <input type="text" id="b-url" value="https://weekly.tw93.fun"></label><label class="field">Name <input type="text" id="b-name" value="Weekly"></label></div>
+          <div class="row"><button class="btn small" id="b-local">Use a local folder (./dist)</button><span class="note">Local folders need an index.html at their root; hash routing only.</span></div></div>
+        <div id="b-groups" class="stack"></div>
+      </div>
+      <div class="stack">
+        <div class="panel"><h2>Window preview</h2><div class="desk" id="b-desk"></div><p class="note" id="b-scale"></p></div>
+        <div class="panel"><header><h2 class="grow">Command</h2><button class="btn small" id="b-copy">Copy</button></header><pre class="code" id="b-cmd" style="white-space:pre-wrap"></pre>
+          <div class="row"><label class="field inline">Platform <select id="b-plat"><option value="linux">Linux</option><option value="macos">macOS</option><option value="windows">Windows</option></select></label><button class="btn primary" id="b-run">Build</button></div>
+          <pre class="log" id="b-log">Press Build to run the packaging steps.</pre>
+          <span class="note">Result (stdout with --json):</span><pre class="code" id="b-json" style="white-space:pre-wrap"></pre></div>
+      </div>
+    </div>
+  </section>
+
+  <section data-panel="config" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><header><h2 class="grow">app.json</h2><button class="btn small" id="c-from">Load from the builder</button></header>
+        <textarea id="c-json" rows="18"></textarea>
+        <div class="row"><button class="btn primary" id="c-check">Validate like <code>pake --config app.json --json</code></button></div></div>
+      <div class="panel"><h2>Result</h2><pre class="code" id="c-out" style="white-space:pre-wrap"></pre>
+        <p class="note">Unknown fields fail fast, values are checked against the schema's types and limits, and explicit CLI flags would win over these fields. A relative url resolves against the working directory, not the config file's folder.</p></div>
+    </div>
+  </section>
+
+  <section data-panel="gallery" hidden><p class="note">Upstream's default app list (default_app_list.json). Pick one to load its settings into the builder.</p><div class="apps" id="g-list"></div></section>
+
+  <section data-panel="platforms" hidden>
+    <div class="panel"><h2>Output formats</h2><div class="table-wrap"><table class="data">
+      <tr><th>Platform</th><th>Targets (--targets)</th><th>WebView</th><th>Platform-only options</th></tr>
+      <tr><td>macOS</td><td>dmg, app; universal binary with --multi-arch</td><td>WKWebView</td><td>hideTitleBar, multiArch, basicAuth, install, camera, microphone</td></tr>
+      <tr><td>Windows</td><td>msi (toolchain: msvc or gnu)</td><td>WebView2</td><td>hideWindowDecorations, passwordAutosave, installerLanguage, windowsToolchain</td></tr>
+      <tr><td>Linux</td><td>deb, appimage, rpm, zst and *-arm64; bundle=false for a raw binary</td><td>WebKitGTK</td><td>hideWindowDecorations, bundle</td></tr>
+    </table></div>
+    <p class="note">Apps are typically under 10 MB because they use the system WebView instead of shipping a browser like Electron. The Sandbox-2 build produced <code>contractviewer.deb</code> at 4.8 MB, depending on libwebkit2gtk-4.1-0.</p></div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>What <code>pake</code> does</h2>
+<pre class="mermaid">
+flowchart LR
+  IN["URL, HTML file<br/>or local folder"] --> V{"Validate options<br/>(schema, agent contract)"}
+  V -->|"invalid: exit 2"| ERR["{ok:false, error: INVALID_INPUT}"]
+  V --> ICON["Fetch favicon<br/>or use --icon"]
+  ICON --> CONF["Write tauri.conf.json<br/>and pake.json into a temp workspace"]
+  CONF --> CARGO["cargo build --release<br/>(Tauri shell in Rust)"]
+  CARGO -->|"missing Rust or libs: exit 4"| ENV["{error: ENV_MISSING}"]
+  CARGO --> BUNDLE["Bundle: dmg / msi / deb / AppImage"]
+  BUNDLE --> OUT["{ok:true, outputs:[{path, sizeBytes, format}]}"]
+</pre></div>
+      <div class="panel"><h2>The app at runtime</h2>
+<pre class="mermaid">
+flowchart TB
+  APP["Desktop app (Rust, Tauri)"] --> WV["System WebView"]
+  APP --> INJ["Injected CSS/JS (--inject)"]
+  WV --> SITE["The packaged site or local build"]
+  APP --> TRAY["Tray icon, global shortcut,<br/>window state, downloads"]
+  SITE -->|"links outside safe domains"| BROWSER["Default browser"]
+</pre>
+        <p class="note">The Sandbox-2 test drives the real CLI with <code>--json</code>: invalid input, a folder without index.html, unknown config fields, the schema against the CLI flags, upstream's 718 unit tests, and a real .deb build inspected with dpkg.</p></div>
+    </div>
+  </section>
+</main>
+<p class="footer">Options and app list read from tw93/Pake at build time.</p>
+{{LIB}}
+<script>
+const SCHEMA = {{JSON:vendor/pake/schema/pake.schema.json}};
+const APPS = {{JSON:vendor/pake/default_app_list.json}};
+const P = SCHEMA.properties;
+const GROUPS = {
+  Window: ['title', 'width', 'height', 'minWidth', 'minHeight', 'fullscreen', 'maximize', 'alwaysOnTop', 'hideTitleBar', 'hideWindowDecorations', 'zoom', 'darkMode'],
+  Behaviour: ['showSystemTray', 'systemTrayIcon', 'startToTray', 'hideOnClose', 'activationShortcut', 'multiInstance', 'multiWindow', 'restoreLastUrl', 'incognito', 'enableFind', 'enableDragDrop', 'disabledWebShortcuts', 'wasm'],
+  Navigation: ['newWindow', 'forceInternalNavigation', 'internalUrlRegex', 'safeDomain', 'userAgent', 'proxyUrl', 'ignoreCertificateErrors', 'basicAuth', 'downloadDir'],
+  Packaging: ['identifier', 'icon', 'appVersion', 'targets', 'useLocalFile', 'inject', 'multiArch', 'windowsToolchain', 'installerLanguage', 'keepBinary', 'bundle', 'iterativeBuild', 'install', 'debug', 'passwordAutosave', 'camera', 'microphone'],
+};
+const values = {};
+const kebab = (k) => k.replace(/[A-Z]/g, (c) => '-' + c.toLowerCase());
+function validate(cfg, fromConfig = false) {
+  const errors = [];
+  for (const k of Object.keys(cfg)) if (!P[k]) errors.push(`Unknown field "${k}" in config. Fields mirror CLI options; see schema/pake.schema.json.`);
+  for (const [k, v] of Object.entries(cfg)) {
+    const s = P[k]; if (!s || v === '' || v == null) continue;
+    if (s.type === 'boolean' && typeof v !== 'boolean') errors.push(`${k} must be true or false`);
+    if ((s.type === 'number' || s.type === 'integer') && (typeof v !== 'number' || Number.isNaN(v))) errors.push(`${k} must be a number`);
+    if (s.type === 'integer' && typeof v === 'number' && !Number.isInteger(v)) errors.push(`${k} must be a whole number`);
+    if (typeof v === 'number' && s.minimum != null && v < s.minimum) errors.push(`${k} must be at least ${s.minimum}`);
+    if (typeof v === 'number' && s.maximum != null && v > s.maximum) errors.push(`${k} must be at most ${s.maximum}`);
+    if (s.enum && !s.enum.includes(v)) errors.push(`${k} must be one of ${s.enum.join(', ')}`);
+    if (s.type === 'array' && !Array.isArray(v)) errors.push(`${k} must be a list`);
+  }
+  const url = cfg.url || '';
+  if (!url) errors.push('A url (web address, HTML file or folder) is required.');
+  else if (!/^(\.|\/|~)/.test(url)) { try { const u = new URL(/^https?:\/\//.test(url) ? url : 'https://' + url); if (!u.hostname.includes('.') && u.hostname !== 'localhost') throw 0; if (/\s/.test(url)) throw 0; } catch { errors.push(`Your url "${url}" is invalid: Invalid URL`); } }
+  if (cfg.proxyUrl && !/^(https?|socks5):\/\//.test(cfg.proxyUrl)) errors.push('proxyUrl must start with http://, https:// or socks5://');
+  if (cfg.internalUrlRegex) { try { new RegExp(cfg.internalUrlRegex); } catch { errors.push('internalUrlRegex is not a valid regular expression'); } }
+  return errors;
+}
+function current() {
+  const cfg = { url: $('#b-url').value.trim(), name: $('#b-name').value.trim() };
+  for (const [k, v] of Object.entries(values)) { const d = P[k].default; if (v !== undefined && v !== '' && JSON.stringify(v) !== JSON.stringify(d)) cfg[k] = v; }
+  return cfg;
+}
+function groups() {
+  $('#b-groups').replaceChildren(...Object.entries(GROUPS).map(([g, keys], gi) => el('details', { class: 'group', open: gi === 0 }, el('summary', {}, `${g} (${keys.length})`),
+    el('div', { class: 'opts' }, ...keys.filter((k) => P[k]).map((k) => {
+      const s = P[k], id = 'o-' + k, onChange = () => update();
+      if (values[k] === undefined) values[k] = s.default ?? (s.type === 'boolean' ? (k === 'hideOnClose' ? undefined : false) : '');
+      if (s.type === 'boolean') return el('label', { class: 'opt bool', title: s.description }, el('input', { type: 'checkbox', id, checked: !!values[k], onchange: (e) => { values[k] = e.target.checked; onChange(); } }), el('span', {}, el('b', {}, kebab(k)), el('div', { class: 'd' }, s.description.slice(0, 90))));
+      if (s.enum) return el('label', { class: 'opt' }, el('b', {}, kebab(k)), el('select', { id, onchange: (e) => { values[k] = e.target.value; onChange(); } }, el('option', { value: '' }, '(default)'), ...s.enum.map((v) => el('option', { value: v, selected: values[k] === v }, v))), el('span', { class: 'd' }, s.description.slice(0, 80)));
+      const num = s.type === 'number' || s.type === 'integer';
+      return el('label', { class: 'opt', id: 'w-' + k }, el('b', {}, kebab(k)), el('input', { type: num ? 'number' : 'text', id, value: Array.isArray(values[k]) ? values[k].join(',') : values[k] ?? '', min: s.minimum, max: s.maximum, placeholder: s.default != null && s.default !== '' ? String(s.default) : '',
+        oninput: (e) => { const t = e.target.value; values[k] = s.type === 'array' ? t.split(',').map((x) => x.trim()).filter(Boolean) : num ? (t === '' ? s.default : +t) : t; onChange(); } }), el('span', { class: 'd' }, s.description.slice(0, 80)));
+    })))));
+}
+function update() {
+  const cfg = current(), errs = validate(cfg);
+  $$('.opt.err').forEach((x) => x.classList.remove('err'));
+  errs.forEach((e) => { const k = (e.match(/^(\w+) must/) || [])[1]; if (k) $('#w-' + k)?.classList.add('err'); });
+  const flags = Object.entries(cfg).filter(([k]) => !['url', 'name'].includes(k)).map(([k, v]) => (v === true ? `--${kebab(k)}` : v === false ? (k === 'restoreLastUrl' ? '--no-restore-last-url' : k === 'bundle' ? '--no-bundle' : '') : `--${kebab(k)} ${/[\s,]/.test(String(v)) ? JSON.stringify(Array.isArray(v) ? v.join(',') : String(v)) : v}`)).filter(Boolean);
+  $('#b-cmd').textContent = `pake ${cfg.url || '<url>'}${cfg.name ? ' --name ' + (/\s/.test(cfg.name) ? JSON.stringify(cfg.name) : cfg.name) : ''}${flags.length ? ' \\\n  ' + flags.join(' \\\n  ') : ''} --json`;
+  preview(cfg);
+  $('#b-run').disabled = false;
+  return [cfg, errs];
+}
+function preview(cfg) {
+  const w = cfg.width ?? 1200, hgt = cfg.height ?? 780, plat = $('#b-plat').value, box = $('#b-desk');
+  const maxW = Math.max(240, box.clientWidth - 44), scale = cfg.fullscreen || cfg.maximize ? maxW / w : Math.min(1, maxW / w, 340 / hgt);
+  const local = /^(\.|\/|~)/.test(cfg.url || '');
+  const win = el('div', { class: 'win' + (cfg.darkMode ? ' dark' : ''), style: { width: Math.round(w * scale) + 'px', height: Math.round(hgt * scale) + 'px' } });
+  const hideBar = (plat === 'macos' && cfg.hideTitleBar) || (plat !== 'macos' && cfg.hideWindowDecorations) || cfg.fullscreen;
+  if (!hideBar) win.append(el('div', { class: 'bar' }, ...(plat === 'macos' ? [el('i', { style: { background: '#ff5f57' } }), el('i', { style: { background: '#febc2e' } }), el('i', { style: { background: '#28c840' } })] : []), el('span', { class: 't' }, cfg.title || cfg.name || 'App'), plat !== 'macos' ? el('span', {}, '— ▢ ✕') : null));
+  if (local) { const doc = new DOMParser().parseFromString(SAMPLES.agreement_html, 'text/html'); doc.querySelectorAll('script, style, link').forEach((n) => n.remove()); win.append(el('div', { class: 'page', style: { zoom: ((cfg.zoom ?? 100) / 100) * Math.max(0.5, scale) } }, ...doc.body.childNodes)); }
+  else win.append(el('div', { class: 'site' }, el('div', {}, el('b', {}, cfg.url || 'No URL'), el('div', { style: { opacity: 0.7, marginTop: '6px' } }, 'The site loads here in the system WebView. Other sites cannot be embedded in this page, so local folders show the real page and web URLs show this placeholder.'))));
+  box.replaceChildren(win, el('div', { class: 'badges' }, ...[cfg.alwaysOnTop && 'Always on top', cfg.fullscreen && 'Full screen', cfg.maximize && 'Maximized', cfg.incognito && 'Incognito', cfg.multiWindow && 'Multi-window'].filter(Boolean).map((b) => el('span', { class: 'pill accent' }, b))), ...(cfg.showSystemTray ? [el('span', { class: 'tray' }, '◉ tray icon')] : []));
+  $('#b-scale').textContent = `${w} × ${hgt} px window shown at ${Math.round(scale * 100)}%` + (cfg.minWidth || cfg.minHeight ? ` · minimum ${cfg.minWidth || 0} × ${cfg.minHeight || 0}` : '');
+}
+const FORMAT = { linux: ['deb', 'appimage'], macos: ['dmg'], windows: ['msi'] };
+$('#b-run').onclick = async () => {
+  const [cfg, errs] = update(), plat = $('#b-plat').value, log = $('#b-log'), name = (cfg.name || 'app').toLowerCase().replace(/[^a-z0-9]+/g, '');
+  log.textContent = ''; $('#b-json').textContent = '';
+  const line = async (t, ms = 260) => { log.textContent += t + '\n'; log.scrollTop = 1e6; await sleep(ms); };
+  if (errs.length) { await line('✕ ' + errs[0], 0); $('#b-json').textContent = JSON.stringify({ ok: false, name: null, platform: plat, arch: null, outputs: [], warnings: [], error: { code: 'INVALID_INPUT', message: errs.join(' '), hint: 'Run pake --help for the accepted options.' } }) + '\n\nexit code 2'; return; }
+  $('#b-run').disabled = true;
+  const local = /^(\.|\/|~)/.test(cfg.url);
+  await line(`✼ Pake 3.17.7 packaging ${cfg.url} as "${cfg.name || 'App'}" for ${plat}`);
+  await line(local ? '✼ Copying local build (index.html found at the root)' : `✼ ${cfg.icon ? 'Using icon ' + cfg.icon : 'Fetching favicon from ' + new URL(/^https?:/.test(cfg.url) ? cfg.url : 'https://' + cfg.url).hostname}`);
+  await line('✼ Writing tauri.conf.json and pake.json to a temporary workspace');
+  if (cfg.inject?.length) await line(`✼ Injecting ${cfg.inject.join(', ')}`);
+  await line(cfg.iterativeBuild ? '✼ Rapid build: app only, no installer' : `✼ cargo build --release (first build compiles ~400 crates, a few minutes)`, 900);
+  const formats = cfg.iterativeBuild ? ['app'] : cfg.bundle === false && plat === 'linux' ? ['binary'] : (cfg.targets ? cfg.targets.split(',').map((x) => x.trim()) : FORMAT[plat]);
+  const outputs = formats.map((f) => ({ path: `./${name}${f === 'binary' ? '' : '.' + f.replace('-arm64', '')}`, sizeBytes: Math.round((f === 'appimage' ? 78e6 : f === 'dmg' ? 6.1e6 : f === 'msi' ? 3.9e6 : 4.77e6) * (cfg.multiArch ? 1.9 : 1)), format: f }));
+  for (const o of outputs) await line(`✔ Bundled ${o.path} (${fmt(o.sizeBytes / 1e6, 1)} MB)`);
+  $('#b-json').textContent = JSON.stringify({ ok: true, name, platform: plat, arch: cfg.multiArch ? 'universal' : 'x64', outputs, warnings: plat === 'linux' ? ['The first use requires installing system dependencies.'] : [], error: null }) + '\n\nexit code 0';
+  $('#b-run').disabled = false;
+};
+$('#b-copy').onclick = () => copyText($('#b-cmd').textContent);
+$('#b-local').onclick = () => { $('#b-url').value = './dist'; $('#b-name').value = 'ContractViewer'; update(); };
+['#b-url', '#b-name'].forEach((x) => $(x).addEventListener('input', update));
+$('#b-plat').onchange = update;
+window.addEventListener('resize', () => preview(current()));
+
+/* config */
+$('#c-from').onclick = () => { $('#c-json').value = JSON.stringify(current(), null, 2); };
+$('#c-check').onclick = () => {
+  let cfg; try { cfg = JSON.parse($('#c-json').value); } catch (e) { $('#c-out').textContent = JSON.stringify({ ok: false, error: { code: 'INVALID_INPUT', message: 'Config is not valid JSON: ' + e.message, hint: 'Check commas and quotes.' } }, null, 2) + '\n\nexit code 2'; return; }
+  const errs = validate(cfg, true);
+  $('#c-out').textContent = errs.length ? JSON.stringify({ ok: false, name: null, outputs: [], warnings: [], error: { code: 'INVALID_INPUT', message: errs[0], hint: errs.length > 1 ? `${errs.length - 1} more problem(s) after this one.` : 'Fix the field and run again.' } }, null, 2) + '\n\nexit code 2' : '✔ Config is valid. pake would now build:\n\n' + JSON.stringify(cfg, null, 2);
+};
+$('#c-json').value = JSON.stringify({ $schema: 'https://raw.githubusercontent.com/tw93/Pake/main/schema/pake.schema.json', url: './dist', name: 'ContractViewer', width: 1100, height: 800, darkMode: false, windowColour: 'blue' }, null, 2);
+
+/* gallery */
+const hue = (s) => [...s].reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
+$('#g-list').replaceChildren(...APPS.map((a) => el('button', { class: 'app', onclick: () => {
+  $('#b-url').value = a.url; $('#b-name').value = a.title;
+  for (const [k, v] of Object.entries(a)) if (P[k] && !['url', 'name', 'title'].includes(k)) values[k] = v;
+  groups(); update(); show('build'); toast(`Loaded ${a.title}`);
+} }, el('span', { class: 'ic', style: { background: `hsl(${hue(a.name)} 55% 45%)` } }, a.title.slice(0, 2)), el('span', {}, el('b', {}, a.title), el('div', { class: 'note' }, new URL(a.url).hostname)))));
+
+const show = initTabs((n) => { if (n === 'build') preview(current()); });
+groups(); update();
+</script>

@@ -1,0 +1,208 @@
+<title>RAG-Anything Graph Lab</title>
+<!-- needs: pdf -->
+{{HEAD}}
+<style>
+  :root { --accent: #6a3fc4; --accent-soft: #ece4fb; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #b39af5; --accent-ink: #1b0f38; --accent-soft: #2b2348; } }
+  :root[data-theme="dark"] { --accent: #b39af5; --accent-ink: #1b0f38; --accent-soft: #2b2348; }
+  .items { display: flex; flex-direction: column; gap: 8px; max-height: 640px; overflow: auto; }
+  .item { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--panel); }
+  .item .ty { font: 600 10.5px var(--mono); padding: 1px 6px; border-radius: 4px; }
+  .ty.text { background: var(--c0); color: var(--e0); } .ty.table { background: var(--c2); color: var(--e2); } .ty.image { background: var(--c1); color: var(--e1); } .ty.equation { background: var(--c3); color: var(--e3); }
+  .item pre { margin: 6px 0 0; white-space: pre-wrap; font-size: 12px; }
+  .legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; }
+  .ctx { font-size: 12.5px; display: flex; flex-direction: column; gap: 6px; }
+  .ctx .sec { border-left: 3px solid var(--accent); padding-left: 8px; }
+  .answer { background: var(--accent-soft); border-radius: 8px; padding: 12px; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">RA</span><h1>RAG-Anything Graph Lab</h1><span class="tag">Multimodal documents into a knowledge graph you can query</span>
+      <span class="links"><a href="https://github.com/HKUDS/RAG-Anything" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/rag-anything" target="_blank" rel="noopener">Run the Workbench (real backend)</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="parse">1 · Parse</button><button data-tab="modal">2 · Modal processors</button><button data-tab="graph">3 · Knowledge graph</button><button data-tab="query">4 · Query</button><button data-tab="how">How it works</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">An interactive model of RAG-Anything's pipeline, not affiliated with HKUDS. The sample PDF is parsed in your browser into a MinerU-style content list (plus one example figure and equation, since the sample has none), then entities, relations and the graph are built by rules and queried in LightRAG's five modes. In RAG-Anything an LLM does the extraction and answering; Sandbox-2's Workbench runs that for real with Claude or OpenAI.</p>
+
+  <section data-panel="parse">
+    <div class="grid cols-2">
+      <div class="panel"><header><h2 class="grow">Content list</h2><span class="note" id="p-count"></span></header><div class="legend"><span><i style="background:var(--e0)"></i>text</span><span><i style="background:var(--e2)"></i>table</span><span><i style="background:var(--e1)"></i>image</span><span><i style="background:var(--e3)"></i>equation</span></div><div class="items" id="p-items"></div></div>
+      <div class="panel"><header><h2 class="grow">As JSON (insert_content_list input)</h2><button class="btn small" id="p-copy">Copy</button></header><pre class="code" id="p-json" style="white-space:pre-wrap;max-height:640px;overflow:auto"></pre></div>
+    </div>
+  </section>
+
+  <section data-panel="modal" hidden>
+    <div class="panel"><h2>Each non-text item goes to its processor</h2><p class="note">The processor writes a description, which is embedded and becomes an entity linked to the section it belongs to.</p><div class="table-wrap"><table class="data" id="m-table"></table></div></div>
+  </section>
+
+  <section data-panel="graph" hidden>
+    <div class="grid cols-side-r">
+      <div class="panel"><header><h2 class="grow">Knowledge graph</h2><span class="note" id="g-meta"></span><button class="btn small" id="g-heat">Re-layout</button></header>
+        <div class="legend" id="g-legend"></div><canvas class="graph" id="g-canvas" style="height:560px"></canvas></div>
+      <div class="panel" id="g-detail"><h2>Entity</h2><p class="note">Click a node.</p></div>
+    </div>
+  </section>
+
+  <section data-panel="query" hidden>
+    <div class="panel"><form class="row" id="q-form"><input type="text" id="q-in" class="grow" value="What happens if the provider misses the uptime target?"><select id="q-mode"><option value="hybrid">hybrid</option><option value="local">local</option><option value="global">global</option><option value="naive">naive</option><option value="mix">mix</option></select><button class="btn primary">Ask</button></form>
+      <div class="row" id="q-suggest"></div></div>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Answer</h2><div class="answer" id="q-answer"></div><p class="note" id="q-stats"></p></div>
+      <div class="panel"><h2>Retrieved context</h2><div class="ctx" id="q-ctx"></div></div>
+    </div>
+    <div class="panel"><h2>The same question in every mode</h2><div class="table-wrap"><table class="data" id="q-modes"></table></div></div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Pipeline</h2>
+<pre class="mermaid">
+flowchart LR
+  DOC["PDF, Office, image"] --> MINERU["MinerU parser<br/>layout + OCR"]
+  MINERU --> CL["Content list<br/>text, table, image, equation"]
+  CL --> TXT["Text chunks"]
+  CL --> MOD{"Modal processors"}
+  MOD --> IMG["Image: VLM caption"]
+  MOD --> TAB["Table: analysis"]
+  MOD --> EQ["Equation: explanation"]
+  TXT --> EX["Entity + relation extraction (LLM)"]
+  IMG --> EX
+  TAB --> EX
+  EQ --> EX
+  EX --> KG[("LightRAG graph<br/>+ vector stores")]
+  KG --> Q["Query: naive, local,<br/>global, hybrid, mix"]
+</pre></div>
+      <div class="panel"><h2>Query modes</h2>
+<pre class="mermaid">
+flowchart TB
+  QUERY["Question"] --> KW["Keywords: low-level (entities)<br/>and high-level (themes)"]
+  KW --> LOCAL["local: matching entities,<br/>their neighbours and source chunks"]
+  KW --> GLOBAL["global: matching relations<br/>and the sections they span"]
+  QUERY --> NAIVE["naive: vector search on chunks"]
+  LOCAL --> HYB["hybrid = local + global"]
+  GLOBAL --> HYB
+  HYB --> MIX["mix = hybrid + naive"]
+  NAIVE --> MIX
+</pre>
+        <p class="note">Sandbox-2's Workbench (<code>systems/rag-anything/serve.sh</code>) is a FastAPI backend over the real library: upload, MinerU parsing, graph building with Claude or OpenAI, and these query modes.</p></div>
+    </div>
+  </section>
+</main>
+<p class="footer">Real pipeline: <code>systems/rag-anything/app</code>, tested with scripted models in CI.</p>
+{{LIB}}
+<script>
+const TYPES = { organization: 'var(--e0)', term: 'var(--e6)', section: 'var(--e5)', duration: 'var(--e4)', amount: 'var(--e1)', table: 'var(--e2)', image: 'var(--e1)', equation: 'var(--e3)', law: 'var(--e7)' };
+let items = [], chunks = [], nodes = [], edges = [], graph = null;
+/* 1. parse: PDF lines into a MinerU-style content list */
+async function parse() {
+  const pages = await pdfPages(b64bytes(SAMPLES.pdf)), out = [];
+  for (const p of pages) {
+    const md = pdfMarkdown([p]).replace(/\*\*/g, '');
+    for (const block of md.split(/\n\n+/)) {
+      if (/^\|/.test(block)) { const rows = block.split('\n').filter((r) => !/^\|[-| ]+\|$/.test(r)); out.push({ type: 'table', table_body: rows.join('\n'), table_caption: ['Service levels'], page_idx: p.number - 1 }); }
+      else if (block.trim()) out.push({ type: 'text', text: block.replace(/^#+\s*/, (m) => m), text_level: (block.match(/^(#+)\s/) || [, ''])[1].length || undefined, page_idx: p.number - 1 });
+    }
+  }
+  const at = out.findIndex((x) => x.type === 'table') + 1;
+  out.splice(at, 0, { type: 'image', img_path: 'images/uptime_chart.png', image_caption: ['Figure 1: monthly uptime against the 99.5% target, January to June'], page_idx: 0, _example: true },
+    { type: 'equation', latex: 'credit = fee_{month} \\times rate_{metric}', text: 'Service credit equals the monthly fee times the credit rate for the missed metric', page_idx: 0, _example: true });
+  items = out; return out;
+}
+function renderParse() {
+  $('#p-count').textContent = `${items.length} items: ` + ['text', 'table', 'image', 'equation'].map((t) => `${items.filter((i) => i.type === t).length} ${t}`).join(', ');
+  $('#p-items').replaceChildren(...items.map((it, i) => el('div', { class: 'item' }, el('div', { class: 'row' }, el('span', { class: 'ty ' + it.type }, it.type), el('span', { class: 'note' }, `#${i} · page ${it.page_idx + 1}`), it._example ? el('span', { class: 'pill warn' }, 'example item') : null, it.text_level ? el('span', { class: 'pill' }, 'heading ' + it.text_level) : null),
+    it.type === 'image' ? el('canvas', { width: 280, height: 90, class: 'fig', style: { marginTop: '6px', background: 'var(--sunk)', borderRadius: '6px' } }) : null,
+    el('pre', {}, it.type === 'text' ? it.text : it.type === 'table' ? it.table_body : it.type === 'image' ? it.image_caption[0] : '$$ ' + it.latex + ' $$'))));
+  $$('canvas.fig').forEach((c) => { const g = c.getContext('2d'), v = [99.8, 99.6, 99.1, 99.7, 99.9, 99.3], css = (k) => getComputedStyle(document.documentElement).getPropertyValue(k).trim(); g.strokeStyle = css('--e7'); g.setLineDash([4, 3]); const ty = 90 - (99.5 - 98.8) / 1.2 * 80; g.beginPath(); g.moveTo(10, ty); g.lineTo(270, ty); g.stroke(); g.setLineDash([]); v.forEach((x, i) => { const h = (x - 98.8) / 1.2 * 80; g.fillStyle = x < 99.5 ? css('--e7') : css('--e1'); g.fillRect(20 + i * 42, 88 - h, 26, h); }); });
+  $('#p-json').textContent = JSON.stringify(items.map(({ _example, ...x }) => x), null, 1);
+}
+/* 2. modal processors */
+function describe(it) {
+  if (it.type === 'table') { const rows = it.table_body.split('\n').map((r) => r.split('|').slice(1, -1).map((c) => c.trim())); return `Table "${it.table_caption[0]}" with ${rows.length - 1} rows and columns ${rows[0].join(', ')}. ` + rows.slice(1).map((r) => `${r[0]}: target ${r[1]}, credit ${r[2]}`).join('; ') + '.'; }
+  if (it.type === 'image') return `Bar chart of monthly uptime from January to June against a dashed 99.5% target line; March (99.1%) and June (99.3%) fall below the target, which would trigger the 5% service credit.`;
+  return `The formula defines the service credit as the month's fee multiplied by the credit rate of the missed metric (5%, 2% or 3%).`;
+}
+function renderModal() {
+  $('#m-table').replaceChildren(el('tr', {}, ...['Item', 'Processor', 'Description (embedded)', 'Entity created', 'Linked to'].map((h) => el('th', {}, h))),
+    ...items.filter((i) => i.type !== 'text').map((it) => el('tr', {}, el('td', {}, el('span', { class: 'ty ' + it.type, style: { font: '600 10.5px var(--mono)', padding: '1px 6px', borderRadius: '4px' } }, it.type)), el('td', {}, { table: 'TableModalProcessor', image: 'ImageModalProcessor (VLM)', equation: 'EquationModalProcessor' }[it.type]), el('td', {}, describe(it)), el('td', {}, el('b', {}, entityName(it))), el('td', {}, '2.2 Service Levels (belongs_to)'))));
+}
+const entityName = (it) => ({ table: 'Service Levels Table', image: 'Uptime Chart (Figure 1)', equation: 'Service Credit Formula' }[it.type]);
+/* 3. graph */
+function buildGraph() {
+  chunks = []; let section = 'Master Services Agreement';
+  for (const it of items) { if (it.type === 'text' && it.text_level) { section = it.text.replace(/^#+\s*/, ''); continue; } chunks.push({ id: 'chunk-' + chunks.length, section, text: it.type === 'text' ? it.text : describe(it), type: it.type, item: it }); }
+  const N = new Map(), E = new Map();
+  const node = (name, type, desc, chunk) => { const k = name.toLowerCase(); if (!N.has(k)) N.set(k, { id: name, type, desc: new Set(), chunks: new Set() }); const n = N.get(k); if (desc) n.desc.add(desc); if (chunk) n.chunks.add(chunk.id); return n; };
+  const edge = (a, b, label, chunk) => { if (a.id === b.id) return; const k = [a.id, b.id].sort().join('|'); if (!E.has(k)) E.set(k, { source: a.id, target: b.id, label, chunks: new Set() }); E.get(k).chunks.add(chunk.id); };
+  for (const c of chunks) {
+    const sec = node(c.section, 'section', `Section of the agreement: ${c.section}`, c);
+    if (c.type !== 'text') { const m = node(entityName(c.item), c.type, describe(c.item), c); edge(m, sec, 'belongs_to', c); }
+    for (const [a, b] of Text.sentences(c.text)) {
+      const s = c.text.slice(a, b), found = [];
+      for (const e of Text.entities(s)) if (e.length > 3 && !/^(The|This|Either|Each|Neither|Any)\b/.test(e)) found.push(node(e.replace(/\s+(Ltd\.?|LLC)$/, (m) => m), /Ltd|LLC|Inc|GmbH/.test(e) ? 'organization' : /State of|Law/.test(e) ? 'law' : 'term', s, c));
+      for (const m of s.matchAll(/\b(?:\w+[- ])?\(\d+\)\s+(?:days|months|years|hours)|\b\d+(?:\.\d+)?%|USD [\d,]+/g)) found.push(node(m[0], /%|USD/.test(m[0]) ? 'amount' : 'duration', s, c));
+      found.forEach((f) => edge(f, sec, 'mentioned_in', c));
+      for (let i = 0; i < found.length; i++) for (let j = i + 1; j < found.length; j++) edge(found[i], found[j], (s.match(/\b(pay|protect|terminate|exceed|govern|deliver|ingest|credit|liable|notice)\w*/i) || ['related'])[0].toLowerCase(), c);
+    }
+  }
+  nodes = [...N.values()].map((n) => ({ ...n, desc: [...n.desc], chunks: [...n.chunks] }));
+  edges = [...E.values()].map((e) => ({ ...e, chunks: [...e.chunks] }));
+  nodes.forEach((n) => { n.degree = edges.filter((e) => e.source === n.id || e.target === n.id).length; });
+}
+function renderGraph() {
+  $('#g-meta').textContent = `${nodes.length} entities · ${edges.length} relations`;
+  $('#g-legend').replaceChildren(...Object.entries(TYPES).filter(([t]) => nodes.some((n) => n.type === t)).map(([t, c]) => el('span', {}, el('i', { style: { background: c } }), t)));
+  graph = forceGraph($('#g-canvas'), { nodes: nodes.map((n) => ({ ...n })), edges, color: (n) => TYPES[n.type] || 'var(--muted)', onSelect: (n) => detail(n.id) });
+}
+function detail(id) {
+  const n = nodes.find((x) => x.id === id); if (!n) return;
+  const rel = edges.filter((e) => e.source === id || e.target === id);
+  $('#g-detail').replaceChildren(el('header', {}, el('h2', { class: 'grow' }, n.id), el('span', { class: 'pill' }, n.type)),
+    el('p', { style: { margin: 0 } }, n.desc[0] ? n.desc[0].slice(0, 260) : ''), el('span', { class: 'note' }, `${n.chunks.length} source chunk(s) · ${rel.length} relations`),
+    el('div', { class: 'stack' }, ...rel.slice(0, 14).map((e) => el('div', { class: 'row', style: { fontSize: '12.5px' } }, el('span', { class: 'pill accent' }, e.label), el('a', { href: '#', onclick: (ev) => { ev.preventDefault(); graph.select(e.source === id ? e.target : e.source); } }, e.source === id ? e.target : e.source)))));
+}
+/* 4. query */
+function keywords(q) {
+  const low = nodes.filter((n) => q.toLowerCase().includes(n.id.toLowerCase().split(' ')[0].toLowerCase()) || Text.terms(n.id).some((t) => Text.terms(q).includes(t))).map((n) => n.id);
+  const high = Text.terms(q).filter((t) => !['what', 'happens', 'does', 'how', 'long', 'which'].includes(t));
+  return { low, high };
+}
+function retrieve(q, mode) {
+  const kw = keywords(q), V = Text.tfidf([...chunks.map((c) => c.text), q]), qv = V.pop();
+  const naive = () => chunks.map((c, i) => [c, Text.cos(qv, V[i])]).sort((a, b) => b[1] - a[1]).slice(0, 3).map((x) => x[0]);
+  const local = () => { const ents = nodes.filter((n) => kw.low.includes(n.id)).sort((a, b) => b.degree - a.degree).slice(0, 5); const nb = new Set(ents.flatMap((n) => edges.filter((e) => e.source === n.id || e.target === n.id).map((e) => (e.source === n.id ? e.target : e.source)))); return { ents, nb: [...nb].slice(0, 8), chunks: [...new Set(ents.flatMap((n) => n.chunks))].map((id) => chunks.find((c) => c.id === id)).slice(0, 4) }; };
+  const global = () => { const rels = edges.filter((e) => kw.high.some((t) => e.label.includes(t) || (e.source + ' ' + e.target).toLowerCase().includes(t))).slice(0, 6); return { rels, chunks: [...new Set(rels.flatMap((e) => e.chunks))].map((id) => chunks.find((c) => c.id === id)).slice(0, 4) }; };
+  let ctx = { ents: [], nb: [], rels: [], chunks: [] };
+  if (mode === 'naive') ctx.chunks = naive();
+  if (mode === 'local' || mode === 'hybrid' || mode === 'mix') { const l = local(); ctx.ents = l.ents; ctx.nb = l.nb; ctx.chunks.push(...l.chunks); }
+  if (mode === 'global' || mode === 'hybrid' || mode === 'mix') { const g = global(); ctx.rels = g.rels; ctx.chunks.push(...g.chunks); }
+  if (mode === 'mix') ctx.chunks.push(...naive());
+  ctx.chunks = [...new Set(ctx.chunks)].filter(Boolean);
+  const sents = ctx.chunks.flatMap((c) => Text.sentences(c.text).map(([a, b]) => c.text.slice(a, b))), SV = Text.tfidf([...sents, q]), sq = SV.pop();
+  const best = sents.map((s, i) => [s, Text.cos(sq, SV[i])]).sort((a, b) => b[1] - a[1]).slice(0, 2).filter((x, i, a) => x[1] > 0.02 && (i === 0 || x[1] >= a[0][1] * 0.5)).map((x) => x[0]);
+  return { kw, ctx, answer: best.length ? best.join(' ') : 'The retrieved context does not answer this question.', tokens: Math.round(ctx.chunks.reduce((a, c) => a + c.text.length, 0) / 4 + ctx.ents.length * 30 + ctx.rels.length * 20) };
+}
+function ask() {
+  const q = $('#q-in').value, mode = $('#q-mode').value, r = retrieve(q, mode);
+  $('#q-answer').textContent = r.answer;
+  $('#q-stats').textContent = `Mode ${mode} · low-level keywords: ${r.kw.low.join(', ') || '—'} · high-level: ${r.kw.high.join(', ')} · about ${r.tokens} context tokens. Answered extractively from the context; RAG-Anything sends this context to the LLM.`;
+  $('#q-ctx').replaceChildren(
+    r.ctx.ents.length ? el('div', { class: 'sec' }, el('b', {}, 'Entities'), el('div', {}, r.ctx.ents.map((e) => e.id).join(' · ')), r.ctx.nb.length ? el('div', { class: 'note' }, 'Neighbours: ' + r.ctx.nb.join(' · ')) : null) : null,
+    r.ctx.rels.length ? el('div', { class: 'sec' }, el('b', {}, 'Relations'), ...r.ctx.rels.map((e) => el('div', {}, `${e.source} —${e.label}→ ${e.target}`))) : null,
+    el('div', { class: 'sec' }, el('b', {}, `Chunks (${r.ctx.chunks.length})`), ...r.ctx.chunks.map((c) => el('div', {}, el('span', { class: 'pill' }, c.section), ' ', c.type !== 'text' ? el('span', { class: 'pill accent' }, c.type) : null, ' ', c.text.slice(0, 180) + (c.text.length > 180 ? '…' : '')))));
+  $('#q-modes').replaceChildren(el('tr', {}, ...['Mode', 'Entities', 'Relations', 'Chunks', 'Context tokens', 'Answer'].map((h) => el('th', {}, h))),
+    ...['naive', 'local', 'global', 'hybrid', 'mix'].map((m) => { const x = retrieve(q, m); return el('tr', { class: m === mode ? 'sel' : '' }, el('td', {}, el('b', {}, m)), el('td', {}, x.ctx.ents.length), el('td', {}, x.ctx.rels.length), el('td', {}, x.ctx.chunks.length), el('td', {}, x.tokens), el('td', {}, x.answer.slice(0, 110))); }));
+}
+$('#q-form').addEventListener('submit', (e) => { e.preventDefault(); ask(); });
+$('#q-mode').onchange = ask;
+$('#q-suggest').replaceChildren(...['What happens if the provider misses the uptime target?', 'Who are the parties?', 'How long does confidentiality last?', 'What does the uptime chart show?', 'Which law governs the agreement?'].map((q) => el('button', { class: 'btn small', onclick: () => { $('#q-in').value = q; ask(); } }, q)));
+$('#p-copy').onclick = () => copyText($('#p-json').textContent);
+$('#g-heat').onclick = () => graph && graph.reheat();
+const show = initTabs((n) => { if (n === 'graph' && nodes.length) renderGraph(); if (n === 'query' && nodes.length) ask(); if (n === 'modal') renderModal(); });
+parse().then(() => { renderParse(); buildGraph(); renderModal(); const t = $('.tabs button[aria-selected="true"]').dataset.tab; if (t === 'graph') renderGraph(); if (t === 'query') ask(); })
+  .catch((e) => $('#p-items').replaceChildren(el('div', { class: 'empty' }, 'Could not load the PDF viewer: ' + e.message)));
+</script>

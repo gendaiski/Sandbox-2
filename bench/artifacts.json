@@ -10,5 +10,7 @@
   "prism-ui": "https://claude.ai/artifact/97wRF4yKGb5v7s7tEhb4fg",
   "langfuse": "https://claude.ai/artifact/TBXPE1gPaNyZex8eupECMX",
   "flowise": "https://claude.ai/artifact/UdZaUZTWn9z75JT6H51hme",
-  "chunking-methods": "https://claude.ai/artifact/1cZrUYeQJ88Mm4MYrdASE4"
+  "chunking-methods": "https://claude.ai/artifact/1cZrUYeQJ88Mm4MYrdASE4",
+  "chunky": "https://claude.ai/artifact/J7FoEcVd48nPqZygofRa6w",
+  "pake": "https://claude.ai/artifact/9dbcHGEDY7QJoXMwBzPByK"
 }

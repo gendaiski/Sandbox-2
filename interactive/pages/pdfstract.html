@@ -1,0 +1,183 @@
+<title>PDFStract Compare</title>
+<!-- needs: pdf -->
+{{HEAD}}
+<style>
+  :root { --accent: #1f6fb2; --accent-soft: #dfeefb; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #6fb3ef; --accent-ink: #061a2c; --accent-soft: #15293b; } }
+  :root[data-theme="dark"] { --accent: #6fb3ef; --accent-ink: #061a2c; --accent-soft: #15293b; }
+  .libs { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+  .lib { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; display: flex; gap: 8px; align-items: flex-start; background: var(--panel); }
+  .lib input { margin-top: 3px; }
+  .lib.off { opacity: .6; }
+  .cols { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .out { white-space: pre-wrap; word-break: break-word; font: 12px/1.55 var(--mono); background: var(--sunk); border-radius: 7px; padding: 10px; height: 520px; overflow: auto; margin: 0; }
+  .md h1, .md h2, .md h3 { margin: .6em 0 .3em; } .md table { border-collapse: collapse; font-size: 13px; } .md td, .md th { border: 1px solid var(--line); padding: 3px 7px; }
+  .md { height: 520px; overflow: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 7px; padding: 12px; font-size: 13.5px; }
+  .pdfthumb { display: flex; gap: 8px; flex-wrap: wrap; } .pdfthumb canvas { border: 1px solid var(--line); border-radius: 4px; background: #fff; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">PS</span><h1>PDFStract Compare</h1><span class="tag">Extract a PDF with several libraries, compare the results, then chunk them</span>
+      <span class="links"><a href="https://github.com/AKSarav/pdfstract" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/pdfstract" target="_blank" rel="noopener">Run the real app</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="extract">Extract &amp; compare</button><button data-tab="chunk">Chunk the output</button><button data-tab="library">Library</button><button data-tab="cli">CLI &amp; API</button><button data-tab="how">How it works</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">An interactive model of PDFStract, not affiliated with its author. Four extractors really run in your browser on the PDF (built on pdf.js, imitating each library's output style); the ML and OCR libraries are listed with what they add but run only on PDFStract's server.</p>
+
+  <section data-panel="extract">
+    <div class="panel"><header><h2 class="grow">PDF</h2><label class="btn small">Upload a PDF<input type="file" id="x-up" accept="application/pdf" hidden></label><span class="note" id="x-file">service_agreement.pdf</span></header>
+      <div class="pdfthumb" id="x-thumbs"></div></div>
+    <div class="panel"><header><h2 class="grow">Libraries</h2><button class="btn primary" id="x-run">Extract with selected</button></header><div class="libs" id="x-libs"></div></div>
+    <div class="table-wrap"><table class="data" id="x-stats"></table></div>
+    <div class="row"><label class="field inline">Show <select id="x-view"><option value="raw">Raw output</option><option value="rendered">Rendered Markdown</option></select></label></div>
+    <div class="cols" id="x-cols"></div>
+  </section>
+
+  <section data-panel="chunk" hidden>
+    <div class="panel"><div class="row"><label class="field inline">Output <select id="c-src"></select></label>
+      <label class="field inline">Chunker <select id="c-kind"><option value="token">Token</option><option value="sentence">Sentence</option><option value="recursive" selected>Recursive</option><option value="semantic">Semantic</option><option value="table">Table-aware</option><option value="sliding">Sliding window</option></select></label>
+      <label class="field inline">Size <input type="number" id="c-size" value="500" step="50" style="width:80px"></label></div></div>
+    <div class="kpis" id="c-kpis"></div>
+    <div class="grid cols-2"><div class="panel"><h2>On the text</h2><div class="overlay" id="c-over"></div></div><div class="panel"><h2>Chunks</h2><div class="chunks" id="c-list" style="max-height:560px;overflow:auto"></div></div></div>
+  </section>
+
+  <section data-panel="library" hidden><div class="panel"><h2>Past conversions</h2><p class="note">Every extraction run is kept here (in this browser), like PDFStract's library of results.</p><div class="table-wrap"><table class="data" id="l-table"></table></div></div></section>
+
+  <section data-panel="cli" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Command line</h2><pre class="code">pdfstract libs                                  # which libraries are installed
+pdfstract convert service_agreement.pdf --library pymupdf4llm --format markdown
+pdfstract compare service_agreement.pdf --libraries pymupdf4llm,markitdown,docling
+pdfstract chunk output.md --chunker recursive --chunk-size 500</pre></div>
+      <div class="panel"><h2>Python</h2><pre class="code">from pdfstract import PDFStract
+
+ps = PDFStract()
+md = ps.convert("service_agreement.pdf", library="pymupdf4llm")
+chunks = ps.chunk(md, chunker="recursive", chunk_size=500)
+print(len(chunks), chunks[0]["text"][:80])</pre></div>
+      <div class="panel"><h2>Web API</h2><pre class="code">GET  /libraries                      installed libraries and status
+POST /convert   (file, library)      one extraction
+POST /compare   (file, libraries)    starts a comparison task
+GET  /compare/{task_id}/results      per-library output and timing
+GET  /compare/{task_id}/download     all outputs as a zip</pre></div>
+    </div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Architecture</h2>
+<pre class="mermaid">
+flowchart LR
+  UI["React UI (served at /static)"] -->|"upload + choose libraries"| API["FastAPI backend"]
+  CLI["pdfstract CLI"] --> CORE["PDFStract core"]
+  API --> CORE
+  CORE --> L1["Base tier<br/>pymupdf4llm, markitdown"]
+  CORE --> L2["Standard tier<br/>unstructured, tesseract OCR"]
+  CORE --> L3["Advanced tier<br/>marker, docling, paddleocr"]
+  CORE --> CH["Chunkers<br/>token, sentence, recursive, semantic"]
+  API --> RES[("Results per task:<br/>markdown, JSON, timing")]
+</pre></div>
+      <div class="panel"><h2>A comparison run</h2>
+<pre class="mermaid">
+sequenceDiagram
+  participant U as You
+  participant A as API
+  participant L as Libraries
+  U->>A: POST /compare (PDF, 3 libraries)
+  A-->>U: task id
+  par each library
+    A->>L: extract
+    L-->>A: output + seconds
+  end
+  U->>A: GET /compare/{id}/results
+  A-->>U: side-by-side outputs
+  U->>A: chunk the best output
+</pre>
+        <p class="note">Sandbox-2 found a packaging bug while running the real app: its React build points at /assets while the backend serves /static, so <code>systems/pdfstract/serve.sh</code> builds the UI with <code>--base /static/</code>.</p></div>
+    </div>
+  </section>
+</main>
+<p class="footer">The real app (FastAPI + React) starts with <code>systems/pdfstract/serve.sh</code>.</p>
+{{LIB}}
+<script>
+const LIBS = [
+  { id: 'pymupdf4llm', name: 'pymupdf4llm', tier: 'base', run: (p) => pdfMarkdown(p), fmt: 'markdown', note: 'Markdown with headings from font sizes, tables from aligned columns.' },
+  { id: 'markitdown', name: 'MarkItDown', tier: 'base', run: (p) => markitdown(p), fmt: 'markdown', note: 'Plain Markdown: paragraphs kept, few headings, no tables.' },
+  { id: 'pypdf', name: 'pypdf (text)', tier: 'base', run: (p) => p.map((pg) => pdfLines(pg.items).map((l) => l.text).join('\n')).join('\n\f\n'), fmt: 'text', note: 'Raw text in content order, page breaks kept.' },
+  { id: 'unstructured', name: 'unstructured (elements)', tier: 'standard', run: (p) => JSON.stringify(elements(p), null, 1), fmt: 'json', note: 'Typed elements (Title, NarrativeText, Table) with page and coordinates.' },
+  { id: 'tesseract', name: 'Tesseract OCR', tier: 'standard', off: 'OCR for scanned pages; needs the tesseract binary on the server.' },
+  { id: 'marker', name: 'marker', tier: 'advanced', off: 'Deep-learning layout and equation recovery; GPU recommended.' },
+  { id: 'docling', name: 'Docling', tier: 'advanced', off: 'IBM layout model with table structure recognition.' },
+  { id: 'paddleocr', name: 'PaddleOCR', tier: 'advanced', off: 'Multilingual OCR models.' },
+];
+function markitdown(pages) {
+  const out = [];
+  for (const p of pages) { let para = []; let prev = null; for (const l of pdfLines(p.items)) { if (prev && l.y - prev.y > l.h * 1.9) { out.push(para.join(' ')); para = []; } para.push(l.text.replace(/\t/g, ' ').trim()); prev = l; } if (para.length) out.push(para.join(' ')); }
+  return out.filter(Boolean).join('\n\n');
+}
+function elements(pages) {
+  const all = pages.flatMap((p) => pdfLines(p.items).map((l) => ({ ...l, page: p.number })));
+  const sizes = all.map((l) => Math.round(l.h)).sort((a, b) => a - b), body = sizes[Math.floor(sizes.length / 2)];
+  const els = []; let cur = null;
+  for (const l of all) {
+    const type = l.text.includes('\t') ? 'Table' : Math.round(l.h) > body || (l.bold && l.text.length < 80) ? 'Title' : /^[-•]\s/.test(l.text) ? 'ListItem' : 'NarrativeText';
+    if (cur && cur.type === type && type !== 'Title' && cur.metadata.page_number === l.page && l.y - cur._y < l.h * 1.9) { cur.text += (type === 'Table' ? '\n' : ' ') + l.text.trim(); cur._y = l.y; continue; }
+    cur = { type, text: l.text.trim(), metadata: { page_number: l.page, coordinates: [Math.round(l.x), Math.round(l.y)] }, _y: l.y }; els.push(cur);
+  }
+  return els.map(({ _y, ...e }) => e);
+}
+let pages = null, fileName = 'service_agreement.pdf', results = {};
+const RUNS = store.get('ps:runs', []);
+async function load(bytes, name) {
+  fileName = name; $('#x-file').textContent = name; $('#x-thumbs').replaceChildren(el('span', { class: 'note' }, 'Loading…'));
+  try { pages = await pdfPages(bytes); $('#x-thumbs').replaceChildren(); for (const p of pages) { const c = el('canvas'); $('#x-thumbs').append(c); await renderPdfPage(p.page, c, 0.32); } run(); }
+  catch (e) { $('#x-thumbs').replaceChildren(el('div', { class: 'empty' }, 'Could not read the PDF: ' + e.message)); }
+}
+function libs() {
+  const sel = store.get('ps:sel', ['pymupdf4llm', 'markitdown', 'unstructured']);
+  $('#x-libs').replaceChildren(...LIBS.map((l) => el('label', { class: 'lib' + (l.off ? ' off' : '') }, el('input', { type: 'checkbox', value: l.id, disabled: !!l.off, checked: !l.off && sel.includes(l.id) }),
+    el('span', {}, el('b', {}, l.name), ' ', el('span', { class: 'pill' + (l.tier === 'base' ? ' good' : l.tier === 'standard' ? ' accent' : ' warn') }, l.tier), el('div', { class: 'note' }, l.off ? 'Server only: ' + l.off : l.note)))));
+}
+function run() {
+  if (!pages) return;
+  const sel = $$('#x-libs input:checked').map((i) => i.value); store.set('ps:sel', sel); results = {};
+  for (const id of sel) { const l = LIBS.find((x) => x.id === id), t0 = performance.now(), out = l.run(pages); results[id] = { out, ms: performance.now() - t0, lib: l }; }
+  RUNS.unshift({ file: fileName, at: Date.now(), libs: sel, sizes: sel.map((id) => results[id].out.length) }); RUNS.splice(30); store.set('ps:runs', RUNS);
+  const textOf = (r) => r.lib.fmt === 'json' ? JSON.parse(r.out).map((e) => e.text).join('\n') : r.out;
+  const ids = Object.keys(results), base = ids[0] && Text.tfidf(ids.map((id) => textOf(results[id])));
+  $('#x-stats').replaceChildren(el('tr', {}, ...['Library', 'Format', 'Time', 'Characters', 'Words', 'Headings', 'Tables', 'Similarity to first'].map((h) => el('th', {}, h))),
+    ...ids.map((id, i) => { const r = results[id], t = textOf(r); return el('tr', {}, el('td', {}, el('b', {}, r.lib.name)), el('td', {}, r.lib.fmt), el('td', {}, fmt(r.ms, 1) + ' ms'), el('td', {}, fmt(r.out.length)), el('td', {}, fmt(Text.words(t))),
+      el('td', {}, r.lib.fmt === 'json' ? JSON.parse(r.out).filter((e) => e.type === 'Title').length : (r.out.match(/^#+ /gm) || []).length), el('td', {}, r.lib.fmt === 'json' ? JSON.parse(r.out).filter((e) => e.type === 'Table').length : (r.out.match(/^\|.*\|\n\|[-|: ]+\|/gm) || []).length), el('td', {}, i ? fmt(Text.cos(base[0], base[i]), 3) : '—')); }));
+  view();
+  $('#c-src').replaceChildren(...ids.map((id) => el('option', { value: id }, results[id].lib.name)));
+}
+function mdHtml(md) {
+  const esc2 = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  return md.split(/\n\n+/).map((b) => { if (/^#{1,6} /.test(b)) { const n = b.match(/^#+/)[0].length; return `<h${Math.min(n, 3)}>${esc2(b.replace(/^#+\s*/, ''))}</h${Math.min(n, 3)}>`; } if (/^\|/.test(b)) { const rows = b.split('\n').filter((r) => !/^\|[-|: ]+\|$/.test(r)); return '<table>' + rows.map((r, i) => '<tr>' + r.split('|').slice(1, -1).map((c) => `<${i ? 'td' : 'th'}>${esc2(c.trim())}</${i ? 'td' : 'th'}>`).join('') + '</tr>').join('') + '</table>'; } return `<p>${esc2(b)}</p>`; }).join('');
+}
+function view() {
+  const rendered = $('#x-view').value === 'rendered';
+  $('#x-cols').replaceChildren(...Object.entries(results).map(([id, r]) => el('div', { class: 'panel' }, el('header', {}, el('h2', { class: 'grow' }, r.lib.name), el('button', { class: 'btn small', onclick: () => copyText(r.out, 'Output copied') }, 'Copy')),
+    rendered && r.lib.fmt === 'markdown' ? el('div', { class: 'md', html: mdHtml(r.out) }) : el('pre', { class: 'out' }, r.out))));
+}
+function chunk() {
+  const r = results[$('#c-src').value]; if (!r) return;
+  const doc = r.lib.fmt === 'json' ? JSON.parse(r.out).map((e) => e.text).join('\n\n') : r.out.replace(/\f/g, '\n'), size = +$('#c-size').value, k = $('#c-kind').value;
+  const ch = k === 'token' ? Chunkers.token_based(doc, { max_tokens: Math.round(size / 6) }) : k === 'sentence' ? pack(doc, Text.sentences(doc), size, 'sentence') : k === 'semantic' ? Chunkers.semantic(doc, { max_chars: size * 2 }) : k === 'table' ? Chunkers.table_aware(doc, { max_chars: size }) : k === 'sliding' ? Chunkers.sliding_window(doc, { window: size, step: Math.round(size * 0.8) }) : Chunkers.recursive(doc, { max_chars: size });
+  const st = Metrics.size_stats(ch);
+  $('#c-kpis').replaceChildren(el('div', { class: 'kpi' }, el('b', {}, ch.length), el('span', {}, 'chunks')), el('div', { class: 'kpi' }, el('b', {}, fmt(st.mean)), el('span', {}, 'mean characters')), el('div', { class: 'kpi' }, el('b', {}, fmt(Metrics.semantic_coherence(ch), 2)), el('span', {}, 'coherence')), el('div', { class: 'kpi' }, el('b', {}, fmt(Metrics.boundary_quality(ch) * 100) + '%'), el('span', {}, 'clean boundaries')));
+  renderOverlay($('#c-over'), doc, ch); renderChunkCards($('#c-list'), ch);
+}
+function library() {
+  $('#l-table').replaceChildren(el('tr', {}, el('th', {}, 'When'), el('th', {}, 'File'), el('th', {}, 'Libraries'), el('th', {}, 'Output sizes (chars)')),
+    ...(RUNS.length ? RUNS.map((r) => el('tr', {}, el('td', { class: 'mono' }, new Date(r.at).toLocaleString()), el('td', {}, r.file), el('td', {}, r.libs.join(', ')), el('td', {}, r.sizes.map((s) => fmt(s)).join(' / ')))) : [el('tr', {}, el('td', { colspan: 4, class: 'note' }, 'No runs yet.'))]));
+}
+$('#x-run').onclick = run; $('#x-view').onchange = view;
+['#c-src', '#c-kind', '#c-size'].forEach((x) => $(x).addEventListener('input', chunk));
+$('#x-up').onchange = async (e) => { const f = e.target.files[0]; if (f) load(new Uint8Array(await f.arrayBuffer()), f.name); };
+initTabs((n) => { if (n === 'chunk') chunk(); if (n === 'library') library(); });
+libs(); load(b64bytes(SAMPLES.pdf), 'service_agreement.pdf');
+</script>
