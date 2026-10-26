@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Systems</title>
+<style>
+  :root {
+    --bg: #f4f5f7; --card: #fff; --ink: #16181d; --muted: #5d6470; --line: #dfe2e8;
+    --accent: #3451b2; --accent-ink: #fff; --up: #1d7a46; --up-bg: #e3f4ea; --wait: #8a5a00; --wait-bg: #fbf0d9;
+    --down: #a3262a; --down-bg: #fbe5e5; --ext: #4b4f8a; --ext-bg: #e8e9f7; --code: #f0f1f4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111317; --card: #1a1d23; --ink: #e7e9ee; --muted: #9aa1ad; --line: #2c3039;
+      --accent: #7d97ef; --accent-ink: #0d1020; --up: #6fd49a; --up-bg: #173525; --wait: #f0c46a; --wait-bg: #3a2e12;
+      --down: #f08c8f; --down-bg: #3d1c1d; --ext: #b4b8f2; --ext-bg: #262947; --code: #23262e;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding: 28px 16px 8px; max-width: 1180px; margin: 0 auto; }
+  h1 { margin: 0; font-size: 22px; }
+  header p { margin: 4px 0 0; color: var(--muted); }
+  main { max-width: 1180px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  h2 { margin: 0; font-size: 17px; }
+  .pill { font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 99px; white-space: nowrap; }
+  .up { color: var(--up); background: var(--up-bg); } .starting { color: var(--wait); background: var(--wait-bg); }
+  .down, .error { color: var(--down); background: var(--down-bg); } .external { color: var(--ext); background: var(--ext-bg); }
+  .what { margin: 0; }
+  .note { margin: 0; color: var(--muted); font-size: 13.5px; }
+  .login { font-size: 13px; color: var(--muted); }
+  .login code { background: var(--code); padding: 1px 6px; border-radius: 4px; color: var(--ink); }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 4px; }
+  a.btn, button { font: inherit; font-size: 14px; border-radius: 7px; padding: 7px 14px; cursor: pointer; text-decoration: none; border: 1px solid var(--line); background: transparent; color: var(--ink); }
+  a.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  a.btn[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+  button:hover, a.btn:hover { border-color: var(--accent); }
+  pre { margin: 0; max-height: 260px; overflow: auto; background: var(--code); border-radius: 7px; padding: 10px; font-size: 12px; white-space: pre-wrap; word-break: break-word; }
+  .src { font-size: 13px; color: var(--muted); }
+  .src a { color: inherit; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Systems</h1>
+  <p>Each system runs here with its own backend. Open one to use it.</p>
+</header>
+<main id="grid"></main>
+<script>
+const LABEL = { up: 'Running', starting: 'Starting…', down: 'Stopped', error: 'Error', external: 'Hosted by SoMark' };
+const open = new Set();
+const el = (tag, props = {}, ...kids) => { const n = Object.assign(document.createElement(tag), props); n.append(...kids.filter(Boolean)); return n; };
+
+function href(s) {
+  if (s.state === 'external') return s.url;
+  // Codespaces gives each port its own host; elsewhere use this host's port.
+  const base = s.url || `${location.protocol}//${location.hostname}:${s.port}`;
+  return base + (s.path || '');
+}
+
+function card(s) {
+  const log = el('pre', { hidden: !open.has(s.id) });
+  if (open.has(s.id)) fetch(`/api/logs/${s.id}`).then((r) => r.text()).then((t) => { log.textContent = t; log.scrollTop = log.scrollHeight; });
+  const usable = s.state === 'up' || s.state === 'external';
+  const actions = el('div', { className: 'actions' },
+    el('a', { className: 'btn primary', href: href(s), target: '_blank', rel: 'noopener', textContent: 'Open', ariaDisabled: String(!usable) }),
+    ...(s.extra || []).map((x) => el('a', { className: 'btn', href: href({ ...s, path: x.path }), target: '_blank', rel: 'noopener', textContent: x.label, ariaDisabled: String(!usable) })),
+  );
+  if (s.port) {
+    actions.append(
+      el('button', { textContent: open.has(s.id) ? 'Hide log' : 'Log', onclick: () => { open.has(s.id) ? open.delete(s.id) : open.add(s.id); refresh(); } }),
+      el('button', { textContent: 'Restart', onclick: async (e) => { e.target.disabled = true; await fetch(`/api/restart/${s.id}`, { method: 'POST' }); setTimeout(refresh, 1500); } }),
+    );
+  }
+  return el('section', { className: 'card' },
+    el('div', { className: 'top' }, el('h2', { textContent: s.name }), el('span', { className: `pill ${s.state}`, textContent: LABEL[s.state] })),
+    el('p', { className: 'what', textContent: s.what }),
+    s.note && el('p', { className: 'note', textContent: s.note }),
+    s.login && el('div', { className: 'login' }, 'Login ', el('code', { textContent: s.login })),
+    actions,
+    log,
+    el('div', { className: 'src' }, el('a', { href: s.upstream, target: '_blank', rel: 'noopener', textContent: 'Upstream project' }), s.port ? ` · port ${s.port}` : ''),
+  );
+}
+
+async function refresh() {
+  try {
+    const systems = await (await fetch('/api/status')).json();
+    document.getElementById('grid').replaceChildren(...systems.map(card));
+  } catch { /* portal restarting; next tick retries */ }
+}
+refresh();
+setInterval(refresh, 5000);
+</script>
+</body>
+</html>

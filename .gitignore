@@ -11,3 +11,7 @@ systems/*/rag_storage/
 __pycache__/
 *.pyc
 .env
+
+# start.sh state and the Workbench data
+.run/
+systems/rag-anything/data/

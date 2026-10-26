@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChunckerFlow Studio</title>
+<style>
+/* Layout: workbench. Document and settings on the left, results on the right. */
+:root {
+  --bg: #f3f4f1; --panel: #ffffff; --ink: #1a1f1d; --muted: #5f6964; --line: #d9ddd8;
+  --accent: #2f6b4f; --accent-soft: #e2efe7; --bad: #b3261e; --mark: #f4e7b8;
+  --f-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --bg: #121513; --panel: #1a1e1c; --ink: #e4e8e5; --muted: #9aa49f; --line: #2c3330;
+  --accent: #7fcca5; --accent-soft: #1e3329; --bad: #f08a80; --mark: #4a3f17; color-scheme: dark; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 var(--f-body); }
+header { display: flex; align-items: center; gap: 16px; padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--panel); flex-wrap: wrap; }
+header h1 { margin: 0; font-size: 1.05rem; }
+header .sub { color: var(--muted); font-size: 0.85rem; }
+header nav { margin-left: auto; display: flex; gap: 14px; font-size: 0.85rem; }
+a { color: var(--accent); }
+main { display: grid; grid-template-columns: minmax(300px, 420px) 1fr; gap: 16px; padding: 16px 20px; }
+@media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+h2 { margin: 0; font-size: 0.95rem; }
+label { display: grid; gap: 4px; font-size: 0.8rem; color: var(--muted); }
+textarea, input, select { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; width: 100%; }
+textarea { min-height: 260px; resize: vertical; font-family: var(--f-mono); font-size: 0.8rem; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+button { font: inherit; font-weight: 600; border: 1px solid var(--accent); background: var(--accent); color: var(--panel); border-radius: 6px; padding: 7px 14px; cursor: pointer; }
+button.ghost { background: transparent; color: var(--accent); }
+button:disabled { opacity: 0.5; cursor: default; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); }
+.tabs button { background: none; border: 0; border-bottom: 2px solid transparent; color: var(--muted); border-radius: 0; padding: 8px 12px; }
+.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.stats { display: flex; gap: 18px; flex-wrap: wrap; font-size: 0.85rem; color: var(--muted); }
+.stats b { color: var(--ink); font-size: 1.1rem; font-variant-numeric: tabular-nums; }
+.chunks { display: grid; gap: 8px; }
+.chunk { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; background: var(--bg); }
+.chunk .meta { font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; display: flex; gap: 12px; }
+.chunk pre { margin: 0; white-space: pre-wrap; word-break: break-word; font: 0.8rem/1.45 var(--f-mono); }
+.chunk mark { background: var(--mark); color: inherit; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+.bar { height: 6px; background: var(--accent-soft); border-radius: 3px; margin-top: 4px; }
+.bar i { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
+.best { font-weight: 700; color: var(--accent); }
+.msg { padding: 10px 12px; border-radius: 6px; background: var(--accent-soft); font-size: 0.85rem; }
+.msg.err { background: transparent; border: 1px solid var(--bad); color: var(--bad); }
+.empty { color: var(--muted); padding: 24px 0; text-align: center; }
+.cmp-list { display: grid; gap: 6px; }
+.cmp-list label { display: flex; gap: 8px; align-items: center; color: var(--ink); font-size: 0.85rem; }
+.cmp-list input { width: auto; }
+</style>
+</head>
+<body>
+<header>
+  <h1>ChunckerFlow Studio</h1>
+  <span class="sub" id="status">Connecting to the ChunckerFlow API…</span>
+  <nav><a href="/api/docs" target="_blank" rel="noopener">API docs</a><a href="https://github.com/guybass/chunckerflow" target="_blank" rel="noopener">Upstream</a></nav>
+</header>
+
+<main>
+  <section class="panel" aria-label="Input">
+    <h2>Document</h2>
+    <textarea id="text" aria-label="Document text" placeholder="Paste a document, or load the sample agreement."></textarea>
+    <div class="row"><button class="ghost" id="load-sample" type="button">Load sample agreement</button><span class="sub" id="text-size"></span></div>
+
+    <h2>Strategy</h2>
+    <label>Chunking strategy <select id="strategy"></select></label>
+    <div class="grid2" id="config"></div>
+    <div class="row">
+      <button id="run-chunk" type="button">Chunk</button>
+      <button class="ghost" id="run-score" type="button">Chunk and score</button>
+    </div>
+    <label>Embedding provider for scoring <select id="provider"></select></label>
+    <p class="sub" id="provider-note"></p>
+  </section>
+
+  <section class="panel" aria-label="Results">
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="chunks" type="button">Chunks</button>
+      <button role="tab" aria-selected="false" data-tab="scores" type="button">Scores</button>
+      <button role="tab" aria-selected="false" data-tab="compare" type="button">Compare strategies</button>
+    </div>
+    <div id="tab-chunks">
+      <div class="stats" id="chunk-stats"></div>
+      <div class="chunks" id="chunks"><p class="empty">Run a strategy to see its chunks here.</p></div>
+    </div>
+    <div id="tab-scores" hidden>
+      <div id="scores"><p class="empty">Use “Chunk and score” to rate the chunks with embedding-based quality metrics.</p></div>
+    </div>
+    <div id="tab-compare" hidden>
+      <p class="sub">Chunks the same document with each selected strategy and ranks them on the same metrics.</p>
+      <div class="cmp-list" id="cmp-list"></div>
+      <div class="row"><button id="run-compare" type="button">Compare</button></div>
+      <div id="compare"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const API = '/api';
+const METRICS = ['semantic_coherence', 'boundary_quality', 'chunk_stickiness', 'topic_diversity'];
+const LABELS = {
+  semantic_coherence: 'Semantic coherence', boundary_quality: 'Boundary quality',
+  chunk_stickiness: 'Chunk stickiness', topic_diversity: 'Topic diversity',
+};
+let strategies = [];
+let providers = [];
+let lastChunks = [];
+
+async function api(path, body) {
+  const res = await fetch(API + path, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : {});
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.detail || data.error || `${res.status} ${res.statusText}`);
+  return data;
+}
+const el = (tag, props = {}, ...kids) => { const n = Object.assign(document.createElement(tag), props); kids.forEach((k) => k != null && n.append(k)); return n; };
+const msg = (target, text, err) => target.replaceChildren(el('p', { className: 'msg' + (err ? ' err' : ''), textContent: text }));
+
+function showTab(name) {
+  document.querySelectorAll('[role=tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === name)));
+  ['chunks', 'scores', 'compare'].forEach((t) => { $('#tab-' + t).hidden = t !== name; });
+}
+document.querySelectorAll('[role=tab]').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)));
+
+function configFields(name) {
+  const s = strategies.find((x) => x.name === name);
+  const box = $('#config');
+  box.replaceChildren();
+  Object.entries(s?.default_config || {}).forEach(([key, value]) => {
+    if (typeof value === 'object' && value !== null) return;
+    const input = el('input', { id: 'cfg-' + key, value: String(value) });
+    if (typeof value === 'number') input.type = 'number';
+    if (typeof value === 'boolean') { input.type = 'checkbox'; input.checked = value; }
+    input.dataset.kind = typeof value;
+    box.append(el('label', { textContent: key.replaceAll('_', ' ') }, input));
+  });
+  if (!box.children.length) box.append(el('p', { className: 'sub', textContent: 'This strategy has no settings.' }));
+}
+function readConfig() {
+  const cfg = {};
+  $('#config').querySelectorAll('input').forEach((i) => {
+    const key = i.id.slice(4);
+    cfg[key] = i.dataset.kind === 'number' ? Number(i.value) : i.dataset.kind === 'boolean' ? i.checked : i.value;
+  });
+  return cfg;
+}
+
+function renderChunks(res) {
+  lastChunks = res.chunks;
+  const sizes = res.chunks.map((c) => c.length);
+  $('#chunk-stats').replaceChildren(
+    el('span', {}, el('b', { textContent: res.num_chunks }), ' chunks'),
+    el('span', {}, el('b', { textContent: sizes.length ? Math.min(...sizes) + '–' + Math.max(...sizes) : '—' }), ' characters each'),
+    el('span', {}, el('b', { textContent: res.processing_time_ms.toFixed(1) }), ' ms'),
+    el('span', { textContent: `${res.strategy} v${res.strategy_version}` }),
+  );
+  $('#chunks').replaceChildren(...res.chunks.map((text, i) => {
+    const next = res.chunks[i + 1] || '';
+    let overlap = 0;
+    for (let k = Math.min(text.length, next.length, 400); k > 8; k--) { if (text.endsWith(next.slice(0, k))) { overlap = k; break; } }
+    const pre = el('pre');
+    if (overlap) pre.append(text.slice(0, -overlap), el('mark', { title: 'Repeated at the start of the next chunk', textContent: text.slice(-overlap) }));
+    else pre.textContent = text;
+    return el('div', { className: 'chunk' },
+      el('div', { className: 'meta' }, el('span', { textContent: `#${i + 1}` }), el('span', { textContent: `${text.length} chars` }), overlap ? el('span', { textContent: `${overlap} chars overlap` }) : null),
+      pre);
+  }));
+}
+
+async function chunk() {
+  const text = $('#text').value;
+  if (!text.trim()) { msg($('#chunks'), 'Add some text first.', true); return null; }
+  try {
+    const res = await api('/chunk', { text, strategy: $('#strategy').value, config: readConfig() });
+    renderChunks(res);
+    return res;
+  } catch (e) { msg($('#chunks'), 'Chunking failed: ' + e.message, true); return null; }
+}
+
+function scoreRows(results) {
+  return Object.entries(results).map(([name, r]) => el('tr', {},
+    el('td', { textContent: LABELS[name] || name }),
+    el('td', {}, el('span', { textContent: Number(r.score).toFixed(3) }), el('div', { className: 'bar' }, el('i', { style: `width:${Math.max(0, Math.min(1, r.score)) * 100}%` }))),
+  ));
+}
+
+async function score() {
+  showTab('scores');
+  const provider = $('#provider').value;
+  if (!provider) { msg($('#scores'), 'No embedding provider is available. Run setup.sh --full for local models, or set OPENAI_API_KEY.', true); return; }
+  msg($('#scores'), 'Chunking and embedding… the first run downloads the embedding model.');
+  const res = await chunk();
+  if (!res) { msg($('#scores'), 'Chunking failed; see the Chunks tab.', true); return; }
+  try {
+    const emb = await api('/embed', { texts: res.chunks, provider });
+    const ev = await api('/evaluate', { chunks: res.chunks, embeddings: emb.embeddings, metrics: METRICS });
+    $('#scores').replaceChildren(
+      el('p', { className: 'sub', textContent: `${res.num_chunks} chunks from ${res.strategy}, embedded with ${emb.model} (${emb.dimensions} dimensions).` }),
+      el('table', {}, el('thead', {}, el('tr', {}, el('th', { textContent: 'Metric' }), el('th', { textContent: 'Score (0–1)' }))), el('tbody', {}, ...scoreRows(ev.results))),
+    );
+  } catch (e) { msg($('#scores'), 'Scoring failed: ' + e.message, true); }
+}
+
+async function compare() {
+  const picked = [...document.querySelectorAll('#cmp-list input:checked')].map((i) => i.value);
+  const out = $('#compare');
+  if (picked.length < 2) { msg(out, 'Pick at least two strategies.', true); return; }
+  if (!$('#provider').value) { msg(out, 'No embedding provider is available for scoring.', true); return; }
+  msg(out, 'Comparing…');
+  try {
+    const body = {
+      text: $('#text').value,
+      strategies: picked.map((name) => ({ name, config: strategies.find((s) => s.name === name)?.default_config || {} })),
+      embedding_provider: $('#provider').value, metrics: METRICS,
+    };
+    const res = await api('/compare', body);
+    const names = Object.keys(res.strategies);
+    out.replaceChildren(
+      el('p', {}, 'Best overall: ', el('span', { className: 'best', textContent: res.best_strategy || '—' })),
+      el('table', {},
+        el('thead', {}, el('tr', {}, el('th', { textContent: 'Strategy' }), el('th', { textContent: 'Chunks' }), ...METRICS.map((m) => el('th', { textContent: LABELS[m] })))),
+        el('tbody', {}, ...names.map((n) => el('tr', {},
+          el('td', { className: n === res.best_strategy ? 'best' : '', textContent: n }),
+          el('td', { textContent: res.strategies[n].num_chunks }),
+          ...METRICS.map((m) => el('td', { textContent: res.strategies[n].metric_results[m] ? Number(res.strategies[n].metric_results[m].score).toFixed(3) : '—' })),
+        )))),
+      el('p', { className: 'sub', textContent: `Each strategy runs with its default settings. ${res.processing_time_ms.toFixed(0)} ms.` }),
+    );
+  } catch (e) { msg(out, 'Compare failed: ' + e.message, true); }
+}
+
+$('#load-sample').addEventListener('click', async () => { $('#text').value = await (await fetch('/sample')).text(); $('#text').dispatchEvent(new Event('input')); });
+$('#text').addEventListener('input', () => { $('#text-size').textContent = `${$('#text').value.length.toLocaleString()} characters`; });
+$('#strategy').addEventListener('change', () => configFields($('#strategy').value));
+$('#run-chunk').addEventListener('click', () => { showTab('chunks'); chunk(); });
+$('#run-score').addEventListener('click', score);
+$('#run-compare').addEventListener('click', compare);
+
+(async () => {
+  try {
+    const [health, strat] = await Promise.all([api('/health'), api('/strategies')]);
+    strategies = strat.strategies;
+    providers = health.available_providers;
+    $('#strategy').replaceChildren(...strategies.map((s) => new Option(s.name.replace('_', ' '), s.name)));
+    $('#strategy').value = strategies.some((s) => s.name === 'recursive') ? 'recursive' : strategies[0].name;
+    configFields($('#strategy').value);
+    const order = ['huggingface', 'openai'].filter((p) => providers.includes(p));
+    $('#provider').replaceChildren(...order.map((p) => new Option(p === 'huggingface' ? 'Local model (sentence-transformers)' : 'OpenAI (needs OPENAI_API_KEY)', p)));
+    if (!order.length) $('#provider').append(new Option('None available', ''));
+    $('#provider-note').textContent = providers.includes('huggingface') ? '' : 'Local embeddings need setup.sh --full (sentence-transformers).';
+    $('#cmp-list').replaceChildren(...strategies.map((s) => el('label', {}, el('input', { type: 'checkbox', value: s.name, checked: ['fixed_size', 'recursive', 'markdown'].includes(s.name) }), s.name.replace('_', ' '))));
+    $('#status').textContent = `API ${health.status} · v${health.version} · ${strategies.length} strategies`;
+    $('#load-sample').click();
+  } catch (e) { $('#status').textContent = 'Cannot reach the ChunckerFlow API: ' + e.message; }
+})();
+</script>
+</body>
+</html>

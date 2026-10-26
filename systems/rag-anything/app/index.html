@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG-Anything Workbench</title>
+<style>
+/* Layout: documents and questions on the left, the knowledge graph on the right. */
+:root {
+  --bg: #f2f3f5; --panel: #ffffff; --ink: #191c22; --muted: #5e6572; --line: #d8dbe1;
+  --accent: #3d55b8; --accent-soft: #e4e8f7; --ok: #2c7a3f; --bad: #b3261e; --warn: #8a5a00;
+  --f-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --bg: #121418; --panel: #1a1d23; --ink: #e5e8ee; --muted: #9aa1ad; --line: #2c3039;
+  --accent: #93a6ff; --accent-soft: #232b4a; --ok: #79c98b; --bad: #f08a80; --warn: #e3b55a; color-scheme: dark; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 var(--f-body); }
+header { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 20px; background: var(--panel); border-bottom: 1px solid var(--line); }
+header h1 { margin: 0; font-size: 1.05rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 0.78rem; padding: 2px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--ink); }
+.chip.off { background: transparent; border: 1px solid var(--line); color: var(--muted); }
+header nav { margin-left: auto; font-size: 0.85rem; display: flex; gap: 14px; }
+a { color: var(--accent); }
+main { display: grid; grid-template-columns: minmax(320px, 440px) 1fr; gap: 16px; padding: 16px 20px; min-height: calc(100vh - 56px); }
+@media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+.col { display: grid; gap: 16px; align-content: start; min-width: 0; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: grid; gap: 10px; min-width: 0; }
+h2 { margin: 0; font-size: 0.95rem; }
+.sub { color: var(--muted); font-size: 0.82rem; margin: 0; }
+.drop { border: 1.5px dashed var(--line); border-radius: 8px; padding: 18px; text-align: center; cursor: pointer; color: var(--muted); }
+.drop.over { border-color: var(--accent); background: var(--accent-soft); }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+button, select, textarea { font: inherit; color: var(--ink); }
+button { font-weight: 600; border: 1px solid var(--accent); background: var(--accent); color: var(--panel); border-radius: 6px; padding: 7px 14px; cursor: pointer; }
+button.ghost { background: transparent; color: var(--accent); }
+button:disabled { opacity: 0.5; cursor: default; }
+select, textarea { background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; }
+textarea { width: 100%; min-height: 70px; resize: vertical; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.docs { display: grid; gap: 6px; max-height: 260px; overflow: auto; }
+.doc { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; }
+.doc b { font-weight: 600; overflow-wrap: anywhere; }
+.doc .err { grid-column: 1 / -1; color: var(--bad); font-size: 0.8rem; overflow-wrap: anywhere; }
+.st { font-size: 0.78rem; font-weight: 600; }
+.st.done { color: var(--ok); } .st.failed { color: var(--bad); } .st.processing, .st.queued { color: var(--warn); }
+.answer { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--bg); border-radius: 6px; padding: 12px; max-height: 420px; overflow: auto; }
+.answer:empty { display: none; }
+.msg { padding: 10px 12px; border-radius: 6px; background: var(--accent-soft); font-size: 0.85rem; margin: 0; }
+.msg.err { background: transparent; border: 1px solid var(--bad); color: var(--bad); }
+.graph-panel { grid-template-rows: auto 1fr auto; min-height: 560px; }
+canvas { width: 100%; height: 100%; min-height: 440px; background: var(--bg); border-radius: 6px; cursor: grab; touch-action: none; }
+.detail { font-size: 0.85rem; min-height: 3em; overflow-wrap: anywhere; }
+.detail b { display: block; }
+</style>
+</head>
+<body>
+<header>
+  <h1>RAG-Anything Workbench</h1>
+  <div class="chips" id="chips"></div>
+  <nav><a href="/docs" target="_blank" rel="noopener">API</a><a href="https://github.com/HKUDS/RAG-Anything" target="_blank" rel="noopener">Upstream</a></nav>
+</header>
+<main>
+  <div class="col">
+    <section class="panel" aria-labelledby="h-docs">
+      <h2 id="h-docs">Documents</h2>
+      <p class="sub" id="parse-note"></p>
+      <div class="drop" id="drop" tabindex="0" role="button" aria-label="Upload a document">Drop a document here or click to choose one</div>
+      <input type="file" id="file" hidden>
+      <div class="row"><button class="ghost" id="sample" type="button">Add the sample agreement</button></div>
+      <div class="docs" id="docs"></div>
+    </section>
+    <section class="panel" aria-labelledby="h-ask">
+      <h2 id="h-ask">Ask the knowledge graph</h2>
+      <textarea id="question" aria-label="Question" placeholder="e.g. What is the cap on aggregate liability?"></textarea>
+      <div class="row">
+        <select id="mode" aria-label="Query mode"></select>
+        <button id="ask" type="button">Ask</button>
+        <span class="sub" id="ask-meta"></span>
+      </div>
+      <div class="answer" id="answer"></div>
+    </section>
+  </div>
+  <section class="panel graph-panel" aria-labelledby="h-graph">
+    <div class="row"><h2 id="h-graph">Knowledge graph</h2><span class="sub" id="graph-meta"></span><button class="ghost" id="refresh-graph" type="button">Refresh</button></div>
+    <canvas id="canvas" aria-label="Knowledge graph. Drag to move nodes; click a node for details."></canvas>
+    <div class="detail" id="detail"><span class="sub">Click an entity to see what the graph knows about it.</span></div>
+  </section>
+</main>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const el = (tag, props = {}, ...kids) => { const n = Object.assign(document.createElement(tag), props); kids.forEach((k) => k != null && n.append(k)); return n; };
+const MODE_HELP = { hybrid: 'hybrid: entities + themes', local: 'local: specific entities', global: 'global: broad themes', naive: 'naive: plain vector search', mix: 'mix: graph + vectors' };
+let status = null;
+
+async function api(path, opts) {
+  const res = await fetch(path, opts);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.detail || `${res.status} ${res.statusText}`);
+  return data;
+}
+
+async function loadStatus() {
+  status = await api('/api/status');
+  const chip = (text, on = true) => el('span', { className: 'chip' + (on ? '' : ' off'), textContent: text });
+  $('#chips').replaceChildren(
+    chip(status.llm ? 'LLM: ' + status.llm : 'No model configured', !!status.llm),
+    chip(status.embedding ? 'Embeddings: ' + status.embedding : 'No embeddings', !!status.embedding),
+    chip(status.parser ? 'Parser: ' + status.parser : 'No document parser', !!status.parser),
+    chip(status.vision ? 'Image understanding on' : 'Image understanding off', status.vision),
+  );
+  $('#parse-note').textContent = !status.ready
+    ? 'Set ANTHROPIC_API_KEY or OPENAI_API_KEY, then restart the Workbench.'
+    : status.parser ? 'PDF, Word, PowerPoint, Excel, images, Markdown and text. Large PDFs take a few minutes on CPU.'
+    : 'Markdown and text work now. PDFs, Office files and images need MinerU (setup.sh --full).';
+  ['#drop', '#sample', '#ask'].forEach((s) => { $(s).toggleAttribute('disabled', !status.ready); });
+  if (!$('#mode').options.length) $('#mode').replaceChildren(...status.modes.map((m) => new Option(MODE_HELP[m] || m, m)));
+}
+
+async function loadDocs() {
+  const docs = await api('/api/documents');
+  $('#docs').replaceChildren(...(docs.length ? docs.map((d) => el('div', { className: 'doc' },
+    el('b', { textContent: d.name }),
+    el('span', { className: 'st ' + d.status, textContent: d.status === 'processing' ? 'building graph…' : d.status }),
+    d.error ? el('span', { className: 'err', textContent: d.error }) : null,
+  )) : [el('p', { className: 'sub', textContent: 'No documents yet.' })]));
+  return docs;
+}
+
+async function upload(file) {
+  const body = new FormData();
+  body.append('file', file);
+  try { await api('/api/documents', { method: 'POST', body }); } catch (e) { $('#docs').prepend(el('p', { className: 'msg err', textContent: e.message })); }
+  poll();
+}
+$('#drop').addEventListener('click', () => $('#file').click());
+$('#drop').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('#file').click(); } });
+$('#file').addEventListener('change', () => { if ($('#file').files[0]) upload($('#file').files[0]); $('#file').value = ''; });
+['dragenter', 'dragover'].forEach((t) => $('#drop').addEventListener(t, (e) => { e.preventDefault(); $('#drop').classList.add('over'); }));
+['dragleave', 'drop'].forEach((t) => $('#drop').addEventListener(t, (e) => { e.preventDefault(); $('#drop').classList.remove('over'); }));
+$('#drop').addEventListener('drop', (e) => { if (e.dataTransfer.files[0]) upload(e.dataTransfer.files[0]); });
+$('#sample').addEventListener('click', async () => { try { await api('/api/sample', { method: 'POST' }); } catch (e) { alertDocs(e); } poll(); });
+const alertDocs = (e) => $('#docs').prepend(el('p', { className: 'msg err', textContent: e.message }));
+
+let polling = null;
+async function poll() {
+  clearTimeout(polling);
+  const docs = await loadDocs().catch(() => []);
+  if (docs.some((d) => d.status === 'queued' || d.status === 'processing')) polling = setTimeout(poll, 3000);
+  else loadGraph();
+}
+
+$('#ask').addEventListener('click', async () => {
+  const question = $('#question').value.trim();
+  if (!question) return;
+  $('#ask').disabled = true;
+  $('#answer').textContent = '';
+  $('#ask-meta').textContent = 'Thinking…';
+  try {
+    const r = await api('/api/query', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question, mode: $('#mode').value }) });
+    $('#answer').textContent = r.answer;
+    $('#ask-meta').textContent = `${r.mode} · ${r.seconds}s`;
+  } catch (e) { $('#answer').textContent = ''; $('#ask-meta').textContent = ''; $('#answer').append(el('p', { className: 'msg err', textContent: e.message })); }
+  $('#ask').disabled = !status?.ready;
+});
+
+/* ---- knowledge graph: a small force layout on canvas ---- */
+const canvas = $('#canvas');
+const ctx = canvas.getContext('2d');
+let nodes = [], edges = [], byId = new Map(), selected = null, drag = null, alpha = 0;
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const typeColor = (() => { const cache = new Map(); const hues = [222, 158, 28, 330, 268, 190, 0, 96]; return (t) => { if (!cache.has(t)) cache.set(t, `hsl(${hues[cache.size % hues.length]} 55% 52%)`); return cache.get(t); }; })();
+
+function resize() {
+  const r = canvas.getBoundingClientRect();
+  canvas.width = r.width * devicePixelRatio; canvas.height = r.height * devicePixelRatio;
+  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  draw();
+}
+new ResizeObserver(resize).observe(canvas);
+
+async function loadGraph() {
+  const g = await api('/api/graph?limit=250').catch(() => ({ nodes: [], edges: [] }));
+  const r = canvas.getBoundingClientRect();
+  const old = byId;
+  nodes = g.nodes.map((n, i) => {
+    const prev = old.get(n.id);
+    const a = (i / Math.max(1, g.nodes.length)) * Math.PI * 2;
+    return { ...n, x: prev?.x ?? r.width / 2 + Math.cos(a) * r.width * 0.3, y: prev?.y ?? r.height / 2 + Math.sin(a) * r.height * 0.3, vx: 0, vy: 0, r: 4 + Math.min(10, Math.sqrt(n.degree) * 2) };
+  });
+  byId = new Map(nodes.map((n) => [n.id, n]));
+  edges = g.edges.filter((e) => byId.has(e.source) && byId.has(e.target));
+  $('#graph-meta').textContent = g.total_nodes ? `${g.total_nodes} entities, ${g.total_edges} relations${g.total_nodes > nodes.length ? ` (showing the ${nodes.length} most connected)` : ''}` : 'Empty until a document is processed.';
+  alpha = 1; tick();
+}
+
+function tick() {
+  if (alpha < 0.01) { draw(); return; }
+  const r = canvas.getBoundingClientRect();
+  const cx = r.width / 2, cy = r.height / 2;
+  for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
+    const a = nodes[i], b = nodes[j];
+    let dx = b.x - a.x, dy = b.y - a.y, d2 = dx * dx + dy * dy + 0.01;
+    const f = 900 / d2;
+    a.vx -= dx * f * 0.05; a.vy -= dy * f * 0.05; b.vx += dx * f * 0.05; b.vy += dy * f * 0.05;
+  }
+  for (const e of edges) {
+    const a = byId.get(e.source), b = byId.get(e.target);
+    const dx = b.x - a.x, dy = b.y - a.y, d = Math.sqrt(dx * dx + dy * dy) || 1, f = (d - 70) * 0.01;
+    a.vx += dx / d * f; a.vy += dy / d * f; b.vx -= dx / d * f; b.vy -= dy / d * f;
+  }
+  for (const n of nodes) {
+    if (n === drag) continue;
+    n.vx += (cx - n.x) * 0.002; n.vy += (cy - n.y) * 0.002;
+    n.x += n.vx * alpha; n.y += n.vy * alpha; n.vx *= 0.6; n.vy *= 0.6;
+    n.x = Math.max(n.r, Math.min(r.width - n.r, n.x)); n.y = Math.max(n.r, Math.min(r.height - n.r, n.y));
+  }
+  alpha *= 0.985;
+  draw();
+  requestAnimationFrame(tick);
+}
+
+function draw() {
+  const r = canvas.getBoundingClientRect();
+  ctx.clearRect(0, 0, r.width, r.height);
+  ctx.strokeStyle = css('--line'); ctx.lineWidth = 1;
+  for (const e of edges) {
+    const a = byId.get(e.source), b = byId.get(e.target);
+    const hot = selected && (a === selected || b === selected);
+    ctx.globalAlpha = selected && !hot ? 0.25 : 1;
+    ctx.strokeStyle = hot ? css('--accent') : css('--line');
+    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  ctx.font = '11px system-ui, sans-serif'; ctx.textAlign = 'center';
+  nodes.forEach((n, i) => {
+    ctx.fillStyle = typeColor(n.type);
+    ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); ctx.fill();
+    if (n === selected) { ctx.strokeStyle = css('--ink'); ctx.lineWidth = 2; ctx.stroke(); ctx.lineWidth = 1; }
+    if (n.degree > 1 || n === selected || nodes.length < 40) { ctx.fillStyle = css('--ink'); ctx.fillText(n.id.length > 28 ? n.id.slice(0, 27) + '…' : n.id, n.x, i % 2 ? n.y + n.r + 13 : n.y - n.r - 4); } // alternate sides so neighbours' labels don't collide
+  });
+}
+
+function hit(e) {
+  const r = canvas.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+  return nodes.find((n) => (n.x - x) ** 2 + (n.y - y) ** 2 <= (n.r + 4) ** 2);
+}
+canvas.addEventListener('pointerdown', (e) => { drag = hit(e); if (drag) { canvas.setPointerCapture(e.pointerId); select(drag); } });
+canvas.addEventListener('pointermove', (e) => { if (!drag) return; const r = canvas.getBoundingClientRect(); drag.x = e.clientX - r.left; drag.y = e.clientY - r.top; alpha = Math.max(alpha, 0.3); tick(); });
+canvas.addEventListener('pointerup', () => { drag = null; });
+
+function select(n) {
+  selected = n;
+  const rel = edges.filter((e) => e.source === n.id || e.target === n.id);
+  $('#detail').replaceChildren(
+    el('b', { textContent: `${n.id}${n.type ? ' · ' + n.type : ''}` }),
+    el('span', { textContent: n.description || 'No description.' }),
+    rel.length ? el('p', { className: 'sub', textContent: 'Related: ' + rel.map((e) => (e.source === n.id ? e.target : e.source)).join(', ') }) : null,
+  );
+  draw();
+}
+$('#refresh-graph').addEventListener('click', loadGraph);
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+
+(async () => {
+  try { await loadStatus(); } catch (e) { $('#chips').replaceChildren(el('span', { className: 'chip off', textContent: 'Server unreachable: ' + e.message })); return; }
+  poll();
+})();
+</script>
+</body>
+</html>

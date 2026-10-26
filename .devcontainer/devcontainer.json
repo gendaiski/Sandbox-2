@@ -1,0 +1,32 @@
+{
+  // Runs every system itself, with the portal on :8080 linking to each one.
+  // A 4-core machine is enough; setup of each system happens on first start
+  // (see start.sh) so the codespace stays small until a system is used.
+  "name": "Sandbox-2 systems",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",
+  "hostRequirements": { "cpus": 4, "memory": "16gb", "storage": "32gb" },
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "22", "pnpmVersion": "10" },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/rust:1": {},
+    "ghcr.io/devcontainers/features/desktop-lite:1": {}
+  },
+  "containerEnv": { "UV_TORCH_BACKEND": "cpu" },
+  "secrets": {
+    "ANTHROPIC_API_KEY": { "description": "Claude for the RAG-Anything Workbench and Flowise (optional)" },
+    "OPENAI_API_KEY": { "description": "OpenAI-compatible models and embeddings (optional)" }
+  },
+  "onCreateCommand": ".devcontainer/on-create.sh",
+  "postStartCommand": "./start.sh",
+  "forwardPorts": [8080, 3000, 9621, 8000, 8001, 8501, 4173, 6080],
+  "portsAttributes": {
+    "8080": { "label": "Portal", "onAutoForward": "openBrowser" },
+    "3000": { "label": "Langfuse" },
+    "9621": { "label": "RAG-Anything Workbench" },
+    "8000": { "label": "PDFStract" },
+    "8001": { "label": "ChunckerFlow Studio" },
+    "8501": { "label": "ChunkNorris" },
+    "4173": { "label": "Prism UI console" },
+    "6080": { "label": "Desktop (OpenFlow)" }
+  }
+}
