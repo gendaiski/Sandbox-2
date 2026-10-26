@@ -534,7 +534,7 @@ function renderChunkCards(container, chunks, { limit = 200, extra } = {}) {
 }
 
 /* ------------------------------------------------------------ graph */
-function forceGraph(canvas, { nodes, edges, color = () => 'var(--e0)', label = (n) => n.id, onSelect } = {}) {
+function forceGraph(canvas, { nodes, edges, color = () => 'var(--e0)', label = (n) => n.id, onSelect, repel = Math.min(2200, 60000 / Math.max(10, nodes.length)), linkLength = 80 } = {}) {
   const ctx = canvas.getContext('2d'); let W = 0, H = 0, selected = null, drag = null, alpha = 1, raf;
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v.replace(/^var\((.*)\)$/, '$1')).trim() || v;
   const byId = new Map(nodes.map((n) => [n.id, n]));
@@ -545,11 +545,11 @@ function forceGraph(canvas, { nodes, edges, color = () => 'var(--e0)', label = (
   function tick() {
     if (alpha > 0.005) {
       for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
-        const a = nodes[i], b = nodes[j]; let dx = b.x - a.x, dy = b.y - a.y; const d2 = dx * dx + dy * dy + 0.01, f = Math.min(2200 / d2, 6);
+        const a = nodes[i], b = nodes[j]; let dx = b.x - a.x, dy = b.y - a.y; const d2 = dx * dx + dy * dy + 0.01, f = Math.min(repel / d2, 6);
         a.vx -= dx * f * 0.05; a.vy -= dy * f * 0.05; b.vx += dx * f * 0.05; b.vy += dy * f * 0.05;
       }
-      for (const e of E) { const dx = e.b.x - e.a.x, dy = e.b.y - e.a.y, d = Math.sqrt(dx * dx + dy * dy) || 1, f = (d - 90) * 0.012; e.a.vx += dx / d * f * d * 0.05; e.a.vy += dy / d * f * d * 0.05; e.b.vx -= dx / d * f * d * 0.05; e.b.vy -= dy / d * f * d * 0.05; }
-      for (const n of nodes) { if (n === drag) continue; n.vx += (W / 2 - n.x) * 0.003; n.vy += (H / 2 - n.y) * 0.003; n.x += n.vx * alpha; n.y += n.vy * alpha; n.vx *= 0.6; n.vy *= 0.6; n.x = Math.max(20, Math.min(W - 20, n.x)); n.y = Math.max(20, Math.min(H - 20, n.y)); }
+      for (const e of E) { const dx = e.b.x - e.a.x, dy = e.b.y - e.a.y, d = Math.sqrt(dx * dx + dy * dy) || 1, f = (d - linkLength) * 0.012; e.a.vx += dx / d * f * d * 0.05; e.a.vy += dy / d * f * d * 0.05; e.b.vx -= dx / d * f * d * 0.05; e.b.vy -= dy / d * f * d * 0.05; }
+      for (const n of nodes) { if (n === drag) continue; n.vx += (W / 2 - n.x) * 0.006; n.vy += (H / 2 - n.y) * 0.006; n.x += n.vx * alpha; n.y += n.vy * alpha; n.vx *= 0.6; n.vy *= 0.6; n.x = Math.max(60, Math.min(W - 60, n.x)); n.y = Math.max(24, Math.min(H - 24, n.y)); }
       alpha *= 0.985;
     }
     draw(); raf = requestAnimationFrame(tick);
@@ -612,6 +612,28 @@ function pdfLines(items) {
     else lines.push({ y: it.y, h: it.h, bold: it.bold, items: [it] });
   }
   return lines.map((l) => { l.items.sort((a, b) => a.x - b.x); l.x = l.items[0].x; l.right = Math.max(...l.items.map((i) => i.x + i.w)); l.text = l.items.map((i, k) => (k && i.x - (l.items[k - 1].x + l.items[k - 1].w) > 1.5 ? (i.x - (l.items[k - 1].x + l.items[k - 1].w) > 14 ? '\t' : ' ') : '') + i.str).join('').replace(/ {2,}/g, ' '); return l; });
+}
+
+/* pdf.js conversion in the spirit of pymupdf4llm: font-size ranks become heading levels */
+function pdfMarkdown(pgs, mode = 'pymupdf') {
+  const lines = pgs.flatMap((p) => pdfLines(p.items).map((l) => ({ ...l, page: p.number, ph: p.height })));
+  if (mode === 'plain') return pgs.map((p) => pdfLines(p.items).map((l) => l.text).join('\n')).join('\n\n');
+  const sizes = {}; lines.forEach((l) => { const s = Math.round(l.h); sizes[s] = (sizes[s] || 0) + l.text.length; });
+  const body = +Object.entries(sizes).sort((a, b) => b[1] - a[1])[0][0];
+  const heads = Object.keys(sizes).map(Number).filter((s) => s > body + 0.5).sort((a, b) => b - a);
+  const out = []; let para = [];
+  const flush = () => { if (para.length) { out.push(para.join(' ').replace(/(\w)- (\w)/g, '$1$2')); para = []; } };
+  lines.forEach((l, i) => {
+    const s = Math.round(l.h), prev = lines[i - 1];
+    if (/^\d+$/.test(l.text.trim()) && (l.y > l.ph - 60)) return; // page numbers
+    const lvl = heads.indexOf(s);
+    if (lvl >= 0 || (l.bold && l.text.length < 80 && s >= body)) { flush(); out.push('#'.repeat(Math.min(6, (lvl >= 0 ? lvl : heads.length) + 1)) + ' **' + l.text.trim() + '**'); return; }
+    if (l.text.includes('\t')) { flush(); const cells = l.text.split('\t').map((x) => x.trim()); out.push('| ' + cells.join(' | ') + ' |'); if (!prev || !prev.text.includes('\t')) out.push('|' + cells.map(() => '---').join('|') + '|'); return; }
+    if (prev && prev.page === l.page && l.y - prev.y > l.h * 1.9) flush();
+    para.push(l.text.trim());
+  });
+  flush();
+  return out.join('\n\n').replace(/\n\n(\|[^\n]*\|)\n\n(?=\|)/g, '\n\n$1\n').replace(/(\|[^\n]*\|)\n\n(?=\|)/g, '$1\n');
 }
 
 async function sha256(text) {
