@@ -1,0 +1,205 @@
+<title>MetaGPT Software Company</title>
+{{HEAD}}
+<style>
+  :root { --accent: #1d6b5f; --accent-soft: #dcf1ec; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #5fd0bb; --accent-ink: #04221c; --accent-soft: #143530; } }
+  :root[data-theme="dark"] { --accent: #5fd0bb; --accent-ink: #04221c; --accent-soft: #143530; }
+  .sop { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  @media (max-width: 900px) { .sop { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .role { border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; background: var(--panel); display: flex; flex-direction: column; gap: 4px; text-align: left; cursor: pointer; }
+  .role[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .role .nm { font-weight: 700; } .role .act { font: 12px var(--mono); color: var(--muted); }
+  .role .st { font-size: 12px; } .role.done .st { color: var(--good); } .role.run .st { color: var(--accent); } .role.err .st { color: var(--bad); }
+  .doc { display: flex; flex-direction: column; gap: 12px; }
+  .doc h3 { font-size: 13.5px; margin: 0 0 4px; color: var(--accent); }
+  .doc ul { margin: 0; padding-left: 18px; } .doc p { margin: 0; white-space: pre-wrap; }
+  .raw { white-space: pre-wrap; font: 11.5px/1.5 var(--mono); background: var(--sunk); border-radius: 7px; padding: 10px; max-height: 360px; overflow: auto; margin: 0; }
+  .files { display: flex; gap: 6px; flex-wrap: wrap; }
+  .files .btn[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  svg.quad { width: 100%; max-width: 520px; height: auto; display: block; }
+  .rolecards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">Mg</span><h1>MetaGPT Software Company</h1><span class="tag">One line of requirement in; a PRD, a system design, a task list and code out</span>
+      <span class="links"><a href="https://github.com/FoundationAgents/MetaGPT" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/metagpt" target="_blank" rel="noopener">Install and test code</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="company">Run the company</button><button data-tab="prompts">Prompts</button><button data-tab="roles">Roles</button><button data-tab="how">How it works</button><button data-tab="install">Install &amp; test</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">Each step sends the prompt MetaGPT's own ActionNode compiles for that action (exported from the installed MetaGPT into this page) and parses the reply from its [CONTENT] block, as ActionNode does. Claude does the work of each role from this page, on your own Claude account. Code = SOP(Team).</p>
+
+  <section data-panel="company">
+    <div class="panel"><div class="grid cols-side-r">
+      <label class="field">Requirement (what you would pass to <code>metagpt "..."</code>) <textarea id="idea" rows="2">Write a command-line tool that reads contract renewal dates from a CSV file and lists the notices that are due in the next 90 days</textarea></label>
+      <div class="stack"><label class="field inline">Files to write <input type="number" id="nfiles" value="2" min="1" max="4"></label>
+        <label class="field inline">Model <select id="tier"><option value="default">default</option><option value="quick">quick</option></select></label>
+        <div class="row"><button class="btn primary ai-only" id="run">Run the company</button><button class="btn small" id="stop" hidden>Stop</button></div></div>
+    </div><span class="status" id="status"></span>
+      <p class="note ai-off">Open this page in Claude to run the roles. The Prompts tab shows each compiled prompt in full.</p>
+      <div class="sop" id="sop"></div></div>
+    <div class="grid cols-2">
+      <div class="panel"><header><h2 class="grow" id="doc-title">Documents</h2><button class="btn small" id="copy-doc">Copy JSON</button></header><div id="doc" class="doc"><div class="empty">The PRD appears here first, then the design, the task list and the code.</div></div></div>
+      <div class="panel"><h2>Raw reply</h2><pre class="raw" id="raw"></pre></div>
+    </div>
+  </section>
+
+  <section data-panel="prompts" hidden>
+    <div class="panel"><div class="row"><label class="field inline">Action <select id="p-which"><option value="prd">WritePRD (Product Manager)</option><option value="design">WriteDesign (Architect)</option><option value="tasks">WriteTasks (Project Manager)</option><option value="code">WriteCode (Engineer)</option></select></label><button class="btn small" id="p-copy">Copy</button></div>
+      <p class="note">ActionNode.compile(context, schema="json", mode="children") with the SIMPLE_TEMPLATE; the context shown is the last one this page sent, or the requirement.</p>
+      <pre class="raw" id="p-text" style="max-height:640px"></pre></div>
+  </section>
+
+  <section data-panel="roles" hidden><div class="rolecards" id="rolecards"></div></section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>The SOP as a message flow</h2>
+<pre class="mermaid">
+flowchart LR
+  H[Human: UserRequirement] --> PM[Alice, Product Manager: WritePRD]
+  PM -->|PRD| AR[Bob, Architect: WriteDesign]
+  AR -->|system design| PJ[Eve, Project Manager: WriteTasks]
+  PJ -->|task list| EN[Alex, Engineer: WriteCode per file]
+  EN -->|code| QA[Edward, QaEngineer: WriteTest, RunCode, DebugError]
+  QA -->|bugs| EN
+</pre></div>
+      <div class="panel"><h2>Inside one role</h2>
+<pre class="mermaid">
+flowchart TB
+  E[Environment: shared message pool] -->|_watch: actions it subscribes to| O[_observe]
+  O --> T[_think: pick the next action]
+  T --> A[_act: Action.run, an ActionNode fill]
+  A -->|publish_message| E
+  A --> R[(project repo: docs/prd, docs/system_design, docs/task, src)]
+</pre></div>
+    </div>
+  </section>
+
+  <section data-panel="install" hidden><div id="install" class="stack"></div></section>
+</main>
+<p class="footer">MetaGPT © FoundationAgents, MIT licence. Prompts exported from MetaGPT as installed in Sandbox-2.</p>
+{{LIB}}
+{{LIVE}}
+{{AI}}
+<script>
+const CHECKS = {{CHECKS:metagpt}};
+const P = {{JSON:interactive/data/metagpt_prompts.json}};
+const STEPS = [
+  { id: 'prd', who: 'Alice', role: 'Product Manager', action: 'WritePRD' },
+  { id: 'design', who: 'Bob', role: 'Architect', action: 'WriteDesign' },
+  { id: 'tasks', who: 'Eve', role: 'Project Manager', action: 'WriteTasks' },
+  { id: 'code', who: 'Alex', role: 'Engineer', action: 'WriteCode' },
+];
+const out = {}; const contexts = {}; let view = 'prd', file = null;
+function sop(state = {}) {
+  $('#sop').replaceChildren(...STEPS.map((s) => el('button', { class: 'role ' + (state[s.id] || ''), 'aria-pressed': String(view === s.id), onclick: () => { view = s.id; sop(state); showDoc(); } },
+    el('span', { class: 'nm' }, `${s.who}, ${s.role}`), el('span', { class: 'act' }, s.action),
+    el('span', { class: 'st' }, { done: 'Done', run: 'Working…', err: 'Failed' }[state[s.id]] || 'Waiting'))));
+  sop.state = state;
+}
+const fillCode = (v) => P.code.prompt.replace(/\{(\w+)\}/g, (m, k) => (k in v ? v[k] : m));
+const compile = (id, context) => P[id].prompt.replace('<<CONTEXT>>', context);
+function parseContent(text) {
+  const m = text.match(/\[CONTENT\]([\s\S]*?)\[\/CONTENT\]/), body = (m ? m[1] : text).trim().replace(/^```(?:json)?\s*|\s*```$/g, '');
+  return JSON.parse(body);
+}
+async function step(id, prompt, ctl) {
+  const state = sop.state; state[id] = 'run'; sop(state); view = id; $('#raw').textContent = '';
+  const { text } = await AI.fn(prompt, { modelTier: $('#tier').value, signal: ctl.signal, cache: false, onText: ({ text }) => { $('#raw').textContent = text; } });
+  return text;
+}
+$('#run').onclick = async () => {
+  await AI.ready; if (!AI.fn) return;
+  const ctl = new AbortController(); $('#stop').hidden = false; $('#stop').onclick = () => ctl.abort(); $('#run').disabled = true;
+  const st = (t) => { $('#status').textContent = t; }; const state = {}; sop(state);
+  for (const k of Object.keys(out)) delete out[k];
+  let cur = null;
+  try {
+    cur = 'prd'; st('Alice writes the PRD…');
+    contexts.prd = $('#idea').value.trim();
+    out.prd = parseContent(await step('prd', compile('prd', contexts.prd), ctl)); state.prd = 'done'; showDoc();
+    cur = 'design'; st('Bob designs the system…');
+    contexts.design = '## Original PRD\n' + JSON.stringify(out.prd, null, 2);
+    out.design = parseContent(await step('design', compile('design', contexts.design), ctl)); state.design = 'done'; showDoc();
+    cur = 'tasks'; st('Eve breaks it into tasks…');
+    contexts.tasks = '## System Design\n' + JSON.stringify(out.design, null, 2);
+    out.tasks = parseContent(await step('tasks', compile('tasks', contexts.tasks), ctl)); state.tasks = 'done'; showDoc();
+    cur = 'code'; out.code = {};
+    const files = (out.tasks['Task list'] || []).slice(0, +$('#nfiles').value);
+    for (const f of files) {
+      st(`Alex writes ${f}…`);
+      const legacy = Object.entries(out.code).map(([n, c]) => `----- ${n}\n\`\`\`\n${c}\n\`\`\``).join('\n');
+      contexts.code = { design: JSON.stringify(out.design, null, 2), task: JSON.stringify(out.tasks, null, 2), code: legacy, logs: '', summary_log: '', feedback: '', filename: f, demo_filename: 'game' };
+      const text = await step('code', fillCode(contexts.code), ctl);
+      const m = text.match(/```[\w+-]*\n([\s\S]*?)```/); out.code[f] = (m ? m[1] : text).trim(); file = f; showDoc();
+    }
+    state.code = 'done'; sop(state); const n = Object.keys(out.code).length; st(`Done: the PRD, the design, the task list and ${n} file${n === 1 ? '' : 's'}. MetaGPT would continue with the QA engineer.`);
+  } catch (e) {
+    if (cur) { state[cur] = 'err'; sop(state); }
+    st(e.code ? (e.code === 'cancelled' ? 'Stopped.' : AI.why(e.code)) : `The ${cur} reply was not valid JSON inside [CONTENT]: ${e.message}. MetaGPT retries in this case; run again.`);
+    if (e.code && AI.permanent(e.code)) document.documentElement.dataset.ai = 'off';
+  } finally { $('#stop').hidden = true; $('#run').disabled = false; }
+};
+
+/* ------------------------------------------------ documents */
+const val = (v) => Array.isArray(v) ? el('ul', {}, ...v.map((x) => el('li', {}, Array.isArray(x) ? x.join(' · ') : String(x)))) : el('p', {}, String(v ?? ''));
+function quadrant(src) {
+  const pts = [...String(src).matchAll(/"?([^"\n]+?)"?\s*:\s*\[\s*([\d.]+)\s*,\s*([\d.]+)\s*\]/g)].map((m) => ({ n: m[1].trim(), x: +m[2], y: +m[3] }));
+  const axis = (k) => (String(src).match(new RegExp(`${k}-axis\\s+"?([^"\\n]*?)"?\\s*-->\\s*"?([^"\\n]*?)"?\\s*$`, 'm')) || []).slice(1);
+  if (!pts.length) return null;
+  const S = 360, pad = 34, X = (v) => pad + v * (S - pad * 2), Y = (v) => S - pad - v * (S - pad * 2), [x0, x1] = axis('x'), [y0, y1] = axis('y');
+  const svg = `<svg class="quad" viewBox="0 0 ${S} ${S}" role="img" aria-label="Competitive quadrant chart">
+    <rect x="${pad}" y="${pad}" width="${S - pad * 2}" height="${S - pad * 2}" fill="var(--sunk)" stroke="var(--line)"/>
+    <line x1="${S / 2}" x2="${S / 2}" y1="${pad}" y2="${S - pad}" stroke="var(--line)"/><line y1="${S / 2}" y2="${S / 2}" x1="${pad}" x2="${S - pad}" stroke="var(--line)"/>
+    <text x="${pad}" y="${S - 10}" font-size="10" fill="var(--muted)">${esc(x0 || '')}</text><text x="${S - pad}" y="${S - 10}" font-size="10" text-anchor="end" fill="var(--muted)">${esc(x1 || '')}</text>
+    <text x="10" y="${S - pad}" font-size="10" fill="var(--muted)" transform="rotate(-90 10 ${S - pad})">${esc(y0 || '')}</text><text x="10" y="${pad}" font-size="10" text-anchor="end" fill="var(--muted)" transform="rotate(-90 10 ${pad})">${esc(y1 || '')}</text>
+    ${pts.map((p) => { const ours = /target|our/i.test(p.n); return `<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="${ours ? 6 : 4.5}" fill="${ours ? 'var(--accent)' : 'var(--muted)'}"/><text x="${X(p.x) + 8}" y="${Y(p.y) + 4}" font-size="10.5" fill="var(--ink)">${esc(p.n.slice(0, 28))}</text>`; }).join('')}</svg>`;
+  return el('div', { html: svg });
+}
+function showDoc() {
+  const s = STEPS.find((x) => x.id === view); $('#doc-title').textContent = `${s.action}: ${s.role}`;
+  const d = out[view];
+  if (!d) return $('#doc').replaceChildren(el('div', { class: 'empty' }, `${s.who} has not written this yet.`));
+  if (view === 'code') {
+    const names = Object.keys(d); file = names.includes(file) ? file : names[0];
+    return $('#doc').replaceChildren(el('div', { class: 'files' }, ...names.map((n) => el('button', { class: 'btn small', 'aria-pressed': String(n === file), onclick: () => { file = n; showDoc(); } }, n))), el('pre', { class: 'code' }, d[file] || ''));
+  }
+  $('#doc').replaceChildren(...P[view].keys.map((k) => {
+    if (!(k in d)) return null;
+    const body = k === 'Competitive Quadrant Chart' ? (quadrant(d[k]) || val(d[k])) : /Data structures|call flow/.test(k) ? el('pre', { class: 'code' }, String(d[k] || '').trim()) : val(d[k]);
+    return el('div', {}, el('h3', {}, k), body);
+  }));
+}
+$('#copy-doc').onclick = () => copyText(JSON.stringify(out[view] || {}, null, 2), 'Copied');
+
+/* ------------------------------------------------ prompts and roles */
+function showPrompt() {
+  const w = $('#p-which').value;
+  $('#p-text').textContent = w === 'code' ? fillCode(contexts.code || { design: '<the Architect\'s design>', task: '<the Project Manager\'s task list>', code: '', logs: '', summary_log: '', feedback: '', filename: 'main.py', demo_filename: 'game' })
+    : compile(w, contexts[w] || (w === 'prd' ? $('#idea').value.trim() : `<the previous role's ${w === 'design' ? 'PRD' : 'design'}>`));
+}
+$('#p-which').onchange = showPrompt; $('#p-copy').onclick = () => copyText($('#p-text').textContent, 'Prompt copied');
+$('#rolecards').replaceChildren(...[
+  ['Alice · ProductManager', 'PrepareDocuments, WritePRD', 'Watches UserRequirement. Writes the PRD: goals, user stories, competitive analysis, requirement pool.'],
+  ['Bob · Architect', 'WriteDesign', 'Watches WritePRD. Implementation approach, file list, class diagram and call flow.'],
+  ['Eve · ProjectManager', 'WriteTasks', 'Watches WriteDesign. Packages, logic analysis per file, ordered task list, API spec.'],
+  ['Alex · Engineer', 'WriteCode, WriteCodeReview, SummarizeCode, FixBug', 'Watches WriteTasks. Writes one file per WriteCode call with the design and earlier files as context.'],
+  ['Edward · QaEngineer', 'WriteTest, RunCode, DebugError', 'Watches SummarizeCode. Writes tests, runs them and sends bugs back to the engineer.'],
+  ['DataInterpreter (roles/di)', 'WriteAnalysisCode, ExecuteNbCode', 'Plans data tasks and runs code in a notebook kernel.'],
+  ['Researcher', 'CollectLinks, WebBrowseAndSummarize, ConductResearch', 'Writes a research report from web sources.'],
+  ['TutorialAssistant', 'WriteDirectory, WriteContent', 'Writes a tutorial document from a topic.'],
+  ['InvoiceOCRAssistant', 'InvoiceOCR, GenerateTable, ReplyQuestion', 'Reads invoices with OCR and answers questions about them.'],
+  ['Teacher', 'TeachingPlanBlock', 'Writes teaching plans lesson by lesson.'],
+  ['Sales, CustomerService, Searcher', 'SearchAndSummarize', 'Answer from a knowledge base or a search engine.'],
+].map(([n, a, d]) => el('div', { class: 'role', style: { cursor: 'default' } }, el('span', { class: 'nm' }, n), el('span', { class: 'act' }, a), el('span', { class: 'note' }, d))));
+
+renderInstall($('#install'), CHECKS, {
+  setup: 'systems/metagpt/setup.sh          # --lite skips the test extras', serve: './start.sh metagpt   # JupyterLab on examples/, http://localhost:8889 (token login)', test: 'systems/metagpt/.venv/bin/python systems/metagpt/test_metagpt.py -v', port: 8889, ui: 'JupyterLab',
+  notes: ['Python 3.11 venv with requirements.txt; lancedb unpinned because 0.4.0 left PyPI, plus pyarrow<18 and click<8.2 for Typer 0.9', 'Writes ~/.metagpt/config2.yaml if there is none', 'The metagpt CLI, and an upstream test selection that replays recorded LLM responses (at least 100 must pass)', 'JupyterLab opened on examples/'],
+});
+initTabs((n) => n === 'prompts' && showPrompt());
+sop({}); showPrompt();
+</script>

@@ -1,0 +1,239 @@
+<title>CAMEL Role-Playing Studio</title>
+{{HEAD}}
+<style>
+  :root { --accent: #a0541a; --accent-soft: #f8e7d8; --u: #2f6f9f; --u-soft: #e1edf7; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #f0a163; --accent-ink: #2d1505; --accent-soft: #3a2615; --u: #7fb6e2; --u-soft: #182b3b; } }
+  :root[data-theme="dark"] { --accent: #f0a163; --accent-ink: #2d1505; --accent-soft: #3a2615; --u: #7fb6e2; --u-soft: #182b3b; }
+  .chat { display: flex; flex-direction: column; gap: 10px; }
+  .turn { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 10px; }
+  .turn .av { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; font: 700 12px var(--mono); }
+  .turn.user .av { background: var(--u-soft); color: var(--u); } .turn.assistant .av { background: var(--accent-soft); color: var(--accent); }
+  .turn.spec .av { background: var(--sunk); color: var(--muted); }
+  .bubble { border: 1px solid var(--line); border-radius: var(--r); padding: 8px 12px; background: var(--panel); min-width: 0; }
+  .turn.user .bubble { border-left: 3px solid var(--u); } .turn.assistant .bubble { border-left: 3px solid var(--accent); }
+  .bubble .who { font-size: 11.5px; font-weight: 600; color: var(--muted); margin-bottom: 2px; }
+  .bubble .ai-out { background: none; padding: 0; min-height: 0; }
+  .panel > h2 { overflow-wrap: anywhere; }
+  .tpl { overflow-wrap: anywhere; white-space: pre-wrap; font: 12px/1.55 var(--mono); background: var(--sunk); border-radius: 7px; padding: 10px 12px; margin: 0; max-height: 420px; overflow: auto; }
+  .tpl mark { background: var(--accent-soft); color: var(--accent); border-radius: 3px; padding: 0 2px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font: 12px var(--mono); border: 1px solid var(--line); border-radius: 99px; padding: 2px 9px; background: var(--panel); }
+  .done { font: 600 12px var(--mono); color: var(--good); }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">Cm</span><h1>CAMEL Role-Playing Studio</h1><span class="tag">Two agents, an AI user and an AI assistant, solve a task by instruction and solution</span>
+      <span class="links"><a href="https://github.com/camel-ai/camel" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/camel" target="_blank" rel="noopener">Install and test code</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="play">Role playing</button><button data-tab="prompts">Prompts</button><button data-tab="toolkits">Toolkits and models</button><button data-tab="how">How it works</button><button data-tab="install">Install &amp; test</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">This runs CAMEL's RolePlaying society the way camel.societies.RolePlaying does: the same AI Society prompts, the same opening message, and the same stop word, with Claude playing both agents from this page on your own Claude account. The role lists come from CAMEL's data/ai_society files.</p>
+
+  <section data-panel="play">
+    <div class="grid cols-side">
+      <div class="stack">
+        <div class="panel"><h2>Session</h2>
+          <label class="field">AI assistant role <select id="arole"></select></label>
+          <label class="field">AI user role <select id="urole"></select></label>
+          <label class="field">Task <textarea id="task" rows="3">Design a monthly service-credit report for a retrieval service that misses its uptime target</textarea></label>
+          <label class="field inline"><input type="checkbox" id="specify" checked> Task specifier (with_task_specify)</label>
+          <label class="field">Word limit for the specified task <input type="number" id="wl" value="50" min="10" max="120"></label>
+          <label class="field">Chat turns <input type="range" id="turns" min="1" max="8" value="4"><span class="note" id="turnsv"></span></label>
+          <label class="field inline">Model <select id="tier"><option value="quick">quick</option><option value="default">default</option></select></label>
+          <div class="row"><button class="btn primary ai-only" id="start">Start role playing</button><button class="btn small" id="stop" hidden>Stop</button></div>
+          <span class="status" id="status"></span>
+          <p class="note ai-off">Open this page in Claude to run a session. The Prompts tab shows exactly what each agent would receive.</p>
+          <p class="note">Each turn is two calls (user agent, then assistant agent), plus one for the task specifier.</p></div>
+      </div>
+      <div class="panel"><header><h2 class="grow">Conversation</h2><button class="btn small" id="copy">Copy transcript</button></header>
+        <div class="chat" id="chat"><div class="empty">Pick two roles and a task, then start. Try a Stock Trader with a Python Programmer.</div></div></div>
+    </div>
+  </section>
+
+  <section data-panel="prompts" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>AI assistant system message (AISocietyPromptTemplateDict.ASSISTANT_PROMPT)</h2><pre class="tpl" id="p-assistant"></pre></div>
+      <div class="panel"><h2>AI user system message (USER_PROMPT)</h2><pre class="tpl" id="p-user"></pre></div>
+      <div class="panel"><h2>Task specifier (TASK_SPECIFY_PROMPT)</h2><pre class="tpl" id="p-spec"></pre><p class="note">The specifier agent's system message is "You can make a task more specific."</p></div>
+      <div class="panel"><h2>Critic (CRITIC_PROMPT, with_critic_in_the_loop)</h2><pre class="tpl" id="p-critic"></pre>
+        <p class="note">The opening message RolePlaying.init_chat sends from the assistant to the user agent:</p><pre class="tpl">Now start to give me instructions one by one. Only reply with Instruction and Input.</pre></div>
+    </div>
+  </section>
+
+  <section data-panel="toolkits" hidden>
+    <div class="panel"><header><h2 class="grow">Toolkits in camel.toolkits</h2><input type="search" id="tk-q" placeholder="Filter toolkits" aria-label="Filter toolkits"></header><div class="chips" id="tk"></div></div>
+    <div class="panel"><h2>Model platforms (ModelPlatformType)</h2><div class="chips" id="mp"></div>
+      <p class="note">Any of these plugs into ModelFactory.create(model_platform, model_type); the Sandbox-2 test uses the stub platform, which needs no key.</p></div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>RolePlaying</h2>
+<pre class="mermaid">
+sequenceDiagram
+  participant S as Task specifier
+  participant U as AI user (ChatAgent)
+  participant A as AI assistant (ChatAgent)
+  S->>S: TASK_SPECIFY_PROMPT: make the task specific
+  A->>U: init_chat: start giving instructions
+  loop each step
+    U->>A: Instruction and Input
+    A->>U: Solution, ending in Next request
+  end
+  U-->>A: CAMEL_TASK_DONE ends the session
+</pre></div>
+      <div class="panel"><h2>The rest of the library</h2>
+<pre class="mermaid">
+flowchart LR
+  MF[ModelFactory: 47 platforms] --> CA[ChatAgent: memory, tools, structured output]
+  TK[Toolkits: search, code, browser, MCP] --> CA
+  CA --> RP[RolePlaying society]
+  CA --> WF[Workforce: coordinator, task planner, workers]
+  RP --> DS[(datasets: AI Society, Code, Math)]
+  WF --> R[Results]
+</pre></div>
+    </div>
+  </section>
+
+  <section data-panel="install" hidden><div id="install" class="stack"></div></section>
+</main>
+<p class="footer">CAMEL © CAMEL-AI.org, Apache 2.0. Prompts and role lists from CAMEL 0.2.91a7 as installed in Sandbox-2.</p>
+{{LIB}}
+{{LIVE}}
+{{AI}}
+<script>
+const CHECKS = {{CHECKS:camel}};
+const AROLES = {{LINES:vendor/camel/data/ai_society/assistant_roles.txt}}.map((l) => l.replace(/^\d+\.\s*/, ''));
+const UROLES = {{LINES:vendor/camel/data/ai_society/user_roles.txt}}.map((l) => l.replace(/^\d+\.\s*/, ''));
+const TOOLKITS = ["ACIToolkit", "AgentCommunicationToolkit", "AgentToolkit", "ArxivToolkit", "AskNewsToolkit", "AsyncAskNewsToolkit", "AsyncBrowserToolkit", "AudioAnalysisToolkit", "BohriumToolkit", "BrowserToolkit", "CodeExecutionToolkit", "ContextSummarizerToolkit", "Crawl4AIToolkit", "DappierToolkit", "DataCommonsToolkit", "DingtalkToolkit", "EarthScienceToolkit", "EdgeOnePagesMCPToolkit", "ExcelToolkit", "FileToolkit", "GithubToolkit", "GmailToolkit", "GoogleCalendarToolkit", "GoogleDriveMCPToolkit", "GoogleMapsToolkit", "GoogleScholarToolkit", "HeadlessBrowserSearchToolkit", "HumanToolkit", "HybridBrowserToolkit", "IMAPMailToolkit", "ImageAnalysisToolkit", "ImageGenToolkit", "JinaRerankerToolkit", "KlavisToolkit", "LarkToolkit", "LinkedInToolkit", "MCPToolkit", "MarkItDownToolkit", "MathToolkit", "MemoryToolkit", "MeshyToolkit", "MinerUToolkit", "MinimaxMCPToolkit", "NetworkXToolkit", "NoteTakingToolkit", "NotionMCPToolkit", "NotionToolkit", "OpenAIImageToolkit", "OpenAPIToolkit", "OpenBBToolkit", "OrigeneToolkit", "OutlookMailToolkit", "PPTXToolkit", "PlanningWorktreeToolkit", "PlaywrightMCPToolkit", "PlivoToolkit", "PubMedToolkit", "PulseMCPSearchToolkit", "PyAutoGUIToolkit", "RedditToolkit", "RegisteredAgentToolkit", "ResendToolkit", "RetrievalToolkit", "SQLToolkit", "ScreenshotToolkit", "SearchToolkit", "SearxNGToolkit", "SemanticScholarToolkit", "SkillToolkit", "SlackToolkit", "StripeToolkit", "SymPyToolkit", "TaskPlanningToolkit", "TerminalToolkit", "ThinkingToolkit", "TodoToolkit", "TwelveLabsToolkit", "TwitterToolkit", "VertexAIVeoToolkit", "VideoAnalysisToolkit", "VideoDownloaderToolkit", "WeChatOfficialToolkit", "WeatherToolkit", "WebDeployToolkit", "WebFetchToolkit", "WhatsAppToolkit", "WolframAlphaToolkit", "ZapierToolkit"];
+const PLATFORMS = ["openai", "aws-bedrock", "aws-bedrock-converse", "azure", "anthropic", "groq", "nebius", "cometapi", "openrouter", "orcarouter", "ollama", "litellm", "lmstudio", "zhipuai", "gemini", "vllm", "mistral", "reka", "together", "stub", "openai-compatible-model", "samba-nova", "cohere", "lingyiwanwu", "tongyi-qianwen", "amd", "nvidia", "deepseek", "ppio", "sglang", "internlm", "moonshot", "modelscope", "siliconflow", "aiml", "volcano", "netmind", "novita", "watsonx", "qianfan", "crynux", "aihubmix", "minimax", "cerebras", "function-gemma", "avian", "atlascloud", "xai"];
+const T = {
+  spec: `Here is a task that {assistant_role} will help {user_role} to complete: {task}.
+Please make it more specific. Be creative and imaginative.
+Please reply with the specified task in {word_limit} words or less. Do not add anything else.`,
+  assistant: `===== RULES OF ASSISTANT =====
+Never forget you are a {assistant_role} and I am a {user_role}. Never flip roles! Never instruct me!
+We share a common interest in collaborating to successfully complete a task.
+You must help me to complete the task.
+Here is the task: {task}. Never forget our task!
+I must instruct you based on your expertise and my needs to complete the task.
+
+I must give you one instruction at a time.
+You must write a specific solution that appropriately solves the requested instruction and explain your solutions.
+You must decline my instruction honestly if you cannot perform the instruction due to physical, moral, legal reasons or your capability and explain the reasons.
+Unless I say the task is completed, you should always start with:
+
+Solution: <YOUR_SOLUTION>
+
+<YOUR_SOLUTION> should be very specific, include detailed explanations and provide preferable detailed implementations and examples and lists for task-solving.
+Always end <YOUR_SOLUTION> with: Next request.`,
+  user: `===== RULES OF USER =====
+Never forget you are a {user_role} and I am a {assistant_role}. Never flip roles! You will always instruct me.
+We share a common interest in collaborating to successfully complete a task.
+I must help you to complete the task.
+Here is the task: {task}. Never forget our task!
+You must instruct me based on my expertise and your needs to solve the task ONLY in the following two ways:
+
+1. Instruct with a necessary input:
+Instruction: <YOUR_INSTRUCTION>
+Input: <YOUR_INPUT>
+
+2. Instruct without any input:
+Instruction: <YOUR_INSTRUCTION>
+Input: None
+
+The "Instruction" describes a task or question. The paired "Input" provides further context or information for the requested "Instruction".
+
+You must give me one instruction at a time.
+I must write a response that appropriately solves the requested instruction.
+I must decline your instruction honestly if I cannot perform the instruction due to physical, moral, legal reasons or my capability and explain the reasons.
+You should instruct me not ask me questions.
+Now you must start to instruct me using the two ways described above.
+Do not add anything else other than your instruction and the optional corresponding input!
+Keep giving me instructions and necessary inputs until you think the task is completed.
+When the task is completed, you must only reply with a single word <CAMEL_TASK_DONE>.
+Never say <CAMEL_TASK_DONE> unless my responses have solved your task.`,
+  critic: `You are a {critic_role} who teams up with a {user_role} and a {assistant_role} to solve a task: {task}.
+Your job is to select an option from their proposals and provides your explanations.
+Your selection criteria are {criteria}.
+You always have to choose an option from the proposals.`,
+};
+const INIT = 'Now start to give me instructions one by one. Only reply with Instruction and Input.';
+const fill = (t, v) => t.replace(/\{(\w+)\}/g, (m, k) => (k in v ? v[k] : m));
+const vars = (task) => ({ assistant_role: $('#arole').value, user_role: $('#urole').value, task: task ?? $('#task').value.trim(), word_limit: $('#wl').value, critic_role: 'Critic', criteria: 'helpfulness and correctness' });
+function showPrompts() {
+  const v = vars(), hl = (t) => esc(t).replace(/\{(\w+)\}/g, (m, k) => (k in v ? `<mark>${esc(v[k])}</mark>` : m));
+  $('#p-assistant').innerHTML = hl(T.assistant); $('#p-user').innerHTML = hl(T.user); $('#p-spec').innerHTML = hl(T.spec); $('#p-critic').innerHTML = hl(T.critic);
+}
+const opt = (list, sel) => list.map((r) => el('option', { value: r, selected: r === sel }, r));
+$('#arole').replaceChildren(...opt(AROLES, 'Python Programmer'));
+$('#urole').replaceChildren(...opt(UROLES, 'Stock Trader'));
+['#arole', '#urole', '#task', '#wl'].forEach((s) => $(s).addEventListener('input', showPrompts));
+$('#turns').oninput = () => { $('#turnsv').textContent = `${$('#turns').value} turn${$('#turns').value === '1' ? '' : 's'}`; };
+$('#turns').oninput();
+
+/* ------------------------------------------------ the session */
+let transcript = [];
+function bubble(kind, who, text) {
+  const out = el('div', { class: 'ai-out' }); out.innerHTML = md(text || '…');
+  const b = el('div', { class: 'turn ' + kind }, el('div', { class: 'av' }, kind === 'user' ? 'U' : kind === 'assistant' ? 'A' : 'T'), el('div', { class: 'bubble' }, el('div', { class: 'who' }, who), out));
+  $('#chat').append(b); b.scrollIntoView({ block: 'nearest' });
+  return (t) => { out.innerHTML = md(t); };
+}
+async function say(input, kind, who, ctl) {
+  const set = bubble(kind, who, 'Thinking…');
+  const { text } = await AI.fn(input, { modelTier: $('#tier').value, signal: ctl.signal, cache: false, onText: ({ text }) => set(text) });
+  set(text); transcript.push(`${who}:\n${text}`);
+  return text.trim();
+}
+/* Each ChatAgent keeps its own memory: system message, then the other agent's messages as user turns. */
+$('#start').onclick = async () => {
+  await AI.ready; if (!AI.fn) return;
+  const ctl = new AbortController(); $('#stop').hidden = false; $('#stop').onclick = () => ctl.abort();
+  $('#start').disabled = true; $('#chat').replaceChildren(); transcript = [];
+  const st = (t) => { $('#status').textContent = t; };
+  try {
+    let task = $('#task').value.trim();
+    if ($('#specify').checked) {
+      st('Task specifier…');
+      task = await say([{ role: 'user', content: 'You can make a task more specific.\n\n' + fill(T.spec, vars(task)) }], 'spec', 'Task specifier', ctl);
+    }
+    const v = vars(task);
+    const userMem = [{ role: 'user', content: fill(T.user, v) + '\n\n' + INIT }];
+    const asstMem = [{ role: 'user', content: fill(T.assistant, v) }];
+    const n = +$('#turns').value;
+    for (let i = 1; i <= n; i++) {
+      st(`Turn ${i} of ${n}: ${v.user_role} instructs…`);
+      const instr = await say(userMem, 'user', `${v.user_role} (AI user)`, ctl);
+      userMem.push({ role: 'assistant', content: instr });
+      if (instr.includes('CAMEL_TASK_DONE')) { $('#chat').append(el('p', { class: 'done' }, `CAMEL_TASK_DONE after ${i - 1} solution${i === 2 ? '' : 's'}: the AI user ended the session.`)); break; }
+      asstMem.push({ role: 'user', content: instr });
+      st(`Turn ${i} of ${n}: ${v.assistant_role} solves…`);
+      const sol = await say(asstMem, 'assistant', `${v.assistant_role} (AI assistant)`, ctl);
+      asstMem.push({ role: 'assistant', content: sol });
+      userMem.push({ role: 'user', content: sol });
+      if (i === n) $('#chat').append(el('p', { class: 'note' }, `Stopped at the chat turn limit (${n}). CAMEL's chat_turn_limit does the same.`));
+    }
+    st('Done.');
+  } catch (e) {
+    st(e.code === 'cancelled' ? 'Stopped.' : AI.why(e.code));
+    if (AI.permanent(e.code)) document.documentElement.dataset.ai = 'off';
+  } finally { $('#stop').hidden = true; $('#start').disabled = false; }
+};
+$('#copy').onclick = () => copyText(transcript.join('\n\n') || 'No session yet', 'Transcript copied');
+
+/* ------------------------------------------------ catalogs */
+function chips(box, list, q = '') { box.replaceChildren(...list.filter((t) => t.toLowerCase().includes(q.toLowerCase())).map((t) => el('span', { class: 'chip' }, t))); }
+chips($('#tk'), TOOLKITS); chips($('#mp'), PLATFORMS);
+$('#tk-q').oninput = (e) => chips($('#tk'), TOOLKITS, e.target.value);
+
+renderInstall($('#install'), CHECKS, {
+  setup: 'systems/camel/setup.sh          # or --lite for the dev extras only', serve: './start.sh camel   # the Agents app (apps/agents, Gradio), http://localhost:7860', test: 'systems/camel/.venv/bin/python systems/camel/test_camel.py -v', port: 7860, ui: 'Agents app (Gradio)',
+  notes: ["uv sync --frozen --all-extras from upstream's lock file", 'The Agents app moves to Gradio 3.50.2 with FastAPI and Starlette pins, because the locked Gradio 3.18 fails on Pydantic 2', "Upstream's app tests, then a RolePlaying session with the stub model (no key)", "The Agents app in a browser: both societies' role lists load"],
+});
+initTabs((n) => n === 'prompts' && showPrompts());
+showPrompts();
+</script>

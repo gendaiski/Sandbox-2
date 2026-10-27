@@ -62,6 +62,8 @@ def build(page: Path) -> Path:
     html = html.replace("{{LIVE}}", "<style>\n" + (SRC / "live.css").read_text() + "\n</style>\n<script>\n"
                         + (SRC / "live.js").read_text() + "\n</script>")
     html = html.replace("{{AI}}", "<script>\n" + (SRC / "ai.js").read_text() + "\n</script>")
+    # {{LINES:path}}: a text file's non-empty lines as a JSON array (e.g. upstream role lists).
+    html = re.sub(r"\{\{LINES:([^}]+)\}\}", lambda m: json.dumps([l.strip() for l in (ROOT / m.group(1)).read_text().splitlines() if l.strip()]), html)
     html = re.sub(r"\{\{CHECKS:([^}]+)\}\}", lambda m: checks(m.group(1).split(",")), html)
     html = re.sub(r"\{\{SCRIPT:([^}]+)\}\}", lambda m: "<script>\n" + (ROOT / m.group(1)).read_text().replace("</script", "<\\/script") + "\n</script>", html)
     OUT.mkdir(parents=True, exist_ok=True)
