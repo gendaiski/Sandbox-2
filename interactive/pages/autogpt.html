@@ -1,0 +1,342 @@
+<title>AutoGPT Workflow Builder</title>
+{{HEAD}}
+<style>
+  :root { --accent: #5b45d6; --accent-soft: #e9e5fd; --wire: #8a7de8; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #a898ff; --accent-ink: #160d45; --accent-soft: #241d4a; --wire: #8f84e6; } }
+  :root[data-theme="dark"] { --accent: #a898ff; --accent-ink: #160d45; --accent-soft: #241d4a; --wire: #8f84e6; }
+  .board { position: relative; overflow: auto; height: 560px; border: 1px solid var(--line); border-radius: var(--r); touch-action: none;
+    background-color: var(--sunk); background-image: radial-gradient(var(--line) 1px, transparent 1px); background-size: 18px 18px; }
+  .plane { position: relative; width: 1500px; height: 760px; }
+  svg.wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+  svg.wires path { fill: none; stroke: var(--wire); stroke-width: 2.2; pointer-events: stroke; cursor: pointer; }
+  svg.wires path.sel { stroke: var(--bad); stroke-width: 3; }
+  .node { position: absolute; width: 250px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,.08); font-size: 12.5px; }
+  .node.sel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+  .node header { display: flex; gap: 6px; align-items: center; padding: 7px 10px; border-bottom: 1px solid var(--line); cursor: grab; user-select: none; border-radius: 10px 10px 0 0; background: var(--accent-soft); }
+  .node header b { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .node .pins { display: grid; grid-template-columns: 1fr 1fr; gap: 0 8px; padding: 6px 0; }
+  .pin { display: flex; align-items: center; gap: 6px; padding: 3px 10px; min-width: 0; }
+  .pin.out { justify-content: flex-end; text-align: right; }
+  .pin .dot { width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--wire); background: var(--panel); flex: none; cursor: crosshair; }
+  .pin .dot.on { background: var(--wire); } .pin .dot.armed { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .pin span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .node .fieldset { padding: 0 10px 8px; display: flex; flex-direction: column; gap: 5px; }
+  .node .fieldset label { display: flex; flex-direction: column; gap: 2px; font-size: 11.5px; color: var(--muted); }
+  .node .fieldset textarea, .node .fieldset input, .node .fieldset select { font-size: 12px; padding: 4px 6px; }
+  .node .res { margin: 0 10px 8px; background: var(--sunk); border-radius: 6px; padding: 6px 8px; font: 11.5px/1.45 var(--mono); max-height: 140px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .st { font-size: 10.5px; font-weight: 700; padding: 1px 7px; border-radius: 99px; background: var(--sunk); color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  .st.running { background: var(--accent); color: var(--accent-ink); } .st.completed { background: var(--good-soft); color: var(--good); }
+  .st.failed { background: var(--bad-soft); color: var(--bad); } .st.skipped { background: var(--warn-soft); color: var(--warn); }
+  .lib { display: flex; flex-direction: column; gap: 8px; max-height: 720px; overflow: auto; }
+  .blk { border: 1px solid var(--line); border-radius: var(--r); padding: 8px 12px; background: var(--panel); }
+  .blk summary { cursor: pointer; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .blk summary b { font-family: var(--mono); font-size: 13px; }
+  .cats { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cats .btn[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .runlog { font: 11.5px/1.6 var(--mono); background: var(--sunk); border-radius: 7px; padding: 8px 10px; max-height: 220px; overflow: auto; margin: 0; white-space: pre-wrap; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">AG</span><h1>AutoGPT Workflow Builder</h1><span class="tag">Wire blocks into a workflow and run it; the library holds all 608 blocks in the platform's source</span>
+      <span class="links"><a href="https://github.com/Significant-Gravitas/AutoGPT" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/autogpt" target="_blank" rel="noopener">Install and test code</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="builder">Builder</button><button data-tab="library">Block library</button><button data-tab="json">Workflow JSON</button><button data-tab="how">How it works</button><button data-tab="install">Install &amp; test</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">A model of the AutoGPT Platform builder. Blocks, their inputs, outputs, ids and categories come from autogpt_platform/backend/backend/blocks; the workflow JSON uses the platform's own node and link fields. Text, logic and AI blocks run here, with Claude answering for the AI blocks on your own Claude account; blocks that call outside services run only on the AutoGPT server.</p>
+
+  <section data-panel="builder">
+    <div class="panel">
+      <div class="row">
+        <label class="field inline">Workflow <select id="preset"><option value="explain">Clause explainer</option><option value="route">Liability router</option><option value="extract">Obligation extractor</option></select></label>
+        <label class="field inline">Add block <select id="add"><option value="">Choose…</option></select></label>
+        <button class="btn small" id="del" disabled>Delete selected</button>
+        <span class="grow"></span>
+        <button class="btn primary" id="run">Run workflow</button><button class="btn small" id="stop" hidden>Stop</button>
+      </div>
+      <p class="note">Drag a block by its title. To connect, click an output dot on the right of one block, then an input dot on the left of another; click a wire to select it. <span class="ai-off">AI blocks need this page open in Claude; the rest run anyway.</span></p>
+      <div class="board" id="board"><div class="plane" id="plane"><svg class="wires" id="wires"></svg></div></div>
+    </div>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Outputs (Agent Output blocks)</h2><div id="outputs" class="stack"><p class="note">Run the workflow to see its outputs.</p></div></div>
+      <div class="panel"><h2>Execution log</h2><pre class="runlog" id="log">No run yet.</pre></div>
+    </div>
+  </section>
+
+  <section data-panel="library" hidden>
+    <div class="panel"><div class="row"><input type="search" id="q" placeholder="Search 608 blocks" aria-label="Search blocks" class="grow"><span class="note" id="count"></span></div>
+      <div class="cats" id="cats"></div><div class="lib" id="lib"></div></div>
+  </section>
+
+  <section data-panel="json" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><header><h2 class="grow">Export (agent.json)</h2><button class="btn small" id="j-copy">Copy</button></header><textarea id="j-out" rows="24" spellcheck="false"></textarea></div>
+      <div class="panel"><h2>Import</h2><p class="note">Paste workflow JSON with nodes (id, block_id, input_default, metadata.position) and links (source_id, source_name, sink_id, sink_name).</p>
+        <textarea id="j-in" rows="16" spellcheck="false"></textarea><div class="row"><button class="btn primary" id="j-load">Load into the builder</button><span class="status" id="j-status"></span></div></div>
+    </div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>The platform</h2>
+<pre class="mermaid">
+flowchart LR
+  FE[Next.js frontend: builder, library, marketplace, Otto] -->|REST and WebSocket| API[FastAPI backend]
+  API --> DB[(PostgreSQL with pgvector)]
+  API -->|graph execution request| Q[[RabbitMQ]]
+  Q --> EX[Executor: runs blocks node by node]
+  EX --> R[(Redis: events and locks)]
+  EX -->|node outputs| API
+  API -->|live updates| FE
+</pre></div>
+      <div class="panel"><h2>One run</h2>
+<pre class="mermaid">
+flowchart TB
+  I[Agent Input nodes get the run inputs] --> Q{node has data on every linked input?}
+  Q -->|yes| RUN[Block.run yields named outputs]
+  RUN --> L[each link copies an output to a sink input]
+  L --> Q
+  Q -->|never| S[node is not executed]
+  RUN --> O[Agent Output nodes record results]
+</pre></div>
+    </div>
+  </section>
+
+  <section data-panel="install" hidden><div id="install" class="stack"></div></section>
+</main>
+<p class="footer">AutoGPT © Significant Gravitas, Polyform Shield licence for the platform. Block catalog read from the source checked out in Sandbox-2.</p>
+{{LIB}}
+{{LIVE}}
+{{AI}}
+<script>
+const CHECKS = {{CHECKS:autogpt}};
+const BLOCKS = {{JSON:interactive/data/autogpt_blocks.json}};
+const BY = Object.fromEntries(BLOCKS.map((b) => [b.cls, b])), BYID = Object.fromEntries(BLOCKS.map((b) => [b.id, b]));
+const HIDDEN = new Set(['credentials', 'model', 'ollama_host', 'retry', 'max_tokens', 'escape_html', 'advanced', 'title', 'description', 'conversation_history', 'force_json_output', 'chunk_overlap', 'list_result', 'compress_prompt_to_fit']);
+const LIVE = ['AgentInputBlock', 'AgentOutputBlock', 'FillTextTemplateBlock', 'AITextGeneratorBlock', 'AIStructuredResponseGeneratorBlock', 'AIConditionBlock', 'AITextSummarizerBlock', 'ConditionBlock', 'TextReplaceBlock', 'MatchTextPatternBlock', 'StoreValueBlock'];
+const DOC = SAMPLES.agreement, section = (h) => { const i = DOC.indexOf(h); const j = DOC.indexOf('\n## ', i + 4); return DOC.slice(i, j < 0 ? undefined : j).trim(); };
+
+let G = { nodes: [], links: [] }, sel = null, armed = null, status = {}, results = {}, ctl = null;
+const nid = () => crypto.randomUUID ? crypto.randomUUID() : uid('n');
+function node(cls, x, y, input_default = {}) { const n = { id: nid(), block_id: BY[cls].id, input_default, metadata: { position: { x, y } } }; G.nodes.push(n); return n; }
+const link = (a, an, b, bn) => G.links.push({ id: nid(), source_id: a.id, source_name: an, sink_id: b.id, sink_name: bn });
+const blockOf = (n) => BYID[n.block_id];
+
+/* ------------------------------------------------ presets */
+const PRESETS = {
+  explain() {
+    const i = node('AgentInputBlock', 30, 60, { name: 'clause', value: section('## 3. Fees') });
+    const t = node('FillTextTemplateBlock', 330, 40, { format: 'Explain this contract clause to a small-business owner in three short bullet points:\n\n{{clause}}' });
+    const g = node('AITextGeneratorBlock', 640, 60, { sys_prompt: 'You explain contracts in plain English.' });
+    const o = node('AgentOutputBlock', 950, 90, { name: 'explanation' });
+    link(i, 'result', t, 'values_#_clause'); link(t, 'output', g, 'prompt'); link(g, 'response', o, 'value');
+  },
+  route() {
+    const i = node('AgentInputBlock', 30, 80, { name: 'clause', value: section('## 5. Limitation') });
+    const c = node('AIConditionBlock', 340, 60, { condition: 'the clause caps the total liability of the parties', yes_value: 'Liability is capped: check the cap against the contract value.', no_value: 'No cap: escalate to counsel.' });
+    const y = node('AgentOutputBlock', 680, 30, { name: 'capped' });
+    const n = node('AgentOutputBlock', 680, 330, { name: 'uncapped' });
+    link(i, 'result', c, 'input_value'); link(c, 'yes_output', y, 'value'); link(c, 'no_output', n, 'value');
+  },
+  extract() {
+    const i = node('AgentInputBlock', 30, 70, { name: 'clause', value: section('## 6. Term') });
+    const s = node('AIStructuredResponseGeneratorBlock', 330, 40, { prompt: 'Extract the term rules from this clause.', expected_format: { initial_term: 'length of the initial term', renewal: 'how renewal works', notice: 'notice period to stop renewal' } });
+    const r = node('TextReplaceBlock', 330, 560, { old: 'Agreement', new: 'contract' });
+    const o = node('AgentOutputBlock', 680, 60, { name: 'terms' });
+    const o2 = node('AgentOutputBlock', 680, 560, { name: 'plain_wording' });
+    link(i, 'result', s, 'prompt_values_#_clause'); link(s, 'response', o, 'value'); link(i, 'result', r, 'text'); link(r, 'output', o2, 'value');
+    s.input_default.prompt = 'Extract the term rules from this clause:\n\n{{clause}}';
+  },
+};
+function loadPreset(k) { G = { nodes: [], links: [] }; sel = armed = null; status = {}; results = {}; PRESETS[k](); draw(); }
+
+/* ------------------------------------------------ drawing */
+const plane = $('#plane');
+function inputsOf(n) {
+  const b = blockOf(n), dyn = G.links.filter((l) => l.sink_id === n.id && l.sink_name.includes('_#_')).map((l) => l.sink_name);
+  return [...(b?.in || []).filter((f) => !HIDDEN.has(f.name)).map((f) => f.name), ...dyn];
+}
+const outputsOf = (n) => (blockOf(n)?.out || []).map((f) => f.name).filter((f) => f !== 'error' || blockOf(n).cls === 'AIConditionBlock');
+const linked = (n, name) => G.links.some((l) => l.sink_id === n.id && l.sink_name === name);
+function editor(n, f) {
+  const type = (blockOf(n).in.find((x) => x.name === f) || {}).type || 'str', v = n.input_default[f];
+  if (f === 'operator') return el('select', { onchange: (e) => { n.input_default[f] = e.target.value; } }, ...['==', '!=', '>', '<', '>=', '<='].map((o) => el('option', { selected: (v || '==') === o }, o)));
+  if (/^dict/.test(type)) return el('textarea', { rows: 3, value: JSON.stringify(v || {}, null, 1), onchange: (e) => { try { n.input_default[f] = JSON.parse(e.target.value); } catch { toast(`${f} must be a JSON object`); } } });
+  if (type === 'bool') return el('input', { type: 'checkbox', checked: !!v, onchange: (e) => { n.input_default[f] = e.target.checked; } });
+  const long = /prompt|format|value|text|condition|clause/.test(f);
+  return el(long ? 'textarea' : 'input', { type: 'text', rows: long ? 3 : undefined, value: v == null ? '' : (typeof v === 'string' ? v : JSON.stringify(v)), oninput: (e) => { n.input_default[f] = e.target.value; } });
+}
+function draw() {
+  plane.querySelectorAll('.node').forEach((e) => e.remove());
+  for (const n of G.nodes) {
+    const b = blockOf(n), ins = inputsOf(n), outs = outputsOf(n), st = status[n.id];
+    const card = el('div', { class: 'node' + (sel === n.id ? ' sel' : ''), style: { left: n.metadata.position.x + 'px', top: n.metadata.position.y + 'px' }, 'data-id': n.id },
+      el('header', { onpointerdown: (e) => drag(e, n) }, el('b', { title: b.cls }, b.name.replace(/([a-z])([A-Z])/g, '$1 $2')), st ? el('span', { class: 'st ' + st }, st) : null,
+        LIVE.includes(b.cls) ? null : el('span', { class: 'pill warn', title: 'Runs on the AutoGPT server only' }, 'server')),
+      el('div', { class: 'pins' },
+        el('div', {}, ...ins.map((f) => el('div', { class: 'pin in' }, el('span', { class: 'dot' + (linked(n, f) ? ' on' : ''), 'data-pin': `in:${n.id}:${f}`, onclick: (e) => { e.stopPropagation(); connect(n, f); } }), el('span', { title: f }, f.replace('_#_', '.'))))),
+        el('div', {}, ...outs.map((f) => el('div', { class: 'pin out' }, el('span', { title: f }, f), el('span', { class: 'dot' + (armed && armed.n === n.id && armed.f === f ? ' armed' : ''), 'data-pin': `out:${n.id}:${f}`, onclick: (e) => { e.stopPropagation(); armed = { n: n.id, f }; draw(); toast(`Now click an input to connect ${f}`); } }))))),
+      el('div', { class: 'fieldset' }, ...ins.filter((f) => !linked(n, f) && !f.includes('_#_')).map((f) => el('label', {}, f, editor(n, f)))),
+      results[n.id] ? el('pre', { class: 'res' }, results[n.id]) : null);
+    card.addEventListener('pointerdown', () => { if (sel !== n.id) { sel = n.id; $('#del').disabled = false; plane.querySelectorAll('.node').forEach((x) => x.classList.toggle('sel', x.dataset.id === n.id)); } });
+    plane.append(card);
+  }
+  wires();
+}
+function pinXY(key) {
+  const d = plane.querySelector(`[data-pin="${CSS.escape(key)}"]`); if (!d) return null;
+  const r = d.getBoundingClientRect(), p = plane.getBoundingClientRect();
+  return { x: r.left - p.left + r.width / 2, y: r.top - p.top + r.height / 2 };
+}
+function wires() {
+  const svg = $('#wires');
+  svg.innerHTML = G.links.map((l) => {
+    const a = pinXY(`out:${l.source_id}:${l.source_name}`), b = pinXY(`in:${l.sink_id}:${l.sink_name}`); if (!a || !b) return '';
+    const dx = Math.max(60, Math.abs(b.x - a.x) / 2);
+    return `<path data-link="${l.id}" class="${sel === l.id ? 'sel' : ''}" d="M${a.x},${a.y} C${a.x + dx},${a.y} ${b.x - dx},${b.y} ${b.x},${b.y}"/>`;
+  }).join('');
+  svg.querySelectorAll('path').forEach((p) => p.addEventListener('click', (e) => { e.stopPropagation(); sel = p.dataset.link; $('#del').disabled = false; wires(); }));
+}
+function connect(n, f) {
+  if (!armed) return toast('Click an output dot first');
+  if (armed.n === n.id) return toast('Connect to a different block');
+  G.links = G.links.filter((l) => !(l.sink_id === n.id && l.sink_name === f));
+  G.links.push({ id: nid(), source_id: armed.n, source_name: armed.f, sink_id: n.id, sink_name: f }); armed = null; draw();
+}
+function drag(e, n) {
+  e.preventDefault(); const sx = e.clientX, sy = e.clientY, ox = n.metadata.position.x, oy = n.metadata.position.y, card = e.currentTarget.parentElement;
+  const move = (m) => { n.metadata.position.x = Math.max(0, Math.min(1240, ox + m.clientX - sx)); n.metadata.position.y = Math.max(0, Math.min(700, oy + m.clientY - sy)); card.style.left = n.metadata.position.x + 'px'; card.style.top = n.metadata.position.y + 'px'; wires(); };
+  const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); };
+  window.addEventListener('pointermove', move); window.addEventListener('pointerup', up);
+}
+$('#board').addEventListener('click', () => { if (armed) { armed = null; draw(); } });
+$('#del').onclick = () => {
+  if (!sel) return;
+  G.nodes = G.nodes.filter((n) => n.id !== sel); G.links = G.links.filter((l) => l.id !== sel && l.source_id !== sel && l.sink_id !== sel);
+  sel = null; $('#del').disabled = true; draw();
+};
+$('#add').replaceChildren(el('option', { value: '' }, 'Choose…'), ...LIVE.map((c) => el('option', { value: c }, BY[c].name.replace(/([a-z])([A-Z])/g, '$1 $2'))));
+$('#add').onchange = (e) => { if (!e.target.value) return; const b = $('#board'); node(e.target.value, b.scrollLeft + 40, b.scrollTop + 40); e.target.value = ''; draw(); };
+$('#preset').onchange = (e) => loadPreset(e.target.value);
+
+/* ------------------------------------------------ execution */
+const jinja = (t, vals) => String(t ?? '').replace(/\{\{\s*([\w.]+)\s*\}\}/g, (m, k) => (k in vals ? String(vals[k]) : ''));
+const asText = (v) => (typeof v === 'string' ? v : JSON.stringify(v, null, 1));
+async function ask(prompt, { json = false } = {}) {
+  await AI.ready; if (!AI.fn) throw new Error('AI blocks need this page open in Claude.');
+  return json ? AI.fn.json(prompt, { signal: ctl.signal, cache: false }) : (await AI.fn(prompt, { signal: ctl.signal, cache: false })).text;
+}
+const RUN = {
+  async AgentInputBlock(i) { return { result: i.value }; },
+  async AgentOutputBlock(i) { return { output: i.format ? jinja(i.format, { value: i.value }) : i.value, name: i.name }; },
+  async FillTextTemplateBlock(i) { return { output: jinja(i.format, i.values || {}) }; },
+  async StoreValueBlock(i) { return { output: i.data ?? i.input }; },
+  async TextReplaceBlock(i) { return { output: String(i.text ?? '').split(i.old ?? '').join(i.new ?? '') }; },
+  async MatchTextPatternBlock(i) { const ok = new RegExp(i.match || '', (i.case_sensitive ? '' : 'i') + (i.dot_all ? 's' : '')).test(asText(i.text)); return ok ? { positive: i.data ?? i.text } : { negative: i.data ?? i.text }; },
+  async ConditionBlock(i) {
+    const a = isNaN(+i.value1) ? i.value1 : +i.value1, b = isNaN(+i.value2) ? i.value2 : +i.value2;
+    const r = { '==': a == b, '!=': a != b, '>': a > b, '<': a < b, '>=': a >= b, '<=': a <= b }[i.operator || '=='];
+    return { result: r, ...(r ? { yes_output: i.yes_value ?? i.value1 } : { no_output: i.no_value ?? i.value2 }) };
+  },
+  async AITextGeneratorBlock(i) {
+    const prompt = jinja(i.prompt, i.prompt_values || {});
+    const text = await ask((i.sys_prompt ? i.sys_prompt + '\n\n' : '') + prompt);
+    return { response: text, prompt };
+  },
+  async AITextSummarizerBlock(i) { const text = await ask(`Summarize the following text${i.focus ? ', focusing on ' + i.focus : ''}, as ${i.style || 'concise'} prose:\n\n${asText(i.text)}`); return { summary: text }; },
+  async AIStructuredResponseGeneratorBlock(i) {
+    const prompt = jinja(i.prompt, i.prompt_values || {}), fmt = i.expected_format || {};
+    const data = await ask(`${i.sys_prompt ? i.sys_prompt + '\n\n' : ''}${prompt}\n\nReply with only a JSON object with these keys: ${JSON.stringify(fmt)}`, { json: true });
+    return { response: data, prompt };
+  },
+  async AIConditionBlock(i) {
+    const t = await ask("You are an AI assistant that evaluates conditions based on input data. You must respond with only 'true' or 'false' (lowercase) to indicate whether the given condition is met by the input value. Be accurate and consider the context and meaning of both the input and the condition.\n\n"
+      + `Input value: ${asText(i.input_value)}\nCondition to evaluate: ${i.condition}\n\nDoes the input value satisfy the condition? Respond with only 'true' or 'false'.`);
+    const r = /^\s*true/i.test(t);
+    return { result: r, ...(r ? { yes_output: i.yes_value ?? i.input_value } : { no_output: i.no_value ?? i.input_value }) };
+  },
+};
+const say = (t) => { const l = $('#log'); l.textContent = (l.textContent === 'No run yet.' ? '' : l.textContent) + `${new Date().toLocaleTimeString()}  ${t}\n`; l.scrollTop = l.scrollHeight; };
+$('#run').onclick = async () => {
+  ctl = new AbortController(); $('#stop').hidden = false; $('#stop').onclick = () => ctl.abort(); $('#run').disabled = true;
+  status = {}; results = {}; $('#log').textContent = ''; const got = {}, outputs = [];
+  G.nodes.forEach((n) => { status[n.id] = 'queued'; got[n.id] = {}; }); draw();
+  say(`Execution started: ${G.nodes.length} nodes, ${G.links.length} links`);
+  const ready = (n) => G.links.filter((l) => l.sink_id === n.id).every((l) => l.sink_name in got[n.id]);
+  let progress = true;
+  try {
+    while (progress) {
+      progress = false;
+      for (const n of G.nodes) {
+        if (status[n.id] !== 'queued' || !ready(n)) continue;
+        progress = true; const b = blockOf(n);
+        const input = { ...n.input_default };
+        for (const [k, v] of Object.entries(got[n.id])) {
+          const [base, key] = k.split('_#_');
+          if (key) { input[base] = { ...(input[base] || {}), [key]: v }; } else input[k] = v;
+        }
+        status[n.id] = 'running'; draw(); say(`${b.name}: running`);
+        try {
+          if (!RUN[b.cls]) throw new Error('this block calls an outside service and runs on the AutoGPT server only');
+          const out = await RUN[b.cls](input);
+          status[n.id] = 'completed'; results[n.id] = Object.entries(out).map(([k, v]) => `${k}: ${asText(v).slice(0, 600)}`).join('\n');
+          say(`${b.name}: completed (${Object.keys(out).join(', ')})`);
+          for (const l of G.links.filter((x) => x.source_id === n.id && x.source_name in out)) got[l.sink_id][l.sink_name] = out[l.source_name];
+          if (b.cls === 'AgentOutputBlock') outputs.push(out);
+        } catch (e) {
+          if (e && e.code === 'cancelled') throw e;
+          status[n.id] = 'failed'; results[n.id] = 'error: ' + (e.code ? AI.why(e.code) : e.message); say(`${b.name}: failed: ${results[n.id]}`);
+          if (e.code && AI.permanent(e.code)) document.documentElement.dataset.ai = 'off';
+        }
+        draw();
+      }
+    }
+    G.nodes.filter((n) => status[n.id] === 'queued').forEach((n) => { status[n.id] = 'skipped'; say(`${blockOf(n).name}: not executed (no data reached all of its linked inputs)`); });
+    say('Execution finished');
+  } catch (e) { say('Stopped'); G.nodes.filter((n) => ['queued', 'running'].includes(status[n.id])).forEach((n) => { status[n.id] = 'skipped'; }); }
+  finally { $('#stop').hidden = true; $('#run').disabled = false; draw(); }
+  $('#outputs').replaceChildren(...(outputs.length ? outputs.map((o) => el('div', { class: 'stack' }, el('b', {}, o.name), el('div', { class: 'ai-out', html: md(asText(o.output)) }))) : [el('p', { class: 'note' }, 'No Agent Output block received a value.')]));
+};
+
+/* ------------------------------------------------ library */
+const CATS = [...new Set(BLOCKS.flatMap((b) => b.cats))].sort();
+let cat = '';
+$('#cats').replaceChildren(el('button', { class: 'btn small', 'aria-pressed': 'true', onclick: (e) => pick('', e.target) }, 'All'), ...CATS.map((c) => el('button', { class: 'btn small', 'aria-pressed': 'false', onclick: (e) => pick(c, e.target) }, c.toLowerCase().replace(/_/g, ' '))));
+function pick(c, btn) { cat = c; $$('#cats .btn').forEach((b) => b.setAttribute('aria-pressed', String(b === btn))); lib(); }
+function lib() {
+  const q = $('#q').value.toLowerCase();
+  const list = BLOCKS.filter((b) => (!cat || b.cats.includes(cat)) && (!q || (b.name + ' ' + b.desc + ' ' + b.file).toLowerCase().includes(q)));
+  $('#count').textContent = `${list.length} of ${BLOCKS.length}`;
+  const ftable = (fs) => el('table', { class: 'data' }, ...fs.map((f) => el('tr', {}, el('td', { class: 'mono' }, f.name), el('td', { class: 'mono note' }, f.type), el('td', {}, f.desc))));
+  $('#lib').replaceChildren(...list.slice(0, 150).map((b) => el('details', { class: 'blk' },
+    el('summary', {}, el('b', {}, b.name), ...b.cats.map((c) => el('span', { class: 'pill' }, c.toLowerCase())), LIVE.includes(b.cls) ? el('span', { class: 'pill good' }, 'runs here') : null, el('span', { class: 'note' }, b.desc.slice(0, 130))),
+    el('p', { class: 'note' }, `${b.file} · id ${b.id}`),
+    el('div', { class: 'grid cols-2' }, el('div', { class: 'table-wrap' }, el('b', {}, 'Inputs'), ftable(b.in)), el('div', { class: 'table-wrap' }, el('b', {}, 'Outputs'), ftable(b.out))),
+    LIVE.includes(b.cls) ? el('button', { class: 'btn small', onclick: () => { node(b.cls, 60, 60); show('builder'); draw(); toast(`Added ${b.name}`); } }, 'Add to the workflow') : null)),
+    list.length > 150 ? el('p', { class: 'note' }, `Showing 150 of ${list.length}: refine the search.`) : null);
+}
+$('#q').oninput = lib;
+
+/* ------------------------------------------------ JSON */
+const exportG = () => JSON.stringify({ name: $('#preset').selectedOptions[0].textContent, description: 'Exported from the AutoGPT Workflow Builder model', is_active: true,
+  nodes: G.nodes.map(({ id, block_id, input_default, metadata }) => ({ id, block_id, input_default, metadata })), links: G.links.map(({ source_id, source_name, sink_id, sink_name }) => ({ source_id, source_name, sink_id, sink_name })) }, null, 2);
+$('#j-copy').onclick = () => copyText($('#j-out').value, 'Workflow JSON copied');
+$('#j-load').onclick = () => {
+  try {
+    const g = JSON.parse($('#j-in').value), unknown = g.nodes.filter((n) => !BYID[n.block_id]);
+    if (unknown.length) throw new Error(`${unknown.length} node(s) use a block id this catalog does not have`);
+    G = { nodes: g.nodes.map((n, i) => ({ ...n, input_default: n.input_default || {}, metadata: { position: n.metadata?.position || { x: 40 + (i % 4) * 300, y: 40 + Math.floor(i / 4) * 260 } } })), links: (g.links || []).map((l) => ({ ...l, id: nid() })) };
+    status = {}; results = {}; $('#j-status').textContent = `Loaded ${G.nodes.length} nodes and ${G.links.length} links.`; show('builder');
+  } catch (e) { $('#j-status').textContent = 'Could not load: ' + e.message; }
+};
+
+renderInstall($('#install'), CHECKS, {
+  setup: 'systems/autogpt/setup.sh', serve: './start.sh autogpt   # the platform in one container, http://localhost:3006', test: 'python3 systems/autogpt/test_autogpt.py -v', port: 3006, ui: 'AutoGPT Platform',
+  notes: ["The platform's single-container image (significantgravitas/autogpt) with .env from its .env.example", 'Without IPv6 the nginx [::] listener is dropped; the tiktoken cache is seeded when openaipublic is unreachable', 'In a browser: sign up, walk the onboarding, then open the builder, the marketplace and the library'],
+});
+const show = initTabs((n) => { if (n === 'builder') draw(); if (n === 'library') lib(); if (n === 'json') $('#j-out').value = exportG(); });
+loadPreset('explain');
+window.addEventListener('resize', wires);
+</script>
