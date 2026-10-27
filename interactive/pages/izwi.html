@@ -1,0 +1,200 @@
+<title>Izwi Voice Studio</title>
+{{HEAD}}
+<style>
+  :root { --accent: #0f7b6c; --accent-soft: #dcf3ef; --wave: #12a389; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #4fd6bf; --accent-ink: #032a24; --accent-soft: #11332d; --wave: #4fd6bf; } }
+  :root[data-theme="dark"] { --accent: #4fd6bf; --accent-ink: #032a24; --accent-soft: #11332d; --wave: #4fd6bf; }
+  .bars { display: flex; align-items: center; gap: 3px; height: 54px; padding: 0 4px; }
+  .bars i { flex: 1; background: var(--wave); border-radius: 2px; height: 8%; transition: height .12s; opacity: .85; }
+  .bars.on i { animation: pulse 0.9s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { height: 12%; } 50% { height: var(--h, 80%); } }
+  @media (prefers-reduced-motion: reduce) { .bars.on i { animation: none; height: 50%; } }
+  .turns { display: flex; flex-direction: column; gap: 10px; max-height: 420px; overflow: auto; }
+  .turn { border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; background: var(--panel); }
+  .turn.you { background: var(--sunk); align-self: flex-end; max-width: 85%; }
+  .turn b { font-size: 11.5px; color: var(--muted); display: block; }
+  .kind { font: 11px var(--mono); padding: 1px 6px; border-radius: 4px; background: var(--sunk); }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">Iz</span><h1>Izwi Voice Studio</h1><span class="tag">Local text to speech, transcription and voice chat behind OpenAI-compatible routes</span>
+      <span class="links"><a href="https://github.com/izwi-ai/izwi" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/izwi" target="_blank" rel="noopener">Install and test code</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="tts">Text to speech</button><button data-tab="asr">Transcription</button><button data-tab="voice">Voice chat</button><button data-tab="models">Models</button><button data-tab="how">How it works</button><button data-tab="install">Install &amp; test</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">Izwi runs its models on your own machine, so this page cannot run them; it builds the exact requests Izwi's server takes and plays a preview with your browser's built-in voice instead. The model list is Izwi's own catalog (crates/izwi-model-catalog), printed by a small Rust program against the source. In Sandbox-2's CI the real server ran Kokoro-82M and Parakeet-TDT-0.6B-v3 on a CPU.</p>
+
+  <section data-panel="tts">
+    <div class="grid cols-2">
+      <div class="panel"><h2>Speech</h2>
+        <label class="field">Text <textarea id="t-text" rows="4">The liability cap is twelve months of fees.</textarea></label>
+        <div class="grid cols-2"><label class="field">Model <select id="t-model"></select></label><label class="field">Voice <select id="t-voice"></select></label></div>
+        <div class="grid cols-2"><label class="field">Speed <input type="range" id="t-speed" min="0.5" max="2" step="0.05" value="1"><span class="note" id="t-speedv"></span></label>
+          <label class="field">Format <select id="t-fmt"><option>wav</option><option>mp3</option><option>pcm</option><option>pcm16</option></select></label></div>
+        <div class="bars" id="bars"></div>
+        <div class="row"><button class="btn primary" id="t-say">Preview in this browser</button><button class="btn small" id="t-stop">Stop</button><span class="status" id="t-status"></span></div>
+        <p class="note" id="t-model-note"></p></div>
+      <div class="panel"><h2>The request Izwi takes</h2>
+        <b>curl</b><pre class="code" id="t-curl" style="white-space:pre-wrap"></pre>
+        <b>OpenAI Python SDK</b><pre class="code" id="t-py"></pre>
+        <b>Izwi CLI</b><pre class="code" id="t-cli" style="white-space:pre-wrap"></pre></div>
+    </div>
+  </section>
+
+  <section data-panel="asr" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Transcribe a file</h2>
+        <label class="field">Audio file <input type="file" id="a-file" accept="audio/*"></label>
+        <audio id="a-player" controls style="width:100%" hidden></audio>
+        <div class="grid cols-2"><label class="field">Model <select id="a-model"></select></label><label class="field">Language <select id="a-lang"><option value="">auto</option><option>en</option><option>fr</option><option>de</option><option>es</option><option>ar</option><option>ja</option></select></label></div>
+        <label class="field inline"><input type="checkbox" id="a-ts"> word timestamps (timestamp_granularities[]=word)</label>
+        <p class="note" id="a-note">Pick a file to fill in its name and length. The page plays it here; Izwi transcribes it on your machine.</p>
+        <div class="panel" style="background:var(--sunk)"><b>What Sandbox-2's CI checked</b>
+          <p class="note">izwi tts "The liability cap is twelve months of fees." wrote a WAV with Kokoro-82M; izwi transcribe read it back with Parakeet-TDT-0.6B-v3, and the transcript had to contain "liability" and "twelve" (or 12). The check passed in 67 seconds on the runner's CPU.</p></div></div>
+      <div class="panel"><h2>The request</h2><b>curl</b><pre class="code" id="a-curl" style="white-space:pre-wrap"></pre><b>OpenAI Python SDK</b><pre class="code" id="a-py"></pre><b>Response shape</b><pre class="code" id="a-resp"></pre></div>
+    </div>
+  </section>
+
+  <section data-panel="voice" hidden>
+    <div class="grid cols-side-r">
+      <div class="panel"><h2>A voice turn: hear, think, speak</h2>
+        <p class="note">Izwi's voice mode chains an ASR model, a chat model and a TTS model. Here you type instead of speaking, Claude plays the chat model (on your own Claude account) and your browser's voice speaks the reply.</p>
+        <div class="turns" id="turns"></div>
+        <div class="row"><input type="text" id="v-in" class="grow" value="Give me two things to check before I sign a software licence." aria-label="What you would say"><button class="btn primary ai-only" id="v-send">Say it</button><button class="btn small" id="v-stop" hidden>Stop</button></div>
+        <span class="status" id="v-status"></span><p class="note ai-off">The voice turn needs this page open in Claude.</p></div>
+      <div class="panel"><h2>Pipeline</h2>
+        <label class="field">ASR <select id="v-asr"></select></label><label class="field">Chat <select id="v-chat"></select></label><label class="field">TTS <select id="v-tts"></select></label>
+        <p class="note">These are the models Izwi would load for the same turn; WebSocket /v1/realtime streams audio both ways.</p></div>
+    </div>
+  </section>
+
+  <section data-panel="models" hidden>
+    <div class="panel"><div class="row"><input type="search" id="m-q" class="grow" placeholder="Search models" aria-label="Search models"><label class="field inline">Kind <select id="m-kind"><option value="">all</option></select></label><label class="field inline"><input type="checkbox" id="m-on" checked> enabled only</label></div>
+      <span class="note" id="m-count"></span><div class="table-wrap"><table class="data" id="m-table"></table></div></div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Crates and apps</h2>
+<pre class="mermaid">
+flowchart LR
+  UI[Web UI and desktop app] -->|/v1 HTTP and WebSocket| S[izwi-server]
+  CLI[izwi CLI] -->|--server URL| S
+  SDK[OpenAI SDKs] -->|/v1/audio/speech, /v1/audio/transcriptions, /v1/chat/completions| S
+  S --> CORE[izwi-core: engine, scheduler, model loading]
+  CORE --> CAT[izwi-model-catalog: 46 model variants]
+  CORE --> BK[backends: CPU, Metal, CUDA]
+  CORE --> HF[(model files from Hugging Face)]
+</pre></div>
+      <div class="panel"><h2>A voice conversation</h2>
+<pre class="mermaid">
+sequenceDiagram
+  participant M as Microphone
+  participant A as ASR (Parakeet, Whisper, Qwen3 ASR)
+  participant C as Chat model (Qwen, LFM2.5)
+  participant T as TTS (Kokoro, Qwen3-TTS)
+  M->>A: audio frames
+  A->>C: transcript
+  C->>T: reply text, streamed
+  T-->>M: audio to the speaker
+</pre></div>
+    </div>
+  </section>
+
+  <section data-panel="install" hidden><div id="install" class="stack"></div></section>
+</main>
+<p class="footer">Izwi © its authors, Apache 2.0. Model catalog read from the source in Sandbox-2.</p>
+{{LIB}}
+{{LIVE}}
+{{AI}}
+<script>
+const CHECKS = {{CHECKS:izwi}};
+const MODELS = {{JSON:interactive/data/izwi_models.json}};
+const VOICES = ['af_heart', 'af_bella', 'af_sarah', 'af_nova', 'af_river', 'af_alloy', 'am_adam', 'am_michael', 'am_liam', 'am_echo', 'am_onyx', 'bf_lily', 'bm_george', 'bm_fable', 'ff_siwis', 'jf_alpha', 'pf_dora', 'zf_xiaobei', 'zm_yunxi'];
+const VOICE_LANG = { a: 'en-US', b: 'en-GB', f: 'fr-FR', j: 'ja-JP', p: 'pt-BR', z: 'zh-CN' };
+const BASE = 'http://localhost:8090';
+const size = (b) => (b >= 2 ** 30 ? fmt(b / 2 ** 30, 2) + ' GiB' : fmt(b / 2 ** 20, 0) + ' MiB');
+const on = (k) => MODELS.filter((m) => m.kind === k && m.enabled);
+const opts = (sel, list, pick) => sel.replaceChildren(...list.map((m) => el('option', { value: m.id, selected: m.id === pick }, m.name)));
+opts($('#t-model'), on('tts'), 'Kokoro-82M'); opts($('#a-model'), on('asr'), 'Parakeet-TDT-0.6B-v3');
+opts($('#v-asr'), on('asr'), 'Parakeet-TDT-0.6B-v3'); opts($('#v-chat'), on('chat'), (on('chat')[0] || {}).id); opts($('#v-tts'), on('tts'), 'Kokoro-82M');
+$('#t-voice').replaceChildren(...VOICES.map((v) => el('option', { value: v }, v)));
+$('#bars').replaceChildren(...Array.from({ length: 48 }, (_, i) => el('i', { style: { '--h': `${30 + Math.abs(Math.sin(i * 1.7)) * 65}%`, animationDelay: `${(i % 12) * 0.07}s` } })));
+
+/* ------------------------------------------------ text to speech */
+function ttsReq() {
+  const m = $('#t-model').value, v = $('#t-voice').value, s = +$('#t-speed').value, f = $('#t-fmt').value, text = $('#t-text').value, kokoro = m === 'Kokoro-82M';
+  const body = { model: m, input: text, ...(kokoro ? { voice: v } : {}), response_format: f, speed: s };
+  $('#t-speedv').textContent = `${s.toFixed(2)}×`;
+  $('#t-curl').textContent = `curl ${BASE}/v1/audio/speech \\\n  -H "Content-Type: application/json" \\\n  -d '${JSON.stringify(body).replace(/'/g, "'\\''")}' \\\n  --output speech.${f}`;
+  $('#t-py').textContent = `from openai import OpenAI\n\nclient = OpenAI(base_url="${BASE}/v1", api_key="izwi")\nwith client.audio.speech.with_streaming_response.create(\n    model=${JSON.stringify(m)},\n    input=${JSON.stringify(text)},\n${kokoro ? `    voice=${JSON.stringify(v)},\n` : ''}    response_format=${JSON.stringify(f)},\n    speed=${s},\n) as response:\n    response.stream_to_file("speech.${f}")`;
+  $('#t-cli').textContent = `izwi --server ${BASE} pull ${m}\nizwi --server ${BASE} tts ${JSON.stringify(text)} -m ${m}${kokoro ? ` --voice ${v}` : ''} --output speech.${f}`;
+  const info = MODELS.find((x) => x.id === m);
+  $('#t-model-note').textContent = info ? `${info.name}: ${size(info.bytes)} download, about ${fmt(info.memGb, 1)} GB of memory${info.sampleRate ? `, ${fmt(info.sampleRate)} Hz output` : ''}${info.streams ? ', streams audio as it is generated' : ''}${info.license ? `, licence ${info.license}` : ''}.` : '';
+  $('#t-voice').disabled = !kokoro;
+}
+['#t-text', '#t-model', '#t-voice', '#t-speed', '#t-fmt'].forEach((s) => $(s).addEventListener('input', ttsReq));
+function speak(text, onEnd) {
+  const syn = window.speechSynthesis;
+  if (!syn || typeof SpeechSynthesisUtterance === 'undefined') { $('#t-status').textContent = 'This browser has no built-in voice; use the request on the right with Izwi.'; onEnd && onEnd(); return; }
+  syn.cancel(); const u = new SpeechSynthesisUtterance(text), lang = VOICE_LANG[$('#t-voice').value[0]] || 'en-US';
+  u.lang = lang; u.rate = +$('#t-speed').value;
+  const pick = syn.getVoices().find((x) => x.lang === lang) || syn.getVoices().find((x) => x.lang.startsWith(lang.slice(0, 2))); if (pick) u.voice = pick;
+  u.onstart = () => $('#bars').classList.add('on'); u.onend = u.onerror = () => { $('#bars').classList.remove('on'); onEnd && onEnd(); };
+  syn.speak(u);
+}
+$('#t-say').onclick = () => { $('#t-status').textContent = 'Browser voice preview (not Izwi)'; speak($('#t-text').value); };
+$('#t-stop').onclick = () => { window.speechSynthesis?.cancel(); $('#bars').classList.remove('on'); };
+
+/* ------------------------------------------------ transcription */
+let file = null, secs = null;
+function asrReq() {
+  const m = $('#a-model').value, lang = $('#a-lang').value, ts = $('#a-ts').checked, name = file ? file.name : 'hello.wav';
+  $('#a-curl').textContent = `curl ${BASE}/v1/audio/transcriptions \\\n  -F file=@${name} \\\n  -F model=${m}${lang ? ` \\\n  -F language=${lang}` : ''}${ts ? ' \\\n  -F response_format=verbose_json \\\n  -F "timestamp_granularities[]=word"' : ''}`;
+  $('#a-py').textContent = `from openai import OpenAI\n\nclient = OpenAI(base_url="${BASE}/v1", api_key="izwi")\nwith open(${JSON.stringify(name)}, "rb") as f:\n    result = client.audio.transcriptions.create(\n        model=${JSON.stringify(m)}, file=f${lang ? `, language=${JSON.stringify(lang)}` : ''}${ts ? ', response_format="verbose_json", timestamp_granularities=["word"]' : ''}\n    )\nprint(result.text)`;
+  $('#a-resp').textContent = ts ? JSON.stringify({ task: 'transcribe', language: lang || 'en', duration: secs ?? 2.8, text: '…', words: [{ word: 'The', start: 0.0, end: 0.18 }, { word: '…', start: 0.18, end: 0.4 }] }, null, 2) : JSON.stringify({ text: '…' }, null, 2);
+  const info = MODELS.find((x) => x.id === m);
+  $('#a-note').textContent = `${file ? `${file.name}, ${secs ? fmt(secs, 1) + ' s, ' : ''}${size(file.size)}. ` : ''}${info ? `${info.name}: ${size(info.bytes)}${info.translation ? ', can translate to English' : ''}${info.speakers ? ', labels speakers' : ''}.` : ''}`;
+}
+['#a-model', '#a-lang', '#a-ts'].forEach((s) => $(s).addEventListener('input', asrReq));
+$('#a-file').onchange = (e) => { file = e.target.files[0]; if (!file) return; const p = $('#a-player'); p.src = URL.createObjectURL(file); p.hidden = false; p.onloadedmetadata = () => { secs = p.duration; asrReq(); }; asrReq(); };
+
+/* ------------------------------------------------ voice chat */
+let turns = [];
+function addTurn(who, text) { const b = el('div', { class: 'turn ' + (who === 'You' ? 'you' : '') }, el('b', {}, who), el('div', {}, text)); $('#turns').append(b); $('#turns').scrollTop = $('#turns').scrollHeight; return b.lastChild; }
+$('#v-send').onclick = async () => {
+  const text = $('#v-in').value.trim(); if (!text) return;
+  addTurn('You', text + '  (as if heard by ' + $('#v-asr').selectedOptions[0].textContent + ')'); $('#v-in').value = '';
+  turns.push({ role: 'user', content: text });
+  const out = addTurn('Assistant', '…');
+  try {
+    const { text: reply } = await AI.run([{ role: 'user', content: 'You are a voice assistant. Answer in two or three short spoken sentences, no lists or markdown.' }, ...turns.slice(-8)],
+      { btn: $('#v-send'), stop: $('#v-stop'), status: $('#v-status'), tier: 'quick', cache: false, onText: ({ text }) => { out.textContent = text; } });
+    turns.push({ role: 'assistant', content: reply }); $('#v-status').textContent = 'Speaking with the browser voice…'; speak(reply, () => { $('#v-status').textContent = ''; });
+  } catch { turns.pop(); }
+};
+
+/* ------------------------------------------------ models */
+$('#m-kind').append(...[...new Set(MODELS.map((m) => m.kind))].map((k) => el('option', { value: k }, k)));
+function models() {
+  const q = $('#m-q').value.toLowerCase(), k = $('#m-kind').value, only = $('#m-on').checked;
+  const list = MODELS.filter((m) => (!k || m.kind === k) && (!only || m.enabled) && (!q || (m.name + m.id + m.repo).toLowerCase().includes(q)));
+  $('#m-count').textContent = `${list.length} of ${MODELS.length} catalog entries`;
+  $('#m-table').replaceChildren(el('tr', {}, ...['Model', 'Kind', 'Download', 'Memory', 'Notes', 'Repository'].map((h) => el('th', {}, h))),
+    ...list.map((m) => el('tr', {}, el('td', {}, el('b', {}, m.name), el('div', { class: 'note mono' }, m.id)), el('td', {}, el('span', { class: 'kind' }, m.kind)),
+      el('td', { class: 'mono' }, size(m.bytes)), el('td', { class: 'mono' }, `${fmt(m.memGb, 1)} GB`),
+      el('td', { class: 'note' }, [m.enabled ? '' : 'disabled', m.quantized ? 'quantized' : '', m.gguf ? 'GGUF' : '', m.streams ? 'streams' : '', m.translation ? 'translates' : '', m.speakers ? 'speakers' : '', m.license ? `licence: ${m.license}` : ''].filter(Boolean).join(' · ')),
+      el('td', {}, el('a', { href: `https://huggingface.co/${m.repo}`, target: '_blank', rel: 'noopener', class: 'mono' }, m.repo)))));
+}
+['#m-q', '#m-kind', '#m-on'].forEach((s) => $(s).addEventListener('input', models));
+
+renderInstall($('#install'), CHECKS, {
+  setup: 'systems/izwi/setup.sh', serve: './start.sh izwi   # web UI and API, http://localhost:8090', test: 'python3 systems/izwi/test_izwi.py -v', port: 8090, ui: 'Izwi web UI',
+  notes: ["Upstream's scripts/install-cli.sh builds the CLI and server from source (CPU backend), plus espeak-ng for Kokoro", 'The CLI model catalog, the OpenAPI document (110 paths) and the model list from the running server', 'The web UI in a browser, then a speech round trip: Kokoro-82M speaks a sentence, Parakeet-TDT-0.6B-v3 transcribes it'],
+});
+initTabs((n) => { if (n === 'models') models(); if (n === 'asr') asrReq(); });
+ttsReq(); asrReq(); models();
+</script>

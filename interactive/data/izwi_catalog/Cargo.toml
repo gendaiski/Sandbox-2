@@ -1,0 +1,10 @@
+[package]
+name = "izcat"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+izwi-model-catalog = { path = "../../../vendor/izwi/crates/izwi-model-catalog" }
+serde_json = "1"
+
+[workspace]
