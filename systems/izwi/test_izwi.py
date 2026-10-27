@@ -25,13 +25,16 @@ CLI = [IZWI, "--server", URL]
 SENTENCE = "The liability cap is twelve months of fees."
 h = Harness("izwi")
 
-with h.check("CLI and model catalog") as c:
-    sh(c, [IZWI, "--version"], timeout=60, tail=100)
-    catalog = sh(c, [IZWI, "list"], timeout=120, tail=800)
-    c.expect("Kokoro-82M" in catalog, "Kokoro-82M in the catalog")
-    asr = "Parakeet-TDT-0.6B-v3-4bit" if "Parakeet-TDT-0.6B-v3-4bit" in catalog else "Parakeet-TDT-0.6B-v3"
+asr = "Parakeet-TDT-0.6B-v3"
 
 with Served("izwi", f"{URL}/openapi.json", timeout=180):
+    with h.check("CLI and model catalog") as c:
+        sh(c, [IZWI, "--version"], timeout=60, tail=100)
+        catalog = sh(c, CLI + ["list"], timeout=120, tail=800)   # the catalog comes from the server
+        c.expect("Kokoro-82M" in catalog, "Kokoro-82M in the catalog")
+        if "Parakeet-TDT-0.6B-v3-4bit" in catalog:
+            asr = "Parakeet-TDT-0.6B-v3-4bit"
+
     with h.check("server: OpenAPI document and model list") as c:
         with urllib.request.urlopen(f"{URL}/openapi.json", timeout=30) as r:
             spec = json.load(r)
