@@ -92,6 +92,105 @@ SYSTEMS = {
               "bad keys are rejected.",
         extras="Set LANGFUSE_BASE_URL and project keys to test Langfuse Cloud instead.",
     ),
+    "lobehub": dict(
+        name="LobeHub", jobs=["lobehub (full stack)"],
+        what="Agent workspace: chat with agents, tasks, resources, pages, memory, image generation and an agent marketplace.",
+        tests="Runs upstream's full self-hosted stack (app, ParadeDB, Redis, RustFS storage, SearXNG search, agent "
+              "gateway) and checks every service is healthy, then in a browser signs up, walks the onboarding and "
+              "reaches the home screen.",
+        extras="Model keys: ANTHROPIC_API_KEY / OPENAI_API_KEY, or add them in the app.",
+    ),
+    "autogpt": dict(
+        name="AutoGPT", jobs=["autogpt (platform)"],
+        what="Agent platform with AutoPilot chat, a visual agent builder, a marketplace and scheduled runs.",
+        tests="Runs the official single-container platform until it is healthy with every service running, then in "
+              "a browser signs up, walks the onboarding and opens home, the builder, the marketplace and the library.",
+        extras="Model keys: OPEN_ROUTER_API_KEY, ANTHROPIC_API_KEY or OPENAI_API_KEY.",
+    ),
+    "continue": dict(
+        name="Continue", jobs=["continue (VS Code extension)"],
+        what="Open-source coding assistant: a VS Code / JetBrains extension and the cn CLI.",
+        tests="Builds and packages the extension from source, installs it in VS Code (code-server), checks the "
+              "package and the cn CLI, runs upstream's core unit tests, then opens the Continue view in the "
+              "workbench in a browser.",
+        extras="Add a model in the Continue view.",
+    ),
+    "camel": dict(
+        name="CAMEL", jobs=["camel (all extras)"],
+        what="Multi-agent framework: role-playing societies, toolkits, RAG and many model platforms.",
+        tests="Installs every extra from upstream's lock, runs its Agents app tests, plays a two-agent session on "
+              "the stub model, then serves the Agents web app and checks its role lists in a browser.",
+        extras="OPENAI_API_KEY runs the app's live session test.",
+    ),
+    "metagpt": dict(
+        name="MetaGPT", jobs=["metagpt (all extras)"],
+        what="Multi-agent framework that runs a software company: product manager, architect, engineers.",
+        tests="Installs it from source with its full test extra, checks the metagpt CLI, runs upstream's test "
+              "selection on its recorded LLM responses and opens JupyterLab on its examples.",
+        extras="A key in ~/.metagpt/config2.yaml runs real projects: metagpt \"Create a 2048 game\".",
+    ),
+    "dspy": dict(
+        name="DSPy", jobs=["dspy"],
+        what="Framework for programming, not prompting, LLMs: signatures, modules and optimizers.",
+        tests="Runs upstream's test suite, runs a DSPy program in the Jupyter kernel the setup installs, and opens "
+              "its agents tutorial in JupyterLab.",
+        extras="ANTHROPIC_API_KEY / OPENAI_API_KEY for the tutorials that call a model.",
+    ),
+    "izwi": dict(
+        name="Izwi", jobs=["izwi (speech round trip)"],
+        what="Local voice AI: text to speech, transcription, voice cloning and chat, with a web UI and an OpenAI-compatible API.",
+        tests="Builds it from source, serves the web UI and API, then makes Kokoro-82M speak a sentence and "
+              "Parakeet transcribe it back, on CPU.",
+        extras="No keys needed: models run locally.",
+    ),
+    "skills-manager": dict(
+        name="Skills Manager", jobs=["skills-manager (desktop app)"],
+        what="Desktop app and CLI that manage AI agent skills across Claude Code, Codex, Cursor and other tools.",
+        tests="Builds the Tauri app and CLI from source; the CLI installs, shows and lists a skill, upstream's UI "
+              "tests run, and the desktop app starts and loads the library.",
+        extras="",
+    ),
+    "loopcut": dict(
+        name="Loopcut", jobs=["loopcut (Blender fork)"],
+        what="An AI agent inside Blender: describe the technical work and it writes and runs the Python.",
+        tests="Builds the Blender 5.2.2 fork from source, runs the add-on's unit tests and its headless harness "
+              "checks in the built app, then starts the app and screenshots it.",
+        extras="Connect a model in the Loopcut panel: an Anthropic or OpenAI key, or a local model.",
+    ),
+    "fabricjs": dict(
+        name="fabric.js", jobs=["fabricjs"],
+        what="HTML5 canvas library with an object model, SVG import and export, and interactive controls.",
+        tests="Builds the library, runs upstream's unit tests, then serves the fabricjs.com website built from "
+              "this source and checks its live canvas, demos and API reference in a browser.",
+        extras="",
+    ),
+    "fabricjs-site": dict(
+        name="fabricjs.com", jobs=["fabricjs-site"],
+        what="The Fabric.js 5 website: demos, the Kitchensink editor, tutorials and docs.",
+        tests="Serves it with Jekyll and checks in a browser that the Kitchensink canvas runs on fabric 5 and the "
+              "demos and tutorials render.",
+        extras="",
+    ),
+    "gods-eye-view": dict(
+        name="God's Eye View", jobs=["gods-eye-view"],
+        what="3D globe of live aircraft, ships, satellites, earthquakes and public cameras, with voice control.",
+        tests="Runs upstream's setup doctor and unit tests, then serves the app and opens the globe in a browser.",
+        extras="Optional keys (Cesium, Google, OpenAI and others) go in the app's POWER UP panel.",
+    ),
+    "claude-code-best-practice": dict(
+        name="Claude Code Best Practice", jobs=["claude-code-best-practice"],
+        what="A course in Claude Code, and a working project of subagents, commands, skills and hooks.",
+        tests="Checks that the .claude project loads as Claude Code reads it, opens its slide deck in a browser, "
+              "and with ANTHROPIC_API_KEY runs one of its commands in Claude Code.",
+        extras="Open it in Claude Code and run /weather-orchestrator.",
+    ),
+    "opus-videos": dict(
+        name="Awesome Opus 5.5 Videos", jobs=["opus-videos"],
+        what="703 prompts people gave Claude Opus 5.5 to make animations as code.",
+        tests="Checks the collection's data, renders every prompt page and opens them in a browser; with "
+              "ANTHROPIC_API_KEY it remakes one video with Claude and opens the result.",
+        extras="",
+    ),
 }
 
 STYLE = """
@@ -219,7 +318,7 @@ def render(slug: str, meta: dict) -> str:
   <section class="card" id="what-is-tested">
     <h2>What the test does</h2>
     <p class="prose">{e(meta['tests'])}</p>
-    <p class="prose muted">{e(meta['extras'])}</p>
+    {f'<p class="prose muted">{e(meta["extras"])}</p>' if meta['extras'] else ''}
   </section>
 
   <section class="card" id="findings">

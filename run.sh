@@ -5,7 +5,9 @@
 #   ./run.sh list
 set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SYSTEMS=(chunknorris chunckerflow pdfstract oxr rag-anything openflow prism-ui langfuse chunking-methods chunky pake flowise)
+SYSTEMS=(chunknorris chunckerflow pdfstract oxr rag-anything openflow prism-ui langfuse chunking-methods chunky pake flowise
+         lobehub autogpt continue camel metagpt dspy izwi skills-manager loopcut fabricjs fabricjs-site
+         gods-eye-view claude-code-best-practice opus-videos)
 
 script_for() { echo "$ROOT/systems/$1/test_${1//-/_}.py"; }
 
@@ -21,9 +23,11 @@ run_one() {
     return 2
   fi
   if [ $setup -eq 1 ] || { [ -f "$ROOT/systems/$name/setup.sh" ] && [ ! -e "$ROOT/systems/$name/.venv" ] \
-       && [ ! -e "$ROOT/systems/$name/node_modules" ] && [ ! -e "$ROOT/systems/$name/probe/target" ]; }; then
+       && [ ! -e "$ROOT/systems/$name/node_modules" ] && [ ! -e "$ROOT/systems/$name/probe/target" ] \
+       && [ ! -e "$ROOT/systems/$name/.ready" ]; }; then
     echo "==> setting up $name"
     "$ROOT/systems/$name/setup.sh" || return 1
+    touch "$ROOT/systems/$name/.ready"   # systems without a venv: setup.sh ran
   fi
   # Act as an activated venv, so tools a system shells out to (e.g. mineru) resolve.
   local venv="$ROOT/systems/$name/.venv"

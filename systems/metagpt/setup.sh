@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 # MetaGPT (FoundationAgents/MetaGPT) from source in a Python 3.11 venv (it needs
-# >=3.9,<3.12): upstream's requirements.txt and `pip install -e .`, plus pytest
-# for its test suite and JupyterLab for examples/. Writes ~/.metagpt/config2.yaml
-# (what `metagpt --init-config` creates) if there is none: Claude with
-# ANTHROPIC_API_KEY, OpenAI with OPENAI_API_KEY, else a placeholder key.
+# >=3.9,<3.12): upstream's requirements.txt and `pip install -e .` with its
+# "test" extra (every optional feature: RAG, search, browsers, speech... and the
+# test tools), plus JupyterLab for examples/.
+#   setup.sh --lite   core requirements and pytest only
+# Writes ~/.metagpt/config2.yaml (what `metagpt --init-config` creates) if there
+# is none: Claude with ANTHROPIC_API_KEY, OpenAI with OPENAI_API_KEY, else a
+# placeholder key.
 #
 # Three of upstream's pins no longer install or run, so they are adjusted:
 #   lancedb==0.4.0  was deleted from PyPI (its oldest release is 0.14): unpinned
@@ -17,8 +20,12 @@ SRC="$ROOT/vendor/metagpt"
 [ -d "$HERE/.venv" ] || uv venv -q --python 3.11 "$HERE/.venv"
 export VIRTUAL_ENV="$HERE/.venv"
 sed 's/^lancedb==0.4.0.*/lancedb/' "$SRC/requirements.txt" > "$HERE/.requirements.txt"
-uv pip install -q -r "$HERE/.requirements.txt" "pyarrow<18" "click<8.2" \
-  pytest pytest-asyncio pytest-mock pytest-timeout pytest-cov jupyterlab ipykernel
+extras=(pytest pytest-asyncio pytest-mock pytest-timeout pytest-cov)
+if [ "${1:-}" != "--lite" ]; then
+  python3 "$HERE/extras.py" "$SRC" > "$HERE/.extras.txt"
+  extras=(-r "$HERE/.extras.txt")
+fi
+uv pip install -q -r "$HERE/.requirements.txt" "pyarrow<18" "click<8.2" "${extras[@]}" jupyterlab ipykernel
 uv pip install -q --no-deps -e "$SRC"
 # MetaGPT renders its PRD and design diagrams with mermaid-cli when it is on PATH.
 command -v mmdc >/dev/null || npm install -g --silent @mermaid-js/mermaid-cli >/dev/null 2>&1 || echo "metagpt: mermaid-cli not installed; diagrams stay as .mmd" >&2

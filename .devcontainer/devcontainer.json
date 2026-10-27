@@ -2,6 +2,8 @@
   // Runs every system itself, with the portal on :8080 linking to each one.
   // A 4-core machine is enough; setup of each system happens on first start
   // (see start.sh) so the codespace stays small until a system is used.
+  // Loopcut (a Blender build, ~25 GB and 1-2 hours) wants an 8-core / 64 GB machine:
+  // pick that machine type when creating the codespace if you will build it.
   "name": "Sandbox-2 systems",
   "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",
   "hostRequirements": { "cpus": 4, "memory": "16gb", "storage": "32gb" },
@@ -9,16 +11,19 @@
     "ghcr.io/devcontainers/features/node:1": { "version": "22", "pnpmVersion": "10" },
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/devcontainers/features/rust:1": {},
-    "ghcr.io/devcontainers/features/desktop-lite:1": {}
+    "ghcr.io/devcontainers/features/desktop-lite:1": {},
+    "ghcr.io/devcontainers/features/ruby:1": { "version": "3.3" }
   },
   "containerEnv": { "UV_TORCH_BACKEND": "cpu" },
   "secrets": {
-    "ANTHROPIC_API_KEY": { "description": "Claude for the RAG-Anything Workbench and Flowise (optional)" },
-    "OPENAI_API_KEY": { "description": "OpenAI-compatible models and embeddings (optional)" }
+    "ANTHROPIC_API_KEY": { "description": "Claude for RAG-Anything, Flowise, LobeHub, AutoGPT, DSPy, MetaGPT and Opus video remakes (optional)" },
+    "OPENAI_API_KEY": { "description": "OpenAI-compatible models and embeddings, and CAMEL's Agents app (optional)" },
+    "OPEN_ROUTER_API_KEY": { "description": "AutoGPT AutoPilot's default chat provider (optional)" }
   },
   "onCreateCommand": ".devcontainer/on-create.sh",
   "postStartCommand": "./start.sh",
-  "forwardPorts": [8080, 3000, 9621, 8000, 8001, 8501, 4173, 6080],
+  "forwardPorts": [8080, 3000, 9621, 8000, 8001, 8501, 4173, 6080,
+                   3210, 3006, 8443, 7860, 8888, 8889, 8090, 4321, 4000, 4174, 8021, 8022],
   "portsAttributes": {
     "8080": { "label": "Portal", "onAutoForward": "openBrowser" },
     "3000": { "label": "Langfuse" },
@@ -27,6 +32,18 @@
     "8001": { "label": "ChunckerFlow Studio" },
     "8501": { "label": "ChunkNorris" },
     "4173": { "label": "Prism UI console" },
-    "6080": { "label": "Desktop (OpenFlow)" }
+    "6080": { "label": "Desktop (OpenFlow, Skills Manager, Loopcut)" },
+    "3210": { "label": "LobeHub" },
+    "3006": { "label": "AutoGPT" },
+    "8443": { "label": "Continue in VS Code (code-server)" },
+    "7860": { "label": "CAMEL Agents" },
+    "8888": { "label": "DSPy JupyterLab" },
+    "8889": { "label": "MetaGPT JupyterLab" },
+    "8090": { "label": "Izwi" },
+    "4321": { "label": "fabric.js site" },
+    "4000": { "label": "fabricjs.com (v5)" },
+    "4174": { "label": "God's Eye View" },
+    "8021": { "label": "Claude Code Best Practice deck" },
+    "8022": { "label": "Awesome Opus 5.5 Videos" }
   }
 }

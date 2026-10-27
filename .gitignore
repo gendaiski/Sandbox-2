@@ -28,3 +28,13 @@ systems/*/.tiktoken-cache/
 systems/*/.bundle/
 systems/fabricjs-site/Gemfile.lock
 systems/metagpt/.requirements.txt
+systems/*/.check.json
+systems/opus-videos/.site/
+systems/opus-videos/.remakes/
+systems/metagpt/.extras.txt
+systems/*/.build/
+systems/izwi/.bin/
+systems/izwi/.izwi/
+systems/izwi/.server.log
+systems/continue/.code-server/
+systems/*/.ready

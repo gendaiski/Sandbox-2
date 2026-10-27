@@ -96,6 +96,90 @@ SYSTEMS = {
         code="systems/flowise",
         finding="The 3.1.4 Docker image crashes at start-up on its default SQLite database; runs on Postgres.",
     ),
+    "report-lobehub": dict(
+        job_name="lobehub (full stack)",
+        system="LobeHub", kind="Agent workspace", upstream="lobehub/lobehub",
+        code="systems/lobehub", variant="self-hosted stack",
+        finding="Runs upstream's deploy stack as is; its setup.sh is interactive, so secrets are generated the same way here.",
+    ),
+    "report-autogpt": dict(
+        job_name="autogpt (platform)",
+        system="AutoGPT", kind="Agent platform", upstream="Significant-Gravitas/AutoGPT",
+        code="systems/autogpt", variant="single container",
+        finding="Its nginx also listens on [::]:3000; on hosts without IPv6 that fails and the container stops, so setup drops that line there.",
+    ),
+    "report-continue": dict(
+        job_name="continue (VS Code extension)",
+        system="Continue", kind="Coding assistant", upstream="continuedev/continue",
+        code="systems/continue", variant="extension in code-server",
+        finding="Packaging downloads ripgrep and SQLite binaries from GitHub releases and S3, so it needs that network access.",
+    ),
+    "report-camel": dict(
+        job_name="camel (all extras)",
+        system="CAMEL", kind="Multi-agent framework", upstream="camel-ai/camel",
+        code="systems/camel",
+        finding="Its own lock gives the Gradio apps Gradio 3.18, which fails on CAMEL's Pydantic 2; setup moves them to Gradio 3.50.2.",
+    ),
+    "report-metagpt": dict(
+        job_name="metagpt (all extras)",
+        system="MetaGPT", kind="Multi-agent framework", upstream="FoundationAgents/MetaGPT",
+        code="systems/metagpt",
+        finding="lancedb==0.4.0 is gone from PyPI and typer 0.9 breaks on Click 8.2+; setup adjusts those pins.",
+    ),
+    "report-dspy": dict(
+        job_name="dspy",
+        system="DSPy", kind="LLM programming", upstream="stanfordnlp/dspy",
+        code="systems/dspy",
+        finding="Needs uv 0.13.4+ for `uv sync`; installed with uv pip and its extras.",
+    ),
+    "report-izwi": dict(
+        job_name="izwi (speech round trip)",
+        system="Izwi", kind="Voice AI", upstream="izwi-ai/izwi",
+        code="systems/izwi", variant="Kokoro and Parakeet on CPU",
+        finding="No issues found.",
+    ),
+    "report-skills-manager": dict(
+        job_name="skills-manager (desktop app)",
+        system="Skills Manager", kind="Agent skills", upstream="xingkongliang/skills-manager",
+        code="systems/skills-manager",
+        finding="No issues found.",
+    ),
+    "report-loopcut": dict(
+        job_name="loopcut (Blender fork)",
+        system="Loopcut", kind="3D agent", upstream="Samffprice/loopcut",
+        code="systems/loopcut", variant="built from source",
+        finding="No Linux release; built from source as its developer guide describes.",
+    ),
+    "report-fabricjs": dict(
+        job_name="fabricjs",
+        system="fabric.js", kind="Canvas library", upstream="fabricjs/fabric.js",
+        code="systems/fabricjs",
+        finding="The website's dev server times out while TypeDoc builds the API pages; served from a production build.",
+    ),
+    "report-fabricjs-site": dict(
+        job_name="fabricjs-site",
+        system="fabricjs.com", kind="Library site", upstream="fabricjs/fabricjs.com",
+        code="systems/fabricjs-site",
+        finding="No Gemfile upstream; one with Jekyll 4.4 is added.",
+    ),
+    "report-gods-eye-view": dict(
+        job_name="gods-eye-view",
+        system="God's Eye View", kind="3D globe", upstream="bilawalsidhu/gods-eye-view",
+        code="systems/gods-eye-view",
+        finding="Its default port 4173 is also Prism UI's here; served on 4174.",
+    ),
+    "report-claude-code-best-practice": dict(
+        job_name="claude-code-best-practice",
+        system="Claude Code Best Practice", kind="Agent configuration", upstream="shanraisshan/claude-code-best-practice",
+        code="systems/claude-code-best-practice",
+        finding="No issues found.",
+    ),
+    "report-opus-videos": dict(
+        job_name="opus-videos",
+        system="Awesome Opus 5.5 Videos", kind="Prompt collection", upstream="yihui-dev/awesome-opus5-5-videos",
+        code="systems/opus-videos",
+        finding="A content repo; its prompts are rendered and can be remade with Claude.",
+    ),
 }
 
 
