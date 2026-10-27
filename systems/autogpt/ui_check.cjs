@@ -33,6 +33,12 @@ const shots = process.env.SHOTS || '.';
     const buttons = page.getByRole('button', { name: /^(next|continue|get started|skip|finish|done|let's go|start)/i });
     const enabled = [];
     for (const b of await buttons.all()) if ((await b.isVisible()) && (await b.isEnabled())) enabled.push(b);
+    if (!enabled.length) {   // a step whose button says something else ("Hire Maria", "Build my team"...)
+      for (const b of await page.getByRole('button').all())
+        if ((await b.isVisible()) && (await b.isEnabled()) && !/^(back|log ?out|opt out)$/i.test((await b.innerText()).trim()) && (await b.innerText()).trim())
+          enabled.push(b);
+      enabled.reverse();
+    }
     if (!enabled.length) { await page.screenshot({ path: `${shots}/autogpt-stuck.png` }); break; }
     await enabled[0].click();
     await page.waitForTimeout(2500);

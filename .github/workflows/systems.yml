@@ -65,11 +65,13 @@ jobs:
           - { label: gods-eye-view, system: gods-eye-view, setup: "", ui: true }
           - { label: claude-code-best-practice, system: claude-code-best-practice, setup: "", ui: true }
           - { label: opus-videos, system: opus-videos, setup: "", ui: true }
+          - { label: appwrite (self-hosted), system: appwrite, setup: "", ui: true, timeout: 90 }
+          - { label: pocketbase, system: pocketbase, setup: "", ui: true }
     steps:
       - uses: actions/checkout@v4
 
       - name: Free disk space (torch, MinerU and Docker images are large)
-        if: contains(fromJSON('["pdfstract","rag-anything","chunckerflow","langfuse","chunky","pake","flowise","lobehub","autogpt","continue","camel","metagpt","dspy","izwi","skills-manager","loopcut"]'), matrix.system)
+        if: contains(fromJSON('["pdfstract","rag-anything","chunckerflow","langfuse","chunky","pake","flowise","lobehub","autogpt","continue","camel","metagpt","dspy","izwi","skills-manager","loopcut","appwrite"]'), matrix.system)
         run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL && df -h /
       - name: More disk for the Blender build (libraries and build tree are ~25 GB)
         if: matrix.system == 'loopcut'

@@ -191,6 +191,22 @@ SYSTEMS = {
               "ANTHROPIC_API_KEY it remakes one video with Claude and opens the result.",
         extras="",
     ),
+    "appwrite": dict(
+        name="Appwrite", jobs=["appwrite (self-hosted)"],
+        what="Backend platform: auth, databases, storage, functions, messaging, realtime and sites, with a Console.",
+        tests="Installs it with its own installer, then through the API signs up a console owner, creates an "
+              "organization, a project and a server key, builds a TablesDB database, table, column and rows with "
+              "that key, and signs in to the Console in a browser.",
+        extras="",
+    ),
+    "pocketbase": dict(
+        name="PocketBase", jobs=["pocketbase"],
+        what="A whole backend in one file: database, auth, files, realtime and a superuser dashboard.",
+        tests="Builds it from source, then through the API creates a collection with typed fields and rules, adds "
+              "and filters records, checks the rules and the realtime stream, opens the dashboard in a browser and "
+              "runs upstream's Go tests.",
+        extras="",
+    ),
 }
 
 STYLE = """

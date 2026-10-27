@@ -38,3 +38,7 @@ systems/izwi/.izwi/
 systems/izwi/.server.log
 systems/continue/.code-server/
 systems/*/.ready
+systems/pocketbase/.bin/
+systems/pocketbase/.pb_data/
+systems/pocketbase/.superuser
+systems/appwrite/.install/

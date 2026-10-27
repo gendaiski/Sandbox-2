@@ -33,6 +33,8 @@ declare -A REPOS=(
   [continue]="continuedev/continue"
   [dspy]="stanfordnlp/dspy"
   [metagpt]="FoundationAgents/MetaGPT"
+  [appwrite]="appwrite/appwrite"
+  [pocketbase]="pocketbase/pocketbase"
 )
 
 names=("$@")
@@ -45,6 +47,8 @@ for name in "${names[@]}"; do
     exit 1
   fi
   dest="$VENDOR/$name"
+  # Loopcut's Git LFS files are Blender's, not stored on GitHub: its `make update` fetches them.
+  if [ "$name" = loopcut ]; then export GIT_LFS_SKIP_SMUDGE=1; else unset GIT_LFS_SKIP_SMUDGE; fi
   if [ -d "$dest/.git" ]; then
     echo "==> updating $name"
     git -C "$dest" pull --ff-only -q

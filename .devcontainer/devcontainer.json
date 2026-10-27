@@ -23,7 +23,8 @@
   "onCreateCommand": ".devcontainer/on-create.sh",
   "postStartCommand": "./start.sh",
   "forwardPorts": [8080, 3000, 9621, 8000, 8001, 8501, 4173, 6080,
-                   3210, 3006, 8443, 7860, 8888, 8889, 8090, 4321, 4000, 4174, 8021, 8022],
+                   3210, 3006, 8443, 7860, 8888, 8889, 8090, 4321, 4000, 4174, 8021, 8022,
+                   8096, 8095],
   "portsAttributes": {
     "8080": { "label": "Portal", "onAutoForward": "openBrowser" },
     "3000": { "label": "Langfuse" },
@@ -44,6 +45,8 @@
     "4000": { "label": "fabricjs.com (v5)" },
     "4174": { "label": "God's Eye View" },
     "8021": { "label": "Claude Code Best Practice deck" },
-    "8022": { "label": "Awesome Opus 5.5 Videos" }
+    "8022": { "label": "Awesome Opus 5.5 Videos" },
+    "8096": { "label": "Appwrite Console" },
+    "8095": { "label": "PocketBase" }
   }
 }

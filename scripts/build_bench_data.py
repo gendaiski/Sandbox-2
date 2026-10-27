@@ -180,6 +180,18 @@ SYSTEMS = {
         code="systems/opus-videos",
         finding="A content repo; its prompts are rendered and can be remade with Claude.",
     ),
+    "report-appwrite": dict(
+        job_name="appwrite (self-hosted)",
+        system="Appwrite", kind="Backend platform", upstream="appwrite/appwrite",
+        code="systems/appwrite", variant="its own installer",
+        finding="The installer is a web wizard by default; it runs headless with --interactive=N.",
+    ),
+    "report-pocketbase": dict(
+        job_name="pocketbase",
+        system="PocketBase", kind="Backend in one file", upstream="pocketbase/pocketbase",
+        code="systems/pocketbase",
+        finding="Needs Go 1.27; the toolchain is fetched automatically.",
+    ),
 }
 
 

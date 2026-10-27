@@ -7,7 +7,7 @@ set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SYSTEMS=(chunknorris chunckerflow pdfstract oxr rag-anything openflow prism-ui langfuse chunking-methods chunky pake flowise
          lobehub autogpt continue camel metagpt dspy izwi skills-manager loopcut fabricjs fabricjs-site
-         gods-eye-view claude-code-best-practice opus-videos)
+         gods-eye-view claude-code-best-practice opus-videos appwrite pocketbase)
 
 script_for() { echo "$ROOT/systems/$1/test_${1//-/_}.py"; }
 

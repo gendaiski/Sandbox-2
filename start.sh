@@ -11,7 +11,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 RUN="$ROOT/.run"
 DEFAULT=(langfuse rag-anything pdfstract chunckerflow chunknorris prism-ui openflow)
 SERVED=("${DEFAULT[@]}" lobehub autogpt continue camel dspy metagpt izwi skills-manager loopcut
-        fabricjs fabricjs-site gods-eye-view claude-code-best-practice opus-videos)
+        fabricjs fabricjs-site gods-eye-view claude-code-best-practice opus-videos appwrite pocketbase)
 mkdir -p "$RUN/logs"
 
 running() { [ -f "$RUN/$1.pid" ] && kill -0 "$(cat "$RUN/$1.pid")" 2>/dev/null; }
@@ -29,9 +29,10 @@ ready() {
   case "$1" in
     prism-ui) [ -d "$ROOT/systems/prism-ui/node_modules" ] ;;
     openflow) [ -x "$ROOT/vendor/openflow/target/release/desktop" ] ;;
-    langfuse | lobehub | autogpt) true ;;   # serve.sh runs setup.sh itself: it starts the Docker stack
+    langfuse | lobehub | autogpt | appwrite) true ;;   # serve.sh runs setup.sh itself: it starts the Docker stack
     continue) [ -x "$ROOT/systems/continue/.code-server/bin/code-server" ] ;;
     izwi) [ -x "$ROOT/systems/izwi/.bin/izwi" ] ;;
+    pocketbase) [ -x "$ROOT/systems/pocketbase/.bin/pocketbase" ] ;;
     skills-manager) [ -x "$ROOT/vendor/skills-manager/src-tauri/target/release/skills-manager" ] ;;
     loopcut) [ -d "$ROOT/systems/loopcut/.build/bin" ] ;;
     fabricjs) [ -d "$ROOT/vendor/fabricjs/packages/website/dist" ] ;;

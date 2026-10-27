@@ -15,8 +15,15 @@ cd "$SRC"
 PUPPETEER_SKIP_DOWNLOAD=true bash scripts/install-dependencies.sh < /dev/null
 (cd extensions/cli && npm ci --no-audit --no-fund && npm run build)
 vsix=$(ls -t extensions/vscode/build/continue-*.vsix | head -1)
-export npm_config_prefix="$HERE/.code-server"
-[ -x "$HERE/.code-server/bin/code-server" ] || npm install -g --no-audit --no-fund code-server
+# code-server from its release tarball (the npm package's nested install of VS Code's
+# modules is fragile). CODE_SERVER_VERSION pins one; default: the latest release.
+if [ ! -x "$HERE/.code-server/bin/code-server" ]; then
+  version="${CODE_SERVER_VERSION:-$(curl -fsSL https://api.github.com/repos/coder/code-server/releases/latest | python3 -c 'import json,sys; print(json.load(sys.stdin)["tag_name"].lstrip("v"))')}"
+  arch=$(uname -m); case "$arch" in x86_64) arch=amd64 ;; aarch64) arch=arm64 ;; esac
+  mkdir -p "$HERE/.code-server"
+  curl -fsSL "https://github.com/coder/code-server/releases/download/v$version/code-server-$version-linux-$arch.tar.gz" \
+    | tar -xz -C "$HERE/.code-server" --strip-components 1
+fi
 "$HERE/.code-server/bin/code-server" --install-extension "$vsix" --force
 command -v code >/dev/null && code --install-extension "$vsix" --force || true
 echo "continue: $vsix installed; cn CLI at $SRC/extensions/cli/dist/cn.js"

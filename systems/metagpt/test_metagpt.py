@@ -23,8 +23,8 @@ VENV = HERE / ".venv" / "bin"
 h = Harness("metagpt")
 
 with h.check("metagpt CLI") as c:
-    out = sh(c, [str(VENV / "metagpt"), "--help"], timeout=120, tail=200)
-    c.expect("Start a new project" in out and "--n-round" in out, "software-company CLI")
+    out = sh(c, [str(VENV / "metagpt"), "--help"], timeout=120, tail=1500, env={"COLUMNS": "200", "TERM": "dumb"})
+    c.expect("Usage: metagpt" in out and "IDEA" in out, "software-company CLI usage")
 
 with h.check("upstream test selection on recorded LLM responses") as c:
     out = sh(c, [str(VENV / "python"), "-m", "pytest", "-q", "-p", "no:cacheprovider", "--timeout", "300"],
