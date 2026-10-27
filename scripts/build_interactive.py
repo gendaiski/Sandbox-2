@@ -7,7 +7,11 @@ Each interactive/pages/<id>.html holds the page's markup and script with two
 placeholders: {{HEAD}} (fonts and the shared shell.css) and {{LIB}} (lib.js
 plus the sample documents). A page that needs the sample PDF says
 <!-- needs: pdf --> and gets SAMPLES.pdf (base64); {{JSON:path}} embeds a JSON
-file from the repository. Output: bench/interactive/<id>.html
+file from the repository. Pages for the later systems also use {{LIVE}} (live.js
+and live.css: the Install & test panel), {{AI}} (ai.js: live Claude calls), {{CHECKS:job,...}}
+(that system's rows from bench/systems.json and checks.json) and
+{{SCRIPT:path}} (a repository file inlined as a script, e.g. a library built
+here). Output: bench/interactive/<id>.html
 """
 
 import base64
@@ -38,6 +42,15 @@ def samples(needs_pdf: bool) -> dict:
     return out
 
 
+def checks(jobs: list[str]) -> str:
+    """One system's CI rows and checks from the bench data, as a JS value."""
+    bench = ROOT / "bench"
+    systems = [r for r in json.loads((bench / "systems.json").read_text()) if r["job"] in jobs]
+    rows = [c for c in json.loads((bench / "checks.json").read_text()) if c["id"].split(":", 1)[0] in jobs]
+    run = json.loads((bench / "run.json").read_text()) if (bench / "run.json").exists() else {}
+    return json.dumps({"systems": systems, "checks": rows, "run": run}).replace("</", "<\\/")
+
+
 def build(page: Path) -> Path:
     src = page.read_text()
     head = FONTS + '<meta name="claude:viewport-fit-sides" content="cover">\n<style>\n' + (SRC / "shell.css").read_text() + "\n</style>"
@@ -46,6 +59,11 @@ def build(page: Path) -> Path:
     html = src.replace("{{HEAD}}", head).replace("{{LIB}}", lib)
     # {{JSON:path}} embeds a repository JSON file (e.g. an upstream schema) as a JS value.
     html = re.sub(r"\{\{JSON:([^}]+)\}\}", lambda m: json.dumps(json.loads((ROOT / m.group(1)).read_text())), html)
+    html = html.replace("{{LIVE}}", "<style>\n" + (SRC / "live.css").read_text() + "\n</style>\n<script>\n"
+                        + (SRC / "live.js").read_text() + "\n</script>")
+    html = html.replace("{{AI}}", "<script>\n" + (SRC / "ai.js").read_text() + "\n</script>")
+    html = re.sub(r"\{\{CHECKS:([^}]+)\}\}", lambda m: checks(m.group(1).split(",")), html)
+    html = re.sub(r"\{\{SCRIPT:([^}]+)\}\}", lambda m: "<script>\n" + (ROOT / m.group(1)).read_text().replace("</script", "<\\/script") + "\n</script>", html)
     OUT.mkdir(parents=True, exist_ok=True)
     out = OUT / page.name
     out.write_text(html)

@@ -1,0 +1,303 @@
+<title>Fabric.js Canvas Studio</title>
+{{HEAD}}
+<style>
+  :root { --accent: #b4235a; --accent-soft: #fbe2ec; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #f27aa7; --accent-ink: #2e0716; --accent-soft: #3d1a28; } }
+  :root[data-theme="dark"] { --accent: #f27aa7; --accent-ink: #2e0716; --accent-soft: #3d1a28; }
+  .stage { background: var(--sunk); border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); }
+  .stage .canvas-container { margin: 0 auto; }
+  .tools { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tools .btn[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .layers { display: flex; flex-direction: column; gap: 4px; max-height: 220px; overflow: auto; }
+  .layer { display: flex; gap: 8px; align-items: center; border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; background: var(--panel); cursor: pointer; font-size: 12.5px; text-align: left; }
+  .layer.sel { border-color: var(--accent); background: var(--accent-soft); }
+  .layer .sw { width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--line); flex: none; }
+  .events { font: 11.5px/1.6 var(--mono); background: var(--sunk); border-radius: 7px; padding: 8px 10px; height: 170px; overflow: auto; margin: 0; white-space: pre-wrap; }
+  .svgbox { background: #fff; border-radius: var(--r); border: 1px solid var(--line); padding: 8px; overflow: auto; max-height: 420px; }
+  .svgbox svg { max-width: 100%; height: auto; }
+  .filters { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px 14px; }
+  .filters label { display: flex; gap: 6px; align-items: center; font-size: 13px; }
+  input[type=color] { width: 36px; height: 28px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); padding: 2px; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">Fb</span><h1>Fabric.js Canvas Studio</h1><span class="tag">The real fabric.js 7.4.0, built from source in Sandbox-2, running in this page</span>
+      <span class="links"><a href="https://github.com/fabricjs/fabric.js" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/fabricjs" target="_blank" rel="noopener">Install and test code</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="editor">Editor</button><button data-tab="serialize">JSON and SVG</button><button data-tab="filters">Image filters</button><button data-tab="animate">Animation</button><button data-tab="how">How it works</button><button data-tab="install">Install &amp; test</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">Everything on this page is drawn by the fabric.js library itself (dist/index.min.js from the repository build, inlined). Select, drag, scale and rotate objects with the mouse or a finger; double-click text to edit it.</p>
+
+  <section data-panel="editor">
+    <div class="grid cols-side-r">
+      <div class="stack">
+        <div class="panel">
+          <div class="tools" id="tools">
+            <button class="btn small" data-add="rect">Rectangle</button><button class="btn small" data-add="circle">Circle</button>
+            <button class="btn small" data-add="triangle">Triangle</button><button class="btn small" data-add="star">Star</button>
+            <button class="btn small" data-add="line">Line</button><button class="btn small" data-add="text">Text</button>
+            <button class="btn small" id="draw" aria-pressed="false">Free drawing</button>
+            <label class="field inline">Brush <select id="brush"><option value="PencilBrush">Pencil</option><option value="CircleBrush">Circles</option><option value="SprayBrush">Spray</option></select></label>
+            <label class="field inline">Width <input type="range" id="bw" min="1" max="40" value="6"></label>
+          </div>
+          <div class="stage" id="stage"><canvas id="c"></canvas></div>
+          <div class="tools">
+            <button class="btn small" id="group">Group selection</button><button class="btn small" id="ungroup">Ungroup</button>
+            <button class="btn small" id="front">Bring to front</button><button class="btn small" id="back">Send to back</button>
+            <button class="btn small" id="clone">Duplicate</button><button class="btn small" id="del">Delete</button>
+            <button class="btn small" id="undo">Undo</button><button class="btn small" id="clear">Clear</button><button class="btn small" id="sample">Load sample</button>
+          </div>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="panel"><h2>Selected object</h2><div id="insp" class="stack"></div></div>
+        <div class="panel"><h2>Layers</h2><div class="layers" id="layers"></div></div>
+        <div class="panel"><h2>Canvas events</h2><pre class="events" id="events"></pre></div>
+      </div>
+    </div>
+  </section>
+
+  <section data-panel="serialize" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><header><h2 class="grow">canvas.toJSON()</h2><button class="btn small" id="s-copy">Copy</button></header>
+        <textarea id="s-json" rows="20" spellcheck="false"></textarea>
+        <div class="row"><button class="btn primary" id="s-load">canvas.loadFromJSON()</button><button class="btn" id="s-refresh">Refresh from the editor</button><span class="status" id="s-status"></span></div></div>
+      <div class="panel"><header><h2 class="grow">canvas.toSVG()</h2><span class="note" id="s-size"></span></header><div class="svgbox" id="s-svg"></div>
+        <h2>canvas.toDataURL()</h2><img id="s-png" alt="PNG export of the canvas" style="border:1px solid var(--line);border-radius:6px;max-width:100%"></div>
+    </div>
+  </section>
+
+  <section data-panel="filters" hidden>
+    <div class="grid cols-side">
+      <div class="panel"><h2>Filters on a FabricImage</h2>
+        <div class="filters" id="f-list"></div>
+        <label class="field">Brightness <input type="range" id="f-bright" min="-0.6" max="0.6" step="0.02" value="0"></label>
+        <label class="field">Contrast <input type="range" id="f-contrast" min="-0.6" max="0.6" step="0.02" value="0"></label>
+        <label class="field">Blur <input type="range" id="f-blur" min="0" max="0.6" step="0.02" value="0"></label>
+        <label class="field">Pixelate block <input type="range" id="f-pix" min="1" max="24" step="1" value="1"></label>
+        <label class="field">Use your own image <input type="file" id="f-file" accept="image/*"></label>
+        <p class="note" id="f-backend"></p></div>
+      <div class="panel"><div class="stage" id="f-stage"><canvas id="fc"></canvas></div></div>
+    </div>
+  </section>
+
+  <section data-panel="animate" hidden>
+    <div class="panel"><div class="row"><button class="btn primary" id="a-run">Play</button>
+      <label class="field inline">Easing <select id="a-ease"><option>easeOutBounce</option><option>easeInOutCubic</option><option>easeOutElastic</option><option>easeInOutSine</option><option>linear</option></select></label>
+      <label class="field inline">Duration <input type="range" id="a-dur" min="300" max="4000" step="100" value="1600"></label><span class="note" id="a-durv"></span></div>
+      <div class="stage" id="a-stage"><canvas id="ac"></canvas></div>
+      <p class="note">Each object runs <code>object.animate(props, {duration, easing, onChange})</code> with fabric's own easing functions (util.ease).</p></div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Two canvases, one object model</h2>
+<pre class="mermaid">
+flowchart LR
+  U[Pointer and keyboard] --> UC[upper canvas: selection, controls, brush strokes]
+  UC --> EV[events: mouse:down, object:moving, object:modified]
+  EV --> OM[object model: Rect, Circle, IText, Path, Group, FabricImage]
+  OM --> R[renderAll: draws each object with its transform matrix]
+  R --> LC[lower canvas: what you see]
+  OM --> S[toObject / toJSON] --> J[(JSON)]
+  J --> L[loadFromJSON] --> OM
+  OM --> SVG[toSVG]
+  OM --> F[filters: WebGL or Canvas 2D backend]
+</pre></div>
+      <div class="panel"><h2>What each piece does</h2>
+        <dl class="kv">
+          <dt>Canvas</dt><dd>Interactive canvas: selection, controls, free drawing, events. StaticCanvas is the render-only variant used for exports and node.</dd>
+          <dt>FabricObject</dt><dd>Base of every shape: position, origin, scale, angle, skew, fill, stroke, shadow, clipPath, controls.</dd>
+          <dt>IText / Textbox</dt><dd>Editable text with per-character styles; Textbox wraps to a width.</dd>
+          <dt>Group / ActiveSelection</dt><dd>Nested objects with a layout manager; a multi-selection is a temporary group.</dd>
+          <dt>Brushes</dt><dd>Pencil, Circle, Spray and Pattern brushes turn strokes into Path or Group objects.</dd>
+          <dt>Filters</dt><dd>25 image filters, run on WebGL when available and Canvas 2D otherwise.</dd>
+          <dt>Serialization</dt><dd>toJSON and loadFromJSON round-trip the scene; toSVG and toDataURL export it.</dd>
+        </dl></div>
+    </div>
+  </section>
+
+  <section data-panel="install" hidden><div id="install" class="stack"></div></section>
+</main>
+<p class="footer">fabric.js © its contributors, MIT licence. Inlined from the Sandbox-2 build of fabricjs/fabric.js.</p>
+{{LIB}}
+{{LIVE}}
+{{SCRIPT:vendor/fabricjs/dist/index.min.js}}
+<script>
+const CHECKS = {{CHECKS:fabricjs}};
+const F = window.fabric;
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const PALETTE = ['#e0457b', '#3b82c4', '#2f9d5a', '#e3a21a', '#7d5bd6', '#1f93a5'];
+let pi = 0; const next = () => PALETTE[pi++ % PALETTE.length];
+
+/* ---------------------------------------------------------- editor */
+const canvas = new F.Canvas('c', { backgroundColor: '#ffffff', preserveObjectStacking: true });
+function fit(c, stage, h) { const w = Math.max(280, stage.clientWidth); c.setDimensions({ width: w, height: h }); c.requestRenderAll(); }
+const stage = $('#stage');
+const log = (t) => { const e = $('#events'); e.textContent = `${new Date().toLocaleTimeString()}  ${t}\n` + e.textContent.split('\n').slice(0, 60).join('\n'); };
+const history = []; let restoring = false;
+const snap = () => { if (restoring) return; history.push(JSON.stringify(canvas.toJSON(['name']))); if (history.length > 40) history.shift(); };
+const name = (o) => o.name || o.type;
+const W = () => canvas.getWidth(), H = () => canvas.getHeight();
+
+function shape(kind, at) {
+  const p = at || { left: 80 + Math.random() * (W() - 160), top: 80 + Math.random() * (H() - 160) }, fill = next();
+  const base = { left: p.left, top: p.top, fill, stroke: '#1b1f27', strokeWidth: 0, name: kind };
+  switch (kind) {
+    case 'rect': return new F.Rect({ ...base, width: 130, height: 86, rx: 10, ry: 10 });
+    case 'circle': return new F.Circle({ ...base, radius: 50 });
+    case 'triangle': return new F.Triangle({ ...base, width: 110, height: 96 });
+    case 'star': { const pts = []; for (let i = 0; i < 10; i++) { const r = i % 2 ? 26 : 58, a = Math.PI / 5 * i - Math.PI / 2; pts.push({ x: Math.cos(a) * r, y: Math.sin(a) * r }); } return new F.Polygon(pts, base); }
+    case 'line': return new F.Line([0, 0, 180, 0], { ...base, fill: undefined, stroke: fill, strokeWidth: 6, strokeLineCap: 'round' });
+    case 'text': return new F.IText('Double-click to edit', { ...base, fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: 30, fontWeight: 600 });
+  }
+}
+$$('[data-add]').forEach((b) => b.onclick = () => { const o = shape(b.dataset.add); canvas.add(o); canvas.setActiveObject(o); canvas.requestRenderAll(); });
+
+$('#draw').onclick = () => { canvas.isDrawingMode = !canvas.isDrawingMode; $('#draw').setAttribute('aria-pressed', String(canvas.isDrawingMode)); brush(); };
+function brush() { const b = new F[$('#brush').value](canvas); b.width = +$('#bw').value; b.color = next(); if (b.density !== undefined) b.density = 24; canvas.freeDrawingBrush = b; }
+$('#brush').onchange = brush; $('#bw').oninput = brush; brush();
+
+$('#group').onclick = () => {
+  const objs = canvas.getActiveObjects(); if (objs.length < 2) return toast('Select two or more objects first (drag a box or shift-click)');
+  canvas.discardActiveObject(); objs.forEach((o) => canvas.remove(o));
+  const g = new F.Group(objs, { name: 'group' }); canvas.add(g); canvas.setActiveObject(g); canvas.requestRenderAll(); snap();
+};
+$('#ungroup').onclick = () => {
+  const g = canvas.getActiveObject(); if (!g || g.type !== 'group') return toast('Select a group first');
+  const items = g.removeAll(); canvas.remove(g); items.forEach((o) => canvas.add(o));
+  canvas.setActiveObject(new F.ActiveSelection(items, { canvas })); canvas.requestRenderAll(); snap();
+};
+$('#front').onclick = () => { const o = canvas.getActiveObject(); o && (canvas.bringObjectToFront(o), canvas.requestRenderAll(), layers(), snap()); };
+$('#back').onclick = () => { const o = canvas.getActiveObject(); o && (canvas.sendObjectToBack(o), canvas.requestRenderAll(), layers(), snap()); };
+$('#clone').onclick = async () => { const o = canvas.getActiveObject(); if (!o) return; const c = await o.clone(['name']); c.set({ left: o.left + 24, top: o.top + 24 }); canvas.discardActiveObject(); canvas.add(c); canvas.setActiveObject(c); canvas.requestRenderAll(); };
+$('#del').onclick = () => { canvas.getActiveObjects().forEach((o) => canvas.remove(o)); canvas.discardActiveObject(); canvas.requestRenderAll(); };
+$('#clear').onclick = () => { canvas.clear(); canvas.backgroundColor = '#ffffff'; canvas.requestRenderAll(); snap(); layers(); };
+$('#undo').onclick = async () => { if (history.length < 2) return toast('Nothing to undo'); history.pop(); restoring = true; await canvas.loadFromJSON(history[history.length - 1]); canvas.requestRenderAll(); restoring = false; layers(); inspect(); };
+document.addEventListener('keydown', (e) => { if ((e.key === 'Delete' || e.key === 'Backspace') && !canvas.getActiveObject()?.isEditing && document.activeElement === document.body) $('#del').click(); });
+
+function layers() {
+  const sel = new Set(canvas.getActiveObjects());
+  const list = canvas.getObjects().slice().reverse();
+  $('#layers').replaceChildren(...(list.length ? list.map((o) => el('button', { class: 'layer' + (sel.has(o) ? ' sel' : ''), onclick: () => { canvas.setActiveObject(o); canvas.requestRenderAll(); } },
+    el('span', { class: 'sw', style: { background: typeof o.fill === 'string' ? o.fill : (o.stroke || 'transparent') } }), el('span', { class: 'grow' }, name(o)), el('span', { class: 'note mono' }, `${Math.round(o.left)}, ${Math.round(o.top)}`)))
+    : [el('div', { class: 'empty' }, 'The canvas is empty')]));
+}
+function inspect() {
+  const o = canvas.getActiveObject(), box = $('#insp');
+  if (!o) return box.replaceChildren(el('p', { class: 'note' }, 'Select an object to edit its properties.'));
+  const num = (k, label, min, max, step = 1) => el('label', { class: 'field' }, `${label} (${fmt(o[k], step < 1 ? 2 : 0)})`,
+    el('input', { type: 'range', id: 'i-' + k, min, max, step, value: o[k], oninput: (e) => { o.set(k, +e.target.value); o.setCoords(); canvas.requestRenderAll(); } }));
+  const color = (k, label) => typeof o[k] === 'string' || o[k] == null ? el('label', { class: 'field inline' }, label,
+    el('input', { type: 'color', id: 'i-' + k, value: /^#[0-9a-f]{6}$/i.test(o[k] || '') ? o[k] : '#1b1f27', oninput: (e) => { o.set(k, e.target.value); canvas.requestRenderAll(); layers(); } })) : null;
+  box.replaceChildren(el('div', { class: 'row' }, el('span', { class: 'pill accent' }, o.type), el('span', { class: 'note' }, `${Math.round(o.getScaledWidth())} × ${Math.round(o.getScaledHeight())} px`)),
+    el('div', { class: 'row' }, color('fill', 'Fill'), color('stroke', 'Stroke')),
+    num('strokeWidth', 'Stroke width', 0, 20), num('angle', 'Angle', 0, 360), num('opacity', 'Opacity', 0.1, 1, 0.05), num('skewX', 'Skew X', -45, 45),
+    el('label', { class: 'field inline' }, el('input', { type: 'checkbox', id: 'i-shadow', checked: !!o.shadow, onchange: (e) => { o.set('shadow', e.target.checked ? new F.Shadow({ color: 'rgba(0,0,0,.35)', blur: 14, offsetX: 6, offsetY: 8 }) : null); canvas.requestRenderAll(); } }), 'Drop shadow'));
+}
+['selection:created', 'selection:updated', 'selection:cleared'].forEach((ev) => canvas.on(ev, () => { inspect(); layers(); }));
+canvas.on('object:added', (e) => { log(`object:added ${name(e.target)}`); layers(); snap(); });
+canvas.on('object:removed', (e) => { log(`object:removed ${name(e.target)}`); layers(); snap(); });
+canvas.on('object:modified', (e) => { log(`object:modified ${name(e.target)} → left ${Math.round(e.target.left)}, top ${Math.round(e.target.top)}, angle ${Math.round(e.target.angle)}°`); inspect(); layers(); snap(); });
+canvas.on('path:created', (e) => { e.path.name = 'drawing'; log('path:created (free drawing)'); });
+canvas.on('text:changed', (e) => log(`text:changed "${e.target.text.slice(0, 40)}"`));
+canvas.on('mouse:dblclick', (e) => e.target && log(`mouse:dblclick ${name(e.target)}`));
+
+async function sampleScene() {
+  restoring = true; canvas.clear(); canvas.backgroundColor = '#ffffff';
+  const w = W(), h = H();
+  const sky = new F.Rect({ left: w / 2, top: h / 2, width: w - 40, height: h - 40, rx: 16, ry: 16, name: 'card', stroke: '#d8dce4', strokeWidth: 1,
+    fill: new F.Gradient({ type: 'linear', coords: { x1: 0, y1: 0, x2: 0, y2: h - 40 }, colorStops: [{ offset: 0, color: '#fde4ee' }, { offset: 1, color: '#dbe8ff' }] }) });
+  const title = new F.IText('fabric.js 7.4.0', { left: w / 2, top: 64, fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: 34, fontWeight: 700, fill: '#1b1f27', name: 'title' });
+  const sub = new F.Textbox('Objects, groups, gradients, shadows and editable text on an HTML canvas. Drag anything.', { left: w / 2, top: 110, width: Math.min(460, w - 80), fontSize: 15, textAlign: 'center', fill: '#4b5363', fontFamily: 'Schibsted Grotesk, sans-serif', name: 'subtitle' });
+  canvas.add(sky, title, sub);
+  const y = Math.min(h - 120, 270);
+  canvas.add(shape('rect', { left: w * 0.22, top: y }), shape('circle', { left: w * 0.42, top: y }), shape('star', { left: w * 0.62, top: y }), shape('triangle', { left: w * 0.8, top: y }));
+  canvas.getObjects().slice(3).forEach((o) => o.set('shadow', new F.Shadow({ color: 'rgba(0,0,0,.25)', blur: 12, offsetX: 4, offsetY: 6 })));
+  sky.selectable = false; sky.evented = false;
+  canvas.requestRenderAll(); restoring = false; history.length = 0; snap(); layers(); inspect();
+}
+$('#sample').onclick = sampleScene;
+
+/* ---------------------------------------------------------- JSON / SVG */
+function exports() {
+  $('#s-json').value = JSON.stringify(canvas.toJSON(['name']), null, 2);
+  const svg = canvas.toSVG(); $('#s-svg').innerHTML = svg; $('#s-size').textContent = `${fmt(svg.length)} characters`;
+  $('#s-png').src = canvas.toDataURL({ format: 'png', multiplier: Math.min(1, 520 / W()) });
+}
+$('#s-refresh').onclick = exports;
+$('#s-copy').onclick = () => copyText($('#s-json').value, 'JSON copied');
+$('#s-load').onclick = async () => {
+  try { restoring = true; await canvas.loadFromJSON(JSON.parse($('#s-json').value)); canvas.requestRenderAll(); restoring = false; snap(); layers(); $('#s-status').textContent = `Loaded ${canvas.getObjects().length} objects into the editor.`; exports(); }
+  catch (e) { restoring = false; $('#s-status').textContent = 'That is not valid canvas JSON: ' + e.message; }
+};
+
+/* ---------------------------------------------------------- filters */
+const fcanvas = new F.Canvas('fc', { backgroundColor: '#f4f4f6', selection: false });
+const FILTERS = ['Grayscale', 'Sepia', 'Invert', 'BlackWhite', 'Brownie', 'Vintage', 'Kodachrome', 'Technicolor', 'Polaroid', 'Noise', 'Vibrance', 'HueRotation'];
+$('#f-list').replaceChildren(...FILTERS.map((f) => el('label', {}, el('input', { type: 'checkbox', id: 'f-' + f, onchange: applyFilters }), f)));
+['#f-bright', '#f-contrast', '#f-blur', '#f-pix'].forEach((s) => $(s).addEventListener('input', applyFilters));
+let img;
+function demoImage() {
+  const c = document.createElement('canvas'); c.width = 640; c.height = 420; const g = c.getContext('2d');
+  const sky = g.createLinearGradient(0, 0, 0, 420); sky.addColorStop(0, '#ff9a62'); sky.addColorStop(0.55, '#f2c26b'); sky.addColorStop(1, '#3d6d8c');
+  g.fillStyle = sky; g.fillRect(0, 0, 640, 420);
+  g.fillStyle = '#fff3c4'; g.beginPath(); g.arc(470, 150, 54, 0, Math.PI * 2); g.fill();
+  [['#2c4a5e', 300, 0.9], ['#1d3445', 340, 1.3]].forEach(([col, base, k]) => { g.fillStyle = col; g.beginPath(); g.moveTo(0, 420); for (let x = 0; x <= 640; x += 20) g.lineTo(x, base - Math.sin(x / 60 * k) * 40 - Math.cos(x / 23) * 12); g.lineTo(640, 420); g.fill(); });
+  g.fillStyle = '#0f1c26'; for (let i = 0; i < 12; i++) { const x = 30 + i * 52, hh = 40 + (i * 37) % 50; g.fillRect(x, 420 - hh - 30, 8, hh); g.beginPath(); g.moveTo(x - 16, 420 - hh - 20); g.lineTo(x + 4, 420 - hh - 70); g.lineTo(x + 24, 420 - hh - 20); g.fill(); }
+  return c.toDataURL('image/png');
+}
+async function loadImage(url) {
+  fit(fcanvas, $('#f-stage'), 420);
+  img = await F.FabricImage.fromURL(url);
+  const s = Math.min((fcanvas.getWidth() - 20) / img.width, 400 / img.height);
+  img.set({ left: fcanvas.getWidth() / 2, top: 210, scaleX: s, scaleY: s, selectable: false });
+  fcanvas.clear(); fcanvas.backgroundColor = '#f4f4f6'; fcanvas.add(img); applyFilters();
+}
+function applyFilters() {
+  if (!img) return;
+  const fl = FILTERS.filter((f) => $('#f-' + f).checked).map((f) => f === 'Noise' ? new F.filters.Noise({ noise: 120 }) : f === 'HueRotation' ? new F.filters.HueRotation({ rotation: 0.5 }) : new F.filters[f]());
+  const b = +$('#f-bright').value, c = +$('#f-contrast').value, bl = +$('#f-blur').value, px = +$('#f-pix').value;
+  if (b) fl.push(new F.filters.Brightness({ brightness: b }));
+  if (c) fl.push(new F.filters.Contrast({ contrast: c }));
+  if (bl) fl.push(new F.filters.Blur({ blur: bl }));
+  if (px > 1) fl.push(new F.filters.Pixelate({ blocksize: px }));
+  img.filters = fl; img.applyFilters(); fcanvas.requestRenderAll();
+  $('#f-backend').textContent = `${fl.length} filter${fl.length === 1 ? '' : 's'} applied on fabric's ${F.getFilterBackend() instanceof F.WebGLFilterBackend ? 'WebGL' : 'Canvas 2D'} filter backend.`;
+}
+$('#f-file').onchange = (e) => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => loadImage(r.result); r.readAsDataURL(f); };
+
+/* ---------------------------------------------------------- animation */
+const acanvas = new F.StaticCanvas('ac', { backgroundColor: '#ffffff' });
+let actors = [];
+function setupAnim() {
+  fit(acanvas, $('#a-stage'), 300); acanvas.clear(); acanvas.backgroundColor = '#ffffff';
+  actors = PALETTE.slice(0, 5).map((c, i) => new F.Rect({ left: 50, top: 50 + i * 50, width: 34, height: 34, rx: 8, ry: 8, fill: c }));
+  acanvas.add(...actors); acanvas.requestRenderAll();
+}
+$('#a-dur').oninput = () => { $('#a-durv').textContent = `${$('#a-dur').value} ms`; };
+$('#a-run').onclick = () => {
+  setupAnim(); const ease = F.util.ease[$('#a-ease').value] || ((t, b, c, d) => b + c * (t / d)), dur = +$('#a-dur').value, end = acanvas.getWidth() - 60;
+  actors.forEach((a, i) => setTimeout(() => {
+    a.animate({ left: end, angle: 360 }, { duration: dur, easing: ease, onChange: () => acanvas.requestRenderAll() });
+  }, i * 120));
+};
+
+/* ---------------------------------------------------------- shell */
+renderInstall($('#install'), CHECKS, {
+  setup: 'systems/fabricjs/setup.sh', serve: './start.sh fabricjs   # the fabricjs.com dev site build, http://localhost:4321', test: 'python3 systems/fabricjs/test_fabricjs.py -v', port: 4321, ui: 'website and demos',
+  notes: ['pnpm install and the library build (dist/index.min.js, the bundle this page runs)', 'Upstream unit tests (vitest) run in CI', 'The repository website is built with Astro and served from the production build: home page live canvas, demos and API reference'],
+});
+const show = initTabs((n) => {
+  if (n === 'editor') fit(canvas, stage, 460);
+  if (n === 'serialize') exports();
+  if (n === 'filters') { if (!img) loadImage(demoImage()); else fit(fcanvas, $('#f-stage'), 420); }
+  if (n === 'animate') setupAnim();
+});
+$('#a-durv').textContent = `${$('#a-dur').value} ms`;
+fit(canvas, stage, 460); sampleScene();
+window.addEventListener('resize', () => { fit(canvas, stage, 460); });
+</script>

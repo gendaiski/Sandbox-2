@@ -1,0 +1,356 @@
+<title>DSPy Program Lab</title>
+{{HEAD}}
+<style>
+  :root { --accent: #8c1c13; --accent-soft: #f8e3df; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #f08c7e; --accent-ink: #2b0703; --accent-soft: #3b1d19; } }
+  :root[data-theme="dark"] { --accent: #f08c7e; --accent-ink: #2b0703; --accent-soft: #3b1d19; }
+  .fields { display: flex; flex-direction: column; gap: 6px; }
+  .frow { display: grid; grid-template-columns: minmax(0, 1fr) 150px minmax(0, 1.3fr) 30px; gap: 6px; align-items: center; }
+  @media (max-width: 560px) { .frow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 30px; } .frow .d { grid-column: 1 / -1; } }
+  .msg { border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+  .msg > b { display: block; font: 600 11px var(--mono); text-transform: uppercase; letter-spacing: .06em; padding: 5px 10px; background: var(--sunk); color: var(--muted); }
+  .msg pre { margin: 0; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 12px; max-height: 320px; overflow: auto; }
+  .msg.assistant > b { color: var(--accent); }
+  .sigline { font: 13px var(--mono); background: var(--accent-soft); color: var(--ink); border-radius: 7px; padding: 8px 10px; overflow-x: auto; white-space: nowrap; }
+  .pred { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 14px; font-size: 13px; }
+  .pred dt { font: 600 12px var(--mono); color: var(--accent); } .pred dd { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .score { font: 700 28px var(--font); font-variant-numeric: tabular-nums; }
+  .catalog { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+  .card { border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; background: var(--panel); display: flex; flex-direction: column; gap: 4px; }
+  .card b { font-family: var(--mono); font-size: 13px; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">Dp</span><h1>DSPy Program Lab</h1><span class="tag">Signatures, modules and optimizers, with the exact prompts DSPy 3.4.1 sends</span>
+      <span class="links"><a href="https://github.com/stanfordnlp/dspy" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/dspy" target="_blank" rel="noopener">Install and test code</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="program">Program</button><button data-tab="optimize">Evaluate and optimize</button><button data-tab="catalog">Modules and optimizers</button><button data-tab="how">How it works</button><button data-tab="install">Install &amp; test</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">The messages below are formatted exactly like DSPy's ChatAdapter formats them (checked against the installed DSPy 3.4.1). Run with Claude sends those messages to Claude from this page, on your own Claude account, and parses the reply with the same <code>[[ ## field ## ]]</code> markers DSPy uses.</p>
+
+  <section data-panel="program">
+    <div class="grid cols-2">
+      <div class="stack">
+        <div class="panel"><header><h2 class="grow">Signature</h2>
+          <label class="field inline">Preset <select id="preset"><option value="qa">Contract QA (class-based)</option><option value="simple">question -&gt; answer</option><option value="sentiment">Sentiment with Literal and list</option><option value="extract">Clause extraction</option></select></label></header>
+          <label class="field">Instructions (the class docstring) <textarea id="instr" rows="2"></textarea></label>
+          <div class="stack"><b>Input fields</b><div class="fields" id="in-fields"></div><button class="btn small" id="add-in">Add input field</button></div>
+          <div class="stack"><b>Output fields</b><div class="fields" id="out-fields"></div><button class="btn small" id="add-out">Add output field</button></div>
+          <div class="sigline" id="sigline"></div>
+          <div class="row"><label class="field inline">Module <select id="module"><option value="Predict">dspy.Predict</option><option value="ChainOfThought" selected>dspy.ChainOfThought</option></select></label>
+            <label class="field inline"><input type="checkbox" id="use-demos"> Include the bootstrapped demos</label></div>
+        </div>
+        <div class="panel"><h2>Inputs</h2><div class="stack" id="inputs"></div>
+          <div class="row"><button class="btn primary ai-only" id="run">Run with Claude</button><button class="btn small" id="stop" hidden>Stop</button><span class="status" id="status"></span></div>
+          <p class="note ai-off">Open this page in Claude to run the program live; the formatted messages on the right are complete without it.</p></div>
+        <div class="panel"><h2>Prediction</h2><div id="pred"><p class="note">Run the program to see the parsed <code>dspy.Prediction</code>.</p></div>
+          <details><summary class="note">Raw completion</summary><pre class="code" id="raw" style="white-space:pre-wrap"></pre></details></div>
+      </div>
+      <div class="stack">
+        <div class="panel"><header><h2 class="grow">Messages sent to the LM</h2><button class="btn small" id="copy-msgs">Copy</button></header><div class="stack" id="msgs"></div></div>
+        <div class="panel"><header><h2 class="grow">The same program in Python</h2><button class="btn small" id="copy-py">Copy</button></header><pre class="code" id="py"></pre></div>
+      </div>
+    </div>
+  </section>
+
+  <section data-panel="optimize" hidden>
+    <div class="grid cols-side">
+      <div class="stack">
+        <div class="panel"><h2>Contract QA program</h2>
+          <p class="note">ChainOfThought over the Contract QA signature, scored on 8 dev questions about the sample services agreement. The metric passes when every word of the gold answer appears in the predicted answer.</p>
+          <div class="row"><button class="btn primary ai-only" id="eval0">Evaluate</button><button class="btn ai-only" id="boot">Compile with BootstrapFewShot</button><button class="btn small" id="ostop" hidden>Stop</button></div>
+          <span class="status" id="ostatus"></span>
+          <p class="note ai-off">Evaluation runs the program once per example with Claude, so it needs this page open in Claude.</p>
+          <div class="grid cols-2"><div class="kpi"><b class="score" id="s0">–</b><span>zero-shot</span></div><div class="kpi"><b class="score" id="s1">–</b><span>after BootstrapFewShot</span></div></div>
+          <p class="note">Compiling runs the zero-shot program as the teacher on 4 training questions, keeps up to 3 traces that pass the metric as demos (max_bootstrapped_demos=3), and evaluates again with them.</p></div>
+        <div class="panel"><h2>Bootstrapped demos</h2><div id="demos" class="stack"><p class="note">None yet.</p></div></div>
+      </div>
+      <div class="panel"><h2>Evaluation table</h2><div class="table-wrap"><table class="data" id="etable"></table></div></div>
+    </div>
+  </section>
+
+  <section data-panel="catalog" hidden>
+    <div class="panel"><h2>Modules in DSPy 3.4.1</h2><div class="catalog" id="mods"></div></div>
+    <div class="panel"><h2>Optimizers (dspy.teleprompt)</h2><div class="catalog" id="opts"></div></div>
+    <div class="panel"><h2>Adapters</h2><div class="catalog" id="adapters"></div></div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>One call</h2>
+<pre class="mermaid">
+flowchart LR
+  S[Signature: fields, types, instructions] --> M[Module: Predict, ChainOfThought, ReAct]
+  M --> A[Adapter: ChatAdapter formats messages]
+  D[(demos)] --> A
+  A --> LM[dspy.LM: any provider via LiteLLM]
+  LM --> P[Adapter.parse: split on field markers, cast types]
+  P --> R[dspy.Prediction]
+</pre></div>
+      <div class="panel"><h2>Compiling a program</h2>
+<pre class="mermaid">
+flowchart LR
+  T[(trainset)] --> O[Optimizer]
+  MET[metric] --> O
+  PR[program] --> O
+  O -->|BootstrapFewShot: keep passing traces as demos| C[compiled program]
+  O -->|MIPROv2, GEPA: propose and search instructions| C
+  O -->|BootstrapFinetune: train weights| C
+  C --> E[dspy.Evaluate on devset]
+</pre></div>
+    </div>
+  </section>
+
+  <section data-panel="install" hidden><div id="install" class="stack"></div></section>
+</main>
+<p class="footer">DSPy © Stanford NLP and contributors, MIT licence. Prompt formats checked against the DSPy 3.4.1 installed in Sandbox-2.</p>
+{{LIB}}
+{{LIVE}}
+{{AI}}
+<script>
+const CHECKS = {{CHECKS:dspy}};
+const DOC = SAMPLES.agreement;
+const section = (h) => { const i = DOC.indexOf(h); const j = DOC.indexOf('\n## ', i + 4); return DOC.slice(i, j < 0 ? undefined : j).trim(); };
+const PRESETS = {
+  qa: { instr: 'Answer questions about the contract.', ins: [['context', 'str', 'contract excerpt'], ['question', 'str', '']], outs: [['answer', 'str', 'short answer'], ['confidence', 'float', '']],
+    vals: { context: section('## 3. Fees'), question: 'When are invoices due, and what interest accrues on late amounts?' } },
+  simple: { instr: '', ins: [['question', 'str', '']], outs: [['answer', 'str', '']], vals: { question: 'What is the difference between a signature and a prompt in DSPy?' } },
+  sentiment: { instr: '', ins: [['text', 'str', '']], outs: [['sentiment', "Literal['positive', 'negative', 'neutral']", ''], ['tags', 'list[str]', '']],
+    vals: { text: 'The vendor missed the uptime target twice this quarter, but support resolved every ticket within a day.' } },
+  extract: { instr: 'Extract the obligations a clause places on each party.', ins: [['clause', 'str', 'one contract clause']], outs: [['provider_obligations', 'list[str]', ''], ['client_obligations', 'list[str]', ''], ['survives_termination', 'bool', '']],
+    vals: { clause: section('## 4. Confidentiality') } },
+};
+let state = { instr: '', ins: [], outs: [], vals: {} }, demos = [];
+const TYPES = ['str', 'int', 'float', 'bool', 'list[str]', "Literal['positive', 'negative', 'neutral']", 'dict[str, str]'];
+
+/* ------------------------------------------------ ChatAdapter, as in dspy/adapters/chat_adapter.py.
+   ChainOfThought's reasoning field has its own annotation type (printed as str), so the
+   output requirements always name its type; the 4th tuple member marks that. */
+function sigFields(module) {
+  const outs = state.outs.filter(([n]) => n);
+  return { ins: state.ins.filter(([n]) => n), outs: module === 'ChainOfThought' ? [['reasoning', 'str', 'A short plan for solving the task.', true], ...outs] : outs };
+}
+function instructions(ins, outs) {
+  if (state.instr.trim()) return state.instr.trim();
+  return `Given the fields ${ins.map(([n]) => '`' + n + '`').join(', ')}, produce the fields ${outs.filter(([n]) => n !== 'reasoning').map(([n]) => '`' + n + '`').join(', ')}.`;
+}
+function note(type) {
+  if (type === 'str') return '';
+  const lit = type.match(/^Literal\[(.*)\]$/);
+  if (lit) return `        # note: the value you produce must exactly match (no extra characters) one of: ${lit[1].split(',').map((s) => s.trim().replace(/^'|'$/g, '')).join('; ')}`;
+  if (type === 'list[str]') return '        # note: the value you produce must adhere to the JSON schema: {"type": "array", "items": {"type": "string"}}';
+  if (type === 'dict[str, str]') return '        # note: the value you produce must adhere to the JSON schema: {"type": "object", "additionalProperties": {"type": "string"}}';
+  if (type === 'bool') return '        # note: the value you produce must be True or False';
+  return `        # note: the value you produce must be a single ${type} value`;
+}
+function format(module, withDemos) {
+  const { ins, outs } = sigFields(module);
+  const desc = (fs) => fs.map(([n, t, d], i) => `${i + 1}. \`${n}\` (${t}):${d ? ' ' + d : ''}`).join('\n');
+  const structure = [...ins, ...outs].map(([n, t]) => `[[ ## ${n} ## ]]\n{${n}}${note(t)}`).join('\n\n');
+  const system = `Your input fields are:\n${desc(ins)}\nYour output fields are:\n${desc(outs)}\nAll interactions will be structured in the following way, with the appropriate values filled in.\n\n${structure}\n\n[[ ## completed ## ]]\nIn adhering to this structure, your objective is: \n        ${instructions(ins, outs).split('\n').join('\n        ')}`;
+  const user = (vals) => ins.map(([n]) => `[[ ## ${n} ## ]]\n${vals[n] ?? ''}`).join('\n\n');
+  const msgs = [{ role: 'system', content: system }];
+  if (withDemos) for (const d of demos) {
+    msgs.push({ role: 'user', content: user(d) });
+    msgs.push({ role: 'assistant', content: outs.map(([n]) => `[[ ## ${n} ## ]]\n${d[n] ?? ''}`).join('\n\n') + '\n\n[[ ## completed ## ]]\n' });
+  }
+  const req = 'Respond with the corresponding output fields, starting with the field ' + outs.map(([n, t, , own]) => `\`[[ ## ${n} ## ]]\`${t === 'str' && !own ? '' : ` (must be formatted as a valid Python ${t})`}`).join(', then ') + ', and then ending with the marker for `[[ ## completed ## ]]`.';
+  return (vals) => [...msgs, { role: 'user', content: user(vals) + '\n\n' + req }];
+}
+/* sample() takes user/assistant turns only: the system message leads as a user turn, as many providers do. */
+const toTurns = (msgs) => msgs.map((m) => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content }));
+function parse(module, text) {
+  const { outs } = sigFields(module), got = {}, re = /\[\[ ## (\w+) ## \]\]/g;
+  const marks = [...text.matchAll(re)];
+  marks.forEach((m, i) => { const end = i + 1 < marks.length ? marks[i + 1].index : text.length; got[m[1]] = text.slice(m.index + m[0].length, end).trim(); });
+  const out = {}, errors = [];
+  for (const [n, t] of outs) {
+    if (!(n in got)) { errors.push(`Expected field ${n} was not found in the completion`); continue; }
+    let v = got[n];
+    try {
+      if (t === 'float' || t === 'int') { v = Number(v); if (Number.isNaN(v)) throw new Error('not a number'); if (t === 'int') v = Math.trunc(v); }
+      else if (t === 'bool') { if (!/^(true|false)$/i.test(v)) throw new Error('not True or False'); v = /^true$/i.test(v); }
+      else if (t.startsWith('list') || t.startsWith('dict')) v = JSON.parse(v);
+      else if (t.startsWith('Literal')) { const ok = t.slice(8, -1).split(',').map((s) => s.trim().replace(/^'|'$/g, '')); if (!ok.includes(v)) throw new Error(`not one of ${ok.join(', ')}`); }
+    } catch (e) { errors.push(`${n}: ${e.message}`); }
+    out[n] = v;
+  }
+  return { out, errors };
+}
+
+/* ------------------------------------------------ signature editor */
+function fieldRows(box, list) {
+  box.replaceChildren(...list.map((f, i) => el('div', { class: 'frow' },
+    el('input', { type: 'text', value: f[0], 'aria-label': 'Field name', oninput: (e) => { f[0] = e.target.value.replace(/\W/g, '_'); render(false); } }),
+    el('select', { 'aria-label': 'Type', onchange: (e) => { f[1] = e.target.value; render(false); } }, ...[...new Set([f[1], ...TYPES])].map((t) => el('option', { value: t, selected: t === f[1] }, t))),
+    el('input', { type: 'text', class: 'd', value: f[2], placeholder: 'description', 'aria-label': 'Description', oninput: (e) => { f[2] = e.target.value; render(false); } }),
+    el('button', { class: 'btn small', title: 'Remove', 'aria-label': 'Remove field', onclick: () => { list.splice(i, 1); render(true); } }, '×'))));
+}
+function load(key) { const p = PRESETS[key]; state = { instr: p.instr, ins: p.ins.map((f) => [...f]), outs: p.outs.map((f) => [...f]), vals: { ...p.vals } }; demos = []; $('#instr').value = p.instr; render(true); }
+function render(rebuild) {
+  if (rebuild) { fieldRows($('#in-fields'), state.ins); fieldRows($('#out-fields'), state.outs); }
+  const module = $('#module').value, { ins, outs } = sigFields(module);
+  $('#sigline').textContent = `${ins.map(([n, t]) => `${n}: ${t}`).join(', ')} -> ${outs.filter(([n]) => n !== 'reasoning').map(([n, t]) => `${n}: ${t}`).join(', ')}`;
+  const ids = new Set(ins.map(([n]) => n));
+  for (const k of Object.keys(state.vals)) if (!ids.has(k)) delete state.vals[k];
+  $('#inputs').replaceChildren(...ins.map(([n, t, d]) => el('label', { class: 'field' }, `${n}${d ? ' · ' + d : ''}`,
+    el('textarea', { id: 'v-' + n, rows: (state.vals[n] || '').length > 160 ? 6 : 2, value: state.vals[n] || '', oninput: (e) => { state.vals[n] = e.target.value; showMsgs(); } }))));
+  showMsgs();
+  const cls = state.instr.trim() ? state.instr.trim() : '';
+  $('#py').textContent = `import dspy
+
+dspy.configure(lm=dspy.LM("anthropic/claude-sonnet-5-5"))
+
+class MySignature(dspy.Signature):
+    """${cls || instructions(ins, outs)}"""
+${ins.map(([n, t, d]) => `    ${n}: ${t} = dspy.InputField(${d ? `desc=${JSON.stringify(d)}` : ''})`).join('\n')}
+${state.outs.filter(([n]) => n).map(([n, t, d]) => `    ${n}: ${t} = dspy.OutputField(${d ? `desc=${JSON.stringify(d)}` : ''})`).join('\n')}
+
+program = dspy.${module}(MySignature)
+prediction = program(${ins.map(([n]) => `${n}=...`).join(', ')})
+print(prediction)`;
+}
+function showMsgs() {
+  const msgs = format($('#module').value, $('#use-demos').checked)(state.vals);
+  $('#msgs').replaceChildren(...msgs.map((m) => el('div', { class: 'msg ' + m.role }, el('b', {}, m.role), el('pre', {}, m.content))));
+}
+$('#preset').onchange = (e) => load(e.target.value);
+$('#instr').oninput = (e) => { state.instr = e.target.value; render(false); };
+$('#module').onchange = () => render(false);
+$('#use-demos').onchange = () => { if ($('#use-demos').checked && !demos.length) toast('Compile with BootstrapFewShot first to get demos'); showMsgs(); };
+$('#add-in').onclick = () => { state.ins.push([`input_${state.ins.length + 1}`, 'str', '']); render(true); };
+$('#add-out').onclick = () => { state.outs.push([`output_${state.outs.length + 1}`, 'str', '']); render(true); };
+$('#copy-msgs').onclick = () => copyText(format($('#module').value, $('#use-demos').checked)(state.vals).map((m) => `--- ${m.role}\n${m.content}`).join('\n\n'), 'Messages copied');
+$('#copy-py').onclick = () => copyText($('#py').textContent, 'Python copied');
+
+$('#run').onclick = async () => {
+  const module = $('#module').value, msgs = format(module, $('#use-demos').checked)(state.vals);
+  $('#raw').textContent = '';
+  try {
+    const { text } = await AI.run(toTurns(msgs), { btn: $('#run'), stop: $('#stop'), status: $('#status'), onText: ({ text }) => { $('#raw').textContent = text; } });
+    const { out, errors } = parse(module, text);
+    $('#pred').replaceChildren(el('dl', { class: 'pred' }, ...Object.entries(out).flatMap(([k, v]) => [el('dt', {}, k), el('dd', {}, typeof v === 'string' ? v : JSON.stringify(v))])),
+      errors.length ? el('p', { class: 'note', style: { color: 'var(--bad)' } }, 'AdapterParseError: ' + errors.join('; ') + '. DSPy would retry with the JSONAdapter here.') : el('p', { class: 'note' }, 'Parsed and cast to the declared types.'));
+  } catch { /* status shows why */ }
+};
+
+/* ------------------------------------------------ evaluate and BootstrapFewShot */
+const QA_SIG = PRESETS.qa;
+const DEV = [
+  ['## 3. Fees', 'How much is the monthly fee?', 'USD 12,500'],
+  ['## 3. Fees', 'Within how many days are invoices due?', '30 days'],
+  ['## 4. Confidentiality', 'How long do the confidentiality obligations survive termination?', 'five years'],
+  ['## 6. Term', 'How long is the initial term?', '24 months'],
+  ['## 6. Term', 'How much notice is needed to stop renewal?', '90 days'],
+  ['## 7. Governing', 'Which law governs the agreement?', 'New York'],
+  ['## 2. Services', 'What is the monthly uptime target?', '99.5%'],
+  ['## 5. Limitation', 'What caps aggregate liability?', 'fees paid in the twelve months'],
+];
+const TRAIN = [
+  ['## 2. Services', 'What is the p95 query latency target?', '800 ms'],
+  ['## 6. Term', 'How long is each renewal term?', '12 months'],
+  ['## 6. Term', 'How long does a party have to cure a material breach?', '30 days'],
+  ['## 2. Services', 'How often must the corpus be synchronised?', 'every twenty-four hours'],
+];
+const norm = (s) => String(s).toLowerCase().replace(/[^a-z0-9.%]+/g, ' ').replace(/\b(\d+) days?\b/g, '$1 days').trim();
+const words = (s) => norm(s).split(' ').filter(Boolean);
+const NUM = { five: '5', twelve: '12', thirty: '30', ninety: '90', 'twenty four': '24' };
+const canon = (s) => Object.entries(NUM).reduce((t, [w, n]) => t.replace(new RegExp(`\\b${w}\\b`, 'g'), n), norm(s));
+const metric = (gold, pred) => { const p = ' ' + canon(pred) + ' '; return canon(gold).split(' ').every((w) => p.includes(' ' + w + ' ') || p.includes(w)); };
+let octl = null;
+async function runProgram(ex, withDemos, signal) {
+  const saved = state; state = { instr: QA_SIG.instr, ins: QA_SIG.ins, outs: QA_SIG.outs, vals: {} };
+  const fmtd = format('ChainOfThought', withDemos), msgs = fmtd({ context: section(ex[0]), question: ex[1] });
+  state = saved;
+  if (signal.aborted) throw { code: 'cancelled' };
+  const { text } = await AI.fn(toTurns(msgs), { modelTier: 'quick', signal, cache: false });
+  state = { instr: QA_SIG.instr, ins: QA_SIG.ins, outs: QA_SIG.outs, vals: {} };
+  const { out } = parse('ChainOfThought', text); state = saved;
+  return out;
+}
+const results = { 0: [], 1: [] };
+function table() {
+  $('#etable').replaceChildren(el('tr', {}, el('th', {}, 'Question'), el('th', {}, 'Gold'), el('th', {}, 'Zero-shot'), el('th', {}, 'Compiled')),
+    ...DEV.map((d, i) => el('tr', {}, el('td', {}, d[1]), el('td', {}, d[2]),
+      ...[0, 1].map((k) => { const r = results[k][i]; return el('td', {}, r ? el('span', {}, el('span', { class: 'pill ' + (r.ok ? 'good' : 'bad') }, r.ok ? 'pass' : 'fail'), ' ', String(r.answer || '').slice(0, 90)) : '–'); }))));
+}
+async function evaluate(k) {
+  results[k] = [];
+  for (let i = 0; i < DEV.length; i++) {
+    $('#ostatus').textContent = `${k ? 'Compiled' : 'Zero-shot'}: example ${i + 1} of ${DEV.length}…`;
+    const out = await runProgram(DEV[i], k === 1, octl.signal);
+    results[k][i] = { answer: out.answer, ok: metric(DEV[i][2], out.answer || '') }; table();
+  }
+  const s = results[k].filter((r) => r.ok).length / DEV.length * 100;
+  $('#s' + k).textContent = fmt(s, 1) + '%';
+  return s;
+}
+async function guarded(fn) {
+  await AI.ready; if (!AI.fn) return;
+  octl = new AbortController(); $('#ostop').hidden = false; $('#ostop').onclick = () => octl.abort();
+  $('#eval0').disabled = $('#boot').disabled = true;
+  try { await fn(); $('#ostatus').textContent = 'Done.'; }
+  catch (e) { $('#ostatus').textContent = e.code === 'cancelled' ? 'Stopped.' : AI.why(e.code); if (AI.permanent(e.code)) document.documentElement.dataset.ai = 'off'; }
+  finally { $('#ostop').hidden = true; $('#eval0').disabled = $('#boot').disabled = false; }
+}
+$('#eval0').onclick = () => guarded(() => evaluate(0));
+$('#boot').onclick = () => guarded(async () => {
+  if (!results[0].length) await evaluate(0);
+  demos = [];
+  for (let i = 0; i < TRAIN.length && demos.length < 3; i++) {
+    $('#ostatus').textContent = `Bootstrapping: teacher on training example ${i + 1} of ${TRAIN.length}…`;
+    const out = await runProgram(TRAIN[i], false, octl.signal);
+    if (metric(TRAIN[i][2], out.answer || '')) demos.push({ context: section(TRAIN[i][0]), question: TRAIN[i][1], reasoning: out.reasoning, answer: out.answer, confidence: out.confidence });
+  }
+  $('#demos').replaceChildren(...(demos.length ? demos.map((d) => el('div', { class: 'card' }, el('b', {}, d.question), el('span', { class: 'note' }, 'reasoning: ' + String(d.reasoning).slice(0, 200)), el('span', {}, 'answer: ' + d.answer))) : [el('p', { class: 'note' }, 'No training trace passed the metric, so the compiled program has no demos.')]));
+  await evaluate(1);
+  $('#use-demos').disabled = false;
+});
+
+/* ------------------------------------------------ catalog */
+const card = ([n, d]) => el('div', { class: 'card' }, el('b', {}, n), el('span', { class: 'note' }, d));
+$('#mods').replaceChildren(...[
+  ['dspy.Predict', 'Maps inputs to outputs with one LM call through the adapter. Every other module is built from Predict.'],
+  ['dspy.ChainOfThought', 'Adds a reasoning output field before the declared outputs, so the LM writes a short plan first.'],
+  ['dspy.ReAct', 'An agent loop: thought, tool call, observation, until it calls finish; tools are plain Python functions.'],
+  ['dspy.ReActV2', 'The newer ReAct implementation with native tool calling.'],
+  ['dspy.BestOfN', 'Runs a module up to N times and returns the highest-scoring prediction under a reward function.'],
+  ['dspy.Refine', 'Like BestOfN, but feeds advice from failed attempts back into the next try.'],
+  ['dspy.MultiChainComparison', 'Compares several reasoning attempts and produces a final answer from them.'],
+  ['dspy.RLM', 'Experimental recursive LM module that works through long inputs with a code environment.'],
+  ['dspy.Parallel', 'Runs a module over many inputs with a thread pool.'],
+  ['dspy.ProgramOfThought', 'Deprecated in 3.4: writes Python code and runs it to get the answer.'],
+  ['dspy.CodeAct', 'Deprecated in 3.4: acts by writing code that calls tools.'],
+].map(card));
+$('#opts').replaceChildren(...[
+  ['LabeledFewShot', 'Uses labelled training examples directly as demos.'],
+  ['BootstrapFewShot', 'Runs a teacher program on the trainset and keeps traces that pass the metric as demos (what the Evaluate tab runs).'],
+  ['BootstrapFewShotWithRandomSearch', 'Bootstraps several demo sets and keeps the best on a validation set.'],
+  ['BootstrapFewShotWithOptuna', 'The same search driven by Optuna.'],
+  ['KNNFewShot', 'Picks demos per input by nearest-neighbour similarity.'],
+  ['COPRO', 'Coordinate ascent over instructions: propose, score, refine.'],
+  ['MIPROv2', 'Proposes instructions and demo sets together and searches them with Bayesian optimisation.'],
+  ['GEPA', 'Reflective prompt evolution: reads failures in text form and proposes better instructions (experimental, since 3.0).'],
+  ['SIMBA', 'Stochastic introspective mini-batch ascent: finds hard examples and writes rules or demos for them.'],
+  ['InferRules', 'Induces natural-language rules from examples and adds them to the instructions.'],
+  ['BootstrapFinetune', 'Turns bootstrapped traces into fine-tuning data and trains the LM weights.'],
+  ['BetterTogether', 'Meta-optimizer that alternates prompt and weight optimization.'],
+  ['Ensemble', 'Combines several programs and reduces their outputs, for example by majority vote.'],
+  ['AvatarOptimizer', 'Optimizes the instructions of tool-using agents from positive and negative examples.'],
+].map(card));
+$('#adapters').replaceChildren(...[
+  ['ChatAdapter', 'The default: [[ ## field ## ]] markers, shown on the Program tab. Falls back to JSONAdapter when parsing fails.'],
+  ['JSONAdapter', 'Asks for a JSON object with the output fields, using structured outputs where the provider supports them.'],
+  ['XMLAdapter', 'Wraps each field in XML tags.'],
+  ['TwoStepAdapter', 'Lets a reasoning model answer freely, then a second LM call extracts the fields.'],
+].map(card));
+
+renderInstall($('#install'), CHECKS, {
+  setup: 'systems/dspy/setup.sh', serve: './start.sh dspy   # JupyterLab on upstream tutorials, http://localhost:8888 (token login)', test: 'systems/dspy/.venv/bin/python systems/dspy/test_dspy.py -v', port: 8888, ui: 'JupyterLab',
+  notes: ['DSPy from source in a venv: uv pip install -e ".[anthropic,mcp,dev,test_extras]" plus JupyterLab and an ipykernel', "Upstream's test suite with pytest -n auto", 'A DSPy program (dspy.Predict with DummyLM, no key needed) run inside the Jupyter kernel', "JupyterLab opened in a browser on upstream's docs/docs/tutorials"],
+});
+initTabs(); load('qa'); table();
+</script>

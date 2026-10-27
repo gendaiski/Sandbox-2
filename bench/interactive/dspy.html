@@ -1,0 +1,1053 @@
+<title>DSPy Program Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap"><meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Systems Lab shell: one family for every system page.
+   Layout: app bar, tab strip, working area; each page sets --accent. */
+:root {
+  --bg: #f3f5f8; --panel: #ffffff; --sunk: #eceff4; --ink: #151a23; --muted: #596273; --line: #dce1e9;
+  --accent: #2f5bd3; --accent-ink: #ffffff; --accent-soft: #e5ecfc;
+  --good: #19794a; --good-soft: #e1f3e8; --warn: #946200; --warn-soft: #fbf0d6; --bad: #b42831; --bad-soft: #fbe3e4;
+  --c0: #dbe7ff; --c1: #ffe3c8; --c2: #d6f2df; --c3: #f6d9ef; --c4: #fff2b8; --c5: #d5f0f4; --c6: #e6dcff; --c7: #ffd9d6;
+  --e0: #4f7ae6; --e1: #d9822b; --e2: #2f9d5a; --e3: #b8509a; --e4: #b08f00; --e5: #1f93a5; --e6: #7d5bd6; --e7: #d14d43;
+  --font: "Schibsted Grotesk", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --r: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1116; --panel: #161a21; --sunk: #1d222b; --ink: #e5e8ee; --muted: #97a0ae; --line: #2a303b;
+    --accent-soft: #1d2a4a; --good: #67d197; --good-soft: #15301f; --warn: #eec266; --warn-soft: #362b11; --bad: #f08a8f; --bad-soft: #3c1b1d;
+    --c0: #1f2d4d; --c1: #3d2b18; --c2: #18352a; --c3: #3a2136; --c4: #3a3413; --c5: #143438; --c6: #2b2448; --c7: #3d2220;
+    --e0: #86a5f2; --e1: #f0a45e; --e2: #6cc98f; --e3: #e08bc8; --e4: #e3c64e; --e5: #67c6d4; --e6: #ad93f0; --e7: #f08a80;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1116; --panel: #161a21; --sunk: #1d222b; --ink: #e5e8ee; --muted: #97a0ae; --line: #2a303b;
+  --accent-soft: #1d2a4a; --good: #67d197; --good-soft: #15301f; --warn: #eec266; --warn-soft: #362b11; --bad: #f08a8f; --bad-soft: #3c1b1d;
+  --c0: #1f2d4d; --c1: #3d2b18; --c2: #18352a; --c3: #3a2136; --c4: #3a3413; --c5: #143438; --c6: #2b2448; --c7: #3d2220;
+  --e0: #86a5f2; --e1: #f0a45e; --e2: #6cc98f; --e3: #e08bc8; --e4: #e3c64e; --e5: #67c6d4; --e6: #ad93f0; --e7: #f08a80;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { min-height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14.5px/1.5 var(--font); }
+a { color: var(--accent); }
+code, pre, .mono { font-family: var(--mono); font-size: 12.5px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.appbar { background: var(--panel); border-bottom: 1px solid var(--line); }
+.appbar .wrap { max-width: 1320px; margin: 0 auto; padding-block: 14px 0; display: flex; flex-direction: column; gap: 10px; }
+.brand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.brand h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+.brand .tag { color: var(--muted); }
+.brand .links { margin-left: auto; display: flex; gap: 14px; font-size: 13px; flex-wrap: wrap; }
+.mark { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; background: var(--accent); color: var(--accent-ink);
+  font: 700 13px var(--mono); align-self: center; }
+.tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+.tabs button { border: 0; background: none; padding: 9px 13px 11px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; white-space: nowrap; font-weight: 500; }
+.tabs button:hover { color: var(--ink); }
+.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+main.wrap { max-width: 1320px; margin: 0 auto; padding-block: 18px 40px; }
+[data-panel] { display: flex; flex-direction: column; gap: 16px; }
+.note { font-size: 12.5px; color: var(--muted); }
+.banner { font-size: 12.5px; color: var(--muted); background: var(--sunk); border-radius: var(--r); padding: 8px 12px; }
+
+.grid { display: grid; gap: 16px; }
+.cols-2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.cols-side { grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); }
+.cols-side-r { grid-template-columns: minmax(0, 1fr) minmax(280px, 380px); }
+.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 900px) { .cols-2, .cols-side, .cols-side-r, .cols-3 { grid-template-columns: minmax(0, 1fr); } .cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.panel > h2, .panel > header h2 { font-size: 14.5px; font-weight: 600; }
+.panel > header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.panel > header .grow { flex: 1; }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.stack { display: flex; flex-direction: column; gap: 8px; }
+.grow { flex: 1; min-width: 0; }
+
+.btn { border: 1px solid var(--line); background: var(--panel); border-radius: 7px; padding: 6px 12px; cursor: pointer; font-weight: 500; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.small { padding: 3px 9px; font-size: 12.5px; }
+.btn:disabled { opacity: .5; cursor: default; }
+label.field { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--muted); min-width: 0; }
+label.field.inline { flex-direction: row; align-items: center; gap: 8px; }
+input[type=text], input[type=number], input[type=search], input[type=url], select, textarea {
+  border: 1px solid var(--line); background: var(--panel); border-radius: 7px; padding: 6px 9px; min-width: 0; color: var(--ink); }
+textarea { font-family: var(--mono); font-size: 12.5px; line-height: 1.5; resize: vertical; width: 100%; }
+input[type=range] { accent-color: var(--accent); }
+
+.pill { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 600; padding: 1px 8px; border-radius: 99px; background: var(--sunk); color: var(--muted); white-space: nowrap; }
+.pill.good { background: var(--good-soft); color: var(--good); } .pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); } .pill.accent { background: var(--accent-soft); color: var(--accent); }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.kpi { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; }
+.kpi b { display: block; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.kpi span { font-size: 12px; color: var(--muted); }
+
+.table-wrap { overflow-x: auto; }
+table.data { border-collapse: collapse; width: 100%; font-size: 13px; }
+table.data th { text-align: left; font-weight: 600; color: var(--muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; padding: 7px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.data td { padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; font-variant-numeric: tabular-nums; }
+table.data tr.click { cursor: pointer; } table.data tr.click:hover td { background: var(--sunk); }
+table.data tr.sel td { background: var(--accent-soft); }
+
+.chunks { display: flex; flex-direction: column; gap: 8px; }
+.chunk { border: 1px solid var(--line); border-left: 4px solid var(--e0); border-radius: 6px; padding: 8px 10px; background: var(--panel); }
+.chunk .meta { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11.5px; color: var(--muted); margin-bottom: 4px; }
+.chunk pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-size: 12px; max-height: 220px; overflow: auto; }
+.overlay { white-space: pre-wrap; word-break: break-word; font: 12.5px/1.65 var(--mono); background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px; max-height: 560px; overflow: auto; }
+.overlay mark { color: inherit; border-radius: 3px; padding: 1px 0; }
+.overlay .ov { background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgba(127,127,127,.25) 4px 6px); }
+
+pre.code { background: var(--sunk); border-radius: 7px; padding: 10px 12px; margin: 0; overflow-x: auto; white-space: pre; }
+pre.mermaid { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; margin: 0; overflow-x: auto; text-align: center; }
+.toast { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 9px 14px; border-radius: 8px; font-size: 13px; opacity: 0; transform: translateY(8px); transition: .2s; pointer-events: none; z-index: 50; }
+.toast.show { opacity: 1; transform: none; }
+.empty { color: var(--muted); font-size: 13px; padding: 18px; text-align: center; border: 1px dashed var(--line); border-radius: var(--r); }
+.bar { height: 8px; background: var(--sunk); border-radius: 99px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
+.kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 12px; font-size: 13px; }
+.kv dt { color: var(--muted); } .kv dd { margin: 0; word-break: break-word; }
+canvas.graph { width: 100%; height: 460px; background: var(--sunk); border-radius: var(--r); display: block; touch-action: none; }
+.footer { color: var(--muted); font-size: 12px; text-align: center; padding-block: 8px 24px; }
+
+</style>
+<style>
+  :root { --accent: #8c1c13; --accent-soft: #f8e3df; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #f08c7e; --accent-ink: #2b0703; --accent-soft: #3b1d19; } }
+  :root[data-theme="dark"] { --accent: #f08c7e; --accent-ink: #2b0703; --accent-soft: #3b1d19; }
+  .fields { display: flex; flex-direction: column; gap: 6px; }
+  .frow { display: grid; grid-template-columns: minmax(0, 1fr) 150px minmax(0, 1.3fr) 30px; gap: 6px; align-items: center; }
+  @media (max-width: 560px) { .frow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 30px; } .frow .d { grid-column: 1 / -1; } }
+  .msg { border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+  .msg > b { display: block; font: 600 11px var(--mono); text-transform: uppercase; letter-spacing: .06em; padding: 5px 10px; background: var(--sunk); color: var(--muted); }
+  .msg pre { margin: 0; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 12px; max-height: 320px; overflow: auto; }
+  .msg.assistant > b { color: var(--accent); }
+  .sigline { font: 13px var(--mono); background: var(--accent-soft); color: var(--ink); border-radius: 7px; padding: 8px 10px; overflow-x: auto; white-space: nowrap; }
+  .pred { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 14px; font-size: 13px; }
+  .pred dt { font: 600 12px var(--mono); color: var(--accent); } .pred dd { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .score { font: 700 28px var(--font); font-variant-numeric: tabular-nums; }
+  .catalog { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+  .card { border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; background: var(--panel); display: flex; flex-direction: column; gap: 4px; }
+  .card b { font-family: var(--mono); font-size: 13px; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">Dp</span><h1>DSPy Program Lab</h1><span class="tag">Signatures, modules and optimizers, with the exact prompts DSPy 3.4.1 sends</span>
+      <span class="links"><a href="https://github.com/stanfordnlp/dspy" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/dspy" target="_blank" rel="noopener">Install and test code</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="program">Program</button><button data-tab="optimize">Evaluate and optimize</button><button data-tab="catalog">Modules and optimizers</button><button data-tab="how">How it works</button><button data-tab="install">Install &amp; test</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">The messages below are formatted exactly like DSPy's ChatAdapter formats them (checked against the installed DSPy 3.4.1). Run with Claude sends those messages to Claude from this page, on your own Claude account, and parses the reply with the same <code>[[ ## field ## ]]</code> markers DSPy uses.</p>
+
+  <section data-panel="program">
+    <div class="grid cols-2">
+      <div class="stack">
+        <div class="panel"><header><h2 class="grow">Signature</h2>
+          <label class="field inline">Preset <select id="preset"><option value="qa">Contract QA (class-based)</option><option value="simple">question -&gt; answer</option><option value="sentiment">Sentiment with Literal and list</option><option value="extract">Clause extraction</option></select></label></header>
+          <label class="field">Instructions (the class docstring) <textarea id="instr" rows="2"></textarea></label>
+          <div class="stack"><b>Input fields</b><div class="fields" id="in-fields"></div><button class="btn small" id="add-in">Add input field</button></div>
+          <div class="stack"><b>Output fields</b><div class="fields" id="out-fields"></div><button class="btn small" id="add-out">Add output field</button></div>
+          <div class="sigline" id="sigline"></div>
+          <div class="row"><label class="field inline">Module <select id="module"><option value="Predict">dspy.Predict</option><option value="ChainOfThought" selected>dspy.ChainOfThought</option></select></label>
+            <label class="field inline"><input type="checkbox" id="use-demos"> Include the bootstrapped demos</label></div>
+        </div>
+        <div class="panel"><h2>Inputs</h2><div class="stack" id="inputs"></div>
+          <div class="row"><button class="btn primary ai-only" id="run">Run with Claude</button><button class="btn small" id="stop" hidden>Stop</button><span class="status" id="status"></span></div>
+          <p class="note ai-off">Open this page in Claude to run the program live; the formatted messages on the right are complete without it.</p></div>
+        <div class="panel"><h2>Prediction</h2><div id="pred"><p class="note">Run the program to see the parsed <code>dspy.Prediction</code>.</p></div>
+          <details><summary class="note">Raw completion</summary><pre class="code" id="raw" style="white-space:pre-wrap"></pre></details></div>
+      </div>
+      <div class="stack">
+        <div class="panel"><header><h2 class="grow">Messages sent to the LM</h2><button class="btn small" id="copy-msgs">Copy</button></header><div class="stack" id="msgs"></div></div>
+        <div class="panel"><header><h2 class="grow">The same program in Python</h2><button class="btn small" id="copy-py">Copy</button></header><pre class="code" id="py"></pre></div>
+      </div>
+    </div>
+  </section>
+
+  <section data-panel="optimize" hidden>
+    <div class="grid cols-side">
+      <div class="stack">
+        <div class="panel"><h2>Contract QA program</h2>
+          <p class="note">ChainOfThought over the Contract QA signature, scored on 8 dev questions about the sample services agreement. The metric passes when every word of the gold answer appears in the predicted answer.</p>
+          <div class="row"><button class="btn primary ai-only" id="eval0">Evaluate</button><button class="btn ai-only" id="boot">Compile with BootstrapFewShot</button><button class="btn small" id="ostop" hidden>Stop</button></div>
+          <span class="status" id="ostatus"></span>
+          <p class="note ai-off">Evaluation runs the program once per example with Claude, so it needs this page open in Claude.</p>
+          <div class="grid cols-2"><div class="kpi"><b class="score" id="s0">–</b><span>zero-shot</span></div><div class="kpi"><b class="score" id="s1">–</b><span>after BootstrapFewShot</span></div></div>
+          <p class="note">Compiling runs the zero-shot program as the teacher on 4 training questions, keeps up to 3 traces that pass the metric as demos (max_bootstrapped_demos=3), and evaluates again with them.</p></div>
+        <div class="panel"><h2>Bootstrapped demos</h2><div id="demos" class="stack"><p class="note">None yet.</p></div></div>
+      </div>
+      <div class="panel"><h2>Evaluation table</h2><div class="table-wrap"><table class="data" id="etable"></table></div></div>
+    </div>
+  </section>
+
+  <section data-panel="catalog" hidden>
+    <div class="panel"><h2>Modules in DSPy 3.4.1</h2><div class="catalog" id="mods"></div></div>
+    <div class="panel"><h2>Optimizers (dspy.teleprompt)</h2><div class="catalog" id="opts"></div></div>
+    <div class="panel"><h2>Adapters</h2><div class="catalog" id="adapters"></div></div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>One call</h2>
+<pre class="mermaid">
+flowchart LR
+  S[Signature: fields, types, instructions] --> M[Module: Predict, ChainOfThought, ReAct]
+  M --> A[Adapter: ChatAdapter formats messages]
+  D[(demos)] --> A
+  A --> LM[dspy.LM: any provider via LiteLLM]
+  LM --> P[Adapter.parse: split on field markers, cast types]
+  P --> R[dspy.Prediction]
+</pre></div>
+      <div class="panel"><h2>Compiling a program</h2>
+<pre class="mermaid">
+flowchart LR
+  T[(trainset)] --> O[Optimizer]
+  MET[metric] --> O
+  PR[program] --> O
+  O -->|BootstrapFewShot: keep passing traces as demos| C[compiled program]
+  O -->|MIPROv2, GEPA: propose and search instructions| C
+  O -->|BootstrapFinetune: train weights| C
+  C --> E[dspy.Evaluate on devset]
+</pre></div>
+    </div>
+  </section>
+
+  <section data-panel="install" hidden><div id="install" class="stack"></div></section>
+</main>
+<p class="footer">DSPy © Stanford NLP and contributors, MIT licence. Prompt formats checked against the DSPy 3.4.1 installed in Sandbox-2.</p>
+<script>
+/* Systems Lab shared runtime: DOM helpers, text tools, chunkers, metrics,
+   a force-directed graph and a pdf.js loader. Inlined into every page. */
+const $ = (s, root = document) => root.querySelector(s);
+const $$ = (s, root = document) => [...root.querySelectorAll(s)];
+function el(tag, props = {}, ...kids) {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') n.className = v;
+    else if (k === 'style' && typeof v === 'object') Object.assign(n.style, v);
+    else if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
+    else if (k === 'html') n.innerHTML = v;
+    else if (k === 'value' || k === 'checked' || k === 'disabled' || k === 'selected') n[k] = v;
+    else if (k in n && typeof v !== 'string') n[k] = v;
+    else n.setAttribute(k, v === true ? '' : v);
+  }
+  for (const kid of kids.flat()) if (kid != null && kid !== false) n.append(kid.nodeType ? kid : String(kid));
+  return n;
+}
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmt = (n, d = 0) => Number(n).toLocaleString('en-US', { maximumFractionDigits: d, minimumFractionDigits: d });
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const uid = (p = 'id') => p + '-' + Math.random().toString(36).slice(2, 10);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* storage unavailable */ } },
+};
+
+function toast(msg) {
+  let t = $('.toast');
+  if (!t) document.body.append(t = el('div', { class: 'toast', role: 'status' }));
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+async function copyText(text, what = 'Copied') {
+  try { await navigator.clipboard.writeText(text); toast(what); }
+  catch { toast('Copy is blocked here: select the text and copy it'); }
+}
+
+/* Tabs: <nav class="tabs"><button data-tab="x"> with <section data-panel="x">. */
+function initTabs(onShow) {
+  const buttons = $$('.tabs button');
+  const show = (name) => {
+    if (!buttons.some((b) => b.dataset.tab === name)) name = buttons[0].dataset.tab;
+    buttons.forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === name)));
+    $$('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== name; });
+    store.set('tab:' + document.title, name);
+    onShow && onShow(name);
+  };
+  buttons.forEach((b) => { b.setAttribute('role', 'tab'); b.addEventListener('click', () => show(b.dataset.tab)); });
+  const fromHash = /^[\w.~-]+$/.test(location.hash.slice(1)) ? location.hash.slice(1) : null;
+  show(fromHash || store.get('tab:' + document.title, buttons[0].dataset.tab));
+  return show;
+}
+
+/* ------------------------------------------------------------ text */
+const Text = {
+  tokens(doc) { return [...doc.matchAll(/\S+/g)].map((m) => [m.index, m.index + m[0].length]); },
+  strip(doc, s, e) { while (s < e && /\s/.test(doc[s])) s++; while (e > s && /\s/.test(doc[e - 1])) e--; return e > s ? [s, e] : null; },
+  sentences(doc) {
+    const out = []; let start = 0;
+    const re = /(?<=[.!?])["')\]]*\s+(?=[A-Z0-9"'(\[#*-])|\n\s*\n/g;
+    for (const m of doc.matchAll(re)) { const sp = Text.strip(doc, start, m.index); if (sp) out.push(sp); start = m.index + m[0].length; }
+    const sp = Text.strip(doc, start, doc.length); if (sp) out.push(sp);
+    return out;
+  },
+  paragraphs(doc) {
+    const out = []; let start = 0;
+    for (const m of doc.matchAll(/\n\s*\n/g)) { const sp = Text.strip(doc, start, m.index); if (sp) out.push(sp); start = m.index + m[0].length; }
+    const sp = Text.strip(doc, start, doc.length); if (sp) out.push(sp);
+    return out;
+  },
+  headings(doc) { return [...doc.matchAll(/^(#{1,6})\s+(.+)$/gm)].map((m) => ({ at: m.index, level: m[1].length, title: m[2].replace(/\*/g, '').trim() })); },
+  headingPath(heads, at) {
+    let path = [];
+    for (const h of heads) { if (h.at > at) break; path = path.filter((p) => p.level < h.level).concat([h]); }
+    return path.map((p) => p.title);
+  },
+  STOP: new Set('a an and are as at be by for from has have in is it its of on or that the this to was were will with shall may any all such each other than not no under which who whom their there these those into upon if then'.split(' ')),
+  terms(text) { return (text.toLowerCase().match(/[a-z][a-z'-]+/g) || []).filter((w) => w.length > 2 && !Text.STOP.has(w)); },
+  tfidf(texts) {
+    const docs = texts.map((t) => { const c = new Map(); for (const w of Text.terms(t)) c.set(w, (c.get(w) || 0) + 1); return c; });
+    const df = new Map(); docs.forEach((d) => d.forEach((_, w) => df.set(w, (df.get(w) || 0) + 1)));
+    const n = docs.length;
+    return docs.map((d) => {
+      const total = [...d.values()].reduce((a, b) => a + b, 0) || 1; const v = new Map(); let norm = 0;
+      d.forEach((c, w) => { const x = (c / total) * Math.log((1 + n) / (1 + df.get(w)) + 1); v.set(w, x); norm += x * x; });
+      norm = Math.sqrt(norm) || 1; v.forEach((x, w) => v.set(w, x / norm)); return v;
+    });
+  },
+  cos(a, b) { if (a.size > b.size) [a, b] = [b, a]; let s = 0; a.forEach((x, w) => { s += x * (b.get(w) || 0); }); return s; },
+  topTerms(text, k = 3) { const c = new Map(); for (const w of Text.terms(text)) c.set(w, (c.get(w) || 0) + 1); return [...c].sort((a, b) => b[1] - a[1]).slice(0, k).map((x) => x[0]); },
+  entities(text) {
+    const out = new Set();
+    for (const m of text.matchAll(/"([A-Z][A-Za-z ]+)"|\b((?:[A-Z][a-z]+|[A-Z]{2,})(?:\s+(?:[A-Z][a-z]+|[A-Z]{2,}|LLC|Ltd\.?|Inc\.?|GmbH))+)/g)) out.add((m[1] || m[2]).trim());
+    return out;
+  },
+  words(t) { return (t.match(/\S+/g) || []).length; },
+};
+
+/* ------------------------------------------------------------ chunkers
+   The 20 methods of itsual/Chunking-Methods-for-RAG (same algorithms as
+   systems/chunking-methods/chunking_methods.py). Each returns
+   [{text, start, end, meta}] with text === doc.slice(start, end) unless
+   meta.added_context says otherwise. */
+const C = (doc, s, e, meta = {}) => ({ text: doc.slice(s, e), start: s, end: e, meta });
+const CS = (doc, s, e, meta) => { const sp = Text.strip(doc, s, e); return sp ? C(doc, sp[0], sp[1], meta) : null; };
+function pack(doc, units, max, method) {
+  const out = []; let cur = null;
+  for (const [s, e] of units) { if (cur && e - cur[0] > max) { out.push(C(doc, cur[0], cur[1], { method })); cur = null; } cur = cur ? [cur[0], e] : [s, e]; }
+  if (cur) out.push(C(doc, cur[0], cur[1], { method }));
+  return out;
+}
+const SEPARATORS = ['\n## ', '\n### ', '\n\n', '\n', '. ', ' '];
+const Chunkers = {
+  fixed_size(doc, { size = 500 } = {}) { const o = []; for (let i = 0; i < doc.length; i += size) o.push(C(doc, i, Math.min(i + size, doc.length), { method: 'fixed_size' })); return o; },
+  token_based(doc, { max_tokens = 100 } = {}) { const t = Text.tokens(doc), o = []; for (let i = 0; i < t.length; i += max_tokens) { const j = Math.min(i + max_tokens, t.length); o.push(C(doc, t[i][0], t[j - 1][1], { method: 'token_based', tokens: j - i })); } return o; },
+  sentence_based(doc, { max_sentences = 4 } = {}) { const s = Text.sentences(doc), o = []; for (let i = 0; i < s.length; i += max_sentences) o.push(C(doc, s[i][0], s[Math.min(i + max_sentences, s.length) - 1][1], { method: 'sentence_based' })); return o; },
+  paragraph_based(doc, { max_chars = 1200 } = {}) { return pack(doc, Text.paragraphs(doc), max_chars, 'paragraph_based'); },
+  page_based(doc) { const o = []; let pos = 0; doc.split('\f').forEach((p, i) => { const c = CS(doc, pos, pos + p.length, { method: 'page_based', page: i + 1 }); if (c) o.push(c); pos += p.length + 1; }); return o; },
+  sliding_window(doc, { window = 600, step = 400 } = {}) { step = Math.max(1, Math.min(step, window)); const o = []; for (let i = 0; ; i += step) { o.push(C(doc, i, Math.min(i + window, doc.length), { method: 'sliding_window' })); if (i + window >= doc.length) break; } return o; },
+  fixed_token_overlap(doc, { max_tokens = 100, overlap = 20 } = {}) {
+    overlap = Math.min(overlap, max_tokens - 1); const t = Text.tokens(doc), o = []; let i = 0;
+    while (i < t.length) { const j = Math.min(i + max_tokens, t.length); o.push(C(doc, t[i][0], t[j - 1][1], { method: 'fixed_token_overlap', overlap_tokens: i ? overlap : 0 })); if (j === t.length) break; i = j - overlap; }
+    return o;
+  },
+  recursive(doc, { max_chars = 800, separators = SEPARATORS } = {}) {
+    const split = (s, e, lvl) => {
+      if (e - s <= max_chars || lvl >= separators.length) return [[s, e]];
+      const sep = separators[lvl], pieces = []; let cur = s;
+      for (;;) { const k = doc.indexOf(sep, cur + 1); if (k < 0 || k >= e) break; pieces.push([cur, k]); cur = k; }
+      pieces.push([cur, e]);
+      return pieces.length === 1 ? split(s, e, lvl + 1) : pieces.flatMap(([a, b]) => split(a, b, lvl + 1));
+    };
+    return pack(doc, split(0, doc.length, 0), max_chars, 'recursive').map((c) => CS(doc, c.start, c.end, { method: 'recursive' })).filter(Boolean);
+  },
+  recursive_python(code, { max_chars = 1200 } = {}) {
+    return Chunkers.recursive(code, { max_chars, separators: ['\nclass ', '\ndef ', '\n    def ', '\n\n', '\n', ' '] }).map((c) => ({ ...c, meta: { method: 'recursive_python' } }));
+  },
+  context_enriched(doc, { max_chars = 800, neighbour_chars = 120 } = {}) {
+    const base = Chunkers.recursive(doc, { max_chars }), heads = Text.headings(doc);
+    return base.map((c, i) => {
+      const path = Text.headingPath(heads, c.start), prev = i ? base[i - 1].text.slice(-neighbour_chars).trim() : '';
+      const prefix = (path.length ? `[Section: ${path.join(' > ')}]\n` : '') + (prev ? `[Previously: …${prev}]\n` : '');
+      return { text: prefix + c.text, start: c.start, end: c.end, meta: { method: 'context_enriched', section: path, position: `${i + 1}/${base.length}`, added_context: prefix.length } };
+    });
+  },
+  semantic(doc, { threshold = 0.08, window = 2, max_chars = 1500 } = {}) {
+    const s = Text.sentences(doc); if (s.length < 2) return [C(doc, 0, doc.length, { method: 'semantic' })];
+    const groups = s.map((_, i) => doc.slice(s[Math.max(0, i - window + 1)][0], s[i][1]));
+    const v = Text.tfidf(groups), sims = s.slice(0, -1).map((_, i) => Text.cos(v[i], v[i + 1]));
+    const o = []; let start = 0;
+    sims.forEach((sim, i) => {
+      const localMin = sim <= Math.min(...sims.slice(Math.max(0, i - 1), i + 2));
+      if ((sim < threshold && localMin) || s[i][1] - s[start][0] > max_chars) { o.push(C(doc, s[start][0], s[i][1], { method: 'semantic', boundary_similarity: +sim.toFixed(3) })); start = i + 1; }
+    });
+    o.push(C(doc, s[start][0], s[s.length - 1][1], { method: 'semantic' }));
+    return o;
+  },
+  topic_based(doc, { max_topics = 6 } = {}) {
+    const p = Text.paragraphs(doc); if (p.length <= 1) return [C(doc, 0, doc.length, { method: 'topic_based' })];
+    const v = Text.tfidf(p.map(([a, b]) => doc.slice(a, b))), sims = p.slice(0, -1).map((_, i) => Text.cos(v[i], v[i + 1]));
+    const depth = sims.map((sim, i) => (Math.max(...sims.slice(0, i + 1)) - sim) + (Math.max(...sims.slice(i)) - sim));
+    const cuts = [...sims.keys()].sort((a, b) => depth[b] - depth[a]).slice(0, max_topics - 1).sort((a, b) => a - b);
+    const bounds = [0, ...cuts.map((c) => c + 1), p.length], o = [];
+    for (let i = 0; i < bounds.length - 1; i++) { const a = bounds[i], b = bounds[i + 1]; if (a === b) continue; o.push(C(doc, p[a][0], p[b - 1][1], { method: 'topic_based', topic: Text.topTerms(doc.slice(p[a][0], p[b - 1][1])) })); }
+    return o;
+  },
+  entity_based(doc, { max_chars = 1200 } = {}) {
+    const s = Text.sentences(doc), o = []; let start = 0, ents = new Set();
+    s.forEach(([a, b], i) => {
+      const e = Text.entities(doc.slice(a, b)), shared = [...e].some((x) => ents.has(x));
+      if (i > start && ((e.size && !shared) || b - s[start][0] > max_chars)) { o.push(C(doc, s[start][0], s[i - 1][1], { method: 'entity_based', entities: [...ents].sort() })); start = i; ents = new Set(); }
+      e.forEach((x) => ents.add(x));
+    });
+    o.push(C(doc, s[start][0], s[s.length - 1][1], { method: 'entity_based', entities: [...ents].sort() }));
+    return o;
+  },
+  keyword_based(doc, { keywords = 'Section, Article, Clause, WHEREAS, Schedule' } = {}) {
+    const alts = String(keywords).split(',').map((k) => k.trim()).filter(Boolean).map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') || '(?!)';
+    const re = new RegExp(`^(?:#+\\s*)?\\**(?:(?:${alts})\\b|\\d+(?:\\.\\d+)*\\.?(?=\\s))`, 'gm');
+    const starts = [...new Set([0, ...[...doc.matchAll(re)].map((m) => m.index)])].sort((a, b) => a - b);
+    return starts.map((a, i) => CS(doc, a, starts[i + 1] ?? doc.length, { method: 'keyword_based', keyword: doc.slice(a, a + 60).trim().split('\n')[0] })).filter(Boolean);
+  },
+  hierarchical(doc, { max_chars = 800 } = {}) {
+    let heads = Text.headings(doc); const o = [];
+    if (!heads.length) return Chunkers.recursive(doc, { max_chars }).map((c) => ({ ...c, meta: { method: 'hierarchical', level: 'child', parent: null } }));
+    if (heads[0].at !== 0) heads = [{ at: 0, level: 0, title: '(preamble)' }, ...heads];
+    heads.forEach((h, i) => {
+      let end = doc.length;
+      for (const later of heads.slice(i + 1)) if (later.level <= h.level || h.level === 0) { end = later.at; break; }
+      const parent = CS(doc, h.at, end, { method: 'hierarchical', level: 'parent', id: 's' + i, title: h.title, depth: h.level });
+      if (!parent) return; o.push(parent);
+      const own = heads[i + 1] ? heads[i + 1].at : doc.length, sub = doc.slice(h.at, own);
+      Chunkers.recursive(sub, { max_chars }).forEach((c) => o.push(C(doc, h.at + c.start, h.at + c.end, { method: 'hierarchical', level: 'child', parent: 's' + i })));
+    });
+    return o;
+  },
+  modality_specific(doc, { max_chars = 800 } = {}) {
+    const spans = [];
+    for (const m of doc.matchAll(/(?:^\|.*\|[ \t]*\n?)+/gm)) spans.push([m.index, m.index + m[0].length, 'table']);
+    for (const m of doc.matchAll(/^```[\s\S]*?^```[ \t]*\n?/gm)) spans.push([m.index, m.index + m[0].length, 'code']);
+    for (const m of doc.matchAll(/!\[[^\]]*\]\([^)]+\)/g)) spans.push([m.index, m.index + m[0].length, 'image']);
+    spans.sort((a, b) => a[0] - b[0]);
+    const o = []; let pos = 0;
+    const prose = (a, b) => Chunkers.recursive(doc.slice(a, b), { max_chars }).forEach((c) => o.push(C(doc, a + c.start, a + c.end, { method: 'modality_specific', modality: 'text' })));
+    for (const [a, b, kind] of spans) { if (a < pos) continue; prose(pos, a); const c = CS(doc, a, b, { method: 'modality_specific', modality: kind }); if (c) o.push(c); pos = b; }
+    prose(pos, doc.length);
+    return o;
+  },
+  table_aware(doc, { max_rows = 20, max_chars = 800 } = {}) {
+    const o = []; let pos = 0;
+    const prose = (a, b) => Chunkers.recursive(doc.slice(a, b), { max_chars }).forEach((c) => o.push(C(doc, a + c.start, a + c.end, { method: 'table_aware', kind: 'text' })));
+    for (const m of doc.matchAll(/(?:^\|.*\|[ \t]*\n?)+/gm)) {
+      prose(pos, m.index);
+      const lines = [...m[0].matchAll(/^.*\S.*$/gm)].map((x) => [m.index + x.index, m.index + x.index + x[0].length]);
+      const hdr = lines.length > 1 && /^[|\-: ]+$/.test(doc.slice(...lines[1])) ? lines.slice(0, 2) : lines.slice(0, 1);
+      const body = lines.slice(hdr.length);
+      if (body.length <= max_rows) o.push(C(doc, lines[0][0], lines[lines.length - 1][1], { method: 'table_aware', kind: 'table', rows: body.length }));
+      else for (let i = 0; i < body.length; i += max_rows) { const part = body.slice(i, i + max_rows); o.push(C(doc, part[0][0], part[part.length - 1][1], { method: 'table_aware', kind: 'table_part', rows: part.length, header: hdr.map((l) => doc.slice(...l)).join('\n') })); }
+      pos = m.index + m[0].length;
+    }
+    prose(pos, doc.length);
+    return o;
+  },
+  agentic(doc, { starts } = {}) {
+    // `starts`: sentence indices chosen by an agent (the page supplies them).
+    const s = Text.sentences(doc), st = [...new Set([0, ...(starts || [])])].filter((i) => i < s.length).sort((a, b) => a - b);
+    return st.map((a, i) => C(doc, s[a][0], s[(st[i + 1] ?? s.length) - 1][1], { method: 'agentic', sentences: `${a}-${(st[i + 1] ?? s.length) - 1}` }));
+  },
+  subdocument(doc, { max_chars = 800 } = {}) {
+    const heads = Text.headings(doc).filter((h) => h.level <= 2), title = (heads.find((h) => h.level === 1) || {}).title || doc.trim().split('\n')[0].slice(0, 80);
+    const starts = [0, ...heads.filter((h) => h.level === 2).map((h) => h.at), doc.length], o = [];
+    starts.slice(0, -1).forEach((a, n) => {
+      const b = starts[n + 1]; if (a === b) return; const sec = doc.slice(a, b), ss = Text.sentences(sec);
+      const summary = (ss.slice(1, 2).length ? ss.slice(1, 2) : ss.slice(0, 1)).map(([x, y]) => sec.slice(x, y)).join(' ').slice(0, 300);
+      const subTitle = (heads.find((h) => h.at === a) || {}).title || '(preamble)';
+      Chunkers.recursive(sec, { max_chars }).forEach((c) => o.push(C(doc, a + c.start, a + c.end, { method: 'subdocument', document: title, subdocument: subTitle, summary })));
+    });
+    return o;
+  },
+  hybrid(doc, { max_chars = 800, min_chars = 200 } = {}) {
+    const heads = Text.headings(doc), starts = [...new Set([0, ...heads.filter((h) => h.level <= 2).map((h) => h.at)])].sort((a, b) => a - b).concat(doc.length), o = [];
+    starts.slice(0, -1).forEach((a, i) => {
+      const b = starts[i + 1], section = Text.headingPath(heads, a).slice(-1)[0] || '(preamble)', merged = [];
+      for (const c0 of Chunkers.modality_specific(doc.slice(a, b), { max_chars })) {
+        const c = C(doc, a + c0.start, a + c0.end, { method: 'hybrid', modality: c0.meta.modality, section }), last = merged[merged.length - 1];
+        const pair = last && last.meta.modality === 'text' && c.meta.modality === 'text' && Math.min(last.text.length, c.text.length) < min_chars;
+        const note = last && last.meta.modality === 'table' && c.meta.modality === 'text' && c.text.length < min_chars;
+        if ((pair || note) && c.end - last.start <= max_chars) merged[merged.length - 1] = C(doc, last.start, c.end, last.meta); else merged.push(c);
+      }
+      o.push(...merged);
+    });
+    return o;
+  },
+};
+
+/* Chunk quality metrics in the spirit of ChunckerFlow's evaluators. */
+const Metrics = {
+  semantic_coherence(chunks) { // mean similarity of sentences to their own chunk
+    const scores = chunks.map((c) => { const s = Text.sentences(c.text).map(([a, b]) => c.text.slice(a, b)); if (s.length < 2) return 1; const v = Text.tfidf([c.text, ...s]); return s.reduce((acc, _, i) => acc + Text.cos(v[0], v[i + 1]), 0) / s.length; });
+    return scores.reduce((a, b) => a + b, 0) / (scores.length || 1);
+  },
+  boundary_quality(chunks) { // share of chunks ending at a sentence or structural boundary
+    const ok = chunks.filter((c) => /[.!?:"')\]|]\s*$|^#.*$/m.test(c.text.trimEnd().split('\n').pop()) || /\n\s*$/.test(c.text));
+    return ok.length / (chunks.length || 1);
+  },
+  chunk_stickiness(chunks) { // neighbour similarity: lower means cleaner topic separation
+    if (chunks.length < 2) return 0; const v = Text.tfidf(chunks.map((c) => c.text)); let s = 0;
+    for (let i = 0; i < v.length - 1; i++) s += Text.cos(v[i], v[i + 1]); return s / (v.length - 1);
+  },
+  topic_diversity(chunks) { // distinct top terms across chunks
+    const tops = chunks.map((c) => Text.topTerms(c.text, 3)).flat(); return tops.length ? new Set(tops).size / tops.length : 0;
+  },
+  size_stats(chunks) { const s = chunks.map((c) => c.text.length); const mean = s.reduce((a, b) => a + b, 0) / (s.length || 1); const sd = Math.sqrt(s.reduce((a, x) => a + (x - mean) ** 2, 0) / (s.length || 1)); return { count: s.length, min: Math.min(...s), max: Math.max(...s), mean, cv: mean ? sd / mean : 0 }; },
+};
+
+/* Render chunks over the source text as coloured marks (overlap hatched). */
+function renderOverlay(container, doc, chunks, { onPick } = {}) {
+  container.replaceChildren();
+  const marks = new Array(doc.length).fill(-1), count = new Uint8Array(doc.length);
+  chunks.forEach((c, i) => { for (let k = c.start; k < c.end; k++) { if (marks[k] < 0) marks[k] = i; count[k]++; } });
+  let i = 0;
+  while (i < doc.length) {
+    let j = i; while (j < doc.length && marks[j] === marks[i] && (count[j] > 1) === (count[i] > 1)) j++;
+    const text = doc.slice(i, j), m = marks[i];
+    if (m < 0) container.append(text);
+    else {
+      const mk = el('mark', { class: count[i] > 1 ? 'ov' : '', title: `Chunk ${m + 1}`, style: { background: `var(--c${m % 8})` } }, text);
+      if (onPick) { mk.style.cursor = 'pointer'; mk.addEventListener('click', () => onPick(m)); }
+      container.append(mk);
+    }
+    i = j;
+  }
+}
+
+function renderChunkCards(container, chunks, { limit = 200, extra } = {}) {
+  container.replaceChildren(...(chunks.length ? chunks.slice(0, limit).map((c, i) => el('div', { class: 'chunk', style: { borderLeftColor: `var(--e${i % 8})` }, id: 'chunk-' + i },
+    el('div', { class: 'meta' }, el('b', {}, `#${i + 1}`), el('span', {}, `${c.text.length} chars`), el('span', {}, `${Text.words(c.text)} words`),
+      ...Object.entries(c.meta || {}).filter(([k, v]) => k !== 'method' && v !== '' && v != null && !(Array.isArray(v) && !v.length)).slice(0, 4)
+        .map(([k, v]) => el('span', {}, `${k}: ${Array.isArray(v) ? v.join(', ') : String(v).slice(0, 70)}`)), extra ? extra(c, i) : null),
+    el('pre', {}, c.text))) : [el('div', { class: 'empty' }, 'No chunks')]));
+}
+
+/* ------------------------------------------------------------ graph */
+function forceGraph(canvas, { nodes, edges, color = () => 'var(--e0)', label = (n) => n.id, onSelect, repel = Math.min(2200, 60000 / Math.max(10, nodes.length)), linkLength = 80 } = {}) {
+  const ctx = canvas.getContext('2d'); let W = 0, H = 0, selected = null, drag = null, alpha = 1, raf;
+  const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v.replace(/^var\((.*)\)$/, '$1')).trim() || v;
+  const byId = new Map(nodes.map((n) => [n.id, n]));
+  const resize = () => { const r = canvas.getBoundingClientRect(), d = devicePixelRatio || 1; W = r.width; H = r.height; canvas.width = W * d; canvas.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0); };
+  resize();
+  nodes.forEach((n, i) => { const a = (i / Math.max(1, nodes.length)) * Math.PI * 2; n.x ??= W / 2 + Math.cos(a) * W * 0.3; n.y ??= H / 2 + Math.sin(a) * H * 0.3; n.vx = 0; n.vy = 0; n.r = 5 + Math.min(9, Math.sqrt((n.degree || 1)) * 2.4); });
+  const E = edges.map((e) => ({ ...e, a: byId.get(e.source), b: byId.get(e.target) })).filter((e) => e.a && e.b);
+  function tick() {
+    if (alpha > 0.005) {
+      for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j]; let dx = b.x - a.x, dy = b.y - a.y; const d2 = dx * dx + dy * dy + 0.01, f = Math.min(repel / d2, 6);
+        a.vx -= dx * f * 0.05; a.vy -= dy * f * 0.05; b.vx += dx * f * 0.05; b.vy += dy * f * 0.05;
+      }
+      for (const e of E) { const dx = e.b.x - e.a.x, dy = e.b.y - e.a.y, d = Math.sqrt(dx * dx + dy * dy) || 1, f = (d - linkLength) * 0.012; e.a.vx += dx / d * f * d * 0.05; e.a.vy += dy / d * f * d * 0.05; e.b.vx -= dx / d * f * d * 0.05; e.b.vy -= dy / d * f * d * 0.05; }
+      for (const n of nodes) { if (n === drag) continue; n.vx += (W / 2 - n.x) * 0.006; n.vy += (H / 2 - n.y) * 0.006; n.x += n.vx * alpha; n.y += n.vy * alpha; n.vx *= 0.6; n.vy *= 0.6; n.x = Math.max(60, Math.min(W - 60, n.x)); n.y = Math.max(24, Math.min(H - 24, n.y)); }
+      alpha *= 0.985;
+    }
+    draw(); raf = requestAnimationFrame(tick);
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const near = selected ? new Set(E.filter((e) => e.a === selected || e.b === selected).flatMap((e) => [e.a, e.b])) : null;
+    for (const e of E) { ctx.strokeStyle = css('--muted'); ctx.globalAlpha = near && !(near.has(e.a) && near.has(e.b) && (e.a === selected || e.b === selected)) ? 0.12 : 0.45; ctx.lineWidth = e === selected ? 2 : 1; ctx.beginPath(); ctx.moveTo(e.a.x, e.a.y); ctx.lineTo(e.b.x, e.b.y); ctx.stroke(); }
+    ctx.globalAlpha = 1; ctx.font = '11px ' + css('--font'); ctx.textAlign = 'center';
+    nodes.forEach((n, i) => {
+      ctx.globalAlpha = near && !near.has(n) ? 0.25 : 1; ctx.fillStyle = css(color(n)); ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); ctx.fill();
+      if (n === selected) { ctx.strokeStyle = css('--ink'); ctx.lineWidth = 2; ctx.stroke(); }
+      if (nodes.length < 60 || n.degree > 1 || n === selected) { ctx.fillStyle = css('--ink'); const t = label(n); ctx.fillText(t.length > 26 ? t.slice(0, 25) + '…' : t, n.x, i % 2 ? n.y + n.r + 12 : n.y - n.r - 4); }
+    });
+    ctx.globalAlpha = 1;
+  }
+  const at = (ev) => { const r = canvas.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top; return nodes.find((n) => (n.x - x) ** 2 + (n.y - y) ** 2 < (n.r + 4) ** 2); };
+  canvas.onpointerdown = (ev) => { const n = at(ev); if (n) { drag = n; selected = n; onSelect && onSelect(n); canvas.setPointerCapture(ev.pointerId); alpha = Math.max(alpha, 0.3); } };
+  canvas.onpointermove = (ev) => { if (!drag) return; const r = canvas.getBoundingClientRect(); drag.x = ev.clientX - r.left; drag.y = ev.clientY - r.top; };
+  canvas.onpointerup = () => { drag = null; };
+  window.addEventListener('resize', () => { resize(); alpha = 0.5; });
+  cancelAnimationFrame(canvas._raf); tick(); canvas._raf = raf;
+  return { select(id) { selected = byId.get(id) || null; onSelect && selected && onSelect(selected); }, reheat() { alpha = 1; }, stop() { cancelAnimationFrame(raf); } };
+}
+
+/* ------------------------------------------------------------ pdf.js */
+let _pdfjs;
+function loadPdfJs() {
+  // The worker script is loaded as a plain script, so pdf.js runs on the
+  // main thread (cross-origin workers are not allowed in this frame).
+  if (_pdfjs) return _pdfjs;
+  const add = (src) => new Promise((ok, fail) => document.head.append(el('script', { src, onload: ok, onerror: () => fail(new Error('Could not load ' + src)) })));
+  const base = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+  _pdfjs = add(base + 'pdf.min.js').then(() => add(base + 'pdf.worker.min.js')).then(() => window.pdfjsLib);
+  return _pdfjs;
+}
+const b64bytes = (b64) => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+async function pdfPages(bytes) {
+  const lib = await loadPdfJs(), pdf = await lib.getDocument({ data: bytes }).promise, pages = [];
+  for (let p = 1; p <= pdf.numPages; p++) {
+    const page = await pdf.getPage(p), vp = page.getViewport({ scale: 1 }), tc = await page.getTextContent();
+    const items = tc.items.filter((it) => it.str.trim()).map((it) => ({ str: it.str, x: it.transform[4], y: vp.height - it.transform[5], h: Math.abs(it.transform[3]) || it.height, w: it.width, font: it.fontName, bold: /bold|black|semibold/i.test((tc.styles[it.fontName] || {}).fontFamily || '') || /Bold/i.test(it.fontName) }));
+    pages.push({ page, number: p, width: vp.width, height: vp.height, items });
+  }
+  return pages;
+}
+async function renderPdfPage(page, canvas, scale = 1.3) {
+  const vp = page.getViewport({ scale }), d = devicePixelRatio || 1;
+  canvas.width = vp.width * d; canvas.height = vp.height * d; canvas.style.width = vp.width + 'px'; canvas.style.maxWidth = '100%';
+  const ctx = canvas.getContext('2d'); ctx.setTransform(d, 0, 0, d, 0, 0);
+  await page.render({ canvasContext: ctx, viewport: vp }).promise;
+  return vp;
+}
+/* Group positioned text items into lines (by baseline) in reading order. */
+function pdfLines(items) {
+  const sorted = [...items].sort((a, b) => a.y - b.y || a.x - b.x), lines = [];
+  for (const it of sorted) {
+    const last = lines[lines.length - 1];
+    if (last && Math.abs(last.y - it.y) < Math.max(2, it.h * 0.4)) { last.items.push(it); last.h = Math.max(last.h, it.h); last.bold = last.bold && it.bold; }
+    else lines.push({ y: it.y, h: it.h, bold: it.bold, items: [it] });
+  }
+  return lines.map((l) => { l.items.sort((a, b) => a.x - b.x); l.x = l.items[0].x; l.right = Math.max(...l.items.map((i) => i.x + i.w)); l.text = l.items.map((i, k) => (k && i.x - (l.items[k - 1].x + l.items[k - 1].w) > 1.5 ? (i.x - (l.items[k - 1].x + l.items[k - 1].w) > 14 ? '\t' : ' ') : '') + i.str).join('').replace(/ {2,}/g, ' '); return l; });
+}
+
+/* pdf.js conversion in the spirit of pymupdf4llm: font-size ranks become heading levels */
+function pdfMarkdown(pgs, mode = 'pymupdf') {
+  const lines = pgs.flatMap((p) => pdfLines(p.items).map((l) => ({ ...l, page: p.number, ph: p.height })));
+  if (mode === 'plain') return pgs.map((p) => pdfLines(p.items).map((l) => l.text).join('\n')).join('\n\n');
+  const sizes = {}; lines.forEach((l) => { const s = Math.round(l.h); sizes[s] = (sizes[s] || 0) + l.text.length; });
+  const body = +Object.entries(sizes).sort((a, b) => b[1] - a[1])[0][0];
+  const heads = Object.keys(sizes).map(Number).filter((s) => s > body + 0.5).sort((a, b) => b - a);
+  const out = []; let para = [];
+  const flush = () => { if (para.length) { out.push(para.join(' ').replace(/(\w)- (\w)/g, '$1$2')); para = []; } };
+  lines.forEach((l, i) => {
+    const s = Math.round(l.h), prev = lines[i - 1];
+    if (/^\d+$/.test(l.text.trim()) && (l.y > l.ph - 60)) return; // page numbers
+    const lvl = heads.indexOf(s);
+    if (lvl >= 0 || (l.bold && l.text.length < 80 && s >= body)) { flush(); out.push('#'.repeat(Math.min(6, (lvl >= 0 ? lvl : heads.length) + 1)) + ' **' + l.text.trim() + '**'); return; }
+    if (l.text.includes('\t')) { flush(); const cells = l.text.split('\t').map((x) => x.trim()); out.push('| ' + cells.join(' | ') + ' |'); if (!prev || !prev.text.includes('\t')) out.push('|' + cells.map(() => '---').join('|') + '|'); return; }
+    if (prev && prev.page === l.page && l.y - prev.y > l.h * 1.9) flush();
+    para.push(l.text.trim());
+  });
+  flush();
+  return out.join('\n\n').replace(/\n\n(\|[^\n]*\|)\n\n(?=\|)/g, '\n\n$1\n').replace(/(\|[^\n]*\|)\n\n(?=\|)/g, '$1\n');
+}
+
+async function sha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+/* Bar chart into an SVG element: rows [{label, value}] */
+function barChart(svg, rows, { max, fmtv = (v) => fmt(v, 2), height = 22 } = {}) {
+  const W = 520, lw = 150, top = Math.max(1e-9, max ?? Math.max(...rows.map((r) => r.value)));
+  svg.setAttribute('viewBox', `0 0 ${W} ${rows.length * height + 6}`);
+  svg.innerHTML = rows.map((r, i) => {
+    const w = Math.max(1, (r.value / top) * (W - lw - 60)), y = i * height + 4;
+    return `<text x="${lw - 8}" y="${y + 13}" text-anchor="end" font-size="11.5" fill="var(--muted)">${esc(r.label)}</text>
+      <rect x="${lw}" y="${y + 2}" width="${w}" height="${height - 8}" rx="3" fill="${r.color || 'var(--accent)'}"></rect>
+      <text x="${lw + w + 6}" y="${y + 13}" font-size="11.5" fill="var(--ink)">${esc(fmtv(r.value))}</text>`;
+  }).join('');
+}
+
+/* Sparkline/area chart: values over time */
+function areaChart(svg, values, { labels = [], color = 'var(--accent)', h = 120, fmtv = (v) => fmt(v) } = {}) {
+  const W = 520, H = h, pad = 22, left = 40, max = Math.max(1e-9, ...values), n = values.length;
+  const x = (i) => left + (i / Math.max(1, n - 1)) * (W - left - pad), y = (v) => H - pad - (v / max) * (H - pad * 2);
+  const pts = values.map((v, i) => `${x(i)},${y(v)}`).join(' ');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.innerHTML = `${[0, 0.5, 1].map((f) => `<line x1="${left}" x2="${W - pad}" y1="${y(max * f)}" y2="${y(max * f)}" stroke="var(--line)"/><text x="${left - 5}" y="${y(max * f) + 4}" text-anchor="end" font-size="10" fill="var(--muted)">${esc(fmtv(max * f))}</text>`).join('')}
+    <polygon points="${x(0)},${H - pad} ${pts} ${x(n - 1)},${H - pad}" fill="${color}" opacity=".16"/>
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2"/>
+    <circle cx="${x(n - 1)}" cy="${y(values[n - 1])}" r="3.5" fill="${color}"/>
+    ${labels.map((l, i) => (i % Math.ceil(n / 6) === 0 ? `<text x="${x(i)}" y="${H - 6}" text-anchor="middle" font-size="10" fill="var(--muted)">${esc(l)}</text>` : '')).join('')}`;
+}
+
+const SAMPLES = {"agreement": "# Master Services Agreement\n\nThis Master Services Agreement (\"Agreement\") is entered into between Northwind Legal Technologies Ltd. (\"Provider\") and Contoso Holdings LLC (\"Client\"). It governs the document automation and retrieval services the Provider delivers to the Client under one or more statements of work.\n\n## 1. Definitions\n\n### 1.1 Confidential Information\n\n\"Confidential Information\" means any non-public information disclosed by one party to the other, whether orally or in writing, that is marked as confidential or that a reasonable person would understand to be confidential given the nature of the information and the circumstances of disclosure.\n\n### 1.2 Deliverables\n\n\"Deliverables\" means the software configurations, reports, trained retrieval indexes and documentation the Provider produces for the Client under a statement of work, excluding any pre-existing Provider tools.\n\n## 2. Services\n\n### 2.1 Scope\n\nThe Provider will ingest, parse and index the Client's contract repository, and will expose a retrieval interface that returns the clauses most relevant to a natural-language question. The Provider will keep the parsed corpus synchronised with the Client's document management system at least once every twenty-four hours.\n\n### 2.2 Service Levels\n\n| Metric | Target | Service Credit |\n|--------|--------|----------------|\n| Monthly uptime | 99.5% | 5% of monthly fee |\n| Query latency (p95) | 800 ms | 2% of monthly fee |\n| Ingestion delay | 24 hours | 3% of monthly fee |\n\nService credits are the Client's sole and exclusive remedy for a failure to meet the targets in the table above.\n\n## 3. Fees and Payment\n\nThe Client will pay a monthly fee of USD 12,500, invoiced in advance. Invoices are due within thirty (30) days of receipt. Late amounts accrue interest at the lesser of 1.5% per month or the maximum rate permitted by law.\n\n## 4. Confidentiality\n\nEach party will protect the other party's Confidential Information with at least the same degree of care it uses for its own information of a similar nature, and in no event less than reasonable care. The obligations in this section survive termination of this Agreement for five (5) years.\n\n## 5. Limitation of Liability\n\nExcept for breaches of Section 4 or a party's indemnification obligations, neither party's aggregate liability arising out of this Agreement will exceed the fees paid by the Client in the twelve (12) months preceding the event giving rise to the claim. Neither party is liable for indirect, incidental or consequential damages.\n\n## 6. Term and Termination\n\n### 6.1 Term\n\nThis Agreement starts on the Effective Date and continues for an initial term of twenty-four (24) months, renewing automatically for successive twelve (12) month terms unless either party gives ninety (90) days' written notice of non-renewal.\n\n### 6.2 Termination for Cause\n\nEither party may terminate this Agreement on written notice if the other party materially breaches it and fails to cure the breach within thirty (30) days of receiving notice describing it.\n\n## 7. Governing Law\n\nThis Agreement is governed by the laws of the State of New York, without regard to its conflict of laws principles. The parties submit to the exclusive jurisdiction of the state and federal courts located in New York County.\n", "agreement_html": "<!doctype html><html><head><meta charset='utf-8'><title>Master Services Agreement</title><style>body{font-family:Helvetica,sans-serif;font-size:10pt}table{border-collapse:collapse}td,th{border:1px solid #444;padding:3px 6px}</style></head><body><h1>Master Services Agreement</h1>\n<p>This Master Services Agreement (&quot;Agreement&quot;) is entered into between Northwind Legal Technologies Ltd. (&quot;Provider&quot;) and Contoso Holdings LLC (&quot;Client&quot;). It governs the document automation and retrieval services the Provider delivers to the Client under one or more statements of work.</p>\n<h2>1. Definitions</h2>\n<h3>1.1 Confidential Information</h3>\n<p>&quot;Confidential Information&quot; means any non-public information disclosed by one party to the other, whether orally or in writing, that is marked as confidential or that a reasonable person would understand to be confidential given the nature of the information and the circumstances of disclosure.</p>\n<h3>1.2 Deliverables</h3>\n<p>&quot;Deliverables&quot; means the software configurations, reports, trained retrieval indexes and documentation the Provider produces for the Client under a statement of work, excluding any pre-existing Provider tools.</p>\n<h2>2. Services</h2>\n<h3>2.1 Scope</h3>\n<p>The Provider will ingest, parse and index the Client&#x27;s contract repository, and will expose a retrieval interface that returns the clauses most relevant to a natural-language question. The Provider will keep the parsed corpus synchronised with the Client&#x27;s document management system at least once every twenty-four hours.</p>\n<h3>2.2 Service Levels</h3>\n<table><thead><tr><th>Metric</th><th>Target</th><th>Service Credit</th></tr></thead><tbody><tr><td>Monthly uptime</td><td>99.5%</td><td>5% of monthly fee</td></tr><tr><td>Query latency (p95)</td><td>800 ms</td><td>2% of monthly fee</td></tr><tr><td>Ingestion delay</td><td>24 hours</td><td>3% of monthly fee</td></tr></tbody></table>\n<p>Service credits are the Client&#x27;s sole and exclusive remedy for a failure to meet the targets in the table above.</p>\n<h2>3. Fees and Payment</h2>\n<p>The Client will pay a monthly fee of USD 12,500, invoiced in advance. Invoices are due within thirty (30) days of receipt. Late amounts accrue interest at the lesser of 1.5% per month or the maximum rate permitted by law.</p>\n<h2>4. Confidentiality</h2>\n<p>Each party will protect the other party&#x27;s Confidential Information with at least the same degree of care it uses for its own information of a similar nature, and in no event less than reasonable care. The obligations in this section survive termination of this Agreement for five (5) years.</p>\n<h2>5. Limitation of Liability</h2>\n<p>Except for breaches of Section 4 or a party&#x27;s indemnification obligations, neither party&#x27;s aggregate liability arising out of this Agreement will exceed the fees paid by the Client in the twelve (12) months preceding the event giving rise to the claim. Neither party is liable for indirect, incidental or consequential damages.</p>\n<h2>6. Term and Termination</h2>\n<h3>6.1 Term</h3>\n<p>This Agreement starts on the Effective Date and continues for an initial term of twenty-four (24) months, renewing automatically for successive twelve (12) month terms unless either party gives ninety (90) days&#x27; written notice of non-renewal.</p>\n<h3>6.2 Termination for Cause</h3>\n<p>Either party may terminate this Agreement on written notice if the other party materially breaches it and fails to cure the breach within thirty (30) days of receiving notice describing it.</p>\n<h2>7. Governing Law</h2>\n<p>This Agreement is governed by the laws of the State of New York, without regard to its conflict of laws principles. The parties submit to the exclusive jurisdiction of the state and federal courts located in New York County.</p></body></html>", "dpa": "# Data Processing Addendum\n\nThis Data Processing Addendum (\"Addendum\") forms part of the Master Services Agreement between Northwind Legal Technologies Ltd. (\"Processor\") and Contoso Holdings LLC (\"Controller\"). It applies whenever the Processor handles Personal Data on behalf of the Controller.\n\n## 1. Scope and Roles\n\n### 1.1 Roles of the Parties\n\nThe Controller determines the purposes and means of processing. The Processor processes Personal Data only on the documented instructions of the Controller, including with regard to transfers to a third country.\n\n### 1.2 Categories of Data\n\nThe Processor will handle contact details of Controller staff, the names of counterparties appearing in contracts, and metadata describing those contracts. No special category data is processed under this Addendum.\n\n## 2. Security Measures\n\nThe Processor will maintain technical and organisational measures appropriate to the risk, including encryption of data at rest with AES-256, encryption in transit with TLS 1.2 or later, role-based access control, and quarterly access reviews.\n\nSecurity incidents affecting Personal Data will be reported to the Controller without undue delay and in any event within forty-eight (48) hours of discovery.\n\n## 3. Sub-processors\n\nThe Controller authorises the following sub-processors. The Processor will give thirty (30) days' notice before adding or replacing a sub-processor, during which the Controller may object on reasonable grounds.\n\n| Sub-processor | Service | Location |\n|---------------|---------|----------|\n| Fabrikam Cloud GmbH | Hosting and storage | Frankfurt, Germany |\n| Tailspin Search Inc. | Search indexing | Dublin, Ireland |\n| Litware Mail Ltd. | Transactional email | London, United Kingdom |\n\n## 4. Data Subject Requests\n\nThe Processor will promptly forward any request from a data subject to the Controller and will not respond directly unless instructed. The Processor will assist the Controller in responding within the statutory deadlines, at no additional charge for up to ten (10) requests per month.\n\n## 5. International Transfers\n\nPersonal Data will be stored in the European Economic Area. Any transfer outside it requires the Controller's prior written consent and must rely on the Standard Contractual Clauses adopted by the European Commission.\n\n## 6. Audits\n\nThe Controller may audit the Processor's compliance once per calendar year on thirty (30) days' written notice. The Processor may instead provide a current ISO/IEC 27001 certificate and its most recent SOC 2 Type II report.\n\n## 7. Return and Deletion\n\nOn termination of the Agreement, the Processor will, at the Controller's choice, return or delete all Personal Data within sixty (60) days, unless retention is required by law, and will certify the deletion in writing.\n", "python": "\"\"\"The 20 chunking methods from itsual/Chunking-Methods-for-RAG, implemented.\n\nThe upstream repository is a guide (a method list and a decision tree) with no\ncode; this module is a working implementation of every method it names, plus\n`choose()`, its decision tree. Pure standard library: the \"semantic\" methods\nuse TF-IDF vectors so they run offline, and `agentic()` takes any callable LLM\n(`claude_boundaries` uses Claude when ANTHROPIC_API_KEY is set).\n\nEvery method returns a list of Chunk(text, start, end, meta) where\ntext == document[start:end] unless the method adds context on purpose\n(context_enriched, subdocument), which it records in meta.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport json\nimport math\nimport os\nimport re\nfrom collections import Counter\nfrom dataclasses import dataclass, field\nfrom typing import Callable, Iterable\n\n\n@dataclass\nclass Chunk:\n    text: str\n    start: int\n    end: int\n    meta: dict = field(default_factory=dict)\n\n\ndef _span(doc: str, start: int, end: int, **meta) -> Chunk:\n    return Chunk(doc[start:end], start, end, meta)\n\n\ndef _strip(doc: str, start: int, end: int, **meta) -> Chunk | None:\n    \"\"\"Trim whitespace off a span, keeping offsets exact. None if empty.\"\"\"\n    while start < end and doc[start].isspace():\n        start += 1\n    while end > start and doc[end - 1].isspace():\n        end -= 1\n    return _span(doc, start, end, **meta) if end > start else None\n\n\n# ---------------------------------------------------------------- units\n\nWORD = re.compile(r\"\\S+\")\nSENTENCE_END = re.compile(r\"(?<=[.!?])[\\\"')\\]]*\\s+(?=[A-Z0-9\\\"'(\\[#*-])|\\n\\s*\\n\")\n\n\ndef tokens(doc: str) -> list[tuple[int, int]]:\n    \"\"\"Whitespace-delimited tokens with offsets (a tokenizer-free stand-in for\n    model tokens: roughly 0.75 of a GPT token each).\"\"\"\n    return [m.span() for m in WORD.finditer(doc)]\n\n\ndef sentences(doc: str) -> list[tuple[int, int]]:\n    spans, start = [], 0\n    for m in SENTENCE_END.finditer(doc):\n        spans.append((start, m.start()))\n        start = m.end()\n    spans.append((start, len(doc)))\n    out = []\n    for s, e in spans:\n        c = _strip(doc, s, e)\n        if c:\n            out.append((c.start, c.end))\n    return out\n\n\ndef paragraphs(doc: str) -> list[tuple[int, int]]:\n    out, start = [], 0\n    for m in re.finditer(r\"\\n\\s*\\n\", doc):\n        c = _strip(doc, start, m.start())\n        if c:\n            out.append((c.start, c.end))\n        start = m.end()\n    c = _strip(doc, start, len(doc))\n    if c:\n        out.append((c.start, c.end))\n    return out\n\n\ndef _pack(doc: str, units: list[tuple[int, int]], max_chars: int, method: str) -> list[Chunk]:\n    \"\"\"Greedily join consecutive units into chunks of at most max_chars\n    (a single oversized unit becomes its own chunk).\"\"\"\n    chunks, cur = [], None\n    for s, e in units:\n        if cur and e - cur[0] > max_chars:\n            chunks.append(_span(doc, cur[0], cur[1], method=method))\n            cur = None\n        cur = (cur[0], e) if cur else (s, e)\n    if cur:\n        chunks.append(_span(doc, cur[0], cur[1], method=method))\n    return chunks\n\n\n# ---------------------------------------------------------------- 1. basic\n\ndef fixed_size(doc: str, size: int = 500) -> list[Chunk]:\n    \"\"\"Fixed-Size: cut every `size` characters, ignoring structure.\"\"\"\n    return [_span(doc, i, min(i + size, len(doc)), method=\"fixed_size\") for i in range(0, len(doc), size)]\n\n\ndef token_based(doc: str, max_tokens: int = 100) -> list[Chunk]:\n    \"\"\"Token-Based: `max_tokens` tokens per chunk, never splitting a token.\"\"\"\n    t = tokens(doc)\n    return [_span(doc, t[i][0], t[min(i + max_tokens, len(t)) - 1][1], method=\"token_based\", tokens=len(t[i:i + max_tokens]))\n            for i in range(0, len(t), max_tokens)]\n\n\ndef sentence_based(doc: str, max_sentences: int = 4) -> list[Chunk]:\n    \"\"\"Sentence-Based: whole sentences, `max_sentences` per chunk.\"\"\"\n    s = sentences(doc)\n    return [_span(doc, s[i][0], s[min(i + max_sentences, len(s)) - 1][1], method=\"sentence_based\")\n            for i in range(0, len(s), max_sentences)]\n\n\ndef paragraph_based(doc: str, max_chars: int = 1200) -> list[Chunk]:\n    \"\"\"Paragraph-Based: whole paragraphs, merged up to `max_chars`.\"\"\"\n    return _pack(doc, paragraphs(doc), max_chars, \"paragraph_based\")\n\n\ndef page_based(doc: str, pages: list[str] | None = None) -> list[Chunk]:\n    \"\"\"Page-Based: one chunk per page. Pages are split on form feeds, or\n    passed in (e.g. one string per PDF page).\"\"\"\n    if pages is None:\n        pages = doc.split(\"\\f\")\n    out, pos = [], 0\n    for i, page in enumerate(pages, 1):\n        at = doc.find(page, pos) if page else -1\n        if at < 0:\n            at = pos\n        c = _strip(doc, at, at + len(page), method=\"page_based\", page=i)\n        if c:\n            out.append(c)\n        pos = at + len(page)\n    return out\n\n\n# ---------------------------------------------------------------- 2. context-preserving\n\ndef sliding_window(doc: str, window: int = 600, step: int = 400) -> list[Chunk]:\n    \"\"\"Sliding Window: windows of `window` chars every `step` chars, so\n    consecutive chunks share window - step chars.\"\"\"\n    if step <= 0 or step > window:\n        raise ValueError(\"need 0 < step <= window\")\n    out = []\n    for i in range(0, max(len(doc) - window + step, 1), step):\n        out.append(_span(doc, i, min(i + window, len(doc)), method=\"sliding_window\"))\n        if i + window >= len(doc):\n            break\n    return out\n\n\ndef fixed_token_overlap(doc: str, max_tokens: int = 100, overlap: int = 20) -> list[Chunk]:\n    \"\"\"Fixed Token with Overlap: token windows sharing `overlap` tokens.\"\"\"\n    if not 0 <= overlap < max_tokens:\n        raise ValueError(\"need 0 <= overlap < max_tokens\")\n    t, out, i = tokens(doc), [], 0\n    while i < len(t):\n        j = min(i + max_tokens, len(t))\n        out.append(_span(doc, t[i][0], t[j - 1][1], method=\"fixed_token_overlap\", overlap_tokens=overlap if i else 0))\n        if j == len(t):\n            break\n        i = j - overlap\n    return out\n\n\nDEFAULT_SEPARATORS = [\"\\n## \", \"\\n### \", \"\\n\\n\", \"\\n\", \". \", \" \"]\n\n\ndef recursive(doc: str, max_chars: int = 800, separators: list[str] | None = None) -> list[Chunk]:\n    \"\"\"Recursive: split on the coarsest separator that keeps pieces under\n    `max_chars`, recursing into finer separators for pieces still too big,\n    then re-merge neighbours while they fit.\"\"\"\n    seps = DEFAULT_SEPARATORS if separators is None else separators\n\n    def split(s: int, e: int, level: int) -> list[tuple[int, int]]:\n        if e - s <= max_chars or level >= len(seps):\n            return [(s, e)]\n        sep, pieces, cur = seps[level], [], s\n        while True:\n            k = doc.find(sep, cur + 1, e)\n            if k < 0:\n                break\n            pieces.append((cur, k))\n            cur = k\n        pieces.append((cur, e))\n        if len(pieces) == 1:\n            return split(s, e, level + 1)\n        return [p for a, b in pieces for p in split(a, b, level + 1)]\n\n    out = []\n    for c in _pack(doc, split(0, len(doc), 0), max_chars, \"recursive\"):\n        c = _strip(doc, c.start, c.end, method=\"recursive\")\n        if c:\n            out.append(c)\n    return out\n\n\ndef recursive_python(code: str, max_chars: int = 1200) -> list[Chunk]:\n    \"\"\"Recursive Python-Specific: split on class and def boundaries first,\n    then blank lines, then lines (LangChain's Python separators).\"\"\"\n    return [Chunk(c.text, c.start, c.end, {**c.meta, \"method\": \"recursive_python\"})\n            for c in recursive(code, max_chars, [\"\\nclass \", \"\\ndef \", \"\\n\\tdef \", \"\\n    def \", \"\\n\\n\", \"\\n\", \" \"])]\n\n\ndef _headings(doc: str) -> list[tuple[int, int, str]]:\n    \"\"\"Markdown headings as (offset, level, title).\"\"\"\n    return [(m.start(), len(m.group(1)), m.group(2).strip(\" *\"))\n            for m in re.finditer(r\"^(#{1,6})\\s+(.+)$\", doc, re.M)]\n\n\ndef _heading_path(heads: list[tuple[int, int, str]], at: int) -> list[str]:\n    path: list[tuple[int, str]] = []\n    for off, level, title in heads:\n        if off > at:\n            break\n        path = [p for p in path if p[0] < level] + [(level, title)]\n    return [t for _, t in path]\n\n\ndef context_enriched(doc: str, max_chars: int = 800, neighbour_chars: int = 120) -> list[Chunk]:\n    \"\"\"Context-Enriched: recursive chunks carrying metadata (heading path,\n    position) and a prefix naming their section plus the tail of the previous\n    chunk, so each chunk reads on its own.\"\"\"\n    base, heads, out = recursive(doc, max_chars), _headings(doc), []\n    for i, c in enumerate(base):\n        path = _heading_path(heads, c.start)\n        prev = base[i - 1].text[-neighbour_chars:] if i else \"\"\n        prefix = (f\"[Section: {' > '.join(path)}]\\n\" if path else \"\") + (f\"[Previously: \u2026{prev.strip()}]\\n\" if prev else \"\")\n        out.append(Chunk(prefix + c.text, c.start, c.end, {\"method\": \"context_enriched\", \"section\": path,\n                                                            \"position\": f\"{i + 1}/{len(base)}\", \"added_context\": len(prefix)}))\n    return out\n\n\n"};
+</script>
+<style>
+/* Live layer: controls that need Claude hide when the page cannot reach it. */
+:root[data-ai="off"] .ai-only { display: none !important; }
+:root:not([data-ai="off"]) .ai-off { display: none !important; }
+.ai-out { background: var(--sunk); border-radius: var(--r); padding: 10px 12px; min-height: 48px; overflow-wrap: anywhere; }
+.ai-out p { margin: 0 0 8px; } .ai-out p:last-child { margin-bottom: 0; }
+.ai-out h4 { margin: 10px 0 4px; font-size: 13.5px; } .ai-out ul, .ai-out ol { margin: 4px 0 8px; padding-left: 20px; }
+.ai-out pre.code { margin: 6px 0; white-space: pre-wrap; }
+.status { font-size: 12.5px; color: var(--muted); min-height: 1.4em; }
+.live-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; color: var(--accent); }
+.live-tag::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+ul.facts { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+table.checks details summary { cursor: pointer; color: var(--muted); }
+table.checks details pre { white-space: pre-wrap; max-height: 260px; overflow: auto; margin-top: 6px; }
+table.checks td:first-child { min-width: 180px; }
+
+</style>
+<script>
+/* Systems Lab live layer: Markdown for answers and the Install & test panel
+   built from the CI bench data. Live Claude calls are in ai.js. */
+
+/* Minimal Markdown for Claude's answers: headings, lists, code, bold, inline code. */
+function md(src) {
+  const out = [], lines = String(src).split('\n');
+  let list = null, code = null;
+  const inline = (t) => esc(t).replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+  const flush = () => { if (list) { out.push(`</${list}>`); list = null; } };
+  for (const l of lines) {
+    if (code !== null) { if (/^```/.test(l)) { out.push(`<pre class="code">${esc(code.join('\n'))}</pre>`); code = null; } else code.push(l); continue; }
+    if (/^```/.test(l)) { flush(); code = []; continue; }
+    const h = l.match(/^(#{1,4})\s+(.*)/), li = l.match(/^\s*([-*]|\d+\.)\s+(.*)/);
+    if (h) { flush(); out.push(`<h4>${inline(h[2])}</h4>`); }
+    else if (li) { const t = /\d/.test(li[1]) ? 'ol' : 'ul'; if (list !== t) { flush(); out.push(`<${t}>`); list = t; } out.push(`<li>${inline(li[2])}</li>`); }
+    else if (!l.trim()) flush();
+    else { flush(); out.push(`<p>${inline(l)}</p>`); }
+  }
+  if (code !== null) out.push(`<pre class="code">${esc(code.join('\n'))}</pre>`);
+  flush();
+  return out.join('');
+}
+
+/* ------------------------------------------------------------ Install & test */
+/* info: { setup, serve, test, port, ui, notes: [..], links: [[label, url]..] } */
+function renderInstall(root, data, info) {
+  const sys = data.systems || [], rows = data.checks || [];
+  const n = (k) => sys.reduce((a, s) => a + (s[k] || 0), 0);
+  const failing = sys.some((s) => s.status !== 'Passing');
+  const cmd = (label, text) => el('div', { class: 'stack' },
+    el('div', { class: 'row' }, el('b', { class: 'grow' }, label), el('button', { class: 'btn small', onclick: () => copyText(text, 'Command copied') }, 'Copy')),
+    el('pre', { class: 'code' }, text));
+  root.replaceChildren(
+    el('div', { class: 'kpis' },
+      el('div', { class: 'kpi' }, el('b', {}, failing ? 'Failing' : 'Passing'), el('span', {}, `CI on ${(data.run.sha || '').slice(0, 7) || 'the branch'}`)),
+      el('div', { class: 'kpi' }, el('b', {}, fmt(n('passed'))), el('span', {}, 'checks passed')),
+      el('div', { class: 'kpi' }, el('b', {}, fmt(n('failed'))), el('span', {}, 'failed')),
+      el('div', { class: 'kpi' }, el('b', {}, fmt(n('skipped'))), el('span', {}, 'skipped')),
+      info.port ? el('div', { class: 'kpi' }, el('b', {}, String(info.port)), el('span', {}, info.ui || 'local port')) : null),
+    el('div', { class: 'grid cols-2' },
+      el('div', { class: 'panel' }, el('h2', {}, 'Run it yourself'),
+        el('p', { class: 'note' }, 'From a clone of gendaiski/Sandbox-2 on branch claude/loving-cannon-2y609d, or in its Codespace.'),
+        info.setup && cmd('Install', info.setup), info.serve && cmd('Open the real UI', info.serve), info.test && cmd('Test', info.test)),
+      el('div', { class: 'panel' }, el('h2', {}, 'What the install covers'),
+        el('ul', { class: 'facts' }, ...(info.notes || []).map((t) => el('li', {}, t))),
+        ...sys.map((s) => el('p', { class: 'note' }, el('b', {}, s.system + ': '), s.finding || '')),
+        el('div', { class: 'row' }, ...sys.map((s) => el('a', { href: s.ci_url, target: '_blank', rel: 'noopener' }, 'CI job')),
+          sys[0] && el('a', { href: sys[0].code_url, target: '_blank', rel: 'noopener' }, 'Test code'),
+          sys[0] && el('a', { href: sys[0].upstream_url, target: '_blank', rel: 'noopener' }, 'Upstream'),
+          ...(info.links || []).map(([t, u]) => el('a', { href: u, target: '_blank', rel: 'noopener' }, t))))),
+    el('div', { class: 'panel' }, el('h2', {}, `CI checks (${rows.length})`),
+      rows.length ? el('div', { class: 'table-wrap' }, el('table', { class: 'data checks' },
+        el('tr', {}, el('th', {}, 'Check'), el('th', {}, 'Result'), el('th', {}, 'Time'), el('th', {}, 'Detail')),
+        ...rows.map((c) => el('tr', {}, el('td', {}, c.check),
+          el('td', {}, el('span', { class: 'pill ' + ({ Pass: 'good', Fail: 'bad', Skip: 'warn' }[c.status] || '') }, c.status)),
+          el('td', { class: 'mono' }, `${fmt(c.seconds, 1)} s`),
+          el('td', {}, el('details', {}, el('summary', {}, String(c.detail || '').split('\n')[0].slice(0, 110) || '—'), el('pre', { class: 'code' }, c.detail || '')))))))
+        : el('div', { class: 'empty' }, 'No CI report yet for this system.')));
+}
+
+</script>
+<script>
+/* Systems Lab live Claude calls through the artifact's `sample` capability.
+   Only pages that ask for it at build time include it; they declare capabilities {sample: {}}. */
+
+const AI = {
+  fn: null,
+  ready: null,
+  why(code) {
+    return ({
+      not_granted: 'Claude is not allowed for this page. Allow it from the artifact menu, then try again.',
+      sampling_disabled: 'Claude is not available for this account.',
+      rate_limited: 'Too many requests just now. Wait a minute and try again.',
+      refused: 'Claude declined this input. Change it and try again.',
+      session_expired: 'Sign in to Claude again, then retry.',
+      invalid_json: 'The answer did not come back in the expected format. Try again.',
+      prompt_too_large: 'The input is too long. Shorten it and try again.',
+      empty_completion: 'Claude returned nothing. Simplify the request and try again.',
+    })[code] || 'Claude could not answer this time. Try again.';
+  },
+  permanent: (code) => ['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(code),
+  /* One call with the page's own progress UI: btn is disabled while it runs,
+     stop (optional) aborts it, status shows Thinking... and any error. */
+  async run(input, { btn, stop, status, onText, json = false, tier, cache } = {}) {
+    await AI.ready;
+    const say = (t) => { if (status) status.textContent = t; };
+    if (!AI.fn) { say('Live Claude runs need this page open in Claude.'); throw { code: 'not_granted' }; }
+    const ctl = new AbortController();
+    if (stop) { stop.hidden = false; stop.onclick = () => ctl.abort(); }
+    if (btn) btn.disabled = true;
+    say('Thinking…');
+    let first = true;
+    const opts = { signal: ctl.signal, onText: (u) => { if (first) { first = false; say('Writing…'); } onText && onText(u); } };
+    if (tier) opts.modelTier = tier;
+    if (cache !== undefined) opts.cache = cache;
+    try {
+      const r = json ? await AI.fn.json(input, opts) : await AI.fn(input, opts);
+      say(r && r.truncated ? 'The answer was cut short: ask for less at a time.' : '');
+      return r;
+    } catch (e) {
+      say(e && e.code === 'cancelled' ? 'Stopped.' : AI.why(e && e.code));
+      if (e && AI.permanent(e.code)) document.documentElement.dataset.ai = 'off';
+      throw e;
+    } finally {
+      if (btn) btn.disabled = false;
+      if (stop) stop.hidden = true;
+    }
+  },
+};
+
+AI.ready = (async () => {
+  try { AI.fn = (window.claude && (await window.claude.use('sample'))) || null; } catch { AI.fn = null; }
+  if (!AI.fn) document.documentElement.dataset.ai = 'off';
+  return AI.fn;
+})();
+
+
+</script>
+<script>
+const CHECKS = {"systems": [{"job": "dspy", "system": "DSPy", "kind": "LLM programming", "status": "Passing", "passed": 3, "failed": 0, "skipped": 0, "upstream": "stanfordnlp/dspy", "upstream_url": "https://github.com/stanfordnlp/dspy", "code": "systems/dspy", "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/dspy", "ci_label": "View job", "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/40482493835/job/122116036822", "demo_label": "", "demo_url": "", "finding": "Needs uv 0.13.4+ for `uv sync`; installed with uv pip and its extras.", "ran_at": "2026-10-27T09:44:13+0000"}], "checks": [{"id": "dspy:upstream test suite (pytest tests -n auto)", "system": "DSPy", "check": "upstream test suite (pytest tests -n auto)", "status": "Pass", "seconds": 95.68, "detail": "son_example\ntests/utils/test_magicattr.py::test_person_example\ntests/utils/test_magicattr.py::test_person_example\n  /home/runner/work/Sandbox-2/Sandbox-2/vendor/dspy/dspy/utils/magicattr.py:102: DeprecationWarning: ast.Str is deprecated and will be removed in Python 3.14; use ast.Constant instead\n    elif hasattr(ast, \"Str\") and isinstance(node, ast.Str):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n2803 passed, 592 skipped, 2 xfailed, 110 warnings in 87.59s (0:01:27); 2803 passed"}, {"id": "dspy:a DSPy program in the dspy Jupyter kernel", "system": "DSPy", "check": "a DSPy program in the dspy Jupyter kernel", "status": "Pass", "seconds": 4.21, "detail": "[\"\", \"12 months of fees\\n\", \"1 LM call(s); signature: contract_clause, question -> answer\\n\"]\nok: DSPy ran in the dspy kernel\n[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption."}, {"id": "dspy:JupyterLab on upstream's tutorials", "system": "DSPy", "check": "JupyterLab on upstream's tutorials", "status": "Pass", "seconds": 10.79, "detail": "tutorial: 'index.ipynb - JupyterLab' (HTTP 200)"}], "run": {"run_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/40482493835", "sha": "b7786041adfaa296836981aabf16ce163aed6405"}};
+const DOC = SAMPLES.agreement;
+const section = (h) => { const i = DOC.indexOf(h); const j = DOC.indexOf('\n## ', i + 4); return DOC.slice(i, j < 0 ? undefined : j).trim(); };
+const PRESETS = {
+  qa: { instr: 'Answer questions about the contract.', ins: [['context', 'str', 'contract excerpt'], ['question', 'str', '']], outs: [['answer', 'str', 'short answer'], ['confidence', 'float', '']],
+    vals: { context: section('## 3. Fees'), question: 'When are invoices due, and what interest accrues on late amounts?' } },
+  simple: { instr: '', ins: [['question', 'str', '']], outs: [['answer', 'str', '']], vals: { question: 'What is the difference between a signature and a prompt in DSPy?' } },
+  sentiment: { instr: '', ins: [['text', 'str', '']], outs: [['sentiment', "Literal['positive', 'negative', 'neutral']", ''], ['tags', 'list[str]', '']],
+    vals: { text: 'The vendor missed the uptime target twice this quarter, but support resolved every ticket within a day.' } },
+  extract: { instr: 'Extract the obligations a clause places on each party.', ins: [['clause', 'str', 'one contract clause']], outs: [['provider_obligations', 'list[str]', ''], ['client_obligations', 'list[str]', ''], ['survives_termination', 'bool', '']],
+    vals: { clause: section('## 4. Confidentiality') } },
+};
+let state = { instr: '', ins: [], outs: [], vals: {} }, demos = [];
+const TYPES = ['str', 'int', 'float', 'bool', 'list[str]', "Literal['positive', 'negative', 'neutral']", 'dict[str, str]'];
+
+/* ------------------------------------------------ ChatAdapter, as in dspy/adapters/chat_adapter.py.
+   ChainOfThought's reasoning field has its own annotation type (printed as str), so the
+   output requirements always name its type; the 4th tuple member marks that. */
+function sigFields(module) {
+  const outs = state.outs.filter(([n]) => n);
+  return { ins: state.ins.filter(([n]) => n), outs: module === 'ChainOfThought' ? [['reasoning', 'str', 'A short plan for solving the task.', true], ...outs] : outs };
+}
+function instructions(ins, outs) {
+  if (state.instr.trim()) return state.instr.trim();
+  return `Given the fields ${ins.map(([n]) => '`' + n + '`').join(', ')}, produce the fields ${outs.filter(([n]) => n !== 'reasoning').map(([n]) => '`' + n + '`').join(', ')}.`;
+}
+function note(type) {
+  if (type === 'str') return '';
+  const lit = type.match(/^Literal\[(.*)\]$/);
+  if (lit) return `        # note: the value you produce must exactly match (no extra characters) one of: ${lit[1].split(',').map((s) => s.trim().replace(/^'|'$/g, '')).join('; ')}`;
+  if (type === 'list[str]') return '        # note: the value you produce must adhere to the JSON schema: {"type": "array", "items": {"type": "string"}}';
+  if (type === 'dict[str, str]') return '        # note: the value you produce must adhere to the JSON schema: {"type": "object", "additionalProperties": {"type": "string"}}';
+  if (type === 'bool') return '        # note: the value you produce must be True or False';
+  return `        # note: the value you produce must be a single ${type} value`;
+}
+function format(module, withDemos) {
+  const { ins, outs } = sigFields(module);
+  const desc = (fs) => fs.map(([n, t, d], i) => `${i + 1}. \`${n}\` (${t}):${d ? ' ' + d : ''}`).join('\n');
+  const structure = [...ins, ...outs].map(([n, t]) => `[[ ## ${n} ## ]]\n{${n}}${note(t)}`).join('\n\n');
+  const system = `Your input fields are:\n${desc(ins)}\nYour output fields are:\n${desc(outs)}\nAll interactions will be structured in the following way, with the appropriate values filled in.\n\n${structure}\n\n[[ ## completed ## ]]\nIn adhering to this structure, your objective is: \n        ${instructions(ins, outs).split('\n').join('\n        ')}`;
+  const user = (vals) => ins.map(([n]) => `[[ ## ${n} ## ]]\n${vals[n] ?? ''}`).join('\n\n');
+  const msgs = [{ role: 'system', content: system }];
+  if (withDemos) for (const d of demos) {
+    msgs.push({ role: 'user', content: user(d) });
+    msgs.push({ role: 'assistant', content: outs.map(([n]) => `[[ ## ${n} ## ]]\n${d[n] ?? ''}`).join('\n\n') + '\n\n[[ ## completed ## ]]\n' });
+  }
+  const req = 'Respond with the corresponding output fields, starting with the field ' + outs.map(([n, t, , own]) => `\`[[ ## ${n} ## ]]\`${t === 'str' && !own ? '' : ` (must be formatted as a valid Python ${t})`}`).join(', then ') + ', and then ending with the marker for `[[ ## completed ## ]]`.';
+  return (vals) => [...msgs, { role: 'user', content: user(vals) + '\n\n' + req }];
+}
+/* sample() takes user/assistant turns only: the system message leads as a user turn, as many providers do. */
+const toTurns = (msgs) => msgs.map((m) => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content }));
+function parse(module, text) {
+  const { outs } = sigFields(module), got = {}, re = /\[\[ ## (\w+) ## \]\]/g;
+  const marks = [...text.matchAll(re)];
+  marks.forEach((m, i) => { const end = i + 1 < marks.length ? marks[i + 1].index : text.length; got[m[1]] = text.slice(m.index + m[0].length, end).trim(); });
+  const out = {}, errors = [];
+  for (const [n, t] of outs) {
+    if (!(n in got)) { errors.push(`Expected field ${n} was not found in the completion`); continue; }
+    let v = got[n];
+    try {
+      if (t === 'float' || t === 'int') { v = Number(v); if (Number.isNaN(v)) throw new Error('not a number'); if (t === 'int') v = Math.trunc(v); }
+      else if (t === 'bool') { if (!/^(true|false)$/i.test(v)) throw new Error('not True or False'); v = /^true$/i.test(v); }
+      else if (t.startsWith('list') || t.startsWith('dict')) v = JSON.parse(v);
+      else if (t.startsWith('Literal')) { const ok = t.slice(8, -1).split(',').map((s) => s.trim().replace(/^'|'$/g, '')); if (!ok.includes(v)) throw new Error(`not one of ${ok.join(', ')}`); }
+    } catch (e) { errors.push(`${n}: ${e.message}`); }
+    out[n] = v;
+  }
+  return { out, errors };
+}
+
+/* ------------------------------------------------ signature editor */
+function fieldRows(box, list) {
+  box.replaceChildren(...list.map((f, i) => el('div', { class: 'frow' },
+    el('input', { type: 'text', value: f[0], 'aria-label': 'Field name', oninput: (e) => { f[0] = e.target.value.replace(/\W/g, '_'); render(false); } }),
+    el('select', { 'aria-label': 'Type', onchange: (e) => { f[1] = e.target.value; render(false); } }, ...[...new Set([f[1], ...TYPES])].map((t) => el('option', { value: t, selected: t === f[1] }, t))),
+    el('input', { type: 'text', class: 'd', value: f[2], placeholder: 'description', 'aria-label': 'Description', oninput: (e) => { f[2] = e.target.value; render(false); } }),
+    el('button', { class: 'btn small', title: 'Remove', 'aria-label': 'Remove field', onclick: () => { list.splice(i, 1); render(true); } }, '×'))));
+}
+function load(key) { const p = PRESETS[key]; state = { instr: p.instr, ins: p.ins.map((f) => [...f]), outs: p.outs.map((f) => [...f]), vals: { ...p.vals } }; demos = []; $('#instr').value = p.instr; render(true); }
+function render(rebuild) {
+  if (rebuild) { fieldRows($('#in-fields'), state.ins); fieldRows($('#out-fields'), state.outs); }
+  const module = $('#module').value, { ins, outs } = sigFields(module);
+  $('#sigline').textContent = `${ins.map(([n, t]) => `${n}: ${t}`).join(', ')} -> ${outs.filter(([n]) => n !== 'reasoning').map(([n, t]) => `${n}: ${t}`).join(', ')}`;
+  const ids = new Set(ins.map(([n]) => n));
+  for (const k of Object.keys(state.vals)) if (!ids.has(k)) delete state.vals[k];
+  $('#inputs').replaceChildren(...ins.map(([n, t, d]) => el('label', { class: 'field' }, `${n}${d ? ' · ' + d : ''}`,
+    el('textarea', { id: 'v-' + n, rows: (state.vals[n] || '').length > 160 ? 6 : 2, value: state.vals[n] || '', oninput: (e) => { state.vals[n] = e.target.value; showMsgs(); } }))));
+  showMsgs();
+  const cls = state.instr.trim() ? state.instr.trim() : '';
+  $('#py').textContent = `import dspy
+
+dspy.configure(lm=dspy.LM("anthropic/claude-sonnet-5-5"))
+
+class MySignature(dspy.Signature):
+    """${cls || instructions(ins, outs)}"""
+${ins.map(([n, t, d]) => `    ${n}: ${t} = dspy.InputField(${d ? `desc=${JSON.stringify(d)}` : ''})`).join('\n')}
+${state.outs.filter(([n]) => n).map(([n, t, d]) => `    ${n}: ${t} = dspy.OutputField(${d ? `desc=${JSON.stringify(d)}` : ''})`).join('\n')}
+
+program = dspy.${module}(MySignature)
+prediction = program(${ins.map(([n]) => `${n}=...`).join(', ')})
+print(prediction)`;
+}
+function showMsgs() {
+  const msgs = format($('#module').value, $('#use-demos').checked)(state.vals);
+  $('#msgs').replaceChildren(...msgs.map((m) => el('div', { class: 'msg ' + m.role }, el('b', {}, m.role), el('pre', {}, m.content))));
+}
+$('#preset').onchange = (e) => load(e.target.value);
+$('#instr').oninput = (e) => { state.instr = e.target.value; render(false); };
+$('#module').onchange = () => render(false);
+$('#use-demos').onchange = () => { if ($('#use-demos').checked && !demos.length) toast('Compile with BootstrapFewShot first to get demos'); showMsgs(); };
+$('#add-in').onclick = () => { state.ins.push([`input_${state.ins.length + 1}`, 'str', '']); render(true); };
+$('#add-out').onclick = () => { state.outs.push([`output_${state.outs.length + 1}`, 'str', '']); render(true); };
+$('#copy-msgs').onclick = () => copyText(format($('#module').value, $('#use-demos').checked)(state.vals).map((m) => `--- ${m.role}\n${m.content}`).join('\n\n'), 'Messages copied');
+$('#copy-py').onclick = () => copyText($('#py').textContent, 'Python copied');
+
+$('#run').onclick = async () => {
+  const module = $('#module').value, msgs = format(module, $('#use-demos').checked)(state.vals);
+  $('#raw').textContent = '';
+  try {
+    const { text } = await AI.run(toTurns(msgs), { btn: $('#run'), stop: $('#stop'), status: $('#status'), onText: ({ text }) => { $('#raw').textContent = text; } });
+    const { out, errors } = parse(module, text);
+    $('#pred').replaceChildren(el('dl', { class: 'pred' }, ...Object.entries(out).flatMap(([k, v]) => [el('dt', {}, k), el('dd', {}, typeof v === 'string' ? v : JSON.stringify(v))])),
+      errors.length ? el('p', { class: 'note', style: { color: 'var(--bad)' } }, 'AdapterParseError: ' + errors.join('; ') + '. DSPy would retry with the JSONAdapter here.') : el('p', { class: 'note' }, 'Parsed and cast to the declared types.'));
+  } catch { /* status shows why */ }
+};
+
+/* ------------------------------------------------ evaluate and BootstrapFewShot */
+const QA_SIG = PRESETS.qa;
+const DEV = [
+  ['## 3. Fees', 'How much is the monthly fee?', 'USD 12,500'],
+  ['## 3. Fees', 'Within how many days are invoices due?', '30 days'],
+  ['## 4. Confidentiality', 'How long do the confidentiality obligations survive termination?', 'five years'],
+  ['## 6. Term', 'How long is the initial term?', '24 months'],
+  ['## 6. Term', 'How much notice is needed to stop renewal?', '90 days'],
+  ['## 7. Governing', 'Which law governs the agreement?', 'New York'],
+  ['## 2. Services', 'What is the monthly uptime target?', '99.5%'],
+  ['## 5. Limitation', 'What caps aggregate liability?', 'fees paid in the twelve months'],
+];
+const TRAIN = [
+  ['## 2. Services', 'What is the p95 query latency target?', '800 ms'],
+  ['## 6. Term', 'How long is each renewal term?', '12 months'],
+  ['## 6. Term', 'How long does a party have to cure a material breach?', '30 days'],
+  ['## 2. Services', 'How often must the corpus be synchronised?', 'every twenty-four hours'],
+];
+const norm = (s) => String(s).toLowerCase().replace(/[^a-z0-9.%]+/g, ' ').replace(/\b(\d+) days?\b/g, '$1 days').trim();
+const words = (s) => norm(s).split(' ').filter(Boolean);
+const NUM = { five: '5', twelve: '12', thirty: '30', ninety: '90', 'twenty four': '24' };
+const canon = (s) => Object.entries(NUM).reduce((t, [w, n]) => t.replace(new RegExp(`\\b${w}\\b`, 'g'), n), norm(s));
+const metric = (gold, pred) => { const p = ' ' + canon(pred) + ' '; return canon(gold).split(' ').every((w) => p.includes(' ' + w + ' ') || p.includes(w)); };
+let octl = null;
+async function runProgram(ex, withDemos, signal) {
+  const saved = state; state = { instr: QA_SIG.instr, ins: QA_SIG.ins, outs: QA_SIG.outs, vals: {} };
+  const fmtd = format('ChainOfThought', withDemos), msgs = fmtd({ context: section(ex[0]), question: ex[1] });
+  state = saved;
+  if (signal.aborted) throw { code: 'cancelled' };
+  const { text } = await AI.fn(toTurns(msgs), { modelTier: 'quick', signal, cache: false });
+  state = { instr: QA_SIG.instr, ins: QA_SIG.ins, outs: QA_SIG.outs, vals: {} };
+  const { out } = parse('ChainOfThought', text); state = saved;
+  return out;
+}
+const results = { 0: [], 1: [] };
+function table() {
+  $('#etable').replaceChildren(el('tr', {}, el('th', {}, 'Question'), el('th', {}, 'Gold'), el('th', {}, 'Zero-shot'), el('th', {}, 'Compiled')),
+    ...DEV.map((d, i) => el('tr', {}, el('td', {}, d[1]), el('td', {}, d[2]),
+      ...[0, 1].map((k) => { const r = results[k][i]; return el('td', {}, r ? el('span', {}, el('span', { class: 'pill ' + (r.ok ? 'good' : 'bad') }, r.ok ? 'pass' : 'fail'), ' ', String(r.answer || '').slice(0, 90)) : '–'); }))));
+}
+async function evaluate(k) {
+  results[k] = [];
+  for (let i = 0; i < DEV.length; i++) {
+    $('#ostatus').textContent = `${k ? 'Compiled' : 'Zero-shot'}: example ${i + 1} of ${DEV.length}…`;
+    const out = await runProgram(DEV[i], k === 1, octl.signal);
+    results[k][i] = { answer: out.answer, ok: metric(DEV[i][2], out.answer || '') }; table();
+  }
+  const s = results[k].filter((r) => r.ok).length / DEV.length * 100;
+  $('#s' + k).textContent = fmt(s, 1) + '%';
+  return s;
+}
+async function guarded(fn) {
+  await AI.ready; if (!AI.fn) return;
+  octl = new AbortController(); $('#ostop').hidden = false; $('#ostop').onclick = () => octl.abort();
+  $('#eval0').disabled = $('#boot').disabled = true;
+  try { await fn(); $('#ostatus').textContent = 'Done.'; }
+  catch (e) { $('#ostatus').textContent = e.code === 'cancelled' ? 'Stopped.' : AI.why(e.code); if (AI.permanent(e.code)) document.documentElement.dataset.ai = 'off'; }
+  finally { $('#ostop').hidden = true; $('#eval0').disabled = $('#boot').disabled = false; }
+}
+$('#eval0').onclick = () => guarded(() => evaluate(0));
+$('#boot').onclick = () => guarded(async () => {
+  if (!results[0].length) await evaluate(0);
+  demos = [];
+  for (let i = 0; i < TRAIN.length && demos.length < 3; i++) {
+    $('#ostatus').textContent = `Bootstrapping: teacher on training example ${i + 1} of ${TRAIN.length}…`;
+    const out = await runProgram(TRAIN[i], false, octl.signal);
+    if (metric(TRAIN[i][2], out.answer || '')) demos.push({ context: section(TRAIN[i][0]), question: TRAIN[i][1], reasoning: out.reasoning, answer: out.answer, confidence: out.confidence });
+  }
+  $('#demos').replaceChildren(...(demos.length ? demos.map((d) => el('div', { class: 'card' }, el('b', {}, d.question), el('span', { class: 'note' }, 'reasoning: ' + String(d.reasoning).slice(0, 200)), el('span', {}, 'answer: ' + d.answer))) : [el('p', { class: 'note' }, 'No training trace passed the metric, so the compiled program has no demos.')]));
+  await evaluate(1);
+  $('#use-demos').disabled = false;
+});
+
+/* ------------------------------------------------ catalog */
+const card = ([n, d]) => el('div', { class: 'card' }, el('b', {}, n), el('span', { class: 'note' }, d));
+$('#mods').replaceChildren(...[
+  ['dspy.Predict', 'Maps inputs to outputs with one LM call through the adapter. Every other module is built from Predict.'],
+  ['dspy.ChainOfThought', 'Adds a reasoning output field before the declared outputs, so the LM writes a short plan first.'],
+  ['dspy.ReAct', 'An agent loop: thought, tool call, observation, until it calls finish; tools are plain Python functions.'],
+  ['dspy.ReActV2', 'The newer ReAct implementation with native tool calling.'],
+  ['dspy.BestOfN', 'Runs a module up to N times and returns the highest-scoring prediction under a reward function.'],
+  ['dspy.Refine', 'Like BestOfN, but feeds advice from failed attempts back into the next try.'],
+  ['dspy.MultiChainComparison', 'Compares several reasoning attempts and produces a final answer from them.'],
+  ['dspy.RLM', 'Experimental recursive LM module that works through long inputs with a code environment.'],
+  ['dspy.Parallel', 'Runs a module over many inputs with a thread pool.'],
+  ['dspy.ProgramOfThought', 'Deprecated in 3.4: writes Python code and runs it to get the answer.'],
+  ['dspy.CodeAct', 'Deprecated in 3.4: acts by writing code that calls tools.'],
+].map(card));
+$('#opts').replaceChildren(...[
+  ['LabeledFewShot', 'Uses labelled training examples directly as demos.'],
+  ['BootstrapFewShot', 'Runs a teacher program on the trainset and keeps traces that pass the metric as demos (what the Evaluate tab runs).'],
+  ['BootstrapFewShotWithRandomSearch', 'Bootstraps several demo sets and keeps the best on a validation set.'],
+  ['BootstrapFewShotWithOptuna', 'The same search driven by Optuna.'],
+  ['KNNFewShot', 'Picks demos per input by nearest-neighbour similarity.'],
+  ['COPRO', 'Coordinate ascent over instructions: propose, score, refine.'],
+  ['MIPROv2', 'Proposes instructions and demo sets together and searches them with Bayesian optimisation.'],
+  ['GEPA', 'Reflective prompt evolution: reads failures in text form and proposes better instructions (experimental, since 3.0).'],
+  ['SIMBA', 'Stochastic introspective mini-batch ascent: finds hard examples and writes rules or demos for them.'],
+  ['InferRules', 'Induces natural-language rules from examples and adds them to the instructions.'],
+  ['BootstrapFinetune', 'Turns bootstrapped traces into fine-tuning data and trains the LM weights.'],
+  ['BetterTogether', 'Meta-optimizer that alternates prompt and weight optimization.'],
+  ['Ensemble', 'Combines several programs and reduces their outputs, for example by majority vote.'],
+  ['AvatarOptimizer', 'Optimizes the instructions of tool-using agents from positive and negative examples.'],
+].map(card));
+$('#adapters').replaceChildren(...[
+  ['ChatAdapter', 'The default: [[ ## field ## ]] markers, shown on the Program tab. Falls back to JSONAdapter when parsing fails.'],
+  ['JSONAdapter', 'Asks for a JSON object with the output fields, using structured outputs where the provider supports them.'],
+  ['XMLAdapter', 'Wraps each field in XML tags.'],
+  ['TwoStepAdapter', 'Lets a reasoning model answer freely, then a second LM call extracts the fields.'],
+].map(card));
+
+renderInstall($('#install'), CHECKS, {
+  setup: 'systems/dspy/setup.sh', serve: './start.sh dspy   # JupyterLab on upstream tutorials, http://localhost:8888 (token login)', test: 'systems/dspy/.venv/bin/python systems/dspy/test_dspy.py -v', port: 8888, ui: 'JupyterLab',
+  notes: ['DSPy from source in a venv: uv pip install -e ".[anthropic,mcp,dev,test_extras]" plus JupyterLab and an ipykernel', "Upstream's test suite with pytest -n auto", 'A DSPy program (dspy.Predict with DummyLM, no key needed) run inside the Jupyter kernel', "JupyterLab opened in a browser on upstream's docs/docs/tutorials"],
+});
+initTabs(); load('qa'); table();
+</script>
