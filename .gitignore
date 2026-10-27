@@ -27,3 +27,4 @@ systems/*/.nginx-ipv4.conf
 systems/*/.tiktoken-cache/
 systems/*/.bundle/
 systems/fabricjs-site/Gemfile.lock
+systems/metagpt/.requirements.txt
