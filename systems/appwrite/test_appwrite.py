@@ -120,5 +120,6 @@ with Served("appwrite", f"{URL}/v1/health/version", timeout=900):
         found = json.loads(run.stdout.strip().splitlines()[-1])
         c.note(json.dumps(found))
         c.expect(not any(x in found["url"] for x in ("/sign-in", "/login")), "signed in to the Console")
+        c.expect(found.get("opened") and "/projects/" in found["url"], "the project opens in the Console")
 
 sys.exit(h.finish())

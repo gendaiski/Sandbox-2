@@ -16,12 +16,13 @@ const { chromium } = require('playwright');
   await page.waitForTimeout(5000);
   await page.screenshot({ path: `${shots}/console.png` });
   const sawProject = await page.getByText(project).first().isVisible().catch(() => false);
-  // Each project card is covered by its "Open <name>" link.
+  // Each project card is covered by its "Open <name>" link (and others layered on it):
+  // follow the link's address rather than clicking through the layers.
   const open = page.getByRole('link', { name: `Open ${project}` }).first();
-  if (await open.count()) await open.click();
-  else if (sawProject) await page.getByText(project).first().click({ force: true });
+  const href = (await open.count()) ? await open.getAttribute('href') : null;
+  if (href) await page.goto(new URL(href, base).href, { waitUntil: 'networkidle' });
   await page.waitForTimeout(5000);
   await page.screenshot({ path: `${shots}/project.png` });
-  console.log(JSON.stringify({ ok: true, url: page.url(), sawProject, title: await page.title() }));
+  console.log(JSON.stringify({ ok: true, url: page.url(), sawProject, opened: Boolean(href), title: await page.title() }));
   await browser.close();
 })().catch((e) => { console.error(e.message); process.exit(1); });
