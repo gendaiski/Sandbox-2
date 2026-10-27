@@ -1,0 +1,299 @@
+<title>God's Eye View Globe</title>
+{{HEAD}}
+<style>
+  :root { --accent: #f0a63c; --accent-ink: #1d1203; --accent-soft: #3a2a12; --hud: #f0a63c; --hud-dim: #9d7a45; --night: #05070b; }
+  .gev { position: relative; background: var(--night); border-radius: 12px; overflow: hidden; border: 1px solid #1b2230; }
+  .gev canvas { display: block; width: 100%; height: 640px; touch-action: none; cursor: grab; }
+  @media (max-width: 700px) { .gev canvas { height: 520px; } }
+  .gev canvas:active { cursor: grabbing; }
+  .hud { position: absolute; pointer-events: none; font: 11.5px/1.5 var(--mono); color: var(--hud); text-shadow: 0 0 6px rgba(240,166,60,.4); letter-spacing: .04em; }
+  .hud.tl { left: 14px; top: 12px; } .hud.tr { right: 14px; top: 12px; text-align: right; } .hud.bl { left: 14px; bottom: 12px; } .hud.br { right: 14px; bottom: 12px; text-align: right; }
+  .hud b { color: #ffd59a; font-weight: 600; }
+  .reticle { position: absolute; left: 50%; top: 50%; width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 1px solid rgba(240,166,60,.55); border-radius: 50%; pointer-events: none; }
+  .reticle::before, .reticle::after { content: ""; position: absolute; background: rgba(240,166,60,.55); } .reticle::before { left: 16px; top: -8px; width: 1px; height: 50px; } .reticle::after { top: 16px; left: -8px; height: 1px; width: 50px; }
+  .styles, .layers { display: flex; flex-wrap: wrap; gap: 6px; }
+  .styles .btn[aria-pressed="true"], .layers .btn[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .mic { display: flex; gap: 8px; align-items: center; }
+  .mic input { flex: 1; font-family: var(--mono); }
+  .log { font: 11.5px/1.6 var(--mono); background: var(--sunk); border-radius: 7px; padding: 8px 10px; max-height: 220px; overflow: auto; margin: 0; white-space: pre-wrap; }
+  .pick { font-size: 13px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; } .chips button { font: 12px var(--mono); }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark" style="background:#05070b;color:#f0a63c">GEV</span><h1>God's Eye View Globe</h1><span class="tag">The bundled world layers on a live globe, steered by the voice agent's own tools</span>
+      <span class="links"><a href="https://github.com/bilawalsidhu/gods-eye-view" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/gods-eye-view" target="_blank" rel="noopener">Install and test code</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="globe">Globe</button><button data-tab="tools">Agent tools</button><button data-tab="how">How it works</button><button data-tab="install">Install &amp; test</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">God's Eye View itself draws a photorealistic Cesium globe fed by live public sources (flights, ships, satellites, quakes, cameras), which a page cannot reach. This globe draws the layers the repository bundles: Natural Earth borders, 712 TeleGeography submarine cables and 1,917 landing points, 4,351 OpenStreetMap datacenters, 704 dams and the Yale bright stars. Typed commands go to Claude with the voice agent's own tool definitions from server/providers/openai.</p>
+
+  <section data-panel="globe">
+    <div class="gev"><canvas id="globe"></canvas><div class="reticle"></div>
+      <div class="hud tl" id="hud-tl"></div><div class="hud tr" id="hud-tr"></div><div class="hud bl" id="hud-bl"></div><div class="hud br" id="hud-br"></div></div>
+    <div class="grid cols-2">
+      <div class="panel"><h2>GEV MIC (typed)</h2>
+        <div class="mic"><input type="text" id="cmd" value="Take me to Singapore and show me the submarine cables there" aria-label="Command"><button class="btn primary ai-only" id="send">Send</button><button class="btn small" id="stop" hidden>Stop</button></div>
+        <div class="chips" id="examples"></div>
+        <span class="status" id="status"></span><p class="note ai-off">Commands need this page open in Claude; the controls below work without it.</p>
+        <pre class="log" id="log">Tool calls appear here.</pre></div>
+      <div class="panel"><h2>Display</h2>
+        <b>Visual style</b><div class="styles" id="styles"></div>
+        <b>Data layers</b><div class="layers" id="layers"></div>
+        <div class="row"><button class="btn small" id="rotate">Rotate the globe</button><button class="btn small" id="home">Globe view</button><button class="btn small" id="clear">Clear annotations</button></div>
+        <div class="pick" id="pick"><span class="note">Click a datacenter, dam, landing point or cable for details.</span></div></div>
+    </div>
+  </section>
+
+  <section data-panel="tools" hidden>
+    <div class="panel"><h2>Tools this page gives Claude</h2><p class="note">Names, descriptions and parameters are GEV_REALTIME_TOOLS from server/providers/openai/tools.js, the definitions its realtime voice model receives. annotate_map and analyst_query are trimmed here to the parts this page implements.</p><div id="toollist" class="stack"></div></div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>The app</h2>
+<pre class="mermaid">
+flowchart LR
+  B[Browser: Cesium globe, HUD, panels] -->|/api proxy| S[Node server]
+  S --> F[live feeds: ADS-B, AIS, CelesTrak, USGS, FIRMS, NOAA, transit, cameras]
+  B --> L[(bundled layers: borders, cables, datacenters, dams, stars)]
+  B -->|GEV MIC| V[voice: OpenAI or Gemini realtime]
+  V -->|30 tools: fly, layers, styles, analyst queries, annotations| B
+  M[MCP server] -->|show a place from Claude or Codex| B
+</pre></div>
+      <div class="panel"><h2>A voice turn</h2>
+<pre class="mermaid">
+sequenceDiagram
+  participant U as You
+  participant V as Realtime model
+  participant G as Globe
+  U->>V: "How many datacenters are in Ireland?"
+  V->>G: analyst_query(local-datacenters, region Ireland)
+  G-->>V: count and names
+  V->>G: fly_to_location(query Ireland)
+  V-->>U: spoken answer
+</pre></div>
+    </div>
+  </section>
+
+  <section data-panel="install" hidden><div id="install" class="stack"></div></section>
+</main>
+<p class="footer">God's Eye View © Bilawal Sidhu, see its LICENSE and DATA_SOURCES.md. Data: Natural Earth (public domain), TeleGeography, OpenStreetMap contributors (ODbL), Yale Bright Star Catalogue.</p>
+{{LIB}}
+{{LIVE}}
+{{AI}}
+<script>
+const CHECKS = {{CHECKS:gods-eye-view}};
+const G = {{JSON:interactive/data/gev.json}};
+const RAD = Math.PI / 180, R_EARTH = 6371;
+const canvas = $('#globe'), ctx = canvas.getContext('2d');
+const S = { lon: 20, lat: 20, k: 1, spin: false, style: 'normal', layers: { 'telegeography-submarine-cables': true, 'local-datacenters': true, 'local-dams': false }, notes: [], picked: null };
+const PRESETS = { austin: [-97.74, 30.27], sf: [-122.42, 37.77], nyc: [-74.0, 40.71], tokyo: [139.69, 35.69], london: [-0.13, 51.51], paris: [2.35, 48.86], dubai: [55.27, 25.2], dc: [-77.04, 38.9] };
+const LAYERS = [['telegeography-submarine-cables', 'Submarine cables'], ['local-datacenters', 'Datacenters'], ['local-dams', 'Dams']];
+const STYLES = { normal: 'none', retro: 'sepia(.7) contrast(1.1) saturate(1.3)', surveillance: 'none', thermal: 'none', anime: 'saturate(2) contrast(1.15) brightness(1.05)', noir: 'grayscale(1) contrast(1.6)', snow: 'saturate(.3) brightness(1.25) contrast(.9)' };
+/* Sensor looks are palettes over brightness, like a FLIR or NVG feed: a 256-entry lookup table applied per pixel. */
+function ramp(stops) { const lut = new Uint8ClampedArray(256 * 3); for (let i = 0; i < 256; i++) { const t = i / 255; let k = 0; while (k < stops.length - 2 && t > stops[k + 1][0]) k++; const [t0, c0] = stops[k], [t1, c1] = stops[k + 1], u = (t - t0) / (t1 - t0 || 1); for (let j = 0; j < 3; j++) lut[i * 3 + j] = c0[j] + (c1[j] - c0[j]) * Math.min(1, Math.max(0, u)); } return lut; }
+const LUTS = {
+  thermal: ramp([[0, [0, 0, 8]], [0.18, [40, 0, 110]], [0.38, [150, 0, 140]], [0.58, [230, 60, 40]], [0.78, [255, 170, 0]], [1, [255, 255, 220]]]),
+  surveillance: ramp([[0, [0, 12, 0]], [0.5, [40, 200, 60]], [1, [210, 255, 200]]]),
+};
+function sensor() {
+  const lut = LUTS[S.style]; if (!lut) return;
+  const img = ctx.getImageData(0, 0, canvas.width, canvas.height), d = img.data, boost = S.style === 'thermal' ? 2.2 : 1.8;
+  for (let i = 0; i < d.length; i += 4) { const l = Math.min(255, (d[i] * 0.3 + d[i + 1] * 0.59 + d[i + 2] * 0.11) * boost) | 0; d[i] = lut[l * 3]; d[i + 1] = lut[l * 3 + 1]; d[i + 2] = lut[l * 3 + 2]; }
+  ctx.putImageData(img, 0, 0);
+}
+
+/* ------------------------------------------------ projection */
+let W = 0, H = 0, R = 0;
+function size() { const r = canvas.getBoundingClientRect(), d = devicePixelRatio || 1; W = r.width; H = r.height; canvas.width = W * d; canvas.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0); R = Math.min(W, H) * 0.42 * S.k; }
+function project(lon, lat) {
+  const l = (lon - S.lon) * RAD, p = lat * RAD, p0 = S.lat * RAD;
+  const cosc = Math.sin(p0) * Math.sin(p) + Math.cos(p0) * Math.cos(p) * Math.cos(l);
+  return [W / 2 + R * Math.cos(p) * Math.sin(l), H / 2 - R * (Math.cos(p0) * Math.sin(p) - Math.sin(p0) * Math.cos(p) * Math.cos(l)), cosc > 0];
+}
+function unproject(x, y) {
+  const px = (x - W / 2) / R, py = -(y - H / 2) / R, rho = Math.hypot(px, py); if (rho > 1) return null;
+  const c = Math.asin(rho), p0 = S.lat * RAD;
+  const lat = Math.asin(Math.cos(c) * Math.sin(p0) + (rho ? (py * Math.sin(c) * Math.cos(p0)) / rho : 0));
+  const lon = S.lon * RAD + Math.atan2(px * Math.sin(c), rho * Math.cos(c) * Math.cos(p0) - py * Math.sin(c) * Math.sin(p0));
+  return [((lon / RAD + 540) % 360) - 180, lat / RAD];
+}
+const rangeKm = () => Math.round(20000 / S.k);
+
+/* ------------------------------------------------ drawing */
+function path(flat, close) {
+  let pen = false;
+  for (let i = 0; i < flat.length; i += 2) {
+    const [x, y, v] = project(flat[i], flat[i + 1]);
+    if (!v) { pen = false; continue; }
+    if (!pen) { ctx.moveTo(x, y); pen = true; } else ctx.lineTo(x, y);
+  }
+  if (close && pen) ctx.closePath();
+}
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#05070b'; ctx.fillRect(0, 0, W, H);
+  for (const [ra, dec, mag] of G.stars) { const x = ((ra - S.lon * 0.3 + 720) % 360) / 360 * W, y = H / 2 - (dec / 90) * (H / 2); ctx.fillStyle = `rgba(220,230,255,${Math.max(0.15, 1 - mag / 5.2)})`; ctx.fillRect(x, y, mag < 2 ? 2 : 1, mag < 2 ? 2 : 1); }
+  const glow = ctx.createRadialGradient(W / 2, H / 2, R * 0.9, W / 2, H / 2, R * 1.12); glow.addColorStop(0, 'rgba(80,140,255,.25)'); glow.addColorStop(1, 'rgba(80,140,255,0)');
+  ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(W / 2, H / 2, R * 1.12, 0, 7); ctx.fill();
+  const sea = ctx.createRadialGradient(W / 2 - R * 0.3, H / 2 - R * 0.3, R * 0.1, W / 2, H / 2, R); sea.addColorStop(0, '#16314f'); sea.addColorStop(1, '#0a1626');
+  ctx.fillStyle = sea; ctx.beginPath(); ctx.arc(W / 2, H / 2, R, 0, 7); ctx.fill();
+  ctx.save(); ctx.beginPath(); ctx.arc(W / 2, H / 2, R, 0, 7); ctx.clip();
+  ctx.strokeStyle = 'rgba(120,160,220,.12)'; ctx.lineWidth = 1;
+  for (let lo = -180; lo < 180; lo += 15) { ctx.beginPath(); const f = []; for (let la = -90; la <= 90; la += 3) f.push(lo, la); path(f); ctx.stroke(); }
+  for (let la = -75; la <= 75; la += 15) { ctx.beginPath(); const f = []; for (let lo = -180; lo <= 180; lo += 3) f.push(lo, la); path(f); ctx.stroke(); }
+  ctx.fillStyle = '#25384a'; ctx.strokeStyle = 'rgba(180,210,240,.35)'; ctx.lineWidth = 0.6;
+  for (const c of G.countries) for (const poly of c.p) { ctx.beginPath(); for (const ring of poly) path(ring, true); ctx.fill('evenodd'); ctx.stroke(); }
+  if (S.layers['telegeography-submarine-cables']) {
+    ctx.lineWidth = 1.1; ctx.globalAlpha = 0.8;
+    for (const cb of G.cables) { ctx.strokeStyle = cb.c || '#3cc'; ctx.beginPath(); for (const ln of cb.l) path(ln); ctx.stroke(); }
+    ctx.globalAlpha = 1; ctx.fillStyle = '#e8f6ff';
+    for (const [lo, la] of G.landings) { const [x, y, v] = project(lo, la); if (v) ctx.fillRect(x - 1, y - 1, 2, 2); }
+  }
+  const dots = (rows, color, r) => { ctx.fillStyle = color; for (const d of rows) { const [x, y, v] = project(d[0], d[1]); if (v) { ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); } } };
+  if (S.layers['local-datacenters']) dots(G.datacenters, 'rgba(255,170,60,.85)', S.k > 3 ? 2.6 : 1.6);
+  if (S.layers['local-dams']) dots(G.dams, 'rgba(90,200,255,.9)', S.k > 3 ? 2.6 : 1.8);
+  ctx.restore();
+  ctx.font = '12px ' + getComputedStyle(document.body).getPropertyValue('--mono'); ctx.textBaseline = 'middle';
+  for (const n of S.notes) {
+    const [x, y, v] = project(n.lon, n.lat); if (!v) continue;
+    ctx.strokeStyle = '#ffd59a'; ctx.fillStyle = '#ffd59a'; ctx.lineWidth = 1.5;
+    if (n.type === 'area' || n.type === 'highlight') { ctx.beginPath(); ctx.arc(x, y, 18, 0, 7); ctx.stroke(); } else { ctx.beginPath(); ctx.arc(x, y, 4, 0, 7); ctx.fill(); }
+    ctx.fillText(n.label, x + 9, y - 10);
+  }
+  if (S.picked) { const [x, y, v] = project(S.picked.lon, S.picked.lat); if (v) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.strokeRect(x - 7, y - 7, 14, 14); } }
+  sensor();
+  hud();
+}
+function inView(rows) { let n = 0; for (const d of rows) { const [x, y, v] = project(d[0], d[1]); if (v && x >= 0 && x <= W && y >= 0 && y <= H) n++; } return n; }
+function hud() {
+  const now = new Date();
+  $('#hud-tl').innerHTML = `GOD'S EYE VIEW<br>STYLE <b>${S.style.toUpperCase()}</b><br>RANGE <b>${fmt(rangeKm())} KM</b>`;
+  $('#hud-tr').innerHTML = `${now.toISOString().slice(0, 19).replace('T', ' ')} UTC<br>LAT <b>${S.lat.toFixed(3)}</b> LON <b>${S.lon.toFixed(3)}</b>`;
+  $('#hud-bl').innerHTML = LAYERS.filter(([k]) => S.layers[k]).map(([k, n]) => `${n.toUpperCase()} <b>${k === 'telegeography-submarine-cables' ? fmt(G.cables.length) : fmt(inView(k === 'local-datacenters' ? G.datacenters : G.dams))}</b>`).join('<br>') || 'NO DATA LAYERS';
+  $('#hud-br').innerHTML = `BUNDLED LAYERS ONLY<br>${S.spin ? 'ROTATING' : 'DRAG TO ROTATE · SCROLL TO ZOOM'}`;
+  canvas.style.filter = STYLES[S.style];
+}
+
+/* ------------------------------------------------ camera */
+let anim = null;
+function flyTo(lon, lat, k, ms = 1600) {
+  const a = { lon: S.lon, lat: S.lat, k: S.k }, t0 = performance.now(), dLon = ((lon - a.lon + 540) % 360) - 180;
+  cancelAnimationFrame(anim);
+  const step = (t) => { const u = Math.min(1, (t - t0) / ms), e = u < 0.5 ? 2 * u * u : 1 - (-2 * u + 2) ** 2 / 2, hop = Math.sin(Math.PI * u) * 0.5;
+    S.lon = a.lon + dLon * e; S.lat = a.lat + (lat - a.lat) * e; S.k = Math.max(1, (a.k + (k - a.k) * e) / (1 + hop * Math.max(0, Math.log2(Math.max(a.k, k))))); size(); draw();
+    if (u < 1) anim = requestAnimationFrame(step); };
+  anim = requestAnimationFrame(step);
+}
+let drag = null;
+canvas.addEventListener('pointerdown', (e) => { drag = { x: e.clientX, y: e.clientY, lon: S.lon, lat: S.lat, moved: false }; canvas.setPointerCapture(e.pointerId); S.spin = false; });
+canvas.addEventListener('pointermove', (e) => { if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true; S.lon = drag.lon - dx / R / RAD; S.lat = Math.max(-85, Math.min(85, drag.lat + dy / R / RAD)); draw(); });
+canvas.addEventListener('pointerup', (e) => { if (drag && !drag.moved) pick(e); drag = null; });
+canvas.addEventListener('wheel', (e) => { e.preventDefault(); S.k = Math.max(1, Math.min(60, S.k * (e.deltaY < 0 ? 1.15 : 1 / 1.15))); size(); draw(); }, { passive: false });
+function pick(e) {
+  const r = canvas.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top; let best = null, bd = 12;
+  const test = (rows, kind) => rows.forEach((d) => { const [px, py, v] = project(d[0], d[1]); const dd = Math.hypot(px - x, py - y); if (v && dd < bd) { bd = dd; best = { kind, lon: d[0], lat: d[1], name: d[2], extra: d[3] }; } });
+  if (S.layers['local-datacenters']) test(G.datacenters, 'Datacenter');
+  if (S.layers['local-dams']) test(G.dams, 'Dam');
+  if (S.layers['telegeography-submarine-cables']) test(G.landings, 'Cable landing point');
+  S.picked = best;
+  const ll = unproject(x, y), country = ll && countryAt(ll[0], ll[1]);
+  $('#pick').replaceChildren(best ? el('div', {}, el('b', {}, best.kind + ': '), best.name || 'unnamed', best.extra ? ` (${best.extra})` : '', el('div', { class: 'note mono' }, `${best.lat.toFixed(3)}, ${best.lon.toFixed(3)}${country ? ' · ' + country : ''}`))
+    : el('span', { class: 'note' }, ll ? `${ll[1].toFixed(2)}, ${ll[0].toFixed(2)}${country ? ' · ' + country : ''}: nothing selectable here.` : 'Off the globe.'));
+  draw();
+}
+function inRing(lon, lat, ring) { let ins = false; for (let i = 0, j = ring.length - 2; i < ring.length; j = i, i += 2) { const xi = ring[i], yi = ring[i + 1], xj = ring[j], yj = ring[j + 1]; if ((yi > lat) !== (yj > lat) && lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) ins = !ins; } return ins; }
+function countryAt(lon, lat) { for (const c of G.countries) for (const poly of c.p) if (poly[0] && inRing(lon, lat, poly[0])) return c.n; return null; }
+function bbox(c) { let w = 180, e = -180, s = 90, n = -90; for (const poly of c.p) { const r = poly[0]; for (let i = 0; i < r.length; i += 2) { w = Math.min(w, r[i]); e = Math.max(e, r[i]); s = Math.min(s, r[i + 1]); n = Math.max(n, r[i + 1]); } } return { w, e, s, n }; }
+function findPlace(q) {
+  const t = String(q || '').toLowerCase().trim(); if (!t) return null;
+  if (PRESETS[t]) return { lon: PRESETS[t][0], lat: PRESETS[t][1], k: 12, name: t };
+  const c = G.countries.find((x) => x.n.toLowerCase() === t || x.iso?.toLowerCase() === t) || G.countries.find((x) => x.n.toLowerCase().includes(t));
+  if (c) { const b = bbox(c), span = Math.max(b.e - b.w, b.n - b.s); return { lon: (b.w + b.e) / 2, lat: (b.s + b.n) / 2, k: Math.max(1, Math.min(14, 120 / Math.max(span, 1))), name: c.n, box: b }; }
+  const l = G.landings.find((x) => x[2].toLowerCase().includes(t)); if (l) return { lon: l[0], lat: l[1], k: 14, name: l[2] };
+  const d = G.datacenters.find((x) => (x[2] + ' ' + x[3]).toLowerCase().includes(t)); if (d) return { lon: d[0], lat: d[1], k: 30, name: d[2] || d[3] };
+  return null;
+}
+
+/* ------------------------------------------------ the agent's tools */
+const say = (t) => { const l = $('#log'); l.textContent = (l.textContent === 'Tool calls appear here.' ? '' : l.textContent) + t + '\n'; l.scrollTop = l.scrollHeight; };
+const ROWS = { 'local-datacenters': () => G.datacenters, 'local-dams': () => G.dams };
+const ACT = {
+  fly_to_location(a) {
+    let p = null;
+    if (a.latitude != null && a.longitude != null) p = { lon: +a.longitude, lat: +a.latitude, k: a.rangeM ? Math.max(1, 20000 / (a.rangeM / 1000)) : 10, name: `${a.latitude}, ${a.longitude}` };
+    else p = findPlace(a.locationId || a.query);
+    if (!p) throw new Error(`No place named "${a.query || a.locationId}" in this page's gazetteer (countries, cable landing points, datacenter names). Give latitude and longitude instead.`);
+    const k = a.viewMode === 'overview' ? Math.min(p.k, 3) : a.rangeM ? Math.max(1, 20000 / (a.rangeM / 1000)) : p.k;
+    flyTo(p.lon, p.lat, k); return { ok: true, flewTo: p.name, latitude: +p.lat.toFixed(3), longitude: +p.lon.toFixed(3), rangeKm: Math.round(20000 / k) };
+  },
+  adjust_camera_zoom(a) { const f = { little: 1.4, medium: 2, lot: 4 }[a.amount] || 2; const k = Math.max(1, Math.min(60, a.direction === 'in' ? S.k * f : S.k / f)); flyTo(S.lon, S.lat, k, 600); return { ok: true, rangeKm: Math.round(20000 / k) }; },
+  zoom_to_globe() { flyTo(S.lon, Math.max(-30, Math.min(30, S.lat)), 1, 1200); return { ok: true }; },
+  set_layer_visibility(a) { if (!(a.layerId in S.layers)) throw new Error(`${a.layerId} is a live layer; this page has only the bundled ones: local-datacenters, local-dams, telegeography-submarine-cables.`); S.layers[a.layerId] = !!a.enabled; layerUI(); draw(); return { ok: true, layerId: a.layerId, enabled: !!a.enabled }; },
+  set_visual_style(a) { if (!STYLES[a.style]) throw new Error('unknown style'); S.style = a.style; styleUI(); draw(); return { ok: true, style: a.style }; },
+  get_current_view_state() { const c = countryAt(S.lon, S.lat); return { center: { lat: +S.lat.toFixed(3), lon: +S.lon.toFixed(3) }, country: c, rangeKm: rangeKm(), style: S.style, layers: Object.entries(S.layers).filter(([, v]) => v).map(([k]) => k), inView: { datacenters: inView(G.datacenters), dams: inView(G.dams) }, annotations: S.notes.length }; },
+  move_camera(a) { if (a.motion === 'stop') { S.spin = false; return { ok: true, motion: 'stopped' }; } if (a.motion === 'rotate_globe' || a.motion === 'orbit' || a.motion === 'rotate') { S.spin = a.direction === 'left' ? -1 : 1; S.spinSpeed = { slow: 0.05, normal: 0.12, fast: 0.3 }[a.speed] || 0.12; spin(); return { ok: true, motion: 'rotating' }; }
+    const d = 10 / S.k, m = { left: [-d, 0], right: [d, 0], up: [0, d], down: [0, -d] }[a.direction] || [0, 0]; flyTo(S.lon + m[0], Math.max(-85, Math.min(85, S.lat + m[1])), S.k, 500); return { ok: true }; },
+  clear_annotations() { S.notes = []; draw(); return { ok: true }; },
+  annotate_map(a) {
+    const added = [];
+    for (const n of a.annotations || []) {
+      let lat = n.latitude, lon = n.longitude; if (lat == null && n.target) { const p = findPlace(n.target); if (p) { lat = p.lat; lon = p.lon; } }
+      if (lat == null) continue; S.notes.push({ type: n.type || 'pin', lat: +lat, lon: +lon, label: n.label || n.target || '' }); added.push(n.label || n.target);
+    }
+    draw(); return { ok: added.length > 0, added };
+  },
+  analyst_query(a) {
+    const layers = (a.layers || ['local-datacenters']).filter((l) => ROWS[l]), scope = a.scope || { kind: 'view' };
+    let test = () => true, where = 'the current view';
+    if (scope.kind === 'region' && scope.name) { const p = findPlace(scope.name); if (!p?.box) throw new Error(`Unknown region ${scope.name}`); const c = G.countries.find((x) => x.n === p.name); test = (d) => c.p.some((poly) => inRing(d[0], d[1], poly[0])); where = p.name; }
+    else if (scope.kind === 'radius' && scope.center) { const km = scope.km || 100; test = (d) => { const p1 = scope.center.lat * RAD, p2 = d[1] * RAD; return 2 * R_EARTH * Math.asin(Math.sqrt(Math.sin((p2 - p1) / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin((d[0] - scope.center.lon) * RAD / 2) ** 2)) <= km; }; where = `${km} km around ${scope.center.lat}, ${scope.center.lon}`; }
+    else if (scope.kind === 'anywhere') where = 'the whole world';
+    else test = (d) => { const [x, y, v] = project(d[0], d[1]); return v && x >= 0 && x <= W && y >= 0 && y <= H; };
+    const out = {};
+    for (const l of layers) { const rows = ROWS[l]().filter(test); const byOp = {}; rows.forEach((d) => { const k = d[3] || d[2] || 'unnamed'; byOp[k] = (byOp[k] || 0) + 1; });
+      out[l] = { count: rows.length, top: Object.entries(byOp).sort((x, y) => y[1] - x[1]).slice(0, 8).map(([name, n]) => ({ name, n })) }; }
+    if (!layers.length) throw new Error('Only local-datacenters and local-dams can be queried on this page; the others are live feeds.');
+    return { scope: where, results: out };
+  },
+};
+/* annotate_map and analyst_query are over the 4 KB schema limit for page tools: send the parts implemented here. */
+const TRIM = {
+  annotate_map: { type: 'object', properties: { annotations: { type: 'array', items: { type: 'object', properties: { type: { type: 'string', enum: ['pin', 'highlight', 'area', 'label'] }, target: { type: 'string' }, latitude: { type: 'number' }, longitude: { type: 'number' }, label: { type: 'string' } } } } }, required: ['annotations'] },
+  analyst_query: { type: 'object', properties: { layers: { type: 'array', items: { type: 'string', enum: ['local-datacenters', 'local-dams'] } }, scope: { type: 'object', properties: { kind: { type: 'string', enum: ['view', 'region', 'radius', 'anywhere'] }, name: { type: 'string' }, km: { type: 'number' }, center: { type: 'object', properties: { lat: { type: 'number' }, lon: { type: 'number' } } } } } } },
+};
+const TOOLS = G.tools.map((t) => ({ name: t.name, description: t.description.slice(0, 1000), inputSchema: TRIM[t.name] || t.parameters,
+  execute: (input) => { say(`→ ${t.name}(${JSON.stringify(input)})`); try { const r = ACT[t.name](input); say(`  ${JSON.stringify(r).slice(0, 300)}`); return r; } catch (e) { say(`  error: ${e.message}`); throw e; } } }));
+$('#send').onclick = async () => {
+  const q = $('#cmd').value.trim(); if (!q) return; say(`You: ${q}`);
+  const view = JSON.stringify(ACT.get_current_view_state());
+  try {
+    const { text } = await AI.run(`You are the voice agent of God's Eye View, a 3D globe. Use the tools to do what the user asks, then answer in one or two short spoken sentences. Only these layers exist on this page: local-datacenters, local-dams, telegeography-submarine-cables. Current view: ${view}\n\nUser: ${q}`,
+      { btn: $('#send'), stop: $('#stop'), status: $('#status'), tier: 'quick', tools: TOOLS });
+    say(`GEV: ${text.trim().split('\n').pop()}`);
+  } catch (e) { if (e.code === 'tools_unavailable') $('#status').textContent = 'This view of Claude cannot run page tools; use the controls on the right.'; }
+};
+$('#cmd').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !$('#send').disabled) $('#send').click(); });
+$('#examples').replaceChildren(...['How many datacenters are in Ireland?', 'Switch to thermal and fly to Tokyo', 'Show the dams and take me to Switzerland', 'Pin the cable landing points of Marseille', 'Rotate the globe slowly'].map((t) => el('button', { class: 'btn small', onclick: () => { $('#cmd').value = t; $('#send').click(); } }, t)));
+
+/* ------------------------------------------------ controls */
+function styleUI() { $('#styles').replaceChildren(...Object.keys(STYLES).map((s) => el('button', { class: 'btn small', 'aria-pressed': String(S.style === s), onclick: () => { ACT.set_visual_style({ style: s }); } }, s))); }
+function layerUI() { $('#layers').replaceChildren(...LAYERS.map(([k, n]) => el('button', { class: 'btn small', 'aria-pressed': String(!!S.layers[k]), onclick: () => ACT.set_layer_visibility({ layerId: k, enabled: !S.layers[k] }) }, n))); }
+function spin() { if (!S.spin) return; S.lon += (S.spinSpeed || 0.12) * S.spin; draw(); requestAnimationFrame(spin); }
+$('#rotate').onclick = () => { if (S.spin) ACT.move_camera({ motion: 'stop' }); else ACT.move_camera({ motion: 'rotate_globe', direction: 'right', speed: 'slow' }); };
+$('#home').onclick = () => ACT.zoom_to_globe();
+$('#clear').onclick = () => ACT.clear_annotations();
+$('#toollist').replaceChildren(...TOOLS.map((t) => el('details', { class: 'panel' }, el('summary', {}, el('b', { class: 'mono' }, t.name), ' ', el('span', { class: 'note' }, t.description.slice(0, 140))), el('pre', { class: 'code', style: { whiteSpace: 'pre-wrap' } }, JSON.stringify(t.inputSchema, null, 2)))));
+
+renderInstall($('#install'), CHECKS, {
+  setup: 'systems/gods-eye-view/setup.sh', serve: './start.sh gods-eye-view   # the app, http://localhost:4174', test: 'python3 systems/gods-eye-view/test_gods_eye_view.py -v', port: 4174, ui: "God's Eye View",
+  notes: ['Node 24 (fetched when the system one is older), npm ci and the doctor script', "Upstream's test suite (npm test)", 'The app served on 4174 (its 4173 is taken by Prism UI here) and the globe screenshotted in a browser'],
+});
+initTabs((n) => { if (n === 'globe') { size(); draw(); } });
+styleUI(); layerUI(); size(); draw();
+window.addEventListener('resize', () => { size(); draw(); });
+</script>

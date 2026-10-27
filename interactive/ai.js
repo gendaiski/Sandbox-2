@@ -19,7 +19,7 @@ const AI = {
   permanent: (code) => ['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(code),
   /* One call with the page's own progress UI: btn is disabled while it runs,
      stop (optional) aborts it, status shows Thinking... and any error. */
-  async run(input, { btn, stop, status, onText, json = false, tier, cache } = {}) {
+  async run(input, { btn, stop, status, onText, json = false, tier, cache, tools } = {}) {
     await AI.ready;
     const say = (t) => { if (status) status.textContent = t; };
     if (!AI.fn) { say('Live Claude runs need this page open in Claude.'); throw { code: 'not_granted' }; }
@@ -31,6 +31,7 @@ const AI = {
     const opts = { signal: ctl.signal, onText: (u) => { if (first) { first = false; say('Writing…'); } onText && onText(u); } };
     if (tier) opts.modelTier = tier;
     if (cache !== undefined) opts.cache = cache;
+    if (tools) opts.tools = tools;  // page functions Claude may call; such calls are never cached
     try {
       const r = json ? await AI.fn.json(input, opts) : await AI.fn(input, opts);
       say(r && r.truncated ? 'The answer was cut short: ask for less at a time.' : '');
