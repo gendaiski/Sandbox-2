@@ -1,0 +1,292 @@
+<title>Continue Code Assistant</title>
+{{HEAD}}
+<style>
+  :root { --accent: #0b7a75; --accent-soft: #dcf2f0; --add: #e3f6e8; --del: #fbe6e6; --add-ink: #17703a; --del-ink: #a3262d; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #4fd1c5; --accent-ink: #032321; --accent-soft: #123432; --add: #16301f; --del: #3a1b1d; --add-ink: #79d79a; --del-ink: #f19a9e; } }
+  :root[data-theme="dark"] { --accent: #4fd1c5; --accent-ink: #032321; --accent-soft: #123432; --add: #16301f; --del: #3a1b1d; --add-ink: #79d79a; --del-ink: #f19a9e; }
+  .ide { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--panel); }
+  @media (max-width: 900px) { .ide { grid-template-columns: minmax(0, 1fr); } .ide .chat { border-left: 0; border-top: 1px solid var(--line); } }
+  .tabbar { display: flex; gap: 0; background: var(--sunk); border-bottom: 1px solid var(--line); font: 12px var(--mono); }
+  .tabbar span { padding: 7px 14px; border-right: 1px solid var(--line); background: var(--panel); }
+  .editor { display: grid; grid-template-columns: 44px minmax(0, 1fr); font: 13px/20px var(--mono); position: relative; }
+  .gutter { text-align: right; padding: 10px 8px 10px 0; color: var(--muted); background: var(--sunk); user-select: none; white-space: pre; }
+  .editor textarea { border: 0; border-radius: 0; padding: 10px 12px; font: 13px/20px var(--mono); min-height: 420px; resize: vertical; outline: none; white-space: pre; overflow-x: auto; tab-size: 4; }
+  .edbar { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 10px; border-top: 1px solid var(--line); align-items: center; }
+  kbd { font: 11px var(--mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; background: var(--panel); }
+  .chat { border-left: 1px solid var(--line); display: flex; flex-direction: column; min-width: 0; }
+  .chat .log { flex: 1; overflow: auto; padding: 12px; display: flex; flex-direction: column; gap: 12px; max-height: 470px; min-height: 300px; }
+  .msg { display: flex; flex-direction: column; gap: 4px; }
+  .msg .who { font-size: 11.5px; font-weight: 700; color: var(--muted); }
+  .msg.user .txt { background: var(--sunk); border-radius: 8px; padding: 8px 10px; white-space: pre-wrap; }
+  .ctx { display: inline-flex; gap: 5px; align-items: center; font: 11.5px var(--mono); background: var(--accent-soft); color: var(--accent); border-radius: 6px; padding: 1px 7px; }
+  .chat .box { border-top: 1px solid var(--line); padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
+  .diff { font: 12.5px/19px var(--mono); border: 1px solid var(--line); border-radius: 8px; overflow: auto; max-height: 420px; }
+  .diff div { white-space: pre; padding: 0 10px; } .diff .a { background: var(--add); color: var(--add-ink); } .diff .d { background: var(--del); color: var(--del-ink); }
+  .ghost { color: var(--muted); font-style: italic; }
+  pre.prompt { white-space: pre-wrap; font: 12px/1.55 var(--mono); background: var(--sunk); border-radius: 7px; padding: 10px 12px; margin: 0; max-height: 460px; overflow: auto; overflow-wrap: anywhere; }
+  pre.prompt mark { background: var(--accent-soft); color: var(--accent); }
+  .roles { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; }
+  .roles .card { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+  .roles .card b { font-family: var(--mono); font-size: 12.5px; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">Co</span><h1>Continue Code Assistant</h1><span class="tag">Chat about code, edit a selection, autocomplete, and check a config.yaml with Continue's own validator</span>
+      <span class="links"><a href="https://github.com/continuedev/continue" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/continue" target="_blank" rel="noopener">Install and test code</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="ide">Chat and edit</button><button data-tab="complete">Autocomplete</button><button data-tab="config">config.yaml</button><button data-tab="how">How it works</button><button data-tab="install">Install &amp; test</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">The file is test.py from Continue's manual-testing-sandbox, the folder Sandbox-2 opens in code-server. Edit uses Continue's Claude edit prompt, autocomplete uses the prompt Continue's getTemplateForModel builds for each model family, and config.yaml is checked by Continue's own parseConfigYaml, bundled from packages/config-yaml. Claude answers from this page, on your own Claude account.</p>
+
+  <section data-panel="ide">
+    <div class="ide">
+      <div>
+        <div class="tabbar"><span>test.py</span></div>
+        <div class="editor"><div class="gutter" id="gutter"></div><textarea id="code" spellcheck="false" aria-label="Code editor"></textarea></div>
+        <div class="edbar">
+          <button class="btn small" id="to-chat">Add selection to chat <kbd>Ctrl L</kbd></button>
+          <input type="text" id="edit-instr" class="grow" value="Add multiply and divide methods; divide raises ZeroDivisionError on 0" aria-label="Edit instruction">
+          <button class="btn primary small ai-only" id="edit">Edit selection <kbd>Ctrl I</kbd></button>
+        </div>
+        <div id="edit-panel" class="stack" style="padding:0 10px 10px" hidden>
+          <div class="row"><b class="grow">Proposed edit</b><button class="btn small" id="accept">Accept</button><button class="btn small" id="reject">Reject</button></div>
+          <div class="diff" id="diff"></div>
+        </div>
+        <p class="status" id="e-status" style="padding:0 10px 8px"></p>
+      </div>
+      <div class="chat">
+        <div class="log" id="log"><p class="note">Select lines in the editor and add them to the chat, then ask about them. With nothing selected the whole file is attached.</p></div>
+        <div class="box">
+          <div class="row" id="ctx"></div>
+          <textarea id="q" rows="2" placeholder="Ask about the code. Enter sends.">What does this class do, and what breaks if subtract is called with a string?</textarea>
+          <div class="row"><span class="status grow" id="c-status"></span><button class="btn small" id="c-stop" hidden>Stop</button><button class="btn primary small ai-only" id="send">Send</button></div>
+          <p class="note ai-off">Chat, edit and autocomplete need this page open in Claude; config.yaml validation works anywhere.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-panel="complete" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Where to complete</h2>
+        <p class="note">Put the cursor anywhere in the editor below: the text before it is the prefix, the text after it the suffix.</p>
+        <div class="editor"><div class="gutter" id="gutter2"></div><textarea id="code2" spellcheck="false" aria-label="Autocomplete editor"></textarea></div>
+        <div class="row"><label class="field inline">Model <select id="fim-model"></select></label><button class="btn primary small ai-only" id="fim-run">Complete with Claude</button><span class="status" id="f-status"></span></div>
+        <div id="fim-out" class="stack"></div></div>
+      <div class="panel"><header><h2 class="grow">Prompt Continue sends</h2><span class="note" id="fim-kind"></span></header>
+        <pre class="prompt" id="fim-prompt"></pre><p class="note" id="fim-stop"></p>
+        <p class="note">Complete with Claude always uses the hole-filler prompt, the one Continue picks for Claude and GPT models, and reads the answer from its &lt;COMPLETION&gt; tag.</p></div>
+    </div>
+  </section>
+
+  <section data-panel="config" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><header><h2 class="grow">~/.continue/config.yaml</h2><button class="btn small" id="cfg-break">Introduce an error</button><button class="btn small" id="cfg-reset">Reset</button></header>
+        <textarea id="cfg" rows="30" spellcheck="false"></textarea></div>
+      <div class="panel"><h2>parseConfigYaml and validateConfigYaml</h2><div id="cfg-out" class="stack"></div>
+        <h2>Model roles (modelRolesSchema)</h2><div class="roles" id="roles"></div></div>
+    </div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Extension, core and GUI</h2>
+<pre class="mermaid">
+flowchart LR
+  IDE[VS Code or JetBrains extension] <-->|messenger protocol| CORE[core: config, context providers, LLM adapters, indexing]
+  GUI[React GUI in a webview: chat, edit, agent] <-->|postMessage| IDE
+  CORE --> CFG[(config.yaml: models with roles, rules, prompts, MCP servers)]
+  CORE --> IDX[(codebase index: embeddings and full text)]
+  CORE --> LLM[providers: Anthropic, OpenAI, Ollama, Mistral...]
+  CLI[cn CLI: the same core in a terminal] --> CORE
+</pre></div>
+      <div class="panel"><h2>Autocomplete</h2>
+<pre class="mermaid">
+flowchart TB
+  K[keystroke, debounced] --> PS[constructPrefixSuffix around the cursor]
+  PS --> SN[snippets: recent files, imports, clipboard]
+  SN --> T[getTemplateForModel: FIM tokens or the hole filler]
+  T --> M[autocomplete model]
+  M --> F[filtering: stop tokens, brackets, repetition]
+  F --> G[ghost text: Tab accepts]
+</pre></div>
+    </div>
+  </section>
+
+  <section data-panel="install" hidden><div id="install" class="stack"></div></section>
+</main>
+<p class="footer">Continue © Continue Dev, Inc., Apache 2.0. Templates, prompts and the config validator come from the source in Sandbox-2.</p>
+{{LIB}}
+{{LIVE}}
+{{AI}}
+{{SCRIPT:interactive/vendor/continue-config-yaml.js}}
+<script>
+const CHECKS = {{CHECKS:continue}};
+const FIM = {{JSON:interactive/data/continue_fim.json}};
+const SOURCE = {{TEXT:vendor/continue/manual-testing-sandbox/test.py}};
+const FILE = 'test.py', LANG = 'python';
+const CONFIG = `name: Contract Tools Assistant
+version: 1.0.0
+schema: v1
+
+models:
+  - name: Claude Sonnet 5
+    provider: anthropic
+    model: claude-sonnet-5
+    apiKey: \${{ secrets.ANTHROPIC_API_KEY }}
+    roles:
+      - chat
+      - edit
+      - apply
+  - name: Codestral
+    provider: mistral
+    model: codestral-latest
+    apiKey: \${{ secrets.MISTRAL_API_KEY }}
+    roles:
+      - autocomplete
+  - name: Nomic Embed
+    provider: ollama
+    model: nomic-embed-text
+    roles:
+      - embed
+
+context:
+  - provider: code
+  - provider: diff
+  - provider: terminal
+  - provider: problems
+  - provider: folder
+  - provider: codebase
+
+rules:
+  - Use type hints in all new Python code
+  - Keep functions under 40 lines
+
+prompts:
+  - name: test
+    description: Write unit tests for the selection
+    prompt: Write pytest unit tests for the selected code, covering edge cases.
+
+mcpServers:
+  - name: Filesystem
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-filesystem"
+      - "."
+`;
+
+/* ------------------------------------------------ editor */
+const code = $('#code'), code2 = $('#code2');
+const gutter = (ta, g) => { g.textContent = Array.from({ length: ta.value.split('\n').length }, (_, i) => i + 1).join('\n'); };
+[[code, $('#gutter')], [code2, $('#gutter2')]].forEach(([ta, g]) => { ta.value = SOURCE; gutter(ta, g); ta.addEventListener('input', () => gutter(ta, g)); });
+function selection() {
+  let s = code.selectionStart, e = code.selectionEnd, v = code.value;
+  if (s === e) return { text: v, from: 1, to: v.split('\n').length, s: 0, e: v.length, whole: true };
+  s = v.lastIndexOf('\n', s - 1) + 1;                       // start of the first selected line
+  if (v[e - 1] === '\n') e -= 1;                             // a selection ending at a line break stops before it
+  else { const nl = v.indexOf('\n', e); e = nl < 0 ? v.length : nl; }  // otherwise run to the end of the line
+  return { text: v.slice(s, e), from: v.slice(0, s).split('\n').length, to: v.slice(0, e).split('\n').length, s, e };
+}
+
+/* ------------------------------------------------ chat */
+let ctxItems = [], turns = [];
+function chips() { $('#ctx').replaceChildren(...ctxItems.map((c, i) => el('span', { class: 'ctx' }, `${FILE} (${c.from}-${c.to})`, el('button', { class: 'btn small', 'aria-label': 'Remove context', style: { padding: '0 5px' }, onclick: () => { ctxItems.splice(i, 1); chips(); } }, '×')))); }
+$('#to-chat').onclick = () => { const s = selection(); ctxItems.push(s); chips(); toast(`Added ${FILE} lines ${s.from}-${s.to}`); };
+const block = (c) => '```' + `${LANG} ${FILE} (${c.from}-${c.to})\n${c.text}\n` + '```';
+function addMsg(who, html, cls) { const m = el('div', { class: 'msg ' + cls }, el('span', { class: 'who' }, who), el('div', { class: cls === 'user' ? 'txt' : 'ai-out', html })); $('#log').append(m); $('#log').scrollTop = $('#log').scrollHeight; return m.lastChild; }
+async function send() {
+  const q = $('#q').value.trim(); if (!q) return;
+  const items = ctxItems.length ? ctxItems : [selection()];
+  const content = items.map(block).join('\n\n') + '\n\n' + q;
+  addMsg('You', esc(q) + '<br>' + items.map((c) => `<span class="ctx">${FILE} (${c.from}-${c.to})</span>`).join(' '), 'user');
+  turns.push({ role: 'user', content }); $('#q').value = ''; ctxItems = []; chips();
+  const out = addMsg('Continue', '…', 'assistant');
+  try {
+    const { text } = await AI.run(turns, { btn: $('#send'), stop: $('#c-stop'), status: $('#c-status'), cache: false, onText: ({ text }) => { out.innerHTML = md(text); $('#log').scrollTop = $('#log').scrollHeight; } });
+    turns.push({ role: 'assistant', content: text });
+  } catch { turns.pop(); out.parentElement.remove(); }
+}
+$('#send').onclick = send;
+$('#q').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); if (!$('#send').disabled) send(); } });
+
+/* ------------------------------------------------ edit (claudeEditPrompt in core/llm/templates/edit.ts) */
+const editPrompt = (codeToEdit, userInput) => `\`\`\`${LANG}\n${codeToEdit}\n\`\`\`\n\nYou are an expert programmer. You will rewrite the above code to do the following:\n\n${userInput}\n\nLeave existing comments in place unless changes require modifying them. Output only a code block with the rewritten code:\n`;
+function lineDiff(a, b) {
+  const A = a.split('\n'), B = b.split('\n'), n = A.length, m = B.length, L = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = A[i] === B[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  const out = []; let i = 0, j = 0;
+  while (i < n && j < m) { if (A[i] === B[j]) { out.push([' ', A[i]]); i++; j++; } else if (L[i + 1][j] >= L[i][j + 1]) out.push(['-', A[i++]]); else out.push(['+', B[j++]]); }
+  while (i < n) out.push(['-', A[i++]]); while (j < m) out.push(['+', B[j++]]);
+  return out;
+}
+let pending = null;
+$('#edit').onclick = async () => {
+  const s = selection(), instr = $('#edit-instr').value.trim(); if (!instr) return toast('Write what to change');
+  try {
+    const { text } = await AI.run(editPrompt(s.text, instr), { btn: $('#edit'), status: $('#e-status'), cache: false });
+    const m = text.match(/```[\w+-]*\n([\s\S]*?)(```|$)/), next = (m ? m[1] : text).replace(/\n$/, '');
+    pending = { s, next };
+    $('#diff').replaceChildren(...lineDiff(s.text, next).map(([k, l]) => el('div', { class: k === '+' ? 'a' : k === '-' ? 'd' : '' }, `${k} ${l}`)));
+    $('#edit-panel').hidden = false; $('#e-status').textContent = `Lines ${s.from}-${s.to}: accept or reject the rewrite. (Continue also prefills the reply with "Sure! Here is the rewritten code:"; this page reads the code block instead.)`;
+  } catch { /* status explains */ }
+};
+$('#accept').onclick = () => { if (!pending) return; const v = code.value; code.value = v.slice(0, pending.s.s) + pending.next + v.slice(pending.s.e); gutter(code, $('#gutter')); $('#edit-panel').hidden = true; pending = null; toast('Edit applied'); };
+$('#reject').onclick = () => { $('#edit-panel').hidden = true; pending = null; };
+document.addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && !e.shiftKey && (e.key === 'l' || e.key === 'i') && document.activeElement === code) { e.preventDefault(); (e.key === 'l' ? $('#to-chat') : $('#edit')).click(); } });
+
+/* ------------------------------------------------ autocomplete */
+$('#fim-model').replaceChildren(...Object.keys(FIM).map((k) => el('option', { value: k, selected: k === 'codestral-latest' }, k)));
+function prefixSuffix() { const c = code2.selectionStart ?? code2.value.length; return [code2.value.slice(0, c), code2.value.slice(c)]; }
+function render(name, pre, suf) {
+  const t = FIM[name];
+  return t.kind === 'mustache' ? t.text.replace('{{{prefix}}}', pre).replace('{{{suffix}}}', suf) : t.text.replace('<<PREFIX>>', pre).replace('<<SUFFIX>>', suf);
+}
+function showFim() {
+  const name = $('#fim-model').value, t = FIM[name], [pre, suf] = prefixSuffix(), P = '\u0001', S = '\u0002';
+  $('#fim-kind').textContent = t.text.startsWith('You are a HOLE FILLER') ? 'hole filler (chat models)' : 'fill-in-the-middle tokens';
+  $('#fim-prompt').innerHTML = esc(render(name, P, S)).replace(P, `<mark>${esc(pre.slice(-400))}</mark>`).replace(S, `<mark>${esc(suf.slice(0, 400))}</mark>`);
+  $('#fim-stop').textContent = `Stop tokens: ${t.stop.map((s) => JSON.stringify(s)).join(', ') || 'none'}`;
+}
+['click', 'keyup', 'input', 'select'].forEach((ev) => code2.addEventListener(ev, showFim));
+$('#fim-model').onchange = showFim;
+$('#fim-run').onclick = async () => {
+  const [pre, suf] = prefixSuffix(), prompt = render('claude-sonnet-5', pre, suf), at = code2.selectionStart;
+  try {
+    const { text } = await AI.run(prompt, { btn: $('#fim-run'), status: $('#f-status'), cache: false });
+    const c = (text.match(/<COMPLETION>([\s\S]*?)(<\/COMPLETION>|$)/) || [, text])[1];
+    $('#fim-out').replaceChildren(el('pre', { class: 'code' }, el('span', {}, pre.slice(-160)), el('span', { class: 'ghost' }, c), el('span', {}, suf.slice(0, 120))),
+      el('div', { class: 'row' }, el('button', { class: 'btn small', onclick: () => { code2.value = pre + c + suf; gutter(code2, $('#gutter2')); code2.focus(); code2.selectionStart = code2.selectionEnd = at + c.length; $('#fim-out').replaceChildren(); showFim(); } }, 'Accept (Tab)'),
+        el('button', { class: 'btn small', onclick: () => $('#fim-out').replaceChildren() }, 'Dismiss')));
+  } catch { /* status explains */ }
+};
+code2.addEventListener('keydown', (e) => { if (e.key === 'Tab' && $('#fim-out').firstChild) { e.preventDefault(); $('#fim-out').querySelector('button').click(); } });
+
+/* ------------------------------------------------ config.yaml */
+const CY = window.ContinueConfig;
+function check() {
+  const out = $('#cfg-out');
+  try {
+    const cfg = CY.parseConfigYaml($('#cfg').value), errs = CY.validateConfigYaml(cfg);
+    out.replaceChildren(el('div', { class: 'row' }, el('span', { class: 'pill ' + (errs.some((e) => e.fatal) ? 'bad' : 'good') }, errs.length ? `${errs.length} validation message${errs.length === 1 ? '' : 's'}` : 'Valid'), el('span', { class: 'note' }, `${cfg.name} ${cfg.version}`)),
+      ...errs.map((e) => el('p', { class: 'note', style: { color: e.fatal ? 'var(--bad)' : 'var(--warn)' } }, e.message)),
+      el('div', { class: 'table-wrap' }, el('table', { class: 'data' }, el('tr', {}, el('th', {}, 'Model'), el('th', {}, 'Provider'), el('th', {}, 'Roles')),
+        ...(cfg.models || []).map((m) => el('tr', {}, el('td', {}, m.name || m.uses || ''), el('td', { class: 'mono' }, m.provider || ''), el('td', {}, (m.roles || ['chat', 'edit', 'apply', 'summarize']).join(', ')))))),
+      el('p', { class: 'note' }, `${(cfg.context || []).length} context providers, ${(cfg.rules || []).length} rules, ${(cfg.prompts || []).length} prompts, ${(cfg.mcpServers || []).length} MCP servers.`));
+  } catch (e) { out.replaceChildren(el('span', { class: 'pill bad' }, 'Invalid'), el('pre', { class: 'code', style: { whiteSpace: 'pre-wrap' } }, e.message)); }
+}
+$('#cfg').value = CONFIG; $('#cfg').addEventListener('input', check);
+$('#cfg-reset').onclick = () => { $('#cfg').value = CONFIG; check(); };
+$('#cfg-break').onclick = () => { $('#cfg').value = $('#cfg').value.replace('      - autocomplete', '      - autocompletion').replace('version: 1.0.0\n', ''); check(); };
+$('#roles').replaceChildren(...CY.roles.map((r) => el('div', { class: 'card' }, el('b', {}, r), el('div', { class: 'note' }, ({ chat: 'The chat panel and agent mode', autocomplete: 'Inline tab completions', embed: 'Codebase and docs indexing', rerank: 'Reorders retrieved context', edit: 'Rewrites a selection (Ctrl I)', apply: 'Applies code blocks to files', summarize: 'Summarizes long conversations', subagent: 'Models a subagent may run on' })[r] || ''))));
+
+renderInstall($('#install'), CHECKS, {
+  setup: 'systems/continue/setup.sh', serve: './start.sh continue   # VS Code (code-server) with the extension, http://localhost:8443', test: 'python3 systems/continue/test_continue.py -v', port: 8443, ui: 'code-server',
+  notes: ["Upstream's scripts/install-dependencies.sh builds core, the GUI and the extension (.vsix); the cn CLI is built too", 'code-server from its release tarball, the .vsix installed into it, opened on manual-testing-sandbox', 'Workspace trust is off: Continue declares no Restricted Mode support, so VS Code would keep it disabled', 'In a browser: the Continue view opens in its webview and the extension activates'],
+});
+initTabs((n) => { if (n === 'complete') { code2.focus(); code2.selectionStart = code2.selectionEnd = code2.value.indexOf('\n\n    def reset'); showFim(); } if (n === 'config') check(); });
+showFim(); check();
+</script>
