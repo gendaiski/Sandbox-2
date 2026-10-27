@@ -28,7 +28,7 @@ UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML
       "Chrome/131.0.0.0 Safari/537.36")
 TIMEOUT = 30.0
 BIN = Path(sys.executable).parent  # yt-dlp and gallery-dl live beside this venv's python
-FXTWITTER = os.environ.get("POST_STUDIO_FXTWITTER", "https://api.fxtwitter.com").rstrip("/")
+FXTWITTER = (os.environ.get("POST_STUDIO_FXTWITTER") or "https://api.fxtwitter.com").rstrip("/")
 
 
 class ExtractError(Exception):

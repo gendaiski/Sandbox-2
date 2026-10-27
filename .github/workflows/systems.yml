@@ -92,14 +92,19 @@ jobs:
         with: { ruby-version: "3.3" }
       - name: Browser for the UI checks
         if: matrix.ui
-        timeout-minutes: 35
+        timeout-minutes: 50
         # A stalled apt or browser download once held this step until the job's own timeout (run 40, lobehub):
-        # each attempt gets 10 minutes, then a retry.
+        # each attempt gets 15 minutes, then a retry. An attempt cut off mid-install leaves its apt-get
+        # holding the dpkg lock (run 42), so that is stopped and dpkg repaired before the next one.
         run: |
           npm install -g playwright@1.56.1
           for attempt in 1 2 3; do
-            timeout 600 npx -y playwright@1.56.1 install --with-deps chromium && exit 0
-            echo "browser install attempt $attempt failed or stalled"; sleep 15
+            timeout -k 30 900 npx -y playwright@1.56.1 install --with-deps chromium && exit 0
+            echo "browser install attempt $attempt failed or stalled"
+            sudo pkill -x apt-get || true
+            while sudo fuser /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 5; done
+            sudo dpkg --configure -a || true
+            sleep 15
           done
           exit 1
       - name: Desktop apps' display, screenshots and speech
