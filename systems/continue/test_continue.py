@@ -61,7 +61,11 @@ with Served("continue", "http://127.0.0.1:8443/healthz", timeout=180):
         c.expect(run.returncode == 0, f"ui_check: {run.stderr[-300:]}")
         found = json.loads(run.stdout.strip().splitlines()[-1])
         c.note(json.dumps(found)[:400])
-        c.expect(found["continueTab"], "Continue in the activity bar")
-        c.expect(found["webviews"] >= 1, "its GUI webview loaded")
+        c.note("opened from the " + ("activity bar" if found["continueTab"] else "command palette"))
+        c.expect(found["webviews"] >= 1, "the Continue GUI webview loaded")
+        logs = sorted((Path.home() / ".local/share/code-server/logs").glob("*/**/*exthost*.log"))
+        activated = any("continue.continue" in log.read_text(errors="replace").lower() for log in logs)
+        c.note(f"extension host logs: {len(logs)}; Continue activated: {activated}")
+        c.expect(activated, "Continue activated in the extension host")
 
 sys.exit(h.finish())

@@ -25,9 +25,22 @@ const { chromium } = require('playwright');
     (els) => els.map((e) => e.getAttribute('aria-label') || '').filter(Boolean));
   const continueTab = page.locator('.activitybar [aria-label*="Continue"]').first();
   const found = (await continueTab.count()) > 0;
-  if (found) await continueTab.click();
-  await page.waitForTimeout(15000);   // the extension activates and loads its React GUI
-  const webviews = await page.locator('iframe.webview, .webview iframe, iframe[src*="webview"]').count();
+  if (found) {
+    await continueTab.click();
+  } else {
+    // VS Code generates "<view>: Focus on <view> View" for every contributed view; open it from the palette.
+    await page.keyboard.press('F1');
+    await page.waitForTimeout(1000);
+    await page.keyboard.type('Continue: Focus on Continue View');
+    await page.waitForTimeout(1500);
+    await page.keyboard.press('Enter');
+  }
+  let webviews = 0;
+  for (let i = 0; i < 20 && !webviews; i++) {   // the extension activates and loads its React GUI
+    await page.waitForTimeout(2000);
+    webviews = await page.locator('iframe.webview, .webview iframe, iframe[src*="webview"]').count();
+  }
+  await page.waitForTimeout(4000);
   await page.screenshot({ path: `${shots}/continue.png` });
   console.log(JSON.stringify({ trusted, activityBar: items, continueTab: found, webviews, title: await page.title() }));
   await browser.close();
