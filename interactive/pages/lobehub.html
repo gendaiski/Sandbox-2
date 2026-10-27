@@ -1,0 +1,246 @@
+<title>LobeHub Chat Workspace</title>
+{{HEAD}}
+<style>
+  :root { --accent: #1f2329; --accent-ink: #ffffff; --accent-soft: #eceef1; --bubble: #f4f5f7; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #eef0f3; --accent-ink: #14161a; --accent-soft: #262a31; --bubble: #1e2228; } }
+  :root[data-theme="dark"] { --accent: #eef0f3; --accent-ink: #14161a; --accent-soft: #262a31; --bubble: #1e2228; }
+  .ws { display: grid; grid-template-columns: 240px minmax(0, 1fr) 300px; gap: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--panel); min-height: 640px; }
+  @media (max-width: 1100px) { .ws { grid-template-columns: 220px minmax(0, 1fr); } .ws .side-r { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); } }
+  @media (max-width: 700px) { .ws { grid-template-columns: minmax(0, 1fr); } .ws .side-l { border-right: 0; border-bottom: 1px solid var(--line); max-height: 260px; overflow: auto; } }
+  .side-l { border-right: 1px solid var(--line); display: flex; flex-direction: column; min-width: 0; }
+  .side-r { border-left: 1px solid var(--line); padding: 12px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .side-l .hd { padding: 10px 12px; display: flex; gap: 8px; align-items: center; border-bottom: 1px solid var(--line); }
+  .agents, .topics { display: flex; flex-direction: column; padding: 6px; gap: 2px; }
+  .ag { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 9px; align-items: center; padding: 7px 8px; border-radius: 9px; border: 0; background: none; cursor: pointer; text-align: left; }
+  .ag:hover { background: var(--sunk); } .ag[aria-current="true"] { background: var(--accent-soft); }
+  .ag .av { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; font-size: 18px; background: var(--sunk); }
+  .ag b { display: block; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ag span.d { display: block; font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .topics .tp { font-size: 12.5px; padding: 6px 10px; border-radius: 8px; border: 0; background: none; text-align: left; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .topics .tp[aria-current="true"] { background: var(--sunk); font-weight: 600; }
+  .sect { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 10px 14px 2px; }
+  .conv { display: flex; flex-direction: column; min-width: 0; }
+  .conv .top { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .conv .top .av { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: var(--sunk); font-size: 16px; }
+  .msgs { flex: 1; overflow: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; max-height: 560px; min-height: 380px; }
+  .m { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; }
+  .m .av { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: var(--sunk); font-size: 15px; }
+  .m.user { grid-template-columns: minmax(0, 1fr) 30px; } .m.user .av { order: 2; } .m.user .body { justify-self: end; background: var(--bubble); border-radius: 12px; padding: 8px 12px; max-width: 85%; }
+  .m .body { min-width: 0; } .m .acts { display: flex; gap: 4px; margin-top: 4px; opacity: .7; } .m .acts button { font-size: 11.5px; }
+  .m .ai-out { background: none; padding: 0; min-height: 0; }
+  .composer { border-top: 1px solid var(--line); padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+  .composer textarea { font-family: var(--font); font-size: 14px; resize: none; border-radius: 10px; }
+  .abil { display: inline-flex; gap: 3px; flex-wrap: wrap; }
+  .abil i { font-style: normal; font-size: 10.5px; padding: 0 5px; border-radius: 4px; background: var(--sunk); color: var(--muted); }
+  .provs { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+  .prov { border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; background: var(--panel); display: flex; flex-direction: column; gap: 4px; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">Lb</span><h1>LobeHub Chat Workspace</h1><span class="tag">Agents, topics and a model catalog of 85 providers, from LobeHub's own model bank</span>
+      <span class="links"><a href="https://github.com/lobehub/lobehub" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/lobehub" target="_blank" rel="noopener">Install and test code</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="chat">Chat</button><button data-tab="models">Model catalog</button><button data-tab="providers">Providers</button><button data-tab="how">How it works</button><button data-tab="install">Install &amp; test</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">A model of LobeHub's chat workspace. The default Lobe agent uses the system role LobeHub generates (packages/builtin-agents, inbox), and the catalog lists the providers and chat models in packages/model-bank. Replies come from Claude through this page, on your own Claude account, whatever model the agent is set to; topics are kept in this browser only.</p>
+
+  <section data-panel="chat">
+    <div class="ws">
+      <aside class="side-l">
+        <div class="hd"><b class="grow">Agents</b><button class="btn small" id="new-agent">New agent</button></div>
+        <div class="agents" id="agents"></div>
+        <div class="sect">Topics</div>
+        <div class="topics" id="topics"></div>
+        <div style="padding:6px 10px"><button class="btn small" id="new-topic">New topic</button></div>
+      </aside>
+      <section class="conv">
+        <div class="top"><span class="av" id="c-av"></span><b id="c-title" class="grow"></b><span class="pill" id="c-model"></span><span class="pill" id="c-count"></span></div>
+        <div class="msgs" id="msgs"></div>
+        <div class="composer">
+          <textarea id="input" rows="3" placeholder="Type a message. Enter sends, Shift+Enter adds a line."></textarea>
+          <div class="row"><span class="status grow" id="status"></span><button class="btn small" id="stop" hidden>Stop</button><button class="btn primary ai-only" id="send">Send</button></div>
+          <p class="note ai-off">Open this page in Claude to chat. Agents, topics and the catalog work without it.</p>
+        </div>
+      </section>
+      <aside class="side-r">
+        <b>Agent settings</b>
+        <label class="field">Avatar <input type="text" id="s-av" maxlength="4"></label>
+        <label class="field">Name <input type="text" id="s-title"></label>
+        <label class="field">Description <input type="text" id="s-desc"></label>
+        <label class="field">System role <textarea id="s-role" rows="9"></textarea></label>
+        <label class="field">Model (provider / model) <select id="s-model"></select></label>
+        <label class="field">History messages sent <input type="range" id="s-hist" min="2" max="20" value="8"><span class="note" id="s-histv"></span></label>
+        <p class="note">LobeHub replaces {{date}} in a system role with today's date; this page does the same.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section data-panel="models" hidden>
+    <div class="panel">
+      <div class="row"><input type="search" id="m-q" placeholder="Search models" aria-label="Search models" class="grow">
+        <label class="field inline">Provider <select id="m-prov"><option value="">All</option></select></label>
+        <label class="field inline">Sort <select id="m-sort"><option value="ctx">Context window</option><option value="rel">Release date</option><option value="name">Name</option></select></label></div>
+      <div class="row" id="m-ab"></div>
+      <span class="note" id="m-count"></span>
+      <div class="table-wrap"><table class="data" id="m-table"></table></div>
+    </div>
+  </section>
+
+  <section data-panel="providers" hidden><div class="provs" id="provs"></div></section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>The self-hosted stack (docker-compose/deploy)</h2>
+<pre class="mermaid">
+flowchart LR
+  B[Browser] -->|3210| L[lobe: lobehub/lobehub]
+  L --> PG[(postgresql: paradedb pg17)]
+  L --> RD[(redis)]
+  L --> S3[(rustfs: S3 files)]
+  L --> SX[searxng: web search]
+  L --> GW[gateway: agent gateway]
+  L --> ES[(elasticsearch: full-text search)]
+  SY[fts-search-sync and reindex] --> ES
+  PG --> SY
+</pre></div>
+      <div class="panel"><h2>A chat turn</h2>
+<pre class="mermaid">
+sequenceDiagram
+  participant U as You
+  participant A as Agent (system role, model, plugins)
+  participant R as Agent runtime
+  participant M as Model provider
+  U->>A: message in a topic
+  A->>R: system role + last N messages + tools
+  R->>M: provider SDK (openai, anthropic, google...)
+  M-->>R: streamed tokens, tool calls
+  R-->>U: streamed reply, saved to the topic
+</pre></div>
+    </div>
+  </section>
+
+  <section data-panel="install" hidden><div id="install" class="stack"></div></section>
+</main>
+<p class="footer">LobeHub © LobeHub, LobeHub Community License. Model bank and system role read from the source in Sandbox-2.</p>
+{{LIB}}
+{{LIVE}}
+{{AI}}
+<script>
+const CHECKS = {{CHECKS:lobehub}};
+const BANK = {{JSON:interactive/data/lobehub_models.json}};
+const PROV = Object.fromEntries(BANK.providers.map((p) => [p.id, p]));
+const today = () => new Date().toISOString().slice(0, 10);
+const EXAMPLE_AGENTS = [
+  { id: 'inbox', avatar: '🤯', title: 'Lobe', desc: 'The default agent', role: BANK.inboxRole, model: 'anthropic/claude-sonnet-5' },
+  { id: 'contract', avatar: '📑', title: 'Contract Reviewer', desc: 'Flags risk in contract clauses', role: 'You review commercial contracts for a small business. For each clause the user pastes, say what it means, what could go wrong for the user, and one concrete edit to ask for. Keep it under 150 words.', model: 'anthropic/claude-opus-5-5' },
+  { id: 'translate', avatar: '🌐', title: 'Translator', desc: 'English, French, Arabic, Japanese', role: 'Translate the user message. If it is in English, translate it to French; otherwise translate it to English. Keep formatting and names. Reply with the translation only.', model: 'openai/gpt-5.6-luna' },
+  { id: 'mermaid', avatar: '🧭', title: 'Diagram Helper', desc: 'Turns a process into Mermaid', role: 'Turn the process the user describes into a Mermaid flowchart in a ```mermaid code block, then list any steps you had to assume.', model: 'google/gemini-3.1-pro-preview' },
+];
+const KEY = 'lobehub-workspace-v1';
+let S = store.get(KEY, null) || { agents: EXAMPLE_AGENTS, topics: {}, current: 'inbox', topic: {}, hist: 8 };
+const save = () => store.set(KEY, S);
+const agent = () => S.agents.find((a) => a.id === S.current) || S.agents[0];
+function topicsOf(a) { return (S.topics[a.id] ||= []); }
+function topic() {
+  const a = agent(), list = topicsOf(a);
+  let t = list.find((x) => x.id === S.topic[a.id]);
+  if (!t) { t = { id: uid('t'), title: 'Default topic', messages: [] }; list.unshift(t); S.topic[a.id] = t.id; }
+  return t;
+}
+
+/* ------------------------------------------------ rendering */
+function renderAgents() {
+  $('#agents').replaceChildren(...S.agents.map((a) => el('button', { class: 'ag', 'aria-current': String(a.id === S.current), onclick: () => { S.current = a.id; save(); renderAll(); } },
+    el('span', { class: 'av' }, a.avatar), el('span', {}, el('b', {}, a.title), el('span', { class: 'd' }, a.desc)))));
+  const a = agent();
+  $('#topics').replaceChildren(...topicsOf(a).map((t) => el('button', { class: 'tp', 'aria-current': String(t.id === S.topic[a.id]), onclick: () => { S.topic[a.id] = t.id; save(); renderAll(); } }, t.title)));
+}
+function renderSettings() {
+  const a = agent();
+  $('#s-av').value = a.avatar; $('#s-title').value = a.title; $('#s-desc').value = a.desc; $('#s-role').value = a.role; $('#s-model').value = a.model;
+  $('#s-hist').value = S.hist; $('#s-histv').textContent = `last ${S.hist} messages`;
+}
+function renderMsgs() {
+  const a = agent(), t = topic();
+  $('#c-av').textContent = a.avatar; $('#c-title').textContent = `${a.title} · ${t.title}`;
+  const [pid, mid] = a.model.split('/'); const m = BANK.models.find((x) => x.p === pid && x.id === mid);
+  $('#c-model').textContent = m ? `${PROV[pid]?.name || pid} · ${m.name}` : a.model; $('#c-count').textContent = `${t.messages.length} messages`;
+  $('#msgs').replaceChildren(...(t.messages.length ? t.messages.map((msg, i) => bubble(msg, i)) : [el('div', { class: 'empty' }, `Start a conversation with ${a.title}. ${a.desc}.`)]));
+  $('#msgs').scrollTop = $('#msgs').scrollHeight;
+}
+function bubble(msg, i) {
+  const a = agent(), body = el('div', { class: 'body' });
+  if (msg.role === 'user') body.append(el('div', { style: { whiteSpace: 'pre-wrap' } }, msg.content));
+  else body.append(el('div', { class: 'ai-out', html: md(msg.content || '…') }));
+  body.append(el('div', { class: 'acts' }, el('button', { class: 'btn small', onclick: () => copyText(msg.content, 'Copied') }, 'Copy'),
+    msg.role === 'assistant' ? el('button', { class: 'btn small ai-only', onclick: () => regenerate(i) }, 'Regenerate') : null,
+    el('button', { class: 'btn small', onclick: () => { topic().messages.splice(i, 1); save(); renderMsgs(); } }, 'Delete')));
+  return el('div', { class: 'm ' + msg.role }, el('span', { class: 'av' }, msg.role === 'user' ? '🙂' : a.avatar), body);
+}
+function renderAll() { topic(); renderAgents(); renderSettings(); renderMsgs(); }
+
+/* ------------------------------------------------ chat */
+let ctl = null;
+async function reply() {
+  const a = agent(), t = topic();
+  const history = t.messages.slice(-S.hist).map((m) => ({ role: m.role, content: m.content }));
+  while (history.length && history[0].role !== 'user') history.shift();
+  const input = [{ role: 'user', content: a.role.replace(/\{\{date\}\}/g, today()) }, ...history];
+  const msg = { role: 'assistant', content: '' }; t.messages.push(msg); renderMsgs();
+  const live = $('#msgs').lastElementChild.querySelector('.ai-out');
+  ctl = new AbortController();
+  try {
+    const { text } = await AI.run(input, { btn: $('#send'), stop: $('#stop'), status: $('#status'), cache: false, onText: ({ text }) => { msg.content = text; live.innerHTML = md(text); $('#msgs').scrollTop = $('#msgs').scrollHeight; } });
+    msg.content = text;
+  } catch (e) { if (!msg.content) t.messages.pop(); }
+  if (t.title === 'Default topic' && t.messages[0]) t.title = t.messages[0].content.slice(0, 40);
+  save(); renderAll();
+}
+async function send() {
+  const text = $('#input').value.trim(); if (!text) return;
+  topic().messages.push({ role: 'user', content: text }); $('#input').value = ''; save(); renderMsgs(); await reply();
+}
+function regenerate(i) { const t = topic(); t.messages.splice(i); save(); renderMsgs(); reply(); }
+$('#send').onclick = send;
+$('#input').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); if (!$('#send').disabled) send(); } });
+$('#new-topic').onclick = () => { const a = agent(), t = { id: uid('t'), title: 'Default topic', messages: [] }; topicsOf(a).unshift(t); S.topic[a.id] = t.id; save(); renderAll(); };
+$('#new-agent').onclick = () => { const a = { id: uid('a'), avatar: '🤖', title: 'New agent', desc: 'Describe what it does', role: 'You are a helpful assistant.', model: 'anthropic/claude-sonnet-5' }; S.agents.push(a); S.current = a.id; save(); renderAll(); $('#s-title').focus(); };
+[['#s-av', 'avatar'], ['#s-title', 'title'], ['#s-desc', 'desc'], ['#s-role', 'role']].forEach(([s, k]) => $(s).addEventListener('input', (e) => { agent()[k] = e.target.value; save(); renderAgents(); if (k !== 'role') renderMsgs(); }));
+$('#s-model').onchange = (e) => { agent().model = e.target.value; save(); renderMsgs(); };
+$('#s-hist').oninput = (e) => { S.hist = +e.target.value; $('#s-histv').textContent = `last ${S.hist} messages`; save(); };
+const chatModels = BANK.models.filter((m) => m.en && m.ab.includes('functionCall')).sort((a, b) => (a.p + a.name).localeCompare(b.p + b.name));
+const groups = {}; for (const m of chatModels) (groups[m.p] ||= []).push(m);
+$('#s-model').replaceChildren(...Object.entries(groups).map(([p, ms]) => el('optgroup', { label: PROV[p]?.name || p }, ...ms.map((m) => el('option', { value: `${p}/${m.id}` }, m.name)))));
+for (const a of S.agents) if (!$(`#s-model option[value="${CSS.escape(a.model)}"]`)) $('#s-model').prepend(el('option', { value: a.model }, a.model));
+
+/* ------------------------------------------------ catalog */
+const ABIL = ['functionCall', 'vision', 'reasoning', 'search', 'structuredOutput', 'files', 'imageOutput', 'video', 'audio'];
+const want = new Set();
+$('#m-ab').replaceChildren(...ABIL.map((k) => el('label', { class: 'field inline' }, el('input', { type: 'checkbox', id: 'ab-' + k, onchange: (e) => { e.target.checked ? want.add(k) : want.delete(k); table(); } }), k)));
+$('#m-prov').append(...BANK.providers.slice().sort((a, b) => a.name.localeCompare(b.name)).map((p) => el('option', { value: p.id }, p.name)));
+const tok = (n) => (n >= 1e6 ? fmt(n / 1e6, n % 1e6 ? 1 : 0) + 'M' : n >= 1e3 ? fmt(n / 1e3) + 'K' : n ? String(n) : '–');
+function table() {
+  const q = $('#m-q').value.toLowerCase(), pv = $('#m-prov').value, sort = $('#m-sort').value;
+  let list = BANK.models.filter((m) => (!pv || m.p === pv) && [...want].every((k) => m.ab.includes(k)) && (!q || (m.name + ' ' + m.id + ' ' + m.d).toLowerCase().includes(q)));
+  list.sort(sort === 'ctx' ? (a, b) => b.ctx - a.ctx : sort === 'rel' ? (a, b) => (b.rel || '').localeCompare(a.rel || '') : (a, b) => a.name.localeCompare(b.name));
+  $('#m-count').textContent = `${fmt(list.length)} of ${fmt(BANK.models.length)} chat models${list.length > 300 ? ' (first 300 shown)' : ''}. LobeHub also lists ${Object.entries(BANK.types).filter(([k]) => k !== 'chat').map(([k, v]) => `${v} ${k}`).join(', ')} models.`;
+  $('#m-table').replaceChildren(el('tr', {}, ...['Model', 'Provider', 'Context', 'Max output', 'Abilities', 'Released'].map((h) => el('th', {}, h))),
+    ...list.slice(0, 300).map((m) => el('tr', {}, el('td', {}, el('b', {}, m.name), el('div', { class: 'note mono' }, m.id)), el('td', {}, PROV[m.p]?.name || m.p),
+      el('td', { class: 'mono' }, tok(m.ctx)), el('td', { class: 'mono' }, tok(m.out)), el('td', {}, el('span', { class: 'abil' }, ...m.ab.map((k) => el('i', {}, k)))), el('td', { class: 'mono', style: { whiteSpace: 'nowrap' } }, m.rel || '–'))));
+}
+['#m-q', '#m-prov', '#m-sort'].forEach((s) => $(s).addEventListener('input', table));
+const count = (p) => BANK.models.filter((m) => m.p === p).length;
+$('#provs').replaceChildren(...BANK.providers.slice().sort((a, b) => count(b.id) - count(a.id)).map((p) => el('div', { class: 'prov' },
+  el('div', { class: 'row' }, el('b', { class: 'grow' }, p.name), el('span', { class: 'pill' }, `${count(p.id)} chat models`)),
+  el('span', { class: 'note' }, p.desc), el('div', { class: 'row' }, p.sdk ? el('span', { class: 'pill accent' }, `SDK: ${p.sdk}`) : null, p.url ? el('a', { href: p.url, target: '_blank', rel: 'noopener' }, new URL(p.url).hostname) : null))));
+
+renderInstall($('#install'), CHECKS, {
+  setup: 'systems/lobehub/setup.sh', serve: './start.sh lobehub   # the full stack, http://localhost:3210', test: 'python3 systems/lobehub/test_lobehub.py -v', port: 3210, ui: 'LobeHub',
+  notes: ["Upstream's docker-compose/deploy stack as is: lobe, postgresql (ParadeDB), redis, rustfs, searxng, elasticsearch and the search sync jobs", "Secrets are generated the way upstream's interactive setup.sh would; the gateway is left out when its image cannot be pulled", 'In a browser: sign up, walk the onboarding and reach the home screen'],
+});
+initTabs((n) => n === 'models' && table());
+renderAll(); table();
+</script>
