@@ -58,7 +58,7 @@ def build(page: Path) -> Path:
            + json.dumps(samples("<!-- needs: pdf -->" in src)) + ";\n</script>")
     html = src.replace("{{HEAD}}", head).replace("{{LIB}}", lib)
     # {{JSON:path}} embeds a repository JSON file (e.g. an upstream schema) as a JS value.
-    html = re.sub(r"\{\{JSON:([^}]+)\}\}", lambda m: json.dumps(json.loads((ROOT / m.group(1)).read_text())), html)
+    html = re.sub(r"\{\{JSON:([^}]+)\}\}", lambda m: json.dumps(json.loads((ROOT / m.group(1)).read_text())).replace("</", "<\\/"), html)  # "</" would end the script
     html = html.replace("{{LIVE}}", "<style>\n" + (SRC / "live.css").read_text() + "\n</style>\n<script>\n"
                         + (SRC / "live.js").read_text() + "\n</script>")
     html = html.replace("{{AI}}", "<script>\n" + (SRC / "ai.js").read_text() + "\n</script>")

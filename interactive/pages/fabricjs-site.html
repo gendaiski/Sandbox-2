@@ -1,0 +1,126 @@
+<title>fabricjs.com Classic Tutorials</title>
+{{HEAD}}
+<style>
+  :root { --accent: #2b5f9e; --accent-soft: #e2ecf8; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #82b1ec; --accent-ink: #0b1d33; --accent-soft: #1b2b40; } }
+  :root[data-theme="dark"] { --accent: #82b1ec; --accent-ink: #0b1d33; --accent-soft: #1b2b40; }
+  .reader { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 14px; }
+  @media (max-width: 860px) { .reader { grid-template-columns: minmax(0, 1fr); } }
+  .toc { display: flex; flex-direction: column; gap: 3px; max-height: 820px; overflow: auto; }
+  .toc button { text-align: left; border: 1px solid transparent; border-radius: 7px; padding: 6px 9px; background: none; cursor: pointer; }
+  .toc button[aria-current="true"] { background: var(--accent-soft); border-color: var(--accent); }
+  .toc .d { display: block; font: 11px var(--mono); color: var(--muted); }
+  iframe.page { width: 100%; border: 1px solid var(--line); border-radius: 10px; background: #fff; min-height: 700px; display: block; }
+  .pg { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+  @media (max-width: 860px) { .pg { grid-template-columns: minmax(0, 1fr); } }
+  .pg textarea { min-height: 380px; }
+  .err { font: 12px var(--mono); color: var(--bad); white-space: pre-wrap; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">fc</span><h1>fabricjs.com Classic Tutorials</h1><span class="tag">The site's 29 tutorials and 34 demos, running on the fabric 5.2.1 it ships</span>
+      <span class="links"><a href="https://github.com/fabricjs/fabricjs.com" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/fabricjs-site" target="_blank" rel="noopener">Install and test code</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="tutorials">Tutorials</button><button data-tab="demos">Demos</button><button data-tab="playground">Playground</button><button data-tab="how">How it works</button><button data-tab="install">Install &amp; test</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">Posts and demos come from fabricjs/fabricjs.com as checked out in Sandbox-2, and each runs in its own sandboxed frame with the site's lib/fabric.js (version 5.2.1). Pictures hosted elsewhere cannot load here; the site's own images are inlined. Demos that need jQuery, Angular or other site scripts are left out (<span id="skipped"></span>).</p>
+
+  <section data-panel="tutorials">
+    <div class="reader"><nav class="toc" id="posts" aria-label="Tutorials"></nav><div class="stack"><div class="row"><b class="grow" id="p-title"></b><span class="note" id="p-date"></span></div><iframe class="page" id="post" sandbox="allow-scripts" title="Tutorial"></iframe></div></div>
+  </section>
+
+  <section data-panel="demos" hidden>
+    <div class="reader"><nav class="toc" id="demos" aria-label="Demos"></nav><div class="stack"><div class="row"><b class="grow" id="d-title"></b><button class="btn small" id="d-reload">Reload</button></div><iframe class="page" id="demo" sandbox="allow-scripts" title="Demo"></iframe><div class="err" id="d-err"></div></div></div>
+  </section>
+
+  <section data-panel="playground" hidden>
+    <div class="pg">
+      <div class="panel"><header><h2 class="grow">Code</h2><button class="btn primary small" id="run">Run</button></header>
+        <textarea id="code" spellcheck="false"></textarea><p class="note">A canvas with id "c" (640 × 400) is ready. "Try it" under any code block in a tutorial opens that block here.</p></div>
+      <div class="panel"><h2>Result</h2><iframe class="page" id="out" sandbox="allow-scripts" title="Playground result" style="min-height:440px"></iframe><div class="err" id="p-err"></div></div>
+    </div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>The site</h2>
+<pre class="mermaid">
+flowchart LR
+  P[(posts/_posts: tutorials)] --> J[Jekyll 4.4 build]
+  D[(posts/demos/_posts: demos)] --> J
+  DOC[(docs/: JSDoc API pages)] --> J
+  L[lib/fabric.js 5.2.1] --> J
+  J --> S[_site served on :4000]
+</pre></div>
+      <div class="panel"><h2>Where the newer site lives</h2><p>fabricjs.com today is built from the fabric.js repository itself (its Astro website for v6 and v7). This repository is the classic site with the v5-era tutorials many people still learn from; Sandbox-2 serves both, the new one through the fabric.js system on port 4321.</p></div>
+    </div>
+  </section>
+
+  <section data-panel="install" hidden><div id="install" class="stack"></div></section>
+</main>
+<p class="footer">fabricjs.com © the Fabric.js team, MIT licence. Content read from the checkout in Sandbox-2.</p>
+{{LIB}}
+{{LIVE}}
+<script>
+const CHECKS = {{CHECKS:fabricjs-site}};
+const SITE = {{JSON:interactive/data/fabricjs_site.json}};
+const FABRIC5 = {{TEXT:vendor/fabricjs-site/lib/fabric.js}};
+/* Each frame gets fabric 5.2.1, reports errors and its height to this page, and (for tutorials) a Try it button per code block. */
+const FRAME_JS = `window.onerror = function (m, s, l) { parent.postMessage({ fab: 'err', msg: String(m) + (l ? ' (line ' + l + ')' : '') }, '*'); };
+function height() { parent.postMessage({ fab: 'h', h: document.documentElement.scrollHeight }, '*'); }
+window.addEventListener('load', function () { height(); setTimeout(height, 600);
+  if (window.TRY) document.querySelectorAll('pre').forEach(function (p) { var t = p.textContent; if (!/fabric\\.|canvas/.test(t)) return;
+    var b = document.createElement('button'); b.textContent = 'Try it'; b.style.cssText = 'margin:4px 0 14px;font:13px sans-serif;padding:3px 10px;cursor:pointer';
+    b.onclick = function () { parent.postMessage({ fab: 'try', code: t }, '*'); }; p.after(b); }); });`;
+const CSS = 'body{margin:0;padding:14px 18px;font:15px/1.55 Helvetica,Arial,sans-serif;color:#222;background:#fff}pre{background:#f5f6f8;border-radius:6px;padding:10px 12px;overflow:auto;font:12.5px/1.5 Menlo,Consolas,monospace;white-space:pre-wrap}canvas{border:1px solid #d0d4da}img{max-width:100%}a{color:#2b5f9e}.container{max-width:900px}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 6px}';
+const doc = (body, tryIt) => `<!doctype html><html><head><meta charset="utf-8"><style>${CSS}</style><script>${FABRIC5}<\/script><script>${tryIt ? 'window.TRY=1;' : ''}${FRAME_JS}<\/script></head><body>${body}</body></html>`;
+const frames = { post: $('#post'), demo: $('#demo'), out: $('#out') };
+window.addEventListener('message', (e) => {
+  const d = e.data || {}, src = Object.entries(frames).find(([, f]) => f.contentWindow === e.source)?.[0]; if (!src) return;
+  if (d.fab === 'h') frames[src].style.height = Math.min(4000, Math.max(src === 'out' ? 440 : 700, d.h + 24)) + 'px';
+  if (d.fab === 'err') { const box = src === 'demo' ? $('#d-err') : src === 'out' ? $('#p-err') : null; if (box) box.textContent += d.msg + '\n'; }
+  if (d.fab === 'try') { $('#code').value = d.code.trim(); show('playground'); run(); }
+});
+
+/* ------------------------------------------------ tutorials and demos */
+const list = (box, items, cur, onPick, meta) => box.replaceChildren(...items.map((it, i) => el('button', { 'aria-current': String(i === cur), onclick: () => onPick(i) }, el('span', { html: it.title }), el('span', { class: 'd' }, meta(it)))));
+let pi = Math.max(0, SITE.posts.findIndex((p) => p.file.includes('intro-part-1'))), di = Math.max(0, SITE.demos.findIndex((d) => /ladybug/i.test(d.title)));
+const mdLite = (t) => t.split(/\n{2,}/).map((b) => /^```/.test(b) ? `<pre>${esc(b.replace(/^```\w*\n?|```$/g, ''))}</pre>` : /^#+\s/.test(b) ? `<h3>${esc(b.replace(/^#+\s/, ''))}</h3>` : `<p>${b}</p>`).join('\n');
+function post() {
+  const p = SITE.posts[pi]; list($('#posts'), SITE.posts, pi, (i) => { pi = i; post(); }, (x) => x.date);
+  $('#p-title').innerHTML = p.title; $('#p-date').textContent = p.file;
+  frames.post.srcdoc = doc(p.md ? mdLite(p.html) : p.html, true);
+}
+function demo() {
+  const d = SITE.demos[di]; list($('#demos'), SITE.demos, di, (i) => { di = i; demo(); }, (x) => x.file.slice(0, 10));
+  $('#d-title').innerHTML = d.title; $('#d-err').textContent = ''; frames.demo.srcdoc = doc(d.html, false);
+}
+$('#d-reload').onclick = demo;
+$('#skipped').textContent = `${SITE.skipped.length}: ${SITE.skipped.map((f) => f.replace(/^[\d-]+|\.html$/g, '')).join(', ')}`;
+
+/* ------------------------------------------------ playground */
+$('#code').value = `var canvas = new fabric.Canvas('c');
+
+var rect = new fabric.Rect({ left: 100, top: 100, fill: 'red', width: 80, height: 80, angle: 20 });
+var circle = new fabric.Circle({ radius: 45, fill: 'green', left: 300, top: 120 });
+var text = new fabric.IText('Hello, fabric 5.2.1', { left: 120, top: 280, fontFamily: 'Georgia' });
+canvas.add(rect, circle, text);
+
+rect.animate('angle', 380, { onChange: canvas.renderAll.bind(canvas), duration: 2000, easing: fabric.util.ease.easeOutBounce });
+canvas.on('object:modified', function (e) { console.log('modified', e.target.type); });`;
+function run() {
+  $('#p-err').textContent = '';
+  frames.out.srcdoc = doc(`<canvas id="c" width="640" height="400"></canvas><script>${$('#code').value.replace(/<\/script/gi, '<\\/script')}<\/script>`, false);
+}
+$('#run').onclick = run;
+$('#code').addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); run(); } });
+
+renderInstall($('#install'), CHECKS, {
+  setup: 'systems/fabricjs-site/setup.sh', serve: './start.sh fabricjs-site   # Jekyll, http://localhost:4000', test: 'python3 systems/fabricjs-site/test_fabricjs_site.py -v', port: 4000, ui: 'fabricjs.com (Jekyll)',
+  notes: ['The repository has no Gemfile; one with Jekyll 4.4 and rouge is added, installed with Bundler into .bundle', 'jekyll serve builds the posts, demos and API docs', 'The test opens the home page and a tutorial in a browser'],
+});
+const show = initTabs((n) => { if (n === 'tutorials' && !frames.post.srcdoc) post(); if (n === 'demos' && !frames.demo.srcdoc) demo(); if (n === 'playground' && !frames.out.srcdoc) run(); });
+</script>
