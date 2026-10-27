@@ -1,0 +1,113 @@
+<title>Skills Manager App</title>
+{{HEAD}}
+<style>
+  :root { --accent: #10916b; --accent-soft: #dcf3ea; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #3ccf9f; --accent-ink: #032a1d; --accent-soft: #12332a; } }
+  :root[data-theme="dark"] { --accent: #3ccf9f; --accent-ink: #032a1d; --accent-soft: #12332a; }
+  .appframe { width: 100%; height: 780px; border: 1px solid var(--line); border-radius: 12px; display: block; background: #0d0d10; }
+  @media (max-width: 700px) { .appframe { height: 680px; } }
+  .calls { font: 11.5px/1.6 var(--mono); background: var(--sunk); border-radius: 7px; padding: 8px 10px; max-height: 300px; overflow: auto; margin: 0; white-space: pre-wrap; }
+  .sim { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+  .sim .card { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--panel); display: flex; flex-direction: column; gap: 4px; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">SM</span><h1>Skills Manager App</h1><span class="tag">The app's own interface, built from its source, managing skills across 56 coding agents</span>
+      <span class="links"><a href="https://github.com/xingkongliang/skills-manager" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/skills-manager" target="_blank" rel="noopener">Install and test code</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="app">App</button><button data-tab="backend">What runs here</button><button data-tab="how">How it works</button><button data-tab="install">Install &amp; test</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">This is Skills Manager 1.43.0's real React interface, built from vendor/skills-manager/src with two changes (in-memory routing and inlined agent icons). Its Rust backend is replaced by a stand-in that answers the same Tauri commands from memory: the 56 agents from tool_adapters.rs, real SKILL.md files, presets and a project. Nothing here touches your disk; changes last until you reload.</p>
+
+  <section data-panel="app">
+    <iframe class="appframe" id="app" title="Skills Manager" sandbox="allow-scripts"></iframe>
+    <div class="row"><button class="btn small" id="reload">Reset the app</button><span class="note">Try: Library, open a skill and toggle agents on its card; Presets in the sidebar; an agent under Global Workspace; the Sandbox-2 project; Settings.</span></div>
+  </section>
+
+  <section data-panel="backend" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Answered from memory</h2><div class="sim" id="sim"></div></div>
+      <div class="panel"><header><h2 class="grow">Commands the app has sent</h2><button class="btn small" id="calls-refresh">Refresh</button></header><pre class="calls" id="calls"></pre>
+        <p class="note">Each line is one invoke() from the React app to what would be the Rust backend.</p></div>
+    </div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>The desktop app</h2>
+<pre class="mermaid">
+flowchart LR
+  UI[React UI in a Tauri webview] -->|invoke: 123 commands| RS[Rust core]
+  RS --> LIB[(central library: ~/.skills-manager/skills)]
+  RS --> DB[(SQLite: skills, targets, presets, projects, tags)]
+  RS --> AD[tool adapters: 56 agents and their skills folders]
+  AD -->|symlink or copy| AG[~/.claude/skills, ~/.codex/skills, ~/.cursor/skills ...]
+  RS --> GIT[git: installs, updates, backups]
+  CLI[skills-manager-cli] --> RS
+  AGT[Claude Code, Codex... via the manage-skills skill] --> CLI
+</pre></div>
+      <div class="panel"><h2>Deploying one skill</h2>
+<pre class="mermaid">
+sequenceDiagram
+  participant U as You
+  participant UI as Skill card
+  participant RS as Rust core
+  participant FS as Agent folder
+  U->>UI: click the Codex badge
+  UI->>RS: sync_skill_to_tool(skillId, "codex")
+  RS->>FS: symlink ~/.codex/skills/name to the library copy
+  RS-->>UI: target recorded (mode, status, synced_at)
+  UI->>RS: get_managed_skills
+  RS-->>UI: badges refresh
+</pre></div>
+    </div>
+  </section>
+
+  <section data-panel="install" hidden><div id="install" class="stack"></div></section>
+</main>
+<p class="footer">Skills Manager © xingkongliang, MIT licence. UI built from the source in Sandbox-2 (interactive/vendor/build_skills_manager_ui.sh).</p>
+{{LIB}}
+{{LIVE}}
+<script>
+const CHECKS = {{CHECKS:skills-manager}};
+const SMDATA_JSON = {{TEXT:interactive/data/skills_manager.json}};
+const BACKEND = {{TEXT:interactive/sm_backend.js}};
+const APP_JS = {{TEXT:interactive/vendor/skills-manager-ui/app.js}};
+const APP_CSS = {{TEXT:interactive/vendor/skills-manager-ui/app.css}};
+const safe = (s) => s.replace(/<\/script/gi, '<\\/script');
+/* localStorage can be blocked (private windows, cleared site data): the app needs one, so give it a memory-backed one then. */
+const STORAGE = `try { localStorage.setItem('__t', '1'); localStorage.removeItem('__t'); } catch (e) { const m = {}; Object.defineProperty(window, 'localStorage', { value: { getItem: (k) => (k in m ? m[k] : null), setItem: (k, v) => { m[k] = String(v); }, removeItem: (k) => { delete m[k]; }, clear: () => { for (const k in m) delete m[k]; }, key: (i) => Object.keys(m)[i] ?? null, get length() { return Object.keys(m).length; } } }); }`;
+function boot() {
+  const theme = document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  $('#app').srcdoc = `<!doctype html><html lang="en" class="${theme}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Skills Manager</title><style>${APP_CSS}</style>
+<script>${STORAGE}<\/script><script>const SMDATA = ${safe(SMDATA_JSON)};<\/script><script>${safe(BACKEND)}<\/script></head><body><div id="root"></div><script type="module">${safe(APP_JS)}<\/script></body></html>`;
+}
+$('#reload').onclick = boot;
+let lastCalls = [];
+window.addEventListener('message', (e) => { if (e.source === $('#app').contentWindow && e.data && e.data.sm === 'calls') { lastCalls = e.data.list || []; showCalls(); } });
+function calls() { $('#app').contentWindow?.postMessage({ sm: 'calls?' }, '*'); showCalls(); }
+function showCalls() {
+  const list = lastCalls;
+  const counts = {}; list.forEach((c) => { counts[c] = (counts[c] || 0) + 1; });
+  $('#calls').textContent = list.length ? Object.entries(counts).sort((a, b) => b[1] - a[1]).map(([c, n]) => `${String(n).padStart(4)}  ${c}`).join('\n') : 'Open the App tab first.';
+}
+$('#calls-refresh').onclick = calls;
+$('#sim').replaceChildren(...[
+  ['Agents', 'The 56 agents in src-tauri/src/core/tool_adapters.rs, with their skills folders. Ten are marked installed: Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode, Windsurf, Cline, Kiro and Goose.'],
+  ['Library', "8 real skills: skills-manager's own manage-skills and the 7 in claude-code-best-practice's .claude/skills, with their SKILL.md text, files and sources."],
+  ['Deployments', 'Toggling an agent on a skill records a symlink target in that agent folder, as sync_skill_to_tool does; Global Workspace lists what each agent has.'],
+  ['Presets and tags', 'Two presets to start with; create, edit, reorder, apply and switch them, and tag skills.'],
+  ['Projects', 'A Sandbox-2 project with project-local skills in Claude Code and Codex folders, in sync or project-only.'],
+  ['Offline here', 'Installing from Git, a folder or skills.sh, the marketplace, Git backups and moving the library need the desktop app; the UI shows the error it would show offline.'],
+].map(([t, d]) => el('div', { class: 'card' }, el('b', {}, t), el('span', { class: 'note' }, d))));
+
+renderInstall($('#install'), CHECKS, {
+  setup: 'systems/skills-manager/setup.sh', serve: './start.sh skills-manager   # the desktop app on an X display (noVNC on http://localhost:6080)', test: 'python3 systems/skills-manager/test_skills_manager.py -v', port: 6080, ui: 'desktop app (noVNC)',
+  notes: ['npm ci, then tauri build --no-bundle: the real desktop app, built from source', "With a temporary HOME: the CLI installs the repo's manage-skills skill into the library and lists the agents it detects", "Upstream's UI tests (npm test), then the desktop app started under Xvfb, loading the library"],
+});
+initTabs((n) => { if (n === 'app' && !$('#app').srcdoc) boot(); if (n === 'backend') calls(); });
+if (!$('#app').srcdoc && !$('[data-panel="app"]').hidden) boot();
+</script>
