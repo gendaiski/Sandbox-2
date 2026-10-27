@@ -19,6 +19,20 @@ declare -A REPOS=(
   [chunky]="GiovanniPasq/chunky"
   [pake]="tw93/Pake"
   [flowise]="FlowiseAI/Flowise"
+  [opus-videos]="yihui-dev/awesome-opus5-5-videos"
+  [loopcut]="Samffprice/loopcut"
+  [claude-code-best-practice]="shanraisshan/claude-code-best-practice"
+  [lobehub]="lobehub/lobehub"
+  [skills-manager]="xingkongliang/skills-manager"
+  [izwi]="izwi-ai/izwi"
+  [fabricjs]="fabricjs/fabric.js"
+  [fabricjs-site]="fabricjs/fabricjs.com"
+  [gods-eye-view]="bilawalsidhu/gods-eye-view"
+  [camel]="camel-ai/camel"
+  [autogpt]="Significant-Gravitas/AutoGPT"
+  [continue]="continuedev/continue"
+  [dspy]="stanfordnlp/dspy"
+  [metagpt]="FoundationAgents/MetaGPT"
 )
 
 names=("$@")

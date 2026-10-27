@@ -1,0 +1,6 @@
+# Used only when ghcr.io/lobehub/lobehub-gateway cannot be pulled: agent runs then
+# execute in the browser (LobeHub's mode without the gateway) instead of on the server.
+services:
+  lobe:
+    environment:
+      - 'ENABLE_AGENT_GATEWAY=0'

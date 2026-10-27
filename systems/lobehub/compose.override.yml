@@ -1,0 +1,8 @@
+# Sandbox-2 changes on top of LobeHub's docker-compose/deploy/docker-compose.yml:
+# Postgres and Redis stay on the Compose network instead of taking host ports
+# 5432/6379, which other systems here (Langfuse) also use.
+services:
+  postgresql:
+    ports: !reset []
+  redis:
+    ports: !reset []

@@ -20,3 +20,10 @@ bench/interactive/*.tmp
 systems/flowise/.npm-global/
 systems/flowise/data/
 systems/flowise/app/
+.tools/
+systems/*/.deploy/
+systems/autogpt/.env
+systems/*/.nginx-ipv4.conf
+systems/*/.tiktoken-cache/
+systems/*/.bundle/
+systems/fabricjs-site/Gemfile.lock

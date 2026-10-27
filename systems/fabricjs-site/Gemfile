@@ -1,0 +1,5 @@
+# What fabricjs/fabricjs.com needs to run with `jekyll serve` (its README): Jekyll
+# and the rouge highlighter named in its _config.yml.
+source "https://rubygems.org"
+gem "jekyll", "~> 4.4"
+gem "rouge"
