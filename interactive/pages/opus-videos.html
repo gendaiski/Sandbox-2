@@ -1,0 +1,172 @@
+<title>Opus 5.5 Video Prompts</title>
+{{HEAD}}
+<style>
+  :root { --accent: #6d28d9; --accent-soft: #ede5fd; --motion: #d9480f; --three: #1c7ed6; --explainer: #2b8a3e; --interactive: #c2255c; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #b197fc; --accent-ink: #1a0b3d; --accent-soft: #2a2145; --motion: #ff922b; --three: #4dabf7; --explainer: #69db7c; --interactive: #f783ac; } }
+  :root[data-theme="dark"] { --accent: #b197fc; --accent-ink: #1a0b3d; --accent-soft: #2a2145; --motion: #ff922b; --three: #4dabf7; --explainer: #69db7c; --interactive: #f783ac; }
+  .filters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .filters .btn[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .card { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); display: flex; flex-direction: column; overflow: hidden; cursor: pointer; text-align: left; padding: 0; }
+  .card:hover { border-color: var(--accent); }
+  .card .band { height: 6px; }
+  .card .in { padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+  .card .who { font-weight: 700; } .card p { margin: 0; font-size: 13px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; } .tags span { font: 11px var(--mono); background: var(--sunk); border-radius: 4px; padding: 0 5px; }
+  .c-motion { background: var(--motion); } .c-3d { background: var(--three); } .c-explainer { background: var(--explainer); } .c-interactive { background: var(--interactive); }
+  .prompt { white-space: pre-wrap; font: 13px/1.6 var(--mono); background: var(--sunk); border-radius: 8px; padding: 12px; margin: 0; max-height: 360px; overflow: auto; }
+  .stage { width: 100%; aspect-ratio: 16 / 9; max-width: 100%; border: 1px solid var(--line); border-radius: 10px; background: #000; display: block; }
+  .codeout { font: 11.5px/1.5 var(--mono); max-height: 300px; }
+  svg.chart { width: 100%; height: auto; display: block; }
+  #ch-time { max-width: 760px; margin: 0 auto; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">O5</span><h1>Opus 5.5 Video Prompts</h1><span class="tag">703 prompts people used to make videos with Claude Opus 5.5, and a way to remake one here</span>
+      <span class="links"><a href="https://github.com/yihui-dev/awesome-opus5-5-videos" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/opus-videos" target="_blank" rel="noopener">Install and test code</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="gallery">Prompts</button><button data-tab="remake">Remake</button><button data-tab="stats">The collection</button><button data-tab="how">How it works</button><button data-tab="install">Install &amp; test</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">Every prompt comes from data/videos.json in yihui-dev/awesome-opus5-5-videos. Video posters live on another site this page cannot load, so each card links to the creator's original post and to Skillry, which plays the original next to a remake.</p>
+
+  <section data-panel="gallery">
+    <div class="panel">
+      <div class="filters" id="cats"></div>
+      <div class="row"><input type="search" id="q" class="grow" placeholder="Search prompts, authors and tags" aria-label="Search prompts">
+        <label class="field inline">Tech <select id="tag"><option value="">any</option></select></label>
+        <label class="field inline"><input type="checkbox" id="remade"> has a remake on Skillry</label>
+        <label class="field inline">Sort <select id="sort"><option value="added">newest</option><option value="author">author</option><option value="len">longest prompt</option></select></label></div>
+      <span class="note" id="count"></span>
+    </div>
+    <div class="gallery" id="gallery"></div>
+    <div class="row" style="justify-content:center"><button class="btn" id="more">Show more</button></div>
+  </section>
+
+  <section data-panel="remake" hidden>
+    <div class="grid cols-side-r">
+      <div class="stack">
+        <div class="panel"><header><h2 class="grow" id="r-title">Pick a prompt</h2><a id="r-post" target="_blank" rel="noopener">Original post</a><a id="r-sky" target="_blank" rel="noopener">Skillry</a></header>
+          <div class="tags" id="r-tags"></div>
+          <label class="field">Prompt (edit it if you like) <textarea id="r-prompt" rows="7"></textarea></label>
+          <div class="row"><button class="btn primary ai-only" id="r-run">Remake with Claude</button><button class="btn small" id="r-stop" hidden>Stop</button><button class="btn small" id="r-random">Random prompt</button><span class="status" id="r-status"></span></div>
+          <p class="note ai-off">Remaking needs this page open in Claude. Its result runs in a sandboxed frame below.</p>
+          <p class="note">Sends the same instruction as Sandbox-2's remake.py: one complete HTML document, inline CSS and JavaScript, libraries only from a CDN such as cdnjs. It asks for the most capable model tier, so a remake can take a few minutes.</p></div>
+        <iframe class="stage" id="stage" sandbox="allow-scripts" title="Remake preview"></iframe>
+        <div class="row"><button class="btn small" id="r-replay" disabled>Run again</button><button class="btn small" id="r-copy" disabled>Copy HTML</button><span class="note" id="r-size"></span></div>
+      </div>
+      <div class="panel"><h2>Code as it streams</h2><pre class="code codeout" id="r-code">No remake yet.</pre></div>
+    </div>
+  </section>
+
+  <section data-panel="stats" hidden>
+    <div class="kpis" id="kpis"></div>
+    <div class="grid cols-2">
+      <div class="panel"><h2>By category</h2><svg class="chart" id="ch-cat"></svg></div>
+      <div class="panel"><h2>Most used tech tags</h2><svg class="chart" id="ch-tag"></svg></div>
+    </div>
+    <div class="panel"><h2>Prompts added per week</h2><svg class="chart" id="ch-time"></svg></div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>The repository</h2>
+<pre class="mermaid">
+flowchart LR
+  X[Posts on X with an Opus 5.5 video] --> D[(data/videos.json: 703 entries)]
+  D --> P[prompts/slug.md: one page per prompt]
+  D --> R[README: 100 highlighted, 418 with remakes]
+  R --> S[Skillry: original and live remake side by side]
+</pre></div>
+      <div class="panel"><h2>In Sandbox-2</h2>
+<pre class="mermaid">
+flowchart LR
+  D[(videos.json)] --> B[build_site.py: README and 703 pages as GitHub renders them]
+  B --> SV[serve.sh: http://localhost:8022]
+  D --> RM[remake.py: prompt to Claude, one HTML document back]
+  RM --> O[(remakes/slug.html, linked from its page)]
+</pre></div>
+    </div>
+  </section>
+
+  <section data-panel="install" hidden><div id="install" class="stack"></div></section>
+</main>
+<p class="footer">Prompts © their authors, collected by yihui-dev/awesome-opus5-5-videos (CC0 data, see the repository licence). Read from the checkout in Sandbox-2.</p>
+{{LIB}}
+{{LIVE}}
+{{AI}}
+<script>
+const CHECKS = {{CHECKS:opus-videos}};
+const V = {{JSON:vendor/opus-videos/data/videos.json}};
+const CAT = { motion: 'Motion graphics', '3d': '3D scenes', explainer: 'Explainers', interactive: 'Games & interactive' };
+const SYSTEM = 'You write self-contained animations and interactive pieces as code. Answer with one complete HTML document (inline CSS and JavaScript; libraries only from a CDN such as cdnjs) that runs when opened in a browser, and nothing else.';
+let cat = '', shown = 60;
+const tagCount = {}; V.forEach((v) => v.tech_tags.forEach((t) => { tagCount[t] = (tagCount[t] || 0) + 1; }));
+$('#tag').append(...Object.entries(tagCount).sort((a, b) => b[1] - a[1]).map(([t, n]) => el('option', { value: t }, `${t} (${n})`)));
+$('#cats').replaceChildren(el('button', { class: 'btn small', 'aria-pressed': 'true', onclick: (e) => pick('', e.target) }, `All (${V.length})`),
+  ...Object.entries(CAT).map(([k, n]) => el('button', { class: 'btn small', 'aria-pressed': 'false', onclick: (e) => pick(k, e.target) }, `${n} (${V.filter((v) => v.category === k).length})`)));
+function pick(k, b) { cat = k; shown = 60; $$('#cats .btn').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); gallery(); }
+function list() {
+  const q = $('#q').value.toLowerCase(), tag = $('#tag').value, rem = $('#remade').checked, sort = $('#sort').value;
+  const out = V.filter((v) => (!cat || v.category === cat) && (!tag || v.tech_tags.includes(tag)) && (!rem || v.has_remake) && (!q || (v.prompt + ' ' + v.author + ' ' + v.tech_tags.join(' ')).toLowerCase().includes(q)));
+  return out.sort(sort === 'author' ? (a, b) => a.author.localeCompare(b.author) : sort === 'len' ? (a, b) => b.prompt.length - a.prompt.length : (a, b) => b.added.localeCompare(a.added));
+}
+function gallery() {
+  const l = list();
+  $('#count').textContent = `${fmt(l.length)} prompt${l.length === 1 ? '' : 's'}`;
+  $('#gallery').replaceChildren(...l.slice(0, shown).map((v) => el('button', { class: 'card', onclick: () => openPrompt(v) },
+    el('span', { class: 'band c-' + v.category }), el('span', { class: 'in' },
+      el('span', { class: 'row' }, el('span', { class: 'who grow' }, '@' + v.author), el('span', { class: 'note' }, v.added)),
+      el('span', { class: 'tags' }, el('span', {}, CAT[v.category]), ...v.tech_tags.map((t) => el('span', {}, t)), v.has_remake ? el('span', {}, 'remade') : null, v.prompt_partial ? el('span', {}, 'partial prompt') : null),
+      el('p', {}, v.prompt)))));
+  $('#more').hidden = l.length <= shown;
+}
+$('#more').onclick = () => { shown += 60; gallery(); };
+['#q', '#tag', '#remade', '#sort'].forEach((s) => $(s).addEventListener('input', () => { shown = 60; gallery(); }));
+
+/* ------------------------------------------------ remake */
+let current = null, html = '';
+function openPrompt(v) {
+  current = v; $('#r-title').textContent = `@${v.author} · ${CAT[v.category]}`; $('#r-prompt').value = v.prompt;
+  $('#r-post').href = v.post_url; $('#r-sky').href = v.skillry_url + '?utm_source=sandbox-2';
+  $('#r-tags').replaceChildren(...v.tech_tags.map((t) => el('span', {}, t)), v.prompt_partial ? el('span', {}, 'the creator shared only part of the prompt') : null);
+  if (showTab) showTab('remake');
+}
+$('#r-random').onclick = () => { const pool = V.filter((v) => !v.prompt_partial && v.prompt.length < 700); openPrompt(pool[Math.floor(Math.random() * pool.length)]); };
+const extract = (t) => { const m = t.match(/```html\s*([\s\S]*?)(```|$)/i); const s = m ? m[1] : t; const i = s.search(/<!doctype html|<html/i); return (i >= 0 ? s.slice(i) : s).trim(); };
+function play() { $('#stage').srcdoc = html; }
+$('#r-run').onclick = async () => {
+  const prompt = $('#r-prompt').value.trim(); if (!prompt) return;
+  $('#r-code').textContent = ''; $('#r-replay').disabled = $('#r-copy').disabled = true;
+  try {
+    const r = await AI.run(`${SYSTEM}\n\nMake this as a 16:9 piece that fits its window:\n\n${prompt}`, { btn: $('#r-run'), stop: $('#r-stop'), status: $('#r-status'), tier: 'complex', cache: false,
+      onText: ({ text }) => { const c = $('#r-code'); c.textContent = text.slice(-6000); c.scrollTop = c.scrollHeight; } });
+    html = extract(r.text);
+    if (!/<\/html>|<\/body>|<script/i.test(html)) { $('#r-status').textContent = 'The answer was not a complete HTML document; try again.'; return; }
+    play(); $('#r-replay').disabled = $('#r-copy').disabled = false;
+    $('#r-size').textContent = `${fmt(html.length)} characters, written on the ${r.modelTierApplied} tier${r.truncated ? ' (cut short: the piece may be incomplete)' : ''}`;
+  } catch { /* status explains */ }
+};
+$('#r-replay').onclick = play;
+$('#r-copy').onclick = () => copyText(html, 'HTML copied');
+
+/* ------------------------------------------------ the collection */
+function stats() {
+  $('#kpis').replaceChildren(...[[V.length, 'prompts'], [V.filter((v) => v.has_remake).length, 'with a remake on Skillry'], [new Set(V.map((v) => v.author)).size, 'creators'], [V.filter((v) => v.prompt_partial).length, 'partial prompts'], [Math.round(V.reduce((a, v) => a + v.prompt.length, 0) / V.length), 'characters per prompt on average']]
+    .map(([n, l]) => el('div', { class: 'kpi' }, el('b', {}, fmt(n)), el('span', {}, l))));
+  barChart($('#ch-cat'), Object.entries(CAT).map(([k, n]) => ({ label: n, value: V.filter((v) => v.category === k).length, color: `var(--${k === '3d' ? 'three' : k})` })), { fmtv: (v) => fmt(v) });
+  barChart($('#ch-tag'), Object.entries(tagCount).sort((a, b) => b[1] - a[1]).slice(0, 12).map(([t, n]) => ({ label: t, value: n })), { fmtv: (v) => fmt(v) });
+  const weeks = {}; V.forEach((v) => { const d = new Date(v.added + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7)); const k = d.toISOString().slice(0, 10); weeks[k] = (weeks[k] || 0) + 1; });
+  const ks = Object.keys(weeks).sort(); areaChart($('#ch-time'), ks.map((k) => weeks[k]), { labels: ks.map((k) => k.slice(5)), h: 150 });
+}
+
+renderInstall($('#install'), CHECKS, {
+  setup: 'systems/opus-videos/setup.sh', serve: './start.sh opus-videos   # the README and 703 prompt pages, http://localhost:8022', test: 'python3 systems/opus-videos/test_opus_videos.py -v', port: 8022, ui: 'prompt site',
+  notes: ['build_site.py renders the README and every prompt page the way GitHub shows them, with links between them kept local', 'remake.py sends one prompt to Claude and saves the HTML it writes, linked from that prompt page; it needs ANTHROPIC_API_KEY', 'The test checks the data against the pages and the site in a browser'],
+});
+let showTab = null;  // set once the tabs exist; openPrompt switches tabs only after that
+showTab = initTabs((n) => { if (n === 'stats') stats(); if (n === 'remake' && !current) $('#r-random').click(); });
+gallery();
+</script>
