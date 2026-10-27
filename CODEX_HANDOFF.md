@@ -17,7 +17,7 @@ git checkout -b codex/systems-next
 
 ## How the repo is laid out
 
-- `systems/<id>/setup.sh` installs one system. It calls `scripts/clone_all.sh <id>` to clone the upstream repo into `vendor/<id>` (gitignored; a shallow clone of the default branch), then builds its own venv, node_modules, Docker images or binaries.
+- `systems/<id>/setup.sh` installs one system. It calls `scripts/clone_all.sh <id>` to clone the upstream repo into `vendor/<id>` (gitignored) at the commit pinned in `scripts/upstream.lock`, then builds its own venv, node_modules, Docker images or binaries.
 - `systems/<id>/serve.sh` starts that system's real UI. `./start.sh <id>` runs it in the background along with the portal on :8080. Logs go to `.run/logs/<id>.log`, and `./stop.sh` stops everything.
 - `systems/<id>/test_*.py` is a standalone test run with `python3 systems/<id>/test_<id>.py -v`. It writes `systems/<id>/reports/latest.json`.
 - `.github/workflows/systems.yml` runs one CI job per system. A bench data job then collects `bench/systems.json` and `bench/checks.json`.
@@ -90,7 +90,7 @@ The bench table with all systems is at https://claude.ai/artifact/VXzNk7C8qtwaYU
 2. **Keep CI green:** run `python3 systems/<id>/test_<id>.py -v` locally before pushing, then watch the `systems.yml` jobs.
 3. **Deepen the tests where they're thin.** LobeHub, AutoGPT, CAMEL, MetaGPT, DSPy and fabric.js have 3 checks each. Add end-to-end checks against the real UI or API, for example a LobeHub chat round-trip with a fake provider, or an AutoGPT graph run through its REST API.
 4. **Live-model checks:** some skips name the key they need (ANTHROPIC_API_KEY, OPENAI_API_KEY). Add these as CI secrets only if the owner asks.
-5. **Pin what drifts:** `scripts/clone_all.sh` clones each upstream repo at its default branch. Pin each one to the commit that last passed in CI, so that a change upstream can't turn CI red.
+5. **Move the pins on purpose:** each upstream repo is pinned in `scripts/upstream.lock` to the commit CI run 40523798841 cloned. To try newer upstream code, run `UPSTREAM_LATEST=1 scripts/clone_all.sh <id>` and the system's test. Once it passes in CI, record the new commit with `scripts/clone_all.sh --pin <id>` and commit the lock.
 
 Rules of the road:
 - Never skip, disable or quarantine a test to get green.

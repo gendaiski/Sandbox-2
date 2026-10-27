@@ -91,7 +91,16 @@ jobs:
         with: { ruby-version: "3.3" }
       - name: Browser for the UI checks
         if: matrix.ui
-        run: npm install -g playwright@1.56.1 && npx -y playwright@1.56.1 install --with-deps chromium
+        timeout-minutes: 35
+        # A stalled apt or browser download once held this step until the job's own timeout (run 40, lobehub):
+        # each attempt gets 10 minutes, then a retry.
+        run: |
+          npm install -g playwright@1.56.1
+          for attempt in 1 2 3; do
+            timeout 600 npx -y playwright@1.56.1 install --with-deps chromium && exit 0
+            echo "browser install attempt $attempt failed or stalled"; sleep 15
+          done
+          exit 1
       - name: Desktop apps' display, screenshots and speech
         if: contains(fromJSON('["skills-manager","loopcut","izwi"]'), matrix.system)
         run: sudo apt-get update -q && sudo apt-get install -y -q xvfb imagemagick espeak-ng mesa-utils libgl1-mesa-dri

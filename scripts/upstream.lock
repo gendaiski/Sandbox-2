@@ -1,0 +1,31 @@
+# Upstream commits scripts/clone_all.sh checks out: "<system> <commit>", one per line.
+# Each is the default-branch commit CI run 40523798841 cloned (2026-10-27, 14:45 UTC).
+# Clone the newest commits instead with UPSTREAM_LATEST=1 scripts/clone_all.sh [name ...];
+# when they pass in CI, write them here with: scripts/clone_all.sh --pin [name ...]
+appwrite 519bafa400ba7b6d827a3410c6066b93a0128d5c
+autogpt c151e200c993a778c60d7520b5448855b0571ef7
+camel 64b9a613d1c3f4606be64aa6b66ebca437e50cda
+chunckerflow 32c6c4c17ba03dad918ae99f6324f060228d7a2e
+chunking-methods 0cf83a9c642d82bb4db86576d916d8ea2114f78b
+chunknorris fab1c49cd44adb45eaf96ec157ade3424e2d5d53
+chunky 558c23ba7b9e57931e062346d506c0e0e7bc8e04
+claude-code-best-practice 64bcf8a97c26dcec6713f0b06e345274c16bf3db
+continue 5522c6f44ca0ac3528b37244818fbfa39b5af470
+dspy b8588f10fd7c2af03cba9f45f002b8442bfcbde4
+fabricjs 93f60bb02467ee9a5653e89fc7f8f314994874e0
+fabricjs-site 5f86131a3c584d66dc439980a52015bad9c9eb5e
+flowise 9291856d1ea4a4ceea9f8fef8ce14f4f6c81e8eb
+gods-eye-view 15de9d738c4a85be1a96726c6114181caef87eeb
+izwi f7c37893db1fab9eda486e667e24bc50b92caa81
+langfuse ca501fe595702b3daa8d650d2ef4dc51f228bd15
+lobehub 8db8038774fc808296f552f1352f77dfc6d01b4c
+loopcut 43c0e8fa0e7b331181f5ca9b724c9f644fc759c5
+metagpt 11cdf466d042aece04fc6cfd13b28e1a70341b1f
+openflow cc0426fc44b202ac49f73ffcac54fc3abfafd606
+opus-videos 92aee2f586ac0715cb3cbcb6384834f98a33383d
+oxr c1a1dcb312ee9f691404f127785510453c0d9350
+pake d51e8fddf91c7e03e5d78328152249fc42965acc
+pdfstract 4aca2862d5fe9def4941c3ba4f2bdb082efc5053
+pocketbase 7f2773ec234b62d0b80ca47c508397cb3d0da3ea
+rag-anything 5fec59b62dc7e2840e335bb13b9579907d50d79f
+skills-manager d523742bd2c39daf52cc1741977bb2ca2f498807
