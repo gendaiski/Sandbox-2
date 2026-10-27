@@ -7,12 +7,12 @@ const { chromium } = require('playwright');
   const shots = process.env.SHOTS || '.';
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-  await page.goto(`${base}/console/login`, { waitUntil: 'networkidle' });
+  await page.goto(`${base}/`, { waitUntil: 'networkidle' });   // the Console redirects to its sign-in page
   await page.screenshot({ path: `${shots}/login.png` });
   await page.fill('input[type=email]', email);
   await page.fill('input[type=password]', password);
   await page.getByRole('button', { name: /sign in|log in|login/i }).first().click();
-  await page.waitForURL((u) => !/login/.test(u.pathname), { timeout: 60000 });
+  await page.waitForURL((u) => !/sign-in|login/.test(u.pathname), { timeout: 60000 });
   await page.waitForTimeout(5000);
   await page.screenshot({ path: `${shots}/console.png` });
   const sawProject = await page.getByText(project).first().isVisible().catch(() => false);

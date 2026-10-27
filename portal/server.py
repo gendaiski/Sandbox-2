@@ -99,7 +99,7 @@ SYSTEMS = [
     {"id": "opus-videos", "name": "Awesome Opus 5.5 Videos", "port": 8022, "health": "/",
      "what": "703 prompts for animations Claude Opus 5.5 wrote as code; remake one with systems/opus-videos/remake.py.",
      "upstream": "https://github.com/yihui-dev/awesome-opus5-5-videos"},
-    {"id": "appwrite", "name": "Appwrite Console", "port": 8096, "health": "/v1/health/version", "path": "/console",
+    {"id": "appwrite", "name": "Appwrite Console", "port": 8096, "health": "/v1/health/version",
      "what": "Self-hosted backend: auth, databases, storage, functions, messaging and realtime, run from its Console.",
      "note": "Sign up on first visit: the first account owns the Console.", "upstream": "https://github.com/appwrite/appwrite"},
     {"id": "pocketbase", "name": "PocketBase", "port": 8095, "health": "/api/health", "path": "/_/",

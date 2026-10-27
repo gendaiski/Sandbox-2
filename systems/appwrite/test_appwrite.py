@@ -39,14 +39,24 @@ def api(method: str, path: str, body=None, project="console", key=None, extra=No
                                  data=json.dumps(body).encode() if body is not None else None)
     try:
         with opener.open(req, timeout=60) as r:
-            return r.status, json.loads(r.read() or b"{}")
+            status, raw = r.status, r.read()
     except urllib.error.HTTPError as e:
-        return e.code, json.loads(e.read() or b"{}")
+        status, raw = e.code, e.read()
+    except (urllib.error.URLError, OSError) as e:
+        return 0, {"message": str(e)}
+    try:
+        return status, json.loads(raw or b"{}")
+    except ValueError:   # e.g. Traefik's plain-text 404 while Appwrite starts
+        return status, {"message": raw[:200].decode(errors="replace")}
 
 
 with Served("appwrite", f"{URL}/v1/health/version", timeout=900):
     with h.check("API up: health and version") as c:
+        end = time.time() + 900   # Traefik answers before Appwrite itself is ready
         status, ver = api("GET", "/v1/health/version")
+        while status != 200 and time.time() < end:
+            time.sleep(5)
+            status, ver = api("GET", "/v1/health/version")
         c.note(f"Appwrite {ver.get('version')}")
         c.expect(status == 200 and ver.get("version"), f"health/version HTTP {status}")
 
@@ -109,6 +119,6 @@ with Served("appwrite", f"{URL}/v1/health/version", timeout=900):
         c.expect(run.returncode == 0, f"ui_check: {run.stderr[-300:]}")
         found = json.loads(run.stdout.strip().splitlines()[-1])
         c.note(json.dumps(found))
-        c.expect("/console" in found["url"], "signed in to the Console")
+        c.expect(not any(x in found["url"] for x in ("/sign-in", "/login")), "signed in to the Console")
 
 sys.exit(h.finish())
