@@ -27,13 +27,17 @@ const { chromium } = require('playwright');
     (els) => els.map((e) => e.getAttribute('aria-label') || '').filter(Boolean));
   const continueTab = page.locator('.activitybar [aria-label*="Continue"]').first();
   const found = (await continueTab.count()) > 0;
+  let paletteItems = [];
   if (found) {
     await continueTab.click();
   } else {
     // VS Code generates "<view>: Focus on <view> View" for every contributed view; open it from the palette.
     await page.keyboard.press('F1');
     await page.waitForTimeout(1000);
-    await page.keyboard.type('Continue: Focus on Continue View');
+    await page.keyboard.type('Continue');
+    await page.waitForTimeout(2000);
+    paletteItems = await page.locator('.quick-input-list .monaco-list-row').allInnerTexts();
+    await page.keyboard.type(': Focus on Continue View');
     await page.waitForTimeout(1500);
     await page.keyboard.press('Enter');
   }
@@ -44,6 +48,17 @@ const { chromium } = require('playwright');
   }
   await page.waitForTimeout(4000);
   await page.screenshot({ path: `${shots}/continue.png` });
-  console.log(JSON.stringify({ trusted, activityBar: items, continueTab: found, webviews, title: await page.title(), consoleErrors: consoleErrors.slice(0, 8) }));
+  // How VS Code itself sees the extension: its entry in the Extensions view (enabled, disabled, incompatible...).
+  let installed = [];
+  if (!webviews) {
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Control+Shift+X');
+    await page.waitForTimeout(3000);
+    await page.keyboard.type('@installed');
+    await page.waitForTimeout(4000);
+    installed = await page.locator('.extensions-viewlet .monaco-list-row').allInnerTexts();
+    await page.screenshot({ path: `${shots}/extensions.png` });
+  }
+  console.log(JSON.stringify({ trusted, activityBar: items, continueTab: found, webviews, paletteItems: paletteItems.slice(0, 8), installed: installed.map((t) => t.replace(/\s+/g, ' ').slice(0, 200)), title: await page.title(), consoleErrors: consoleErrors.slice(0, 8) }));
   await browser.close();
 })().catch((e) => { console.error(e.message); process.exit(1); });

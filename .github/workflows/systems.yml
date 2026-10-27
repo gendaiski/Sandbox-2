@@ -136,6 +136,8 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         if: always()
+        # The report is a by-product: a storage timeout must not fail a job whose tests passed.
+        continue-on-error: true
         with:
           name: report-${{ matrix.system }}${{ (matrix.setup == '--full') && '-full' || '' }}
           path: |

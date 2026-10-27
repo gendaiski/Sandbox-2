@@ -11,6 +11,7 @@ scripted end-to-end run with workers), then starts the app on an X display
 """
 
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -42,9 +43,16 @@ for script in HARNESS:
     with h.check(f"headless harness: {script}") as c:
         path = SRC / "loopcut" / "harness" / script
         path.exists() or c.skip(f"{script} not in this checkout")
-        env = {"LOOPCUT_BLENDER": str(BIN)}
-        sh(c, [str(BIN), "-b", "--factory-startup", "--python-exit-code", "1", "--python", str(path)],
-           cwd=SRC, timeout=900, tail=400, env=env)
+        run = subprocess.run([str(BIN), "-b", "--factory-startup", "--python-exit-code", "1", "--python", str(path)],
+                             cwd=SRC, capture_output=True, text=True, timeout=900,
+                             env={**os.environ, "LOOPCUT_BLENDER": str(BIN)})
+        out = (run.stdout + run.stderr).strip()
+        c.note(out[-400:])
+        if run.returncode != 0:
+            # The scripts print one "FAIL <name>: detail" line per failed assertion; the tail rarely holds it.
+            failed = [line for line in out.splitlines() if re.match(r"^(\w+ )?FAIL\b", line.strip())]
+            c.note("failed: " + " | ".join(failed[:20]))
+        c.expect(run.returncode == 0, f"{script} exited {run.returncode}")
 
 with h.check("app starts with the Loopcut panel on an X display") as c:
     shots = HERE / "reports" / "shots"

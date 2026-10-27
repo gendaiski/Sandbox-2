@@ -60,7 +60,7 @@ with Served("continue", "http://127.0.0.1:8443/healthz", timeout=180):
                    env={"SHOTS": str(HERE / "reports" / "shots")}, timeout=400)
         c.expect(run.returncode == 0, f"ui_check: {run.stderr[-300:]}")
         found = json.loads(run.stdout.strip().splitlines()[-1])
-        c.note(json.dumps(found)[:400])
+        c.note(json.dumps(found)[:1500])
         c.note("opened from the " + ("activity bar" if found["continueTab"] else "command palette"))
         # What code-server itself says about the extension, kept in the report whatever happens.
         data = Path.home() / ".local/share/code-server"
