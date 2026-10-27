@@ -8,6 +8,8 @@ const { chromium } = require('playwright');
   const shots = process.env.SHOTS || '.';
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const consoleErrors = [];
+  page.on('console', (m) => { if (m.type() === 'error') consoleErrors.push(m.text().slice(0, 200)); });
   await page.goto(url, { waitUntil: 'domcontentloaded' });
   if (await page.locator('input[type=password]').count()) {
     await page.fill('input[type=password]', password);
@@ -42,6 +44,6 @@ const { chromium } = require('playwright');
   }
   await page.waitForTimeout(4000);
   await page.screenshot({ path: `${shots}/continue.png` });
-  console.log(JSON.stringify({ trusted, activityBar: items, continueTab: found, webviews, title: await page.title() }));
+  console.log(JSON.stringify({ trusted, activityBar: items, continueTab: found, webviews, title: await page.title(), consoleErrors: consoleErrors.slice(0, 8) }));
   await browser.close();
 })().catch((e) => { console.error(e.message); process.exit(1); });

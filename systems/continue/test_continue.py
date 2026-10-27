@@ -62,10 +62,16 @@ with Served("continue", "http://127.0.0.1:8443/healthz", timeout=180):
         found = json.loads(run.stdout.strip().splitlines()[-1])
         c.note(json.dumps(found)[:400])
         c.note("opened from the " + ("activity bar" if found["continueTab"] else "command palette"))
+        # What code-server itself says about the extension, kept in the report whatever happens.
+        data = Path.home() / ".local/share/code-server"
+        logs = sorted((data / "logs").glob("**/*.log"))
+        lines = [f"{log.name}: {line.strip()[:220]}" for log in logs for line in log.read_text(errors="replace").splitlines()
+                 if "continue" in line.lower()]
+        c.note(f"{len(logs)} code-server logs; lines about Continue: " + (" | ".join(lines[-12:]) or "none"))
+        registry = data / "extensions" / "extensions.json"
+        c.note("extensions.json: " + (registry.read_text()[:400] if registry.exists() else "missing"))
+        activated = any("activat" in line.lower() for line in lines)
         c.expect(found["webviews"] >= 1, "the Continue GUI webview loaded")
-        logs = sorted((Path.home() / ".local/share/code-server/logs").glob("*/**/*exthost*.log"))
-        activated = any("continue.continue" in log.read_text(errors="replace").lower() for log in logs)
-        c.note(f"extension host logs: {len(logs)}; Continue activated: {activated}")
         c.expect(activated, "Continue activated in the extension host")
 
 sys.exit(h.finish())
