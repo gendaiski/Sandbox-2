@@ -1,0 +1,306 @@
+<title>Appwrite Console</title>
+{{HEAD}}
+<style>
+  :root { --accent: #e0245e; --accent-soft: #fde4ec; --side: #f7f7f9; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #fd6a95; --accent-ink: #2e0614; --accent-soft: #3d1825; --side: #18191d; } }
+  :root[data-theme="dark"] { --accent: #fd6a95; --accent-ink: #2e0614; --accent-soft: #3d1825; --side: #18191d; }
+  .console { display: grid; grid-template-columns: 220px minmax(0, 1fr); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--panel); }
+  @media (max-width: 760px) { .console { grid-template-columns: minmax(0, 1fr); } .nav { border-right: 0 !important; border-bottom: 1px solid var(--line); } }
+  .nav { background: var(--side); border-right: 1px solid var(--line); padding: 10px 8px; display: flex; flex-direction: column; gap: 2px; }
+  .nav .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding: 8px 8px 4px; }
+  .nav button { display: flex; gap: 8px; align-items: center; padding: 6px 9px; border-radius: 7px; border: 0; background: none; cursor: pointer; text-align: left; font-size: 13.5px; }
+  .nav button[aria-current="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .nav .id { font: 10.5px var(--mono); color: var(--muted); margin-left: auto; }
+  .main { padding: 14px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .subtabs { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
+  .subtabs button { border: 0; background: none; padding: 7px 12px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; }
+  .subtabs button[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+  .perm { font: 11.5px var(--mono); background: var(--sunk); border-radius: 4px; padding: 0 5px; display: inline-block; margin: 1px 3px 1px 0; }
+  .clause { display: grid; grid-template-columns: 170px 140px minmax(0, 1fr) 32px; gap: 6px; align-items: center; }
+  @media (max-width: 760px) { .clause { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+  .form { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px 12px; }
+  .ep { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 8px; align-items: start; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .ep > div { min-width: 0; } .ep code { overflow-wrap: anywhere; }
+  .ep .m { font: 700 11.5px var(--mono); padding: 2px 6px; border-radius: 4px; text-align: center; }
+  .m.GET { background: var(--good-soft); color: var(--good); } .m.POST { background: var(--accent-soft); color: var(--accent); } .m.PATCH { background: var(--warn-soft); color: var(--warn); } .m.DELETE { background: var(--bad-soft); color: var(--bad); }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">Aw</span><h1>Appwrite Console</h1><span class="tag">TablesDB, queries and permissions, with the API calls behind each action</span>
+      <span class="links"><a href="https://github.com/appwrite/appwrite" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/appwrite" target="_blank" rel="noopener">Install and test code</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="db">Databases</button><button data-tab="query">Query builder</button><button data-tab="api">API calls</button><button data-tab="how">How it works</button><button data-tab="install">Install &amp; test</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">A model of the Appwrite 2.6.2 console over an example project held in this page. Column types are the TablesDB ones in src/Appwrite/Platform/Modules/Databases, queries serialize the way the SDKs send them, and permissions use Appwrite's role strings. Sandbox-2 runs the real self-hosted Appwrite from its own installer on port 8096.</p>
+
+  <section data-panel="db">
+    <div class="console">
+      <aside class="nav" id="nav"></aside>
+      <div class="main">
+        <div class="row"><h2 id="t-name" class="grow" style="font-size:17px"></h2><span class="note mono" id="t-id"></span>
+          <label class="field inline">Request as <select id="as"></select></label></div>
+        <div class="subtabs"><button data-sub="rows" aria-pressed="true">Rows</button><button data-sub="columns">Columns</button><button data-sub="settings">Settings</button></div>
+        <div id="sub-rows" class="stack">
+          <div class="row"><span class="note grow" id="r-note"></span><button class="btn primary small" id="r-new">Create row</button></div>
+          <div class="table-wrap"><table class="data" id="r-table"></table></div>
+          <div id="r-form" class="panel" hidden></div>
+        </div>
+        <div id="sub-columns" class="stack" hidden><div class="table-wrap"><table class="data" id="c-table"></table></div><p class="note" id="c-note"></p></div>
+        <div id="sub-settings" class="stack" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <section data-panel="query" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><header><h2 class="grow">Queries on contracts / agreements</h2><button class="btn small" id="q-add">Add query</button></header>
+        <div id="clauses" class="stack"></div>
+        <div class="row"><label class="field inline">Order <select id="q-order"><option value="orderDesc:value">value, descending</option><option value="orderAsc:title">title, ascending</option><option value="orderDesc:$createdAt">$createdAt, newest first</option><option value="">none</option></select></label>
+          <label class="field inline">Limit <input type="number" id="q-limit" value="25" min="1" max="5000"></label></div>
+        <div id="q-out" class="stack"></div></div>
+      <div class="panel"><h2>What the SDK sends</h2>
+        <b>JavaScript (web SDK)</b><pre class="code" id="q-js"></pre>
+        <b>queries[] as JSON</b><pre class="code" id="q-json" style="white-space:pre-wrap"></pre>
+        <b>REST</b><pre class="code" id="q-rest" style="white-space:pre-wrap"></pre></div>
+    </div>
+  </section>
+
+  <section data-panel="api" hidden>
+    <div class="panel"><h2>The calls Sandbox-2's test makes against the live server</h2>
+      <p class="note">In this order, from systems/appwrite/test_appwrite.py: a console account and session, a team and a project, a server API key, then a TablesDB database, table, column and rows. Headers: X-Appwrite-Project for the project, X-Appwrite-Key for a server key, a session cookie for the console.</p>
+      <div id="eps"></div></div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Services in docker-compose.yml</h2>
+<pre class="mermaid">
+flowchart LR
+  B[Browser, SDKs, CLI] --> T[traefik]
+  T --> API[appwrite: HTTP API]
+  T --> CON[appwrite-console]
+  T --> RT[appwrite-realtime: WebSocket]
+  API --> DB[(mariadb, mongodb or postgresql)]
+  API --> R[(redis: cache and queues)]
+  R --> W[workers: databases, functions, builds, mails, messaging, webhooks, deletes, migrations, usage]
+  W --> EX[openruntimes-executor: functions and sites]
+  API --> CH[(clickhouse: usage and logs)]
+  SCH[task schedulers: functions, executions, messages, maintenance] --> R
+</pre></div>
+      <div class="panel"><h2>Reading a row</h2>
+<pre class="mermaid">
+flowchart TB
+  Q[GET rows with queries] --> K{API key?}
+  K -->|yes| ALL[key scopes decide: rows.read]
+  K -->|no| TP{table permission read for one of my roles?}
+  TP -->|yes| OK[row returned]
+  TP -->|no| RS{row security on?}
+  RS -->|yes| RP{row permission read for one of my roles?}
+  RP -->|yes| OK
+  RP -->|no| X[filtered out]
+  RS -->|no| X
+</pre></div>
+    </div>
+  </section>
+
+  <section data-panel="install" hidden><div id="install" class="stack"></div></section>
+</main>
+<p class="footer">Appwrite © Appwrite, BSD 3-Clause. Column types and services read from the source in Sandbox-2.</p>
+{{LIB}}
+{{LIVE}}
+<script>
+const CHECKS = {{CHECKS:appwrite}};
+/* ------------------------------------------------ example project */
+const uniq = () => Array.from({ length: 20 }, () => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('');
+const iso = (d = new Date()) => d.toISOString().replace('Z', '+00:00');
+const USERS = { maya: { $id: '6721a3f0001f9c2b4e8d', name: 'Maya Chen', email: 'maya@northwind.example', labels: ['legal'] }, raj: { $id: '6721a3f0002b7d1e5a9c', name: 'Raj Patel', email: 'raj@contoso.example', labels: [] } };
+const TEAM = { $id: '6721a3f00031c9e2d7b4', name: 'Legal Ops', members: { [USERS.maya.$id]: ['owner'], [USERS.raj.$id]: ['viewer'] } };
+const AS = { guest: { label: 'Guest (no session)', roles: ['any', 'guests'] }, maya: { label: 'Maya (session, team owner)', user: USERS.maya }, raj: { label: 'Raj (session, team viewer)', user: USERS.raj }, key: { label: 'Server API key (rows.read, rows.write)', key: true } };
+function rolesOf(who) {
+  const a = AS[who]; if (a.key) return null; if (!a.user) return a.roles;
+  const u = a.user, r = ['any', 'users', 'users/verified', `user:${u.$id}`, `user:${u.$id}/verified`, ...u.labels.map((l) => `label:${l}`)];
+  const t = TEAM.members[u.$id]; if (t) { r.push(`team:${TEAM.$id}`, `member:${u.$id}`, ...t.map((x) => `team:${TEAM.$id}/${x}`)); }
+  return r;
+}
+const TYPES = ['varchar', 'text', 'mediumtext', 'longtext', 'string', 'integer', 'bigint', 'float', 'boolean', 'datetime', 'email', 'ip', 'url', 'enum', 'relationship', 'point', 'line', 'polygon'];
+const DBS = [{ $id: 'contracts', name: 'Contracts', tables: [
+  { $id: 'agreements', name: 'Agreements', rowSecurity: true, $permissions: [`read("team:${TEAM.$id}")`, `create("team:${TEAM.$id}/owner")`, `update("team:${TEAM.$id}/owner")`, `delete("team:${TEAM.$id}/owner")`],
+    columns: [{ key: 'title', type: 'varchar', size: 255, required: true }, { key: 'counterparty', type: 'varchar', size: 128, required: true }, { key: 'value', type: 'integer', min: 0, required: false },
+      { key: 'status', type: 'enum', elements: ['draft', 'active', 'expired'], default: 'draft' }, { key: 'renews_at', type: 'datetime' }, { key: 'auto_renew', type: 'boolean', default: true }, { key: 'portal', type: 'url' }],
+    rows: [] },
+  { $id: 'clauses', name: 'Clauses', rowSecurity: false, $permissions: ['read("users")', 'create("label:legal")', 'update("label:legal")'],
+    columns: [{ key: 'heading', type: 'varchar', size: 128, required: true }, { key: 'body', type: 'text' }, { key: 'risk', type: 'enum', elements: ['low', 'medium', 'high'] }, { key: 'agreement', type: 'relationship', relatedTable: 'agreements', relationType: 'manyToOne' }],
+    rows: [] }] }];
+const T = (id) => DBS[0].tables.find((t) => t.$id === id);
+const row = (t, data, perms = []) => { const now = iso(); T(t).rows.push({ $id: uniq(), $sequence: T(t).rows.length + 1, $tableId: t, $databaseId: 'contracts', $createdAt: now, $updatedAt: now, $permissions: perms, ...data }); };
+const day = (n) => iso(new Date(Date.now() + n * 864e5));
+[['Master Services Agreement', 'Contoso Holdings LLC', 150000, 'active', 45, true, []], ['Software Licence', 'Fabrikam GmbH', 64000, 'active', 20, false, [`read("user:${USERS.raj.$id}")`]],
+  ['Reseller Agreement', 'Tailspin SARL', 82000, 'draft', 300, true, []], ['Cloud Hosting Order', 'Litware Ltd', 39000, 'expired', -12, false, ['read("any")']], ['Support Renewal', 'Contoso Holdings LLC', 12500, 'active', 75, true, []]]
+  .forEach(([title, counterparty, value, status, d, auto_renew, perms]) => row('agreements', { title, counterparty, value, status, renews_at: day(d), auto_renew, portal: `https://portal.${counterparty.split(' ')[0].toLowerCase()}.example` }, perms));
+[['Limitation of Liability', 'Liability capped at twelve months of fees.', 'medium'], ['Auto Renewal', 'Renews for 12 months unless 90 days notice is given.', 'high'], ['Confidentiality', 'Survives termination for five years.', 'low']]
+  .forEach(([heading, body, risk]) => row('clauses', { heading, body, risk, agreement: T('agreements').rows[0].$id }));
+
+/* ------------------------------------------------ permissions */
+const parsePerm = (p) => { const m = p.match(/^(\w+)\("(.+)"\)$/); return m ? { action: m[1], role: m[2] } : null; };
+function allowed(action, table, r, who) {
+  const roles = rolesOf(who); if (!roles) return { ok: true, why: 'API key' };
+  const hit = (perms) => perms.map(parsePerm).filter(Boolean).some((p) => (p.action === action || (p.action === 'write' && action !== 'read')) && roles.includes(p.role));
+  if (hit(table.$permissions)) return { ok: true, why: 'table permission' };
+  if (table.rowSecurity && r && hit(r.$permissions)) return { ok: true, why: 'row permission' };
+  return { ok: false, why: table.rowSecurity ? 'no table or row permission' : 'no table permission (row security off)' };
+}
+
+/* ------------------------------------------------ console */
+let tid = 'agreements', sub = 'rows', editing = null;
+$('#as').replaceChildren(...Object.entries(AS).map(([k, v]) => el('option', { value: k }, v.label)));
+function nav() {
+  $('#nav').replaceChildren(el('div', { class: 'lbl' }, 'Project · Contract Tools'), el('div', { class: 'lbl' }, 'Databases'),
+    ...DBS.flatMap((d) => [el('div', { class: 'note', style: { padding: '2px 9px' } }, d.name), ...d.tables.map((t) => el('button', { 'aria-current': String(t.$id === tid), onclick: () => { tid = t.$id; editing = null; draw(); } }, t.name, el('span', { class: 'id' }, `${t.rows.length}`)))]),
+    el('div', { class: 'lbl' }, 'Auth'), ...Object.values(USERS).map((u) => el('div', { class: 'note', style: { padding: '2px 9px' } }, `${u.name}${u.labels.length ? ' · label:' + u.labels.join(',') : ''}`)), el('div', { class: 'note', style: { padding: '2px 9px' } }, `Team ${TEAM.name}`));
+}
+const show = (v, c) => {
+  if (c.type === 'boolean') return el('span', { class: 'pill ' + (v ? 'good' : '') }, String(!!v));
+  if (c.type === 'enum') return el('span', { class: 'pill' }, v ?? '');
+  if (c.type === 'datetime') return el('span', { class: 'mono' }, String(v || '').slice(0, 16).replace('T', ' '));
+  if (c.type === 'integer' || c.type === 'float' || c.type === 'bigint') return el('span', { class: 'mono' }, v == null ? '' : fmt(v));
+  if (c.type === 'relationship') { const x = T(c.relatedTable).rows.find((r) => r.$id === v); return el('span', { class: 'perm' }, x ? x.title : v || ''); }
+  return String(v ?? '');
+};
+function draw() {
+  nav(); const t = T(tid); $('#t-name').textContent = t.name; $('#t-id').textContent = `contracts / ${t.$id}`;
+  $$('.subtabs button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.sub === sub)));
+  ['rows', 'columns', 'settings'].forEach((s) => { $('#sub-' + s).hidden = s !== sub; });
+  if (sub === 'rows') rows(); else if (sub === 'columns') columns(); else settings();
+}
+function rows() {
+  const t = T(tid), who = $('#as').value, vis = t.rows.filter((r) => allowed('read', t, r, who).ok);
+  $('#r-note').textContent = `${vis.length} of ${t.rows.length} rows readable as ${AS[who].label}.`;
+  $('#r-table').replaceChildren(el('tr', {}, el('th', {}, '$id'), ...t.columns.map((c) => el('th', {}, c.key)), el('th', {}, 'Row permissions'), el('th', {}, '')),
+    ...vis.map((r) => el('tr', {}, el('td', { class: 'mono note' }, r.$id.slice(0, 8) + '…'), ...t.columns.map((c) => el('td', {}, show(r[c.key], c))),
+      el('td', {}, ...(r.$permissions.length ? r.$permissions.map((p) => el('span', { class: 'perm' }, p)) : [el('span', { class: 'note' }, '—')])),
+      el('td', {}, el('div', { class: 'row' }, el('button', { class: 'btn small', onclick: () => { editing = r; form(); } }, 'Edit'), el('button', { class: 'btn small', onclick: () => del(r) }, 'Delete'))))));
+  form();
+}
+function form() {
+  const box = $('#r-form'), t = T(tid); if (!editing) { box.hidden = true; return; }
+  const isNew = !editing.$id, data = { ...editing }; let perms = (editing.$permissions || []).join('\n');
+  const ctl = (c) => {
+    const v = data[c.key] ?? c.default ?? '', set = (x) => { data[c.key] = x; };
+    if (c.type === 'boolean') return el('input', { type: 'checkbox', checked: !!v, onchange: (e) => set(e.target.checked) });
+    if (c.type === 'enum') return el('select', { onchange: (e) => set(e.target.value) }, ...c.elements.map((x) => el('option', { selected: x === v }, x)));
+    if (c.type === 'relationship') return el('select', { onchange: (e) => set(e.target.value) }, el('option', { value: '' }, '—'), ...T(c.relatedTable).rows.map((r) => el('option', { value: r.$id, selected: r.$id === v }, r.title)));
+    if (['integer', 'float', 'bigint'].includes(c.type)) return el('input', { type: 'number', value: v, oninput: (e) => set(e.target.value === '' ? null : +e.target.value) });
+    return el(c.type === 'text' ? 'textarea' : 'input', { type: 'text', rows: 2, value: v, oninput: (e) => set(e.target.value) });
+  };
+  box.hidden = false;
+  box.replaceChildren(el('h2', {}, isNew ? 'Create row' : `Update row ${editing.$id}`),
+    el('div', { class: 'form' }, ...t.columns.map((c) => el('label', { class: 'field' }, `${c.key} · ${c.type}${c.required ? ' · required' : ''}`, ctl(c)))),
+    t.rowSecurity ? el('label', { class: 'field' }, 'Row permissions, one per line, e.g. read("user:<id>")', el('textarea', { rows: 2, value: perms, oninput: (e) => { perms = e.target.value; } })) : el('p', { class: 'note' }, 'Row security is off for this table: only table permissions apply.'),
+    el('div', { class: 'row' }, el('button', { class: 'btn primary', onclick: () => save(data, perms, isNew) }, isNew ? 'Create' : 'Update'), el('button', { class: 'btn', onclick: () => { editing = null; form(); } }, 'Cancel'), el('span', { class: 'status', id: 'f-status' })));
+}
+function validate(t, data) {
+  for (const c of t.columns) {
+    const v = data[c.key];
+    if (c.required && (v == null || v === '')) return `Invalid document structure: Missing required attribute "${c.key}"`;
+    if (v == null || v === '') continue;
+    if (c.type === 'url' && !/^https?:\/\/[^\s]+\.[^\s]+/.test(v)) return `Invalid document structure: Attribute "${c.key}" has invalid format. Value must be a valid URL`;
+    if (c.type === 'varchar' && String(v).length > c.size) return `Invalid document structure: Attribute "${c.key}" has invalid type. Value must be a valid string and no longer than ${c.size} chars`;
+    if (c.type === 'integer' && (!Number.isInteger(v) || (c.min != null && v < c.min))) return `Invalid document structure: Attribute "${c.key}" has invalid type. Value must be a valid integer`;
+  }
+  return null;
+}
+function save(data, perms, isNew) {
+  const t = T(tid), who = $('#as').value, say = (x) => { $('#f-status').textContent = x; };
+  const ok = allowed(isNew ? 'create' : 'update', t, isNew ? null : editing, who); if (!ok.ok) return say(`401 user_unauthorized: The current user is not authorized to perform the requested action (${ok.why}).`);
+  const err = validate(t, data); if (err) return say('400 ' + err);
+  const p = perms.split('\n').map((s) => s.trim()).filter(Boolean); const bad = p.find((x) => !parsePerm(x)); if (bad) return say(`400 Invalid permissions: ${bad}`);
+  if (isNew) { row(tid, Object.fromEntries(t.columns.map((c) => [c.key, data[c.key] ?? c.default ?? null])), p); }
+  else { Object.assign(editing, Object.fromEntries(t.columns.map((c) => [c.key, data[c.key]])), { $updatedAt: iso(), $permissions: p }); }
+  editing = null; draw(); toast(isNew ? 'Row created' : 'Row updated');
+}
+function del(r) { const t = T(tid), ok = allowed('delete', t, r, $('#as').value); if (!ok.ok) return toast(`401: not allowed to delete (${ok.why})`); t.rows.splice(t.rows.indexOf(r), 1); draw(); toast('Row deleted'); }
+function columns() {
+  const t = T(tid);
+  $('#c-table').replaceChildren(el('tr', {}, ...['Key', 'Type', 'Required', 'Default', 'Options'].map((h) => el('th', {}, h))),
+    ...t.columns.map((c) => el('tr', {}, el('td', { class: 'mono' }, c.key), el('td', {}, el('span', { class: 'pill' }, c.type)), el('td', {}, c.required ? 'yes' : 'no'), el('td', { class: 'mono' }, c.default == null ? '—' : String(c.default)),
+      el('td', { class: 'note' }, c.size ? `size ${c.size}` : c.elements ? c.elements.join(', ') : c.relatedTable ? `${c.relationType} → ${c.relatedTable}` : c.min != null ? `min ${c.min}` : ''))));
+  $('#c-note').textContent = `Column types in this TablesDB build: ${TYPES.join(', ')}. Each is created with POST /v1/tablesdb/{databaseId}/tables/{tableId}/columns/{type}.`;
+}
+function settings() {
+  const t = T(tid);
+  $('#sub-settings').replaceChildren(el('div', { class: 'panel' }, el('h2', {}, 'Permissions'), el('div', {}, ...t.$permissions.map((p) => el('span', { class: 'perm' }, p))),
+    el('p', { class: 'note' }, 'Roles: any, guests, users, users/verified, user:<id>, team:<id>, team:<id>/<role>, member:<id>, label:<name>. Actions: create, read, update, delete, and write for the three that change data.')),
+    el('div', { class: 'panel' }, el('h2', {}, 'Row security'), el('label', { class: 'field inline' }, el('input', { type: 'checkbox', checked: t.rowSecurity, onchange: (e) => { t.rowSecurity = e.target.checked; toast(`Row security ${t.rowSecurity ? 'on' : 'off'}`); } }), 'Users can also be given access to single rows through row permissions')),
+    el('div', { class: 'panel' }, el('h2', {}, 'Your roles as ' + AS[$('#as').value].label), el('div', {}, ...((rolesOf($('#as').value)) || ['API key: scopes rows.read, rows.write']).map((r) => el('span', { class: 'perm' }, r)))));
+}
+$$('.subtabs button').forEach((b) => b.onclick = () => { sub = b.dataset.sub; draw(); });
+$('#as').onchange = () => { draw(); runQuery(); };
+$('#r-new').onclick = () => { editing = {}; form(); };
+
+/* ------------------------------------------------ queries */
+const METHODS = { equal: 'values', notEqual: 'values', lessThan: 'value', lessThanEqual: 'value', greaterThan: 'value', greaterThanEqual: 'value', between: 'pair', startsWith: 'value', endsWith: 'value', contains: 'values', search: 'value', isNull: 'none', isNotNull: 'none' };
+let clauses = [{ m: 'equal', a: 'status', v: 'active' }, { m: 'greaterThan', a: 'value', v: '20000' }];
+const typed = (a, v) => { const c = T('agreements').columns.find((x) => x.key === a); return c && ['integer', 'float', 'bigint'].includes(c.type) ? Number(v) : c?.type === 'boolean' ? v === 'true' : v; };
+const values = (q) => { const k = METHODS[q.m]; if (k === 'none') return []; if (k === 'pair') return String(q.v).split(',').map((x) => typed(q.a, x.trim())); if (k === 'values') return String(q.v).split(',').map((x) => typed(q.a, x.trim())); return [typed(q.a, q.v)]; };
+const lit = (x) => (typeof x === 'string' ? `'${x}'` : String(x));
+function sdk(q) { const v = values(q), k = METHODS[q.m]; return k === 'none' ? `Query.${q.m}('${q.a}')` : k === 'values' ? `Query.${q.m}('${q.a}', [${v.map(lit).join(', ')}])` : k === 'pair' ? `Query.${q.m}('${q.a}', ${v.map(lit).join(', ')})` : `Query.${q.m}('${q.a}', ${lit(v[0])})`; }
+const json = (q) => JSON.stringify(METHODS[q.m] === 'none' ? { method: q.m, attribute: q.a } : { method: q.m, attribute: q.a, values: values(q) });
+function test(q, r) {
+  const x = r[q.a], v = values(q), s = (y) => String(y ?? '').toLowerCase();
+  switch (q.m) {
+    case 'equal': return v.some((y) => x === y); case 'notEqual': return v.every((y) => x !== y);
+    case 'lessThan': return x < v[0]; case 'lessThanEqual': return x <= v[0]; case 'greaterThan': return x > v[0]; case 'greaterThanEqual': return x >= v[0];
+    case 'between': return x >= v[0] && x <= v[1]; case 'startsWith': return String(x ?? '').startsWith(v[0]); case 'endsWith': return String(x ?? '').endsWith(v[0]);
+    case 'contains': return v.some((y) => s(x).includes(s(y))); case 'search': return s(v[0]).split(/\s+/).every((w) => s(x).includes(w));
+    case 'isNull': return x == null; case 'isNotNull': return x != null;
+  }
+}
+function clauseUI() {
+  const cols = ['$id', '$createdAt', ...T('agreements').columns.map((c) => c.key)];
+  $('#clauses').replaceChildren(...clauses.map((q, i) => el('div', { class: 'clause' },
+    el('select', { 'aria-label': 'Method', onchange: (e) => { q.m = e.target.value; clauseUI(); runQuery(); } }, ...Object.keys(METHODS).map((m) => el('option', { selected: m === q.m }, m))),
+    el('select', { 'aria-label': 'Column', onchange: (e) => { q.a = e.target.value; runQuery(); } }, ...cols.map((c) => el('option', { selected: c === q.a }, c))),
+    METHODS[q.m] === 'none' ? el('span', { class: 'note' }, 'no value') : el('input', { type: 'text', value: q.v, 'aria-label': 'Value', placeholder: METHODS[q.m] === 'pair' ? 'low, high' : METHODS[q.m] === 'values' ? 'one or more, comma separated' : 'value', oninput: (e) => { q.v = e.target.value; runQuery(); } }),
+    el('button', { class: 'btn small', 'aria-label': 'Remove query', onclick: () => { clauses.splice(i, 1); clauseUI(); runQuery(); } }, '×'))));
+}
+function runQuery() {
+  const t = T('agreements'), who = $('#as').value, [dir, col] = ($('#q-order').value || ':').split(':'), limit = +$('#q-limit').value || 25;
+  let list = t.rows.filter((r) => allowed('read', t, r, who).ok && clauses.every((q) => test(q, r)));
+  if (col) list = list.slice().sort((a, b) => (a[col] < b[col] ? -1 : a[col] > b[col] ? 1 : 0) * (dir === 'orderDesc' ? -1 : 1));
+  const all = [...clauses.map(sdk), col ? `Query.${dir}('${col}')` : null, `Query.limit(${limit})`].filter(Boolean);
+  const js = [...clauses.map(json), col ? JSON.stringify({ method: dir, attribute: col }) : null, JSON.stringify({ method: 'limit', values: [limit] })].filter(Boolean);
+  $('#q-out').replaceChildren(el('span', { class: 'pill good' }, `total: ${list.length}`), el('div', { class: 'table-wrap' }, el('table', { class: 'data' }, el('tr', {}, ...['title', 'counterparty', 'value', 'status'].map((h) => el('th', {}, h))),
+    ...list.slice(0, limit).map((r) => el('tr', {}, el('td', {}, r.title), el('td', {}, r.counterparty), el('td', { class: 'mono' }, fmt(r.value)), el('td', {}, el('span', { class: 'pill' }, r.status)))))));
+  $('#q-js').textContent = `import { Client, TablesDB, Query } from 'appwrite';\n\nconst client = new Client()\n  .setEndpoint('http://localhost:8096/v1')\n  .setProject('<PROJECT_ID>');\nconst tablesDB = new TablesDB(client);\n\nconst { total, rows } = await tablesDB.listRows({\n  databaseId: 'contracts',\n  tableId: 'agreements',\n  queries: [\n    ${all.join(',\n    ')}\n  ]\n});`;
+  $('#q-json').textContent = js.join('\n');
+  $('#q-rest').textContent = `GET /v1/tablesdb/contracts/tables/agreements/rows?${js.map((q) => 'queries[]=' + encodeURIComponent(q)).join('&')}\nX-Appwrite-Project: <PROJECT_ID>${AS[who].key ? '\nX-Appwrite-Key: <API_KEY>' : ''}`;
+}
+$('#q-add').onclick = () => { clauses.push({ m: 'contains', a: 'title', v: 'Agreement' }); clauseUI(); runQuery(); };
+['#q-order', '#q-limit'].forEach((s) => $(s).addEventListener('input', runQuery));
+
+/* ------------------------------------------------ endpoints */
+const EPS = [
+  ['GET', '/v1/health/version', 'Wait for the API; returns {"version": "2.6.2"}.', ''],
+  ['POST', '/v1/account', 'Create the console account.', '{"userId":"unique()","email":"…","password":"…","name":"Harness"}'],
+  ['POST', '/v1/account/sessions/email', 'Sign in: the session cookie carries the console calls that follow.', '{"email":"…","password":"…"}'],
+  ['POST', '/v1/teams', 'Create the organization (a team).', '{"teamId":"unique()","name":"Harness Legal"}'],
+  ['POST', '/v1/projects', 'Create the project in that organization.', '{"projectId":"unique()","name":"…","teamId":"<team>","region":"default"}'],
+  ['POST', '/v1/organization/projects/{projectId}/keys', 'A server API key with database scopes; header X-Appwrite-Organization.', '{"keyId":"unique()","name":"harness","scopes":["databases.read","databases.write","tables.read","tables.write","columns.read","columns.write","rows.read","rows.write"],"expire":null}'],
+  ['POST', '/v1/tablesdb', 'Create the database, with X-Appwrite-Project and X-Appwrite-Key.', '{"databaseId":"contracts","name":"Contracts"}'],
+  ['POST', '/v1/tablesdb/contracts/tables', 'Create the table.', '{"tableId":"agreements","name":"Agreements"}'],
+  ['POST', '/v1/tablesdb/contracts/tables/agreements/columns/string', 'Add a column (202: a worker creates it); poll it until its status is available.', '{"key":"title","size":256,"required":true}'],
+  ['POST', '/v1/tablesdb/contracts/tables/agreements/rows', 'Create rows.', '{"rowId":"unique()","data":{"title":"…"}}'],
+  ['GET', '/v1/tablesdb/contracts/tables/agreements/rows', 'List them back; a wrong key must get 401.', ''],
+];
+$('#eps').replaceChildren(...EPS.map(([m, p, d, b]) => el('div', { class: 'ep' }, el('span', { class: 'm ' + m }, m), el('div', { class: 'stack' }, el('code', {}, p), el('span', { class: 'note' }, d), b ? el('pre', { class: 'code', style: { whiteSpace: 'pre-wrap' } }, b) : null))));
+
+renderInstall($('#install'), CHECKS, {
+  setup: 'systems/appwrite/setup.sh', serve: './start.sh appwrite   # the console, http://localhost:8096', test: 'python3 systems/appwrite/test_appwrite.py -v', port: 8096, ui: 'Appwrite console',
+  notes: ["Appwrite's own installer, headless: docker run … --entrypoint install appwrite/appwrite:2.6.2 --http-port=127.0.0.1:8096 --interactive=N", 'Through the API: account, session, organization, project, server key, then a TablesDB database, table, column and rows', 'The console in a browser: sign in and open the project'],
+});
+initTabs((n) => { if (n === 'query') { clauseUI(); runQuery(); } });
+draw(); clauseUI(); runQuery();
+</script>

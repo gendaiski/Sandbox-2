@@ -1,0 +1,947 @@
+<title>Appwrite Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap"><meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Systems Lab shell: one family for every system page.
+   Layout: app bar, tab strip, working area; each page sets --accent. */
+:root {
+  --bg: #f3f5f8; --panel: #ffffff; --sunk: #eceff4; --ink: #151a23; --muted: #596273; --line: #dce1e9;
+  --accent: #2f5bd3; --accent-ink: #ffffff; --accent-soft: #e5ecfc;
+  --good: #19794a; --good-soft: #e1f3e8; --warn: #946200; --warn-soft: #fbf0d6; --bad: #b42831; --bad-soft: #fbe3e4;
+  --c0: #dbe7ff; --c1: #ffe3c8; --c2: #d6f2df; --c3: #f6d9ef; --c4: #fff2b8; --c5: #d5f0f4; --c6: #e6dcff; --c7: #ffd9d6;
+  --e0: #4f7ae6; --e1: #d9822b; --e2: #2f9d5a; --e3: #b8509a; --e4: #b08f00; --e5: #1f93a5; --e6: #7d5bd6; --e7: #d14d43;
+  --font: "Schibsted Grotesk", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --r: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1116; --panel: #161a21; --sunk: #1d222b; --ink: #e5e8ee; --muted: #97a0ae; --line: #2a303b;
+    --accent-soft: #1d2a4a; --good: #67d197; --good-soft: #15301f; --warn: #eec266; --warn-soft: #362b11; --bad: #f08a8f; --bad-soft: #3c1b1d;
+    --c0: #1f2d4d; --c1: #3d2b18; --c2: #18352a; --c3: #3a2136; --c4: #3a3413; --c5: #143438; --c6: #2b2448; --c7: #3d2220;
+    --e0: #86a5f2; --e1: #f0a45e; --e2: #6cc98f; --e3: #e08bc8; --e4: #e3c64e; --e5: #67c6d4; --e6: #ad93f0; --e7: #f08a80;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1116; --panel: #161a21; --sunk: #1d222b; --ink: #e5e8ee; --muted: #97a0ae; --line: #2a303b;
+  --accent-soft: #1d2a4a; --good: #67d197; --good-soft: #15301f; --warn: #eec266; --warn-soft: #362b11; --bad: #f08a8f; --bad-soft: #3c1b1d;
+  --c0: #1f2d4d; --c1: #3d2b18; --c2: #18352a; --c3: #3a2136; --c4: #3a3413; --c5: #143438; --c6: #2b2448; --c7: #3d2220;
+  --e0: #86a5f2; --e1: #f0a45e; --e2: #6cc98f; --e3: #e08bc8; --e4: #e3c64e; --e5: #67c6d4; --e6: #ad93f0; --e7: #f08a80;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { min-height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14.5px/1.5 var(--font); }
+a { color: var(--accent); }
+code, pre, .mono { font-family: var(--mono); font-size: 12.5px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.appbar { background: var(--panel); border-bottom: 1px solid var(--line); }
+.appbar .wrap { max-width: 1320px; margin: 0 auto; padding-block: 14px 0; display: flex; flex-direction: column; gap: 10px; }
+.brand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.brand h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+.brand .tag { color: var(--muted); }
+.brand .links { margin-left: auto; display: flex; gap: 14px; font-size: 13px; flex-wrap: wrap; }
+.mark { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; background: var(--accent); color: var(--accent-ink);
+  font: 700 13px var(--mono); align-self: center; }
+.tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+.tabs button { border: 0; background: none; padding: 9px 13px 11px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; white-space: nowrap; font-weight: 500; }
+.tabs button:hover { color: var(--ink); }
+.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+main.wrap { max-width: 1320px; margin: 0 auto; padding-block: 18px 40px; }
+[data-panel] { display: flex; flex-direction: column; gap: 16px; }
+.note { font-size: 12.5px; color: var(--muted); }
+.banner { font-size: 12.5px; color: var(--muted); background: var(--sunk); border-radius: var(--r); padding: 8px 12px; }
+
+.grid { display: grid; gap: 16px; }
+.cols-2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.cols-side { grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); }
+.cols-side-r { grid-template-columns: minmax(0, 1fr) minmax(280px, 380px); }
+.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 900px) { .cols-2, .cols-side, .cols-side-r, .cols-3 { grid-template-columns: minmax(0, 1fr); } .cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.panel > h2, .panel > header h2 { font-size: 14.5px; font-weight: 600; }
+.panel > header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.panel > header .grow { flex: 1; }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.stack { display: flex; flex-direction: column; gap: 8px; }
+.grow { flex: 1; min-width: 0; }
+
+.btn { border: 1px solid var(--line); background: var(--panel); border-radius: 7px; padding: 6px 12px; cursor: pointer; font-weight: 500; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.small { padding: 3px 9px; font-size: 12.5px; }
+.btn:disabled { opacity: .5; cursor: default; }
+label.field { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--muted); min-width: 0; }
+label.field.inline { flex-direction: row; align-items: center; gap: 8px; }
+input[type=text], input[type=number], input[type=search], input[type=url], select, textarea {
+  border: 1px solid var(--line); background: var(--panel); border-radius: 7px; padding: 6px 9px; min-width: 0; color: var(--ink); }
+textarea { font-family: var(--mono); font-size: 12.5px; line-height: 1.5; resize: vertical; width: 100%; }
+input[type=range] { accent-color: var(--accent); }
+
+.pill { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 600; padding: 1px 8px; border-radius: 99px; background: var(--sunk); color: var(--muted); white-space: nowrap; }
+.pill.good { background: var(--good-soft); color: var(--good); } .pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); } .pill.accent { background: var(--accent-soft); color: var(--accent); }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.kpi { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; }
+.kpi b { display: block; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.kpi span { font-size: 12px; color: var(--muted); }
+
+.table-wrap { overflow-x: auto; }
+table.data { border-collapse: collapse; width: 100%; font-size: 13px; }
+table.data th { text-align: left; font-weight: 600; color: var(--muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; padding: 7px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.data td { padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; font-variant-numeric: tabular-nums; }
+table.data tr.click { cursor: pointer; } table.data tr.click:hover td { background: var(--sunk); }
+table.data tr.sel td { background: var(--accent-soft); }
+
+.chunks { display: flex; flex-direction: column; gap: 8px; }
+.chunk { border: 1px solid var(--line); border-left: 4px solid var(--e0); border-radius: 6px; padding: 8px 10px; background: var(--panel); }
+.chunk .meta { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11.5px; color: var(--muted); margin-bottom: 4px; }
+.chunk pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-size: 12px; max-height: 220px; overflow: auto; }
+.overlay { white-space: pre-wrap; word-break: break-word; font: 12.5px/1.65 var(--mono); background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px; max-height: 560px; overflow: auto; }
+.overlay mark { color: inherit; border-radius: 3px; padding: 1px 0; }
+.overlay .ov { background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgba(127,127,127,.25) 4px 6px); }
+
+pre.code { background: var(--sunk); border-radius: 7px; padding: 10px 12px; margin: 0; overflow-x: auto; white-space: pre; }
+pre.mermaid { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; margin: 0; overflow-x: auto; text-align: center; }
+.toast { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 9px 14px; border-radius: 8px; font-size: 13px; opacity: 0; transform: translateY(8px); transition: .2s; pointer-events: none; z-index: 50; }
+.toast.show { opacity: 1; transform: none; }
+.empty { color: var(--muted); font-size: 13px; padding: 18px; text-align: center; border: 1px dashed var(--line); border-radius: var(--r); }
+.bar { height: 8px; background: var(--sunk); border-radius: 99px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
+.kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 12px; font-size: 13px; }
+.kv dt { color: var(--muted); } .kv dd { margin: 0; word-break: break-word; }
+canvas.graph { width: 100%; height: 460px; background: var(--sunk); border-radius: var(--r); display: block; touch-action: none; }
+.footer { color: var(--muted); font-size: 12px; text-align: center; padding-block: 8px 24px; }
+
+</style>
+<style>
+  :root { --accent: #e0245e; --accent-soft: #fde4ec; --side: #f7f7f9; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #fd6a95; --accent-ink: #2e0614; --accent-soft: #3d1825; --side: #18191d; } }
+  :root[data-theme="dark"] { --accent: #fd6a95; --accent-ink: #2e0614; --accent-soft: #3d1825; --side: #18191d; }
+  .console { display: grid; grid-template-columns: 220px minmax(0, 1fr); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--panel); }
+  @media (max-width: 760px) { .console { grid-template-columns: minmax(0, 1fr); } .nav { border-right: 0 !important; border-bottom: 1px solid var(--line); } }
+  .nav { background: var(--side); border-right: 1px solid var(--line); padding: 10px 8px; display: flex; flex-direction: column; gap: 2px; }
+  .nav .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding: 8px 8px 4px; }
+  .nav button { display: flex; gap: 8px; align-items: center; padding: 6px 9px; border-radius: 7px; border: 0; background: none; cursor: pointer; text-align: left; font-size: 13.5px; }
+  .nav button[aria-current="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .nav .id { font: 10.5px var(--mono); color: var(--muted); margin-left: auto; }
+  .main { padding: 14px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .subtabs { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
+  .subtabs button { border: 0; background: none; padding: 7px 12px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; }
+  .subtabs button[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+  .perm { font: 11.5px var(--mono); background: var(--sunk); border-radius: 4px; padding: 0 5px; display: inline-block; margin: 1px 3px 1px 0; }
+  .clause { display: grid; grid-template-columns: 170px 140px minmax(0, 1fr) 32px; gap: 6px; align-items: center; }
+  @media (max-width: 760px) { .clause { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+  .form { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px 12px; }
+  .ep { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 8px; align-items: start; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .ep > div { min-width: 0; } .ep code { overflow-wrap: anywhere; }
+  .ep .m { font: 700 11.5px var(--mono); padding: 2px 6px; border-radius: 4px; text-align: center; }
+  .m.GET { background: var(--good-soft); color: var(--good); } .m.POST { background: var(--accent-soft); color: var(--accent); } .m.PATCH { background: var(--warn-soft); color: var(--warn); } .m.DELETE { background: var(--bad-soft); color: var(--bad); }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">Aw</span><h1>Appwrite Console</h1><span class="tag">TablesDB, queries and permissions, with the API calls behind each action</span>
+      <span class="links"><a href="https://github.com/appwrite/appwrite" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/appwrite" target="_blank" rel="noopener">Install and test code</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="db">Databases</button><button data-tab="query">Query builder</button><button data-tab="api">API calls</button><button data-tab="how">How it works</button><button data-tab="install">Install &amp; test</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">A model of the Appwrite 2.6.2 console over an example project held in this page. Column types are the TablesDB ones in src/Appwrite/Platform/Modules/Databases, queries serialize the way the SDKs send them, and permissions use Appwrite's role strings. Sandbox-2 runs the real self-hosted Appwrite from its own installer on port 8096.</p>
+
+  <section data-panel="db">
+    <div class="console">
+      <aside class="nav" id="nav"></aside>
+      <div class="main">
+        <div class="row"><h2 id="t-name" class="grow" style="font-size:17px"></h2><span class="note mono" id="t-id"></span>
+          <label class="field inline">Request as <select id="as"></select></label></div>
+        <div class="subtabs"><button data-sub="rows" aria-pressed="true">Rows</button><button data-sub="columns">Columns</button><button data-sub="settings">Settings</button></div>
+        <div id="sub-rows" class="stack">
+          <div class="row"><span class="note grow" id="r-note"></span><button class="btn primary small" id="r-new">Create row</button></div>
+          <div class="table-wrap"><table class="data" id="r-table"></table></div>
+          <div id="r-form" class="panel" hidden></div>
+        </div>
+        <div id="sub-columns" class="stack" hidden><div class="table-wrap"><table class="data" id="c-table"></table></div><p class="note" id="c-note"></p></div>
+        <div id="sub-settings" class="stack" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <section data-panel="query" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><header><h2 class="grow">Queries on contracts / agreements</h2><button class="btn small" id="q-add">Add query</button></header>
+        <div id="clauses" class="stack"></div>
+        <div class="row"><label class="field inline">Order <select id="q-order"><option value="orderDesc:value">value, descending</option><option value="orderAsc:title">title, ascending</option><option value="orderDesc:$createdAt">$createdAt, newest first</option><option value="">none</option></select></label>
+          <label class="field inline">Limit <input type="number" id="q-limit" value="25" min="1" max="5000"></label></div>
+        <div id="q-out" class="stack"></div></div>
+      <div class="panel"><h2>What the SDK sends</h2>
+        <b>JavaScript (web SDK)</b><pre class="code" id="q-js"></pre>
+        <b>queries[] as JSON</b><pre class="code" id="q-json" style="white-space:pre-wrap"></pre>
+        <b>REST</b><pre class="code" id="q-rest" style="white-space:pre-wrap"></pre></div>
+    </div>
+  </section>
+
+  <section data-panel="api" hidden>
+    <div class="panel"><h2>The calls Sandbox-2's test makes against the live server</h2>
+      <p class="note">In this order, from systems/appwrite/test_appwrite.py: a console account and session, a team and a project, a server API key, then a TablesDB database, table, column and rows. Headers: X-Appwrite-Project for the project, X-Appwrite-Key for a server key, a session cookie for the console.</p>
+      <div id="eps"></div></div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>Services in docker-compose.yml</h2>
+<pre class="mermaid">
+flowchart LR
+  B[Browser, SDKs, CLI] --> T[traefik]
+  T --> API[appwrite: HTTP API]
+  T --> CON[appwrite-console]
+  T --> RT[appwrite-realtime: WebSocket]
+  API --> DB[(mariadb, mongodb or postgresql)]
+  API --> R[(redis: cache and queues)]
+  R --> W[workers: databases, functions, builds, mails, messaging, webhooks, deletes, migrations, usage]
+  W --> EX[openruntimes-executor: functions and sites]
+  API --> CH[(clickhouse: usage and logs)]
+  SCH[task schedulers: functions, executions, messages, maintenance] --> R
+</pre></div>
+      <div class="panel"><h2>Reading a row</h2>
+<pre class="mermaid">
+flowchart TB
+  Q[GET rows with queries] --> K{API key?}
+  K -->|yes| ALL[key scopes decide: rows.read]
+  K -->|no| TP{table permission read for one of my roles?}
+  TP -->|yes| OK[row returned]
+  TP -->|no| RS{row security on?}
+  RS -->|yes| RP{row permission read for one of my roles?}
+  RP -->|yes| OK
+  RP -->|no| X[filtered out]
+  RS -->|no| X
+</pre></div>
+    </div>
+  </section>
+
+  <section data-panel="install" hidden><div id="install" class="stack"></div></section>
+</main>
+<p class="footer">Appwrite © Appwrite, BSD 3-Clause. Column types and services read from the source in Sandbox-2.</p>
+<script>
+/* Systems Lab shared runtime: DOM helpers, text tools, chunkers, metrics,
+   a force-directed graph and a pdf.js loader. Inlined into every page. */
+const $ = (s, root = document) => root.querySelector(s);
+const $$ = (s, root = document) => [...root.querySelectorAll(s)];
+function el(tag, props = {}, ...kids) {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') n.className = v;
+    else if (k === 'style' && typeof v === 'object') Object.assign(n.style, v);
+    else if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
+    else if (k === 'html') n.innerHTML = v;
+    else if (k === 'value' || k === 'checked' || k === 'disabled' || k === 'selected') n[k] = v;
+    else if (k in n && typeof v !== 'string') n[k] = v;
+    else n.setAttribute(k, v === true ? '' : v);
+  }
+  for (const kid of kids.flat()) if (kid != null && kid !== false) n.append(kid.nodeType ? kid : String(kid));
+  return n;
+}
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmt = (n, d = 0) => Number(n).toLocaleString('en-US', { maximumFractionDigits: d, minimumFractionDigits: d });
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const uid = (p = 'id') => p + '-' + Math.random().toString(36).slice(2, 10);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* storage unavailable */ } },
+};
+
+function toast(msg) {
+  let t = $('.toast');
+  if (!t) document.body.append(t = el('div', { class: 'toast', role: 'status' }));
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+async function copyText(text, what = 'Copied') {
+  try { await navigator.clipboard.writeText(text); toast(what); }
+  catch { toast('Copy is blocked here: select the text and copy it'); }
+}
+
+/* Tabs: <nav class="tabs"><button data-tab="x"> with <section data-panel="x">. */
+function initTabs(onShow) {
+  const buttons = $$('.tabs button');
+  const show = (name) => {
+    if (!buttons.some((b) => b.dataset.tab === name)) name = buttons[0].dataset.tab;
+    buttons.forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === name)));
+    $$('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== name; });
+    store.set('tab:' + document.title, name);
+    onShow && onShow(name);
+  };
+  buttons.forEach((b) => { b.setAttribute('role', 'tab'); b.addEventListener('click', () => show(b.dataset.tab)); });
+  const fromHash = /^[\w.~-]+$/.test(location.hash.slice(1)) ? location.hash.slice(1) : null;
+  show(fromHash || store.get('tab:' + document.title, buttons[0].dataset.tab));
+  return show;
+}
+
+/* ------------------------------------------------------------ text */
+const Text = {
+  tokens(doc) { return [...doc.matchAll(/\S+/g)].map((m) => [m.index, m.index + m[0].length]); },
+  strip(doc, s, e) { while (s < e && /\s/.test(doc[s])) s++; while (e > s && /\s/.test(doc[e - 1])) e--; return e > s ? [s, e] : null; },
+  sentences(doc) {
+    const out = []; let start = 0;
+    const re = /(?<=[.!?])["')\]]*\s+(?=[A-Z0-9"'(\[#*-])|\n\s*\n/g;
+    for (const m of doc.matchAll(re)) { const sp = Text.strip(doc, start, m.index); if (sp) out.push(sp); start = m.index + m[0].length; }
+    const sp = Text.strip(doc, start, doc.length); if (sp) out.push(sp);
+    return out;
+  },
+  paragraphs(doc) {
+    const out = []; let start = 0;
+    for (const m of doc.matchAll(/\n\s*\n/g)) { const sp = Text.strip(doc, start, m.index); if (sp) out.push(sp); start = m.index + m[0].length; }
+    const sp = Text.strip(doc, start, doc.length); if (sp) out.push(sp);
+    return out;
+  },
+  headings(doc) { return [...doc.matchAll(/^(#{1,6})\s+(.+)$/gm)].map((m) => ({ at: m.index, level: m[1].length, title: m[2].replace(/\*/g, '').trim() })); },
+  headingPath(heads, at) {
+    let path = [];
+    for (const h of heads) { if (h.at > at) break; path = path.filter((p) => p.level < h.level).concat([h]); }
+    return path.map((p) => p.title);
+  },
+  STOP: new Set('a an and are as at be by for from has have in is it its of on or that the this to was were will with shall may any all such each other than not no under which who whom their there these those into upon if then'.split(' ')),
+  terms(text) { return (text.toLowerCase().match(/[a-z][a-z'-]+/g) || []).filter((w) => w.length > 2 && !Text.STOP.has(w)); },
+  tfidf(texts) {
+    const docs = texts.map((t) => { const c = new Map(); for (const w of Text.terms(t)) c.set(w, (c.get(w) || 0) + 1); return c; });
+    const df = new Map(); docs.forEach((d) => d.forEach((_, w) => df.set(w, (df.get(w) || 0) + 1)));
+    const n = docs.length;
+    return docs.map((d) => {
+      const total = [...d.values()].reduce((a, b) => a + b, 0) || 1; const v = new Map(); let norm = 0;
+      d.forEach((c, w) => { const x = (c / total) * Math.log((1 + n) / (1 + df.get(w)) + 1); v.set(w, x); norm += x * x; });
+      norm = Math.sqrt(norm) || 1; v.forEach((x, w) => v.set(w, x / norm)); return v;
+    });
+  },
+  cos(a, b) { if (a.size > b.size) [a, b] = [b, a]; let s = 0; a.forEach((x, w) => { s += x * (b.get(w) || 0); }); return s; },
+  topTerms(text, k = 3) { const c = new Map(); for (const w of Text.terms(text)) c.set(w, (c.get(w) || 0) + 1); return [...c].sort((a, b) => b[1] - a[1]).slice(0, k).map((x) => x[0]); },
+  entities(text) {
+    const out = new Set();
+    for (const m of text.matchAll(/"([A-Z][A-Za-z ]+)"|\b((?:[A-Z][a-z]+|[A-Z]{2,})(?:\s+(?:[A-Z][a-z]+|[A-Z]{2,}|LLC|Ltd\.?|Inc\.?|GmbH))+)/g)) out.add((m[1] || m[2]).trim());
+    return out;
+  },
+  words(t) { return (t.match(/\S+/g) || []).length; },
+};
+
+/* ------------------------------------------------------------ chunkers
+   The 20 methods of itsual/Chunking-Methods-for-RAG (same algorithms as
+   systems/chunking-methods/chunking_methods.py). Each returns
+   [{text, start, end, meta}] with text === doc.slice(start, end) unless
+   meta.added_context says otherwise. */
+const C = (doc, s, e, meta = {}) => ({ text: doc.slice(s, e), start: s, end: e, meta });
+const CS = (doc, s, e, meta) => { const sp = Text.strip(doc, s, e); return sp ? C(doc, sp[0], sp[1], meta) : null; };
+function pack(doc, units, max, method) {
+  const out = []; let cur = null;
+  for (const [s, e] of units) { if (cur && e - cur[0] > max) { out.push(C(doc, cur[0], cur[1], { method })); cur = null; } cur = cur ? [cur[0], e] : [s, e]; }
+  if (cur) out.push(C(doc, cur[0], cur[1], { method }));
+  return out;
+}
+const SEPARATORS = ['\n## ', '\n### ', '\n\n', '\n', '. ', ' '];
+const Chunkers = {
+  fixed_size(doc, { size = 500 } = {}) { const o = []; for (let i = 0; i < doc.length; i += size) o.push(C(doc, i, Math.min(i + size, doc.length), { method: 'fixed_size' })); return o; },
+  token_based(doc, { max_tokens = 100 } = {}) { const t = Text.tokens(doc), o = []; for (let i = 0; i < t.length; i += max_tokens) { const j = Math.min(i + max_tokens, t.length); o.push(C(doc, t[i][0], t[j - 1][1], { method: 'token_based', tokens: j - i })); } return o; },
+  sentence_based(doc, { max_sentences = 4 } = {}) { const s = Text.sentences(doc), o = []; for (let i = 0; i < s.length; i += max_sentences) o.push(C(doc, s[i][0], s[Math.min(i + max_sentences, s.length) - 1][1], { method: 'sentence_based' })); return o; },
+  paragraph_based(doc, { max_chars = 1200 } = {}) { return pack(doc, Text.paragraphs(doc), max_chars, 'paragraph_based'); },
+  page_based(doc) { const o = []; let pos = 0; doc.split('\f').forEach((p, i) => { const c = CS(doc, pos, pos + p.length, { method: 'page_based', page: i + 1 }); if (c) o.push(c); pos += p.length + 1; }); return o; },
+  sliding_window(doc, { window = 600, step = 400 } = {}) { step = Math.max(1, Math.min(step, window)); const o = []; for (let i = 0; ; i += step) { o.push(C(doc, i, Math.min(i + window, doc.length), { method: 'sliding_window' })); if (i + window >= doc.length) break; } return o; },
+  fixed_token_overlap(doc, { max_tokens = 100, overlap = 20 } = {}) {
+    overlap = Math.min(overlap, max_tokens - 1); const t = Text.tokens(doc), o = []; let i = 0;
+    while (i < t.length) { const j = Math.min(i + max_tokens, t.length); o.push(C(doc, t[i][0], t[j - 1][1], { method: 'fixed_token_overlap', overlap_tokens: i ? overlap : 0 })); if (j === t.length) break; i = j - overlap; }
+    return o;
+  },
+  recursive(doc, { max_chars = 800, separators = SEPARATORS } = {}) {
+    const split = (s, e, lvl) => {
+      if (e - s <= max_chars || lvl >= separators.length) return [[s, e]];
+      const sep = separators[lvl], pieces = []; let cur = s;
+      for (;;) { const k = doc.indexOf(sep, cur + 1); if (k < 0 || k >= e) break; pieces.push([cur, k]); cur = k; }
+      pieces.push([cur, e]);
+      return pieces.length === 1 ? split(s, e, lvl + 1) : pieces.flatMap(([a, b]) => split(a, b, lvl + 1));
+    };
+    return pack(doc, split(0, doc.length, 0), max_chars, 'recursive').map((c) => CS(doc, c.start, c.end, { method: 'recursive' })).filter(Boolean);
+  },
+  recursive_python(code, { max_chars = 1200 } = {}) {
+    return Chunkers.recursive(code, { max_chars, separators: ['\nclass ', '\ndef ', '\n    def ', '\n\n', '\n', ' '] }).map((c) => ({ ...c, meta: { method: 'recursive_python' } }));
+  },
+  context_enriched(doc, { max_chars = 800, neighbour_chars = 120 } = {}) {
+    const base = Chunkers.recursive(doc, { max_chars }), heads = Text.headings(doc);
+    return base.map((c, i) => {
+      const path = Text.headingPath(heads, c.start), prev = i ? base[i - 1].text.slice(-neighbour_chars).trim() : '';
+      const prefix = (path.length ? `[Section: ${path.join(' > ')}]\n` : '') + (prev ? `[Previously: …${prev}]\n` : '');
+      return { text: prefix + c.text, start: c.start, end: c.end, meta: { method: 'context_enriched', section: path, position: `${i + 1}/${base.length}`, added_context: prefix.length } };
+    });
+  },
+  semantic(doc, { threshold = 0.08, window = 2, max_chars = 1500 } = {}) {
+    const s = Text.sentences(doc); if (s.length < 2) return [C(doc, 0, doc.length, { method: 'semantic' })];
+    const groups = s.map((_, i) => doc.slice(s[Math.max(0, i - window + 1)][0], s[i][1]));
+    const v = Text.tfidf(groups), sims = s.slice(0, -1).map((_, i) => Text.cos(v[i], v[i + 1]));
+    const o = []; let start = 0;
+    sims.forEach((sim, i) => {
+      const localMin = sim <= Math.min(...sims.slice(Math.max(0, i - 1), i + 2));
+      if ((sim < threshold && localMin) || s[i][1] - s[start][0] > max_chars) { o.push(C(doc, s[start][0], s[i][1], { method: 'semantic', boundary_similarity: +sim.toFixed(3) })); start = i + 1; }
+    });
+    o.push(C(doc, s[start][0], s[s.length - 1][1], { method: 'semantic' }));
+    return o;
+  },
+  topic_based(doc, { max_topics = 6 } = {}) {
+    const p = Text.paragraphs(doc); if (p.length <= 1) return [C(doc, 0, doc.length, { method: 'topic_based' })];
+    const v = Text.tfidf(p.map(([a, b]) => doc.slice(a, b))), sims = p.slice(0, -1).map((_, i) => Text.cos(v[i], v[i + 1]));
+    const depth = sims.map((sim, i) => (Math.max(...sims.slice(0, i + 1)) - sim) + (Math.max(...sims.slice(i)) - sim));
+    const cuts = [...sims.keys()].sort((a, b) => depth[b] - depth[a]).slice(0, max_topics - 1).sort((a, b) => a - b);
+    const bounds = [0, ...cuts.map((c) => c + 1), p.length], o = [];
+    for (let i = 0; i < bounds.length - 1; i++) { const a = bounds[i], b = bounds[i + 1]; if (a === b) continue; o.push(C(doc, p[a][0], p[b - 1][1], { method: 'topic_based', topic: Text.topTerms(doc.slice(p[a][0], p[b - 1][1])) })); }
+    return o;
+  },
+  entity_based(doc, { max_chars = 1200 } = {}) {
+    const s = Text.sentences(doc), o = []; let start = 0, ents = new Set();
+    s.forEach(([a, b], i) => {
+      const e = Text.entities(doc.slice(a, b)), shared = [...e].some((x) => ents.has(x));
+      if (i > start && ((e.size && !shared) || b - s[start][0] > max_chars)) { o.push(C(doc, s[start][0], s[i - 1][1], { method: 'entity_based', entities: [...ents].sort() })); start = i; ents = new Set(); }
+      e.forEach((x) => ents.add(x));
+    });
+    o.push(C(doc, s[start][0], s[s.length - 1][1], { method: 'entity_based', entities: [...ents].sort() }));
+    return o;
+  },
+  keyword_based(doc, { keywords = 'Section, Article, Clause, WHEREAS, Schedule' } = {}) {
+    const alts = String(keywords).split(',').map((k) => k.trim()).filter(Boolean).map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') || '(?!)';
+    const re = new RegExp(`^(?:#+\\s*)?\\**(?:(?:${alts})\\b|\\d+(?:\\.\\d+)*\\.?(?=\\s))`, 'gm');
+    const starts = [...new Set([0, ...[...doc.matchAll(re)].map((m) => m.index)])].sort((a, b) => a - b);
+    return starts.map((a, i) => CS(doc, a, starts[i + 1] ?? doc.length, { method: 'keyword_based', keyword: doc.slice(a, a + 60).trim().split('\n')[0] })).filter(Boolean);
+  },
+  hierarchical(doc, { max_chars = 800 } = {}) {
+    let heads = Text.headings(doc); const o = [];
+    if (!heads.length) return Chunkers.recursive(doc, { max_chars }).map((c) => ({ ...c, meta: { method: 'hierarchical', level: 'child', parent: null } }));
+    if (heads[0].at !== 0) heads = [{ at: 0, level: 0, title: '(preamble)' }, ...heads];
+    heads.forEach((h, i) => {
+      let end = doc.length;
+      for (const later of heads.slice(i + 1)) if (later.level <= h.level || h.level === 0) { end = later.at; break; }
+      const parent = CS(doc, h.at, end, { method: 'hierarchical', level: 'parent', id: 's' + i, title: h.title, depth: h.level });
+      if (!parent) return; o.push(parent);
+      const own = heads[i + 1] ? heads[i + 1].at : doc.length, sub = doc.slice(h.at, own);
+      Chunkers.recursive(sub, { max_chars }).forEach((c) => o.push(C(doc, h.at + c.start, h.at + c.end, { method: 'hierarchical', level: 'child', parent: 's' + i })));
+    });
+    return o;
+  },
+  modality_specific(doc, { max_chars = 800 } = {}) {
+    const spans = [];
+    for (const m of doc.matchAll(/(?:^\|.*\|[ \t]*\n?)+/gm)) spans.push([m.index, m.index + m[0].length, 'table']);
+    for (const m of doc.matchAll(/^```[\s\S]*?^```[ \t]*\n?/gm)) spans.push([m.index, m.index + m[0].length, 'code']);
+    for (const m of doc.matchAll(/!\[[^\]]*\]\([^)]+\)/g)) spans.push([m.index, m.index + m[0].length, 'image']);
+    spans.sort((a, b) => a[0] - b[0]);
+    const o = []; let pos = 0;
+    const prose = (a, b) => Chunkers.recursive(doc.slice(a, b), { max_chars }).forEach((c) => o.push(C(doc, a + c.start, a + c.end, { method: 'modality_specific', modality: 'text' })));
+    for (const [a, b, kind] of spans) { if (a < pos) continue; prose(pos, a); const c = CS(doc, a, b, { method: 'modality_specific', modality: kind }); if (c) o.push(c); pos = b; }
+    prose(pos, doc.length);
+    return o;
+  },
+  table_aware(doc, { max_rows = 20, max_chars = 800 } = {}) {
+    const o = []; let pos = 0;
+    const prose = (a, b) => Chunkers.recursive(doc.slice(a, b), { max_chars }).forEach((c) => o.push(C(doc, a + c.start, a + c.end, { method: 'table_aware', kind: 'text' })));
+    for (const m of doc.matchAll(/(?:^\|.*\|[ \t]*\n?)+/gm)) {
+      prose(pos, m.index);
+      const lines = [...m[0].matchAll(/^.*\S.*$/gm)].map((x) => [m.index + x.index, m.index + x.index + x[0].length]);
+      const hdr = lines.length > 1 && /^[|\-: ]+$/.test(doc.slice(...lines[1])) ? lines.slice(0, 2) : lines.slice(0, 1);
+      const body = lines.slice(hdr.length);
+      if (body.length <= max_rows) o.push(C(doc, lines[0][0], lines[lines.length - 1][1], { method: 'table_aware', kind: 'table', rows: body.length }));
+      else for (let i = 0; i < body.length; i += max_rows) { const part = body.slice(i, i + max_rows); o.push(C(doc, part[0][0], part[part.length - 1][1], { method: 'table_aware', kind: 'table_part', rows: part.length, header: hdr.map((l) => doc.slice(...l)).join('\n') })); }
+      pos = m.index + m[0].length;
+    }
+    prose(pos, doc.length);
+    return o;
+  },
+  agentic(doc, { starts } = {}) {
+    // `starts`: sentence indices chosen by an agent (the page supplies them).
+    const s = Text.sentences(doc), st = [...new Set([0, ...(starts || [])])].filter((i) => i < s.length).sort((a, b) => a - b);
+    return st.map((a, i) => C(doc, s[a][0], s[(st[i + 1] ?? s.length) - 1][1], { method: 'agentic', sentences: `${a}-${(st[i + 1] ?? s.length) - 1}` }));
+  },
+  subdocument(doc, { max_chars = 800 } = {}) {
+    const heads = Text.headings(doc).filter((h) => h.level <= 2), title = (heads.find((h) => h.level === 1) || {}).title || doc.trim().split('\n')[0].slice(0, 80);
+    const starts = [0, ...heads.filter((h) => h.level === 2).map((h) => h.at), doc.length], o = [];
+    starts.slice(0, -1).forEach((a, n) => {
+      const b = starts[n + 1]; if (a === b) return; const sec = doc.slice(a, b), ss = Text.sentences(sec);
+      const summary = (ss.slice(1, 2).length ? ss.slice(1, 2) : ss.slice(0, 1)).map(([x, y]) => sec.slice(x, y)).join(' ').slice(0, 300);
+      const subTitle = (heads.find((h) => h.at === a) || {}).title || '(preamble)';
+      Chunkers.recursive(sec, { max_chars }).forEach((c) => o.push(C(doc, a + c.start, a + c.end, { method: 'subdocument', document: title, subdocument: subTitle, summary })));
+    });
+    return o;
+  },
+  hybrid(doc, { max_chars = 800, min_chars = 200 } = {}) {
+    const heads = Text.headings(doc), starts = [...new Set([0, ...heads.filter((h) => h.level <= 2).map((h) => h.at)])].sort((a, b) => a - b).concat(doc.length), o = [];
+    starts.slice(0, -1).forEach((a, i) => {
+      const b = starts[i + 1], section = Text.headingPath(heads, a).slice(-1)[0] || '(preamble)', merged = [];
+      for (const c0 of Chunkers.modality_specific(doc.slice(a, b), { max_chars })) {
+        const c = C(doc, a + c0.start, a + c0.end, { method: 'hybrid', modality: c0.meta.modality, section }), last = merged[merged.length - 1];
+        const pair = last && last.meta.modality === 'text' && c.meta.modality === 'text' && Math.min(last.text.length, c.text.length) < min_chars;
+        const note = last && last.meta.modality === 'table' && c.meta.modality === 'text' && c.text.length < min_chars;
+        if ((pair || note) && c.end - last.start <= max_chars) merged[merged.length - 1] = C(doc, last.start, c.end, last.meta); else merged.push(c);
+      }
+      o.push(...merged);
+    });
+    return o;
+  },
+};
+
+/* Chunk quality metrics in the spirit of ChunckerFlow's evaluators. */
+const Metrics = {
+  semantic_coherence(chunks) { // mean similarity of sentences to their own chunk
+    const scores = chunks.map((c) => { const s = Text.sentences(c.text).map(([a, b]) => c.text.slice(a, b)); if (s.length < 2) return 1; const v = Text.tfidf([c.text, ...s]); return s.reduce((acc, _, i) => acc + Text.cos(v[0], v[i + 1]), 0) / s.length; });
+    return scores.reduce((a, b) => a + b, 0) / (scores.length || 1);
+  },
+  boundary_quality(chunks) { // share of chunks ending at a sentence or structural boundary
+    const ok = chunks.filter((c) => /[.!?:"')\]|]\s*$|^#.*$/m.test(c.text.trimEnd().split('\n').pop()) || /\n\s*$/.test(c.text));
+    return ok.length / (chunks.length || 1);
+  },
+  chunk_stickiness(chunks) { // neighbour similarity: lower means cleaner topic separation
+    if (chunks.length < 2) return 0; const v = Text.tfidf(chunks.map((c) => c.text)); let s = 0;
+    for (let i = 0; i < v.length - 1; i++) s += Text.cos(v[i], v[i + 1]); return s / (v.length - 1);
+  },
+  topic_diversity(chunks) { // distinct top terms across chunks
+    const tops = chunks.map((c) => Text.topTerms(c.text, 3)).flat(); return tops.length ? new Set(tops).size / tops.length : 0;
+  },
+  size_stats(chunks) { const s = chunks.map((c) => c.text.length); const mean = s.reduce((a, b) => a + b, 0) / (s.length || 1); const sd = Math.sqrt(s.reduce((a, x) => a + (x - mean) ** 2, 0) / (s.length || 1)); return { count: s.length, min: Math.min(...s), max: Math.max(...s), mean, cv: mean ? sd / mean : 0 }; },
+};
+
+/* Render chunks over the source text as coloured marks (overlap hatched). */
+function renderOverlay(container, doc, chunks, { onPick } = {}) {
+  container.replaceChildren();
+  const marks = new Array(doc.length).fill(-1), count = new Uint8Array(doc.length);
+  chunks.forEach((c, i) => { for (let k = c.start; k < c.end; k++) { if (marks[k] < 0) marks[k] = i; count[k]++; } });
+  let i = 0;
+  while (i < doc.length) {
+    let j = i; while (j < doc.length && marks[j] === marks[i] && (count[j] > 1) === (count[i] > 1)) j++;
+    const text = doc.slice(i, j), m = marks[i];
+    if (m < 0) container.append(text);
+    else {
+      const mk = el('mark', { class: count[i] > 1 ? 'ov' : '', title: `Chunk ${m + 1}`, style: { background: `var(--c${m % 8})` } }, text);
+      if (onPick) { mk.style.cursor = 'pointer'; mk.addEventListener('click', () => onPick(m)); }
+      container.append(mk);
+    }
+    i = j;
+  }
+}
+
+function renderChunkCards(container, chunks, { limit = 200, extra } = {}) {
+  container.replaceChildren(...(chunks.length ? chunks.slice(0, limit).map((c, i) => el('div', { class: 'chunk', style: { borderLeftColor: `var(--e${i % 8})` }, id: 'chunk-' + i },
+    el('div', { class: 'meta' }, el('b', {}, `#${i + 1}`), el('span', {}, `${c.text.length} chars`), el('span', {}, `${Text.words(c.text)} words`),
+      ...Object.entries(c.meta || {}).filter(([k, v]) => k !== 'method' && v !== '' && v != null && !(Array.isArray(v) && !v.length)).slice(0, 4)
+        .map(([k, v]) => el('span', {}, `${k}: ${Array.isArray(v) ? v.join(', ') : String(v).slice(0, 70)}`)), extra ? extra(c, i) : null),
+    el('pre', {}, c.text))) : [el('div', { class: 'empty' }, 'No chunks')]));
+}
+
+/* ------------------------------------------------------------ graph */
+function forceGraph(canvas, { nodes, edges, color = () => 'var(--e0)', label = (n) => n.id, onSelect, repel = Math.min(2200, 60000 / Math.max(10, nodes.length)), linkLength = 80 } = {}) {
+  const ctx = canvas.getContext('2d'); let W = 0, H = 0, selected = null, drag = null, alpha = 1, raf;
+  const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v.replace(/^var\((.*)\)$/, '$1')).trim() || v;
+  const byId = new Map(nodes.map((n) => [n.id, n]));
+  const resize = () => { const r = canvas.getBoundingClientRect(), d = devicePixelRatio || 1; W = r.width; H = r.height; canvas.width = W * d; canvas.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0); };
+  resize();
+  nodes.forEach((n, i) => { const a = (i / Math.max(1, nodes.length)) * Math.PI * 2; n.x ??= W / 2 + Math.cos(a) * W * 0.3; n.y ??= H / 2 + Math.sin(a) * H * 0.3; n.vx = 0; n.vy = 0; n.r = 5 + Math.min(9, Math.sqrt((n.degree || 1)) * 2.4); });
+  const E = edges.map((e) => ({ ...e, a: byId.get(e.source), b: byId.get(e.target) })).filter((e) => e.a && e.b);
+  function tick() {
+    if (alpha > 0.005) {
+      for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j]; let dx = b.x - a.x, dy = b.y - a.y; const d2 = dx * dx + dy * dy + 0.01, f = Math.min(repel / d2, 6);
+        a.vx -= dx * f * 0.05; a.vy -= dy * f * 0.05; b.vx += dx * f * 0.05; b.vy += dy * f * 0.05;
+      }
+      for (const e of E) { const dx = e.b.x - e.a.x, dy = e.b.y - e.a.y, d = Math.sqrt(dx * dx + dy * dy) || 1, f = (d - linkLength) * 0.012; e.a.vx += dx / d * f * d * 0.05; e.a.vy += dy / d * f * d * 0.05; e.b.vx -= dx / d * f * d * 0.05; e.b.vy -= dy / d * f * d * 0.05; }
+      for (const n of nodes) { if (n === drag) continue; n.vx += (W / 2 - n.x) * 0.006; n.vy += (H / 2 - n.y) * 0.006; n.x += n.vx * alpha; n.y += n.vy * alpha; n.vx *= 0.6; n.vy *= 0.6; n.x = Math.max(60, Math.min(W - 60, n.x)); n.y = Math.max(24, Math.min(H - 24, n.y)); }
+      alpha *= 0.985;
+    }
+    draw(); raf = requestAnimationFrame(tick);
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const near = selected ? new Set(E.filter((e) => e.a === selected || e.b === selected).flatMap((e) => [e.a, e.b])) : null;
+    for (const e of E) { ctx.strokeStyle = css('--muted'); ctx.globalAlpha = near && !(near.has(e.a) && near.has(e.b) && (e.a === selected || e.b === selected)) ? 0.12 : 0.45; ctx.lineWidth = e === selected ? 2 : 1; ctx.beginPath(); ctx.moveTo(e.a.x, e.a.y); ctx.lineTo(e.b.x, e.b.y); ctx.stroke(); }
+    ctx.globalAlpha = 1; ctx.font = '11px ' + css('--font'); ctx.textAlign = 'center';
+    nodes.forEach((n, i) => {
+      ctx.globalAlpha = near && !near.has(n) ? 0.25 : 1; ctx.fillStyle = css(color(n)); ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); ctx.fill();
+      if (n === selected) { ctx.strokeStyle = css('--ink'); ctx.lineWidth = 2; ctx.stroke(); }
+      if (nodes.length < 60 || n.degree > 1 || n === selected) { ctx.fillStyle = css('--ink'); const t = label(n); ctx.fillText(t.length > 26 ? t.slice(0, 25) + '…' : t, n.x, i % 2 ? n.y + n.r + 12 : n.y - n.r - 4); }
+    });
+    ctx.globalAlpha = 1;
+  }
+  const at = (ev) => { const r = canvas.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top; return nodes.find((n) => (n.x - x) ** 2 + (n.y - y) ** 2 < (n.r + 4) ** 2); };
+  canvas.onpointerdown = (ev) => { const n = at(ev); if (n) { drag = n; selected = n; onSelect && onSelect(n); canvas.setPointerCapture(ev.pointerId); alpha = Math.max(alpha, 0.3); } };
+  canvas.onpointermove = (ev) => { if (!drag) return; const r = canvas.getBoundingClientRect(); drag.x = ev.clientX - r.left; drag.y = ev.clientY - r.top; };
+  canvas.onpointerup = () => { drag = null; };
+  window.addEventListener('resize', () => { resize(); alpha = 0.5; });
+  cancelAnimationFrame(canvas._raf); tick(); canvas._raf = raf;
+  return { select(id) { selected = byId.get(id) || null; onSelect && selected && onSelect(selected); }, reheat() { alpha = 1; }, stop() { cancelAnimationFrame(raf); } };
+}
+
+/* ------------------------------------------------------------ pdf.js */
+let _pdfjs;
+function loadPdfJs() {
+  // The worker script is loaded as a plain script, so pdf.js runs on the
+  // main thread (cross-origin workers are not allowed in this frame).
+  if (_pdfjs) return _pdfjs;
+  const add = (src) => new Promise((ok, fail) => document.head.append(el('script', { src, onload: ok, onerror: () => fail(new Error('Could not load ' + src)) })));
+  const base = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+  _pdfjs = add(base + 'pdf.min.js').then(() => add(base + 'pdf.worker.min.js')).then(() => window.pdfjsLib);
+  return _pdfjs;
+}
+const b64bytes = (b64) => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+async function pdfPages(bytes) {
+  const lib = await loadPdfJs(), pdf = await lib.getDocument({ data: bytes }).promise, pages = [];
+  for (let p = 1; p <= pdf.numPages; p++) {
+    const page = await pdf.getPage(p), vp = page.getViewport({ scale: 1 }), tc = await page.getTextContent();
+    const items = tc.items.filter((it) => it.str.trim()).map((it) => ({ str: it.str, x: it.transform[4], y: vp.height - it.transform[5], h: Math.abs(it.transform[3]) || it.height, w: it.width, font: it.fontName, bold: /bold|black|semibold/i.test((tc.styles[it.fontName] || {}).fontFamily || '') || /Bold/i.test(it.fontName) }));
+    pages.push({ page, number: p, width: vp.width, height: vp.height, items });
+  }
+  return pages;
+}
+async function renderPdfPage(page, canvas, scale = 1.3) {
+  const vp = page.getViewport({ scale }), d = devicePixelRatio || 1;
+  canvas.width = vp.width * d; canvas.height = vp.height * d; canvas.style.width = vp.width + 'px'; canvas.style.maxWidth = '100%';
+  const ctx = canvas.getContext('2d'); ctx.setTransform(d, 0, 0, d, 0, 0);
+  await page.render({ canvasContext: ctx, viewport: vp }).promise;
+  return vp;
+}
+/* Group positioned text items into lines (by baseline) in reading order. */
+function pdfLines(items) {
+  const sorted = [...items].sort((a, b) => a.y - b.y || a.x - b.x), lines = [];
+  for (const it of sorted) {
+    const last = lines[lines.length - 1];
+    if (last && Math.abs(last.y - it.y) < Math.max(2, it.h * 0.4)) { last.items.push(it); last.h = Math.max(last.h, it.h); last.bold = last.bold && it.bold; }
+    else lines.push({ y: it.y, h: it.h, bold: it.bold, items: [it] });
+  }
+  return lines.map((l) => { l.items.sort((a, b) => a.x - b.x); l.x = l.items[0].x; l.right = Math.max(...l.items.map((i) => i.x + i.w)); l.text = l.items.map((i, k) => (k && i.x - (l.items[k - 1].x + l.items[k - 1].w) > 1.5 ? (i.x - (l.items[k - 1].x + l.items[k - 1].w) > 14 ? '\t' : ' ') : '') + i.str).join('').replace(/ {2,}/g, ' '); return l; });
+}
+
+/* pdf.js conversion in the spirit of pymupdf4llm: font-size ranks become heading levels */
+function pdfMarkdown(pgs, mode = 'pymupdf') {
+  const lines = pgs.flatMap((p) => pdfLines(p.items).map((l) => ({ ...l, page: p.number, ph: p.height })));
+  if (mode === 'plain') return pgs.map((p) => pdfLines(p.items).map((l) => l.text).join('\n')).join('\n\n');
+  const sizes = {}; lines.forEach((l) => { const s = Math.round(l.h); sizes[s] = (sizes[s] || 0) + l.text.length; });
+  const body = +Object.entries(sizes).sort((a, b) => b[1] - a[1])[0][0];
+  const heads = Object.keys(sizes).map(Number).filter((s) => s > body + 0.5).sort((a, b) => b - a);
+  const out = []; let para = [];
+  const flush = () => { if (para.length) { out.push(para.join(' ').replace(/(\w)- (\w)/g, '$1$2')); para = []; } };
+  lines.forEach((l, i) => {
+    const s = Math.round(l.h), prev = lines[i - 1];
+    if (/^\d+$/.test(l.text.trim()) && (l.y > l.ph - 60)) return; // page numbers
+    const lvl = heads.indexOf(s);
+    if (lvl >= 0 || (l.bold && l.text.length < 80 && s >= body)) { flush(); out.push('#'.repeat(Math.min(6, (lvl >= 0 ? lvl : heads.length) + 1)) + ' **' + l.text.trim() + '**'); return; }
+    if (l.text.includes('\t')) { flush(); const cells = l.text.split('\t').map((x) => x.trim()); out.push('| ' + cells.join(' | ') + ' |'); if (!prev || !prev.text.includes('\t')) out.push('|' + cells.map(() => '---').join('|') + '|'); return; }
+    if (prev && prev.page === l.page && l.y - prev.y > l.h * 1.9) flush();
+    para.push(l.text.trim());
+  });
+  flush();
+  return out.join('\n\n').replace(/\n\n(\|[^\n]*\|)\n\n(?=\|)/g, '\n\n$1\n').replace(/(\|[^\n]*\|)\n\n(?=\|)/g, '$1\n');
+}
+
+async function sha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+/* Bar chart into an SVG element: rows [{label, value}] */
+function barChart(svg, rows, { max, fmtv = (v) => fmt(v, 2), height = 22 } = {}) {
+  const W = 520, lw = 150, top = Math.max(1e-9, max ?? Math.max(...rows.map((r) => r.value)));
+  svg.setAttribute('viewBox', `0 0 ${W} ${rows.length * height + 6}`);
+  svg.innerHTML = rows.map((r, i) => {
+    const w = Math.max(1, (r.value / top) * (W - lw - 60)), y = i * height + 4;
+    return `<text x="${lw - 8}" y="${y + 13}" text-anchor="end" font-size="11.5" fill="var(--muted)">${esc(r.label)}</text>
+      <rect x="${lw}" y="${y + 2}" width="${w}" height="${height - 8}" rx="3" fill="${r.color || 'var(--accent)'}"></rect>
+      <text x="${lw + w + 6}" y="${y + 13}" font-size="11.5" fill="var(--ink)">${esc(fmtv(r.value))}</text>`;
+  }).join('');
+}
+
+/* Sparkline/area chart: values over time */
+function areaChart(svg, values, { labels = [], color = 'var(--accent)', h = 120, fmtv = (v) => fmt(v) } = {}) {
+  const W = 520, H = h, pad = 22, left = 40, max = Math.max(1e-9, ...values), n = values.length;
+  const x = (i) => left + (i / Math.max(1, n - 1)) * (W - left - pad), y = (v) => H - pad - (v / max) * (H - pad * 2);
+  const pts = values.map((v, i) => `${x(i)},${y(v)}`).join(' ');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.innerHTML = `${[0, 0.5, 1].map((f) => `<line x1="${left}" x2="${W - pad}" y1="${y(max * f)}" y2="${y(max * f)}" stroke="var(--line)"/><text x="${left - 5}" y="${y(max * f) + 4}" text-anchor="end" font-size="10" fill="var(--muted)">${esc(fmtv(max * f))}</text>`).join('')}
+    <polygon points="${x(0)},${H - pad} ${pts} ${x(n - 1)},${H - pad}" fill="${color}" opacity=".16"/>
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2"/>
+    <circle cx="${x(n - 1)}" cy="${y(values[n - 1])}" r="3.5" fill="${color}"/>
+    ${labels.map((l, i) => (i % Math.ceil(n / 6) === 0 ? `<text x="${x(i)}" y="${H - 6}" text-anchor="middle" font-size="10" fill="var(--muted)">${esc(l)}</text>` : '')).join('')}`;
+}
+
+const SAMPLES = {"agreement": "# Master Services Agreement\n\nThis Master Services Agreement (\"Agreement\") is entered into between Northwind Legal Technologies Ltd. (\"Provider\") and Contoso Holdings LLC (\"Client\"). It governs the document automation and retrieval services the Provider delivers to the Client under one or more statements of work.\n\n## 1. Definitions\n\n### 1.1 Confidential Information\n\n\"Confidential Information\" means any non-public information disclosed by one party to the other, whether orally or in writing, that is marked as confidential or that a reasonable person would understand to be confidential given the nature of the information and the circumstances of disclosure.\n\n### 1.2 Deliverables\n\n\"Deliverables\" means the software configurations, reports, trained retrieval indexes and documentation the Provider produces for the Client under a statement of work, excluding any pre-existing Provider tools.\n\n## 2. Services\n\n### 2.1 Scope\n\nThe Provider will ingest, parse and index the Client's contract repository, and will expose a retrieval interface that returns the clauses most relevant to a natural-language question. The Provider will keep the parsed corpus synchronised with the Client's document management system at least once every twenty-four hours.\n\n### 2.2 Service Levels\n\n| Metric | Target | Service Credit |\n|--------|--------|----------------|\n| Monthly uptime | 99.5% | 5% of monthly fee |\n| Query latency (p95) | 800 ms | 2% of monthly fee |\n| Ingestion delay | 24 hours | 3% of monthly fee |\n\nService credits are the Client's sole and exclusive remedy for a failure to meet the targets in the table above.\n\n## 3. Fees and Payment\n\nThe Client will pay a monthly fee of USD 12,500, invoiced in advance. Invoices are due within thirty (30) days of receipt. Late amounts accrue interest at the lesser of 1.5% per month or the maximum rate permitted by law.\n\n## 4. Confidentiality\n\nEach party will protect the other party's Confidential Information with at least the same degree of care it uses for its own information of a similar nature, and in no event less than reasonable care. The obligations in this section survive termination of this Agreement for five (5) years.\n\n## 5. Limitation of Liability\n\nExcept for breaches of Section 4 or a party's indemnification obligations, neither party's aggregate liability arising out of this Agreement will exceed the fees paid by the Client in the twelve (12) months preceding the event giving rise to the claim. Neither party is liable for indirect, incidental or consequential damages.\n\n## 6. Term and Termination\n\n### 6.1 Term\n\nThis Agreement starts on the Effective Date and continues for an initial term of twenty-four (24) months, renewing automatically for successive twelve (12) month terms unless either party gives ninety (90) days' written notice of non-renewal.\n\n### 6.2 Termination for Cause\n\nEither party may terminate this Agreement on written notice if the other party materially breaches it and fails to cure the breach within thirty (30) days of receiving notice describing it.\n\n## 7. Governing Law\n\nThis Agreement is governed by the laws of the State of New York, without regard to its conflict of laws principles. The parties submit to the exclusive jurisdiction of the state and federal courts located in New York County.\n", "agreement_html": "<!doctype html><html><head><meta charset='utf-8'><title>Master Services Agreement</title><style>body{font-family:Helvetica,sans-serif;font-size:10pt}table{border-collapse:collapse}td,th{border:1px solid #444;padding:3px 6px}</style></head><body><h1>Master Services Agreement</h1>\n<p>This Master Services Agreement (&quot;Agreement&quot;) is entered into between Northwind Legal Technologies Ltd. (&quot;Provider&quot;) and Contoso Holdings LLC (&quot;Client&quot;). It governs the document automation and retrieval services the Provider delivers to the Client under one or more statements of work.</p>\n<h2>1. Definitions</h2>\n<h3>1.1 Confidential Information</h3>\n<p>&quot;Confidential Information&quot; means any non-public information disclosed by one party to the other, whether orally or in writing, that is marked as confidential or that a reasonable person would understand to be confidential given the nature of the information and the circumstances of disclosure.</p>\n<h3>1.2 Deliverables</h3>\n<p>&quot;Deliverables&quot; means the software configurations, reports, trained retrieval indexes and documentation the Provider produces for the Client under a statement of work, excluding any pre-existing Provider tools.</p>\n<h2>2. Services</h2>\n<h3>2.1 Scope</h3>\n<p>The Provider will ingest, parse and index the Client&#x27;s contract repository, and will expose a retrieval interface that returns the clauses most relevant to a natural-language question. The Provider will keep the parsed corpus synchronised with the Client&#x27;s document management system at least once every twenty-four hours.</p>\n<h3>2.2 Service Levels</h3>\n<table><thead><tr><th>Metric</th><th>Target</th><th>Service Credit</th></tr></thead><tbody><tr><td>Monthly uptime</td><td>99.5%</td><td>5% of monthly fee</td></tr><tr><td>Query latency (p95)</td><td>800 ms</td><td>2% of monthly fee</td></tr><tr><td>Ingestion delay</td><td>24 hours</td><td>3% of monthly fee</td></tr></tbody></table>\n<p>Service credits are the Client&#x27;s sole and exclusive remedy for a failure to meet the targets in the table above.</p>\n<h2>3. Fees and Payment</h2>\n<p>The Client will pay a monthly fee of USD 12,500, invoiced in advance. Invoices are due within thirty (30) days of receipt. Late amounts accrue interest at the lesser of 1.5% per month or the maximum rate permitted by law.</p>\n<h2>4. Confidentiality</h2>\n<p>Each party will protect the other party&#x27;s Confidential Information with at least the same degree of care it uses for its own information of a similar nature, and in no event less than reasonable care. The obligations in this section survive termination of this Agreement for five (5) years.</p>\n<h2>5. Limitation of Liability</h2>\n<p>Except for breaches of Section 4 or a party&#x27;s indemnification obligations, neither party&#x27;s aggregate liability arising out of this Agreement will exceed the fees paid by the Client in the twelve (12) months preceding the event giving rise to the claim. Neither party is liable for indirect, incidental or consequential damages.</p>\n<h2>6. Term and Termination</h2>\n<h3>6.1 Term</h3>\n<p>This Agreement starts on the Effective Date and continues for an initial term of twenty-four (24) months, renewing automatically for successive twelve (12) month terms unless either party gives ninety (90) days&#x27; written notice of non-renewal.</p>\n<h3>6.2 Termination for Cause</h3>\n<p>Either party may terminate this Agreement on written notice if the other party materially breaches it and fails to cure the breach within thirty (30) days of receiving notice describing it.</p>\n<h2>7. Governing Law</h2>\n<p>This Agreement is governed by the laws of the State of New York, without regard to its conflict of laws principles. The parties submit to the exclusive jurisdiction of the state and federal courts located in New York County.</p></body></html>", "dpa": "# Data Processing Addendum\n\nThis Data Processing Addendum (\"Addendum\") forms part of the Master Services Agreement between Northwind Legal Technologies Ltd. (\"Processor\") and Contoso Holdings LLC (\"Controller\"). It applies whenever the Processor handles Personal Data on behalf of the Controller.\n\n## 1. Scope and Roles\n\n### 1.1 Roles of the Parties\n\nThe Controller determines the purposes and means of processing. The Processor processes Personal Data only on the documented instructions of the Controller, including with regard to transfers to a third country.\n\n### 1.2 Categories of Data\n\nThe Processor will handle contact details of Controller staff, the names of counterparties appearing in contracts, and metadata describing those contracts. No special category data is processed under this Addendum.\n\n## 2. Security Measures\n\nThe Processor will maintain technical and organisational measures appropriate to the risk, including encryption of data at rest with AES-256, encryption in transit with TLS 1.2 or later, role-based access control, and quarterly access reviews.\n\nSecurity incidents affecting Personal Data will be reported to the Controller without undue delay and in any event within forty-eight (48) hours of discovery.\n\n## 3. Sub-processors\n\nThe Controller authorises the following sub-processors. The Processor will give thirty (30) days' notice before adding or replacing a sub-processor, during which the Controller may object on reasonable grounds.\n\n| Sub-processor | Service | Location |\n|---------------|---------|----------|\n| Fabrikam Cloud GmbH | Hosting and storage | Frankfurt, Germany |\n| Tailspin Search Inc. | Search indexing | Dublin, Ireland |\n| Litware Mail Ltd. | Transactional email | London, United Kingdom |\n\n## 4. Data Subject Requests\n\nThe Processor will promptly forward any request from a data subject to the Controller and will not respond directly unless instructed. The Processor will assist the Controller in responding within the statutory deadlines, at no additional charge for up to ten (10) requests per month.\n\n## 5. International Transfers\n\nPersonal Data will be stored in the European Economic Area. Any transfer outside it requires the Controller's prior written consent and must rely on the Standard Contractual Clauses adopted by the European Commission.\n\n## 6. Audits\n\nThe Controller may audit the Processor's compliance once per calendar year on thirty (30) days' written notice. The Processor may instead provide a current ISO/IEC 27001 certificate and its most recent SOC 2 Type II report.\n\n## 7. Return and Deletion\n\nOn termination of the Agreement, the Processor will, at the Controller's choice, return or delete all Personal Data within sixty (60) days, unless retention is required by law, and will certify the deletion in writing.\n", "python": "\"\"\"The 20 chunking methods from itsual/Chunking-Methods-for-RAG, implemented.\n\nThe upstream repository is a guide (a method list and a decision tree) with no\ncode; this module is a working implementation of every method it names, plus\n`choose()`, its decision tree. Pure standard library: the \"semantic\" methods\nuse TF-IDF vectors so they run offline, and `agentic()` takes any callable LLM\n(`claude_boundaries` uses Claude when ANTHROPIC_API_KEY is set).\n\nEvery method returns a list of Chunk(text, start, end, meta) where\ntext == document[start:end] unless the method adds context on purpose\n(context_enriched, subdocument), which it records in meta.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport json\nimport math\nimport os\nimport re\nfrom collections import Counter\nfrom dataclasses import dataclass, field\nfrom typing import Callable, Iterable\n\n\n@dataclass\nclass Chunk:\n    text: str\n    start: int\n    end: int\n    meta: dict = field(default_factory=dict)\n\n\ndef _span(doc: str, start: int, end: int, **meta) -> Chunk:\n    return Chunk(doc[start:end], start, end, meta)\n\n\ndef _strip(doc: str, start: int, end: int, **meta) -> Chunk | None:\n    \"\"\"Trim whitespace off a span, keeping offsets exact. None if empty.\"\"\"\n    while start < end and doc[start].isspace():\n        start += 1\n    while end > start and doc[end - 1].isspace():\n        end -= 1\n    return _span(doc, start, end, **meta) if end > start else None\n\n\n# ---------------------------------------------------------------- units\n\nWORD = re.compile(r\"\\S+\")\nSENTENCE_END = re.compile(r\"(?<=[.!?])[\\\"')\\]]*\\s+(?=[A-Z0-9\\\"'(\\[#*-])|\\n\\s*\\n\")\n\n\ndef tokens(doc: str) -> list[tuple[int, int]]:\n    \"\"\"Whitespace-delimited tokens with offsets (a tokenizer-free stand-in for\n    model tokens: roughly 0.75 of a GPT token each).\"\"\"\n    return [m.span() for m in WORD.finditer(doc)]\n\n\ndef sentences(doc: str) -> list[tuple[int, int]]:\n    spans, start = [], 0\n    for m in SENTENCE_END.finditer(doc):\n        spans.append((start, m.start()))\n        start = m.end()\n    spans.append((start, len(doc)))\n    out = []\n    for s, e in spans:\n        c = _strip(doc, s, e)\n        if c:\n            out.append((c.start, c.end))\n    return out\n\n\ndef paragraphs(doc: str) -> list[tuple[int, int]]:\n    out, start = [], 0\n    for m in re.finditer(r\"\\n\\s*\\n\", doc):\n        c = _strip(doc, start, m.start())\n        if c:\n            out.append((c.start, c.end))\n        start = m.end()\n    c = _strip(doc, start, len(doc))\n    if c:\n        out.append((c.start, c.end))\n    return out\n\n\ndef _pack(doc: str, units: list[tuple[int, int]], max_chars: int, method: str) -> list[Chunk]:\n    \"\"\"Greedily join consecutive units into chunks of at most max_chars\n    (a single oversized unit becomes its own chunk).\"\"\"\n    chunks, cur = [], None\n    for s, e in units:\n        if cur and e - cur[0] > max_chars:\n            chunks.append(_span(doc, cur[0], cur[1], method=method))\n            cur = None\n        cur = (cur[0], e) if cur else (s, e)\n    if cur:\n        chunks.append(_span(doc, cur[0], cur[1], method=method))\n    return chunks\n\n\n# ---------------------------------------------------------------- 1. basic\n\ndef fixed_size(doc: str, size: int = 500) -> list[Chunk]:\n    \"\"\"Fixed-Size: cut every `size` characters, ignoring structure.\"\"\"\n    return [_span(doc, i, min(i + size, len(doc)), method=\"fixed_size\") for i in range(0, len(doc), size)]\n\n\ndef token_based(doc: str, max_tokens: int = 100) -> list[Chunk]:\n    \"\"\"Token-Based: `max_tokens` tokens per chunk, never splitting a token.\"\"\"\n    t = tokens(doc)\n    return [_span(doc, t[i][0], t[min(i + max_tokens, len(t)) - 1][1], method=\"token_based\", tokens=len(t[i:i + max_tokens]))\n            for i in range(0, len(t), max_tokens)]\n\n\ndef sentence_based(doc: str, max_sentences: int = 4) -> list[Chunk]:\n    \"\"\"Sentence-Based: whole sentences, `max_sentences` per chunk.\"\"\"\n    s = sentences(doc)\n    return [_span(doc, s[i][0], s[min(i + max_sentences, len(s)) - 1][1], method=\"sentence_based\")\n            for i in range(0, len(s), max_sentences)]\n\n\ndef paragraph_based(doc: str, max_chars: int = 1200) -> list[Chunk]:\n    \"\"\"Paragraph-Based: whole paragraphs, merged up to `max_chars`.\"\"\"\n    return _pack(doc, paragraphs(doc), max_chars, \"paragraph_based\")\n\n\ndef page_based(doc: str, pages: list[str] | None = None) -> list[Chunk]:\n    \"\"\"Page-Based: one chunk per page. Pages are split on form feeds, or\n    passed in (e.g. one string per PDF page).\"\"\"\n    if pages is None:\n        pages = doc.split(\"\\f\")\n    out, pos = [], 0\n    for i, page in enumerate(pages, 1):\n        at = doc.find(page, pos) if page else -1\n        if at < 0:\n            at = pos\n        c = _strip(doc, at, at + len(page), method=\"page_based\", page=i)\n        if c:\n            out.append(c)\n        pos = at + len(page)\n    return out\n\n\n# ---------------------------------------------------------------- 2. context-preserving\n\ndef sliding_window(doc: str, window: int = 600, step: int = 400) -> list[Chunk]:\n    \"\"\"Sliding Window: windows of `window` chars every `step` chars, so\n    consecutive chunks share window - step chars.\"\"\"\n    if step <= 0 or step > window:\n        raise ValueError(\"need 0 < step <= window\")\n    out = []\n    for i in range(0, max(len(doc) - window + step, 1), step):\n        out.append(_span(doc, i, min(i + window, len(doc)), method=\"sliding_window\"))\n        if i + window >= len(doc):\n            break\n    return out\n\n\ndef fixed_token_overlap(doc: str, max_tokens: int = 100, overlap: int = 20) -> list[Chunk]:\n    \"\"\"Fixed Token with Overlap: token windows sharing `overlap` tokens.\"\"\"\n    if not 0 <= overlap < max_tokens:\n        raise ValueError(\"need 0 <= overlap < max_tokens\")\n    t, out, i = tokens(doc), [], 0\n    while i < len(t):\n        j = min(i + max_tokens, len(t))\n        out.append(_span(doc, t[i][0], t[j - 1][1], method=\"fixed_token_overlap\", overlap_tokens=overlap if i else 0))\n        if j == len(t):\n            break\n        i = j - overlap\n    return out\n\n\nDEFAULT_SEPARATORS = [\"\\n## \", \"\\n### \", \"\\n\\n\", \"\\n\", \". \", \" \"]\n\n\ndef recursive(doc: str, max_chars: int = 800, separators: list[str] | None = None) -> list[Chunk]:\n    \"\"\"Recursive: split on the coarsest separator that keeps pieces under\n    `max_chars`, recursing into finer separators for pieces still too big,\n    then re-merge neighbours while they fit.\"\"\"\n    seps = DEFAULT_SEPARATORS if separators is None else separators\n\n    def split(s: int, e: int, level: int) -> list[tuple[int, int]]:\n        if e - s <= max_chars or level >= len(seps):\n            return [(s, e)]\n        sep, pieces, cur = seps[level], [], s\n        while True:\n            k = doc.find(sep, cur + 1, e)\n            if k < 0:\n                break\n            pieces.append((cur, k))\n            cur = k\n        pieces.append((cur, e))\n        if len(pieces) == 1:\n            return split(s, e, level + 1)\n        return [p for a, b in pieces for p in split(a, b, level + 1)]\n\n    out = []\n    for c in _pack(doc, split(0, len(doc), 0), max_chars, \"recursive\"):\n        c = _strip(doc, c.start, c.end, method=\"recursive\")\n        if c:\n            out.append(c)\n    return out\n\n\ndef recursive_python(code: str, max_chars: int = 1200) -> list[Chunk]:\n    \"\"\"Recursive Python-Specific: split on class and def boundaries first,\n    then blank lines, then lines (LangChain's Python separators).\"\"\"\n    return [Chunk(c.text, c.start, c.end, {**c.meta, \"method\": \"recursive_python\"})\n            for c in recursive(code, max_chars, [\"\\nclass \", \"\\ndef \", \"\\n\\tdef \", \"\\n    def \", \"\\n\\n\", \"\\n\", \" \"])]\n\n\ndef _headings(doc: str) -> list[tuple[int, int, str]]:\n    \"\"\"Markdown headings as (offset, level, title).\"\"\"\n    return [(m.start(), len(m.group(1)), m.group(2).strip(\" *\"))\n            for m in re.finditer(r\"^(#{1,6})\\s+(.+)$\", doc, re.M)]\n\n\ndef _heading_path(heads: list[tuple[int, int, str]], at: int) -> list[str]:\n    path: list[tuple[int, str]] = []\n    for off, level, title in heads:\n        if off > at:\n            break\n        path = [p for p in path if p[0] < level] + [(level, title)]\n    return [t for _, t in path]\n\n\ndef context_enriched(doc: str, max_chars: int = 800, neighbour_chars: int = 120) -> list[Chunk]:\n    \"\"\"Context-Enriched: recursive chunks carrying metadata (heading path,\n    position) and a prefix naming their section plus the tail of the previous\n    chunk, so each chunk reads on its own.\"\"\"\n    base, heads, out = recursive(doc, max_chars), _headings(doc), []\n    for i, c in enumerate(base):\n        path = _heading_path(heads, c.start)\n        prev = base[i - 1].text[-neighbour_chars:] if i else \"\"\n        prefix = (f\"[Section: {' > '.join(path)}]\\n\" if path else \"\") + (f\"[Previously: \u2026{prev.strip()}]\\n\" if prev else \"\")\n        out.append(Chunk(prefix + c.text, c.start, c.end, {\"method\": \"context_enriched\", \"section\": path,\n                                                            \"position\": f\"{i + 1}/{len(base)}\", \"added_context\": len(prefix)}))\n    return out\n\n\n"};
+</script>
+<style>
+/* Live layer: controls that need Claude hide when the page cannot reach it. */
+:root[data-ai="off"] .ai-only { display: none !important; }
+:root:not([data-ai="off"]) .ai-off { display: none !important; }
+.ai-out { background: var(--sunk); border-radius: var(--r); padding: 10px 12px; min-height: 48px; overflow-wrap: anywhere; }
+.ai-out p { margin: 0 0 8px; } .ai-out p:last-child { margin-bottom: 0; }
+.ai-out h4 { margin: 10px 0 4px; font-size: 13.5px; } .ai-out ul, .ai-out ol { margin: 4px 0 8px; padding-left: 20px; }
+.ai-out pre.code { margin: 6px 0; white-space: pre-wrap; }
+.status { font-size: 12.5px; color: var(--muted); min-height: 1.4em; }
+.live-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; color: var(--accent); }
+.live-tag::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+ul.facts { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+table.checks details summary { cursor: pointer; color: var(--muted); }
+table.checks details pre { white-space: pre-wrap; max-height: 260px; overflow: auto; margin-top: 6px; }
+table.checks td:first-child { min-width: 180px; }
+
+</style>
+<script>
+/* Systems Lab live layer: Markdown for answers and the Install & test panel
+   built from the CI bench data. Live Claude calls are in ai.js. */
+
+/* Minimal Markdown for Claude's answers: headings, lists, code, bold, inline code. */
+function md(src) {
+  const out = [], lines = String(src).split('\n');
+  let list = null, code = null;
+  const inline = (t) => esc(t).replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+  const flush = () => { if (list) { out.push(`</${list}>`); list = null; } };
+  for (const l of lines) {
+    if (code !== null) { if (/^```/.test(l)) { out.push(`<pre class="code">${esc(code.join('\n'))}</pre>`); code = null; } else code.push(l); continue; }
+    if (/^```/.test(l)) { flush(); code = []; continue; }
+    const h = l.match(/^(#{1,4})\s+(.*)/), li = l.match(/^\s*([-*]|\d+\.)\s+(.*)/);
+    if (h) { flush(); out.push(`<h4>${inline(h[2])}</h4>`); }
+    else if (li) { const t = /\d/.test(li[1]) ? 'ol' : 'ul'; if (list !== t) { flush(); out.push(`<${t}>`); list = t; } out.push(`<li>${inline(li[2])}</li>`); }
+    else if (!l.trim()) flush();
+    else { flush(); out.push(`<p>${inline(l)}</p>`); }
+  }
+  if (code !== null) out.push(`<pre class="code">${esc(code.join('\n'))}</pre>`);
+  flush();
+  return out.join('');
+}
+
+/* ------------------------------------------------------------ Install & test */
+/* info: { setup, serve, test, port, ui, notes: [..], links: [[label, url]..] } */
+function renderInstall(root, data, info) {
+  const sys = data.systems || [], rows = data.checks || [];
+  const n = (k) => sys.reduce((a, s) => a + (s[k] || 0), 0);
+  const failing = sys.some((s) => s.status !== 'Passing');
+  const cmd = (label, text) => el('div', { class: 'stack' },
+    el('div', { class: 'row' }, el('b', { class: 'grow' }, label), el('button', { class: 'btn small', onclick: () => copyText(text, 'Command copied') }, 'Copy')),
+    el('pre', { class: 'code' }, text));
+  root.replaceChildren(
+    el('div', { class: 'kpis' },
+      el('div', { class: 'kpi' }, el('b', {}, failing ? 'Failing' : 'Passing'), el('span', {}, `CI on ${(data.run.sha || '').slice(0, 7) || 'the branch'}`)),
+      el('div', { class: 'kpi' }, el('b', {}, fmt(n('passed'))), el('span', {}, 'checks passed')),
+      el('div', { class: 'kpi' }, el('b', {}, fmt(n('failed'))), el('span', {}, 'failed')),
+      el('div', { class: 'kpi' }, el('b', {}, fmt(n('skipped'))), el('span', {}, 'skipped')),
+      info.port ? el('div', { class: 'kpi' }, el('b', {}, String(info.port)), el('span', {}, info.ui || 'local port')) : null),
+    el('div', { class: 'grid cols-2' },
+      el('div', { class: 'panel' }, el('h2', {}, 'Run it yourself'),
+        el('p', { class: 'note' }, 'From a clone of gendaiski/Sandbox-2 on branch claude/loving-cannon-2y609d, or in its Codespace.'),
+        info.setup && cmd('Install', info.setup), info.serve && cmd('Open the real UI', info.serve), info.test && cmd('Test', info.test)),
+      el('div', { class: 'panel' }, el('h2', {}, 'What the install covers'),
+        el('ul', { class: 'facts' }, ...(info.notes || []).map((t) => el('li', {}, t))),
+        ...sys.map((s) => el('p', { class: 'note' }, el('b', {}, s.system + ': '), s.finding || '')),
+        el('div', { class: 'row' }, ...sys.map((s) => el('a', { href: s.ci_url, target: '_blank', rel: 'noopener' }, 'CI job')),
+          sys[0] && el('a', { href: sys[0].code_url, target: '_blank', rel: 'noopener' }, 'Test code'),
+          sys[0] && el('a', { href: sys[0].upstream_url, target: '_blank', rel: 'noopener' }, 'Upstream'),
+          ...(info.links || []).map(([t, u]) => el('a', { href: u, target: '_blank', rel: 'noopener' }, t))))),
+    el('div', { class: 'panel' }, el('h2', {}, `CI checks (${rows.length})`),
+      rows.length ? el('div', { class: 'table-wrap' }, el('table', { class: 'data checks' },
+        el('tr', {}, el('th', {}, 'Check'), el('th', {}, 'Result'), el('th', {}, 'Time'), el('th', {}, 'Detail')),
+        ...rows.map((c) => el('tr', {}, el('td', {}, c.check),
+          el('td', {}, el('span', { class: 'pill ' + ({ Pass: 'good', Fail: 'bad', Skip: 'warn' }[c.status] || '') }, c.status)),
+          el('td', { class: 'mono' }, `${fmt(c.seconds, 1)} s`),
+          el('td', {}, el('details', {}, el('summary', {}, String(c.detail || '').split('\n')[0].slice(0, 110) || '—'), el('pre', { class: 'code' }, c.detail || '')))))))
+        : el('div', { class: 'empty' }, 'No CI report yet for this system.')));
+}
+
+</script>
+<script>
+const CHECKS = {"systems": [{"job": "appwrite", "system": "Appwrite (its own installer)", "kind": "Backend platform", "status": "Passing", "passed": 6, "failed": 0, "skipped": 0, "upstream": "appwrite/appwrite", "upstream_url": "https://github.com/appwrite/appwrite", "code": "systems/appwrite", "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/appwrite", "ci_label": "View job", "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/40482493835/job/122116036797", "demo_label": "", "demo_url": "", "finding": "The installer is a web wizard by default; it runs headless with --interactive=N.", "ran_at": "2026-10-27T09:44:53+0000"}], "checks": [{"id": "appwrite:API up: health and version", "system": "Appwrite (its own installer)", "check": "API up: health and version", "status": "Pass", "seconds": 5.01, "detail": "Appwrite 2.6.2"}, {"id": "appwrite:console account and session", "system": "Appwrite (its own installer)", "check": "console account and session", "status": "Pass", "seconds": 0.33, "detail": ""}, {"id": "appwrite:organization and project", "system": "Appwrite (its own installer)", "check": "organization and project", "status": "Pass", "seconds": 0.84, "detail": "project 6ae0727c0a6c6f20c230"}, {"id": "appwrite:server API key for the project", "system": "Appwrite (its own installer)", "check": "server API key for the project", "status": "Pass", "seconds": 0.02, "detail": ""}, {"id": "appwrite:TablesDB: database, table, column and rows", "system": "Appwrite (its own installer)", "check": "TablesDB: database, table, column and rows", "status": "Pass", "seconds": 2.42, "detail": "2 rows: ['Master Services Agreement', 'Order Form']"}, {"id": "appwrite:Console in the browser", "system": "Appwrite (its own installer)", "check": "Console in the browser", "status": "Pass", "seconds": 22.23, "detail": "{\"ok\": true, \"url\": \"http://localhost:8096/projects/6ae0727c0a6c6f20c230/overview\", \"sawProject\": true, \"opened\": true, \"title\": \"Dashboard \\u00b7 contracts-1aa97d \\u00b7 Appwrite\"}"}], "run": {"run_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/40482493835", "sha": "b7786041adfaa296836981aabf16ce163aed6405"}};
+/* ------------------------------------------------ example project */
+const uniq = () => Array.from({ length: 20 }, () => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('');
+const iso = (d = new Date()) => d.toISOString().replace('Z', '+00:00');
+const USERS = { maya: { $id: '6721a3f0001f9c2b4e8d', name: 'Maya Chen', email: 'maya@northwind.example', labels: ['legal'] }, raj: { $id: '6721a3f0002b7d1e5a9c', name: 'Raj Patel', email: 'raj@contoso.example', labels: [] } };
+const TEAM = { $id: '6721a3f00031c9e2d7b4', name: 'Legal Ops', members: { [USERS.maya.$id]: ['owner'], [USERS.raj.$id]: ['viewer'] } };
+const AS = { guest: { label: 'Guest (no session)', roles: ['any', 'guests'] }, maya: { label: 'Maya (session, team owner)', user: USERS.maya }, raj: { label: 'Raj (session, team viewer)', user: USERS.raj }, key: { label: 'Server API key (rows.read, rows.write)', key: true } };
+function rolesOf(who) {
+  const a = AS[who]; if (a.key) return null; if (!a.user) return a.roles;
+  const u = a.user, r = ['any', 'users', 'users/verified', `user:${u.$id}`, `user:${u.$id}/verified`, ...u.labels.map((l) => `label:${l}`)];
+  const t = TEAM.members[u.$id]; if (t) { r.push(`team:${TEAM.$id}`, `member:${u.$id}`, ...t.map((x) => `team:${TEAM.$id}/${x}`)); }
+  return r;
+}
+const TYPES = ['varchar', 'text', 'mediumtext', 'longtext', 'string', 'integer', 'bigint', 'float', 'boolean', 'datetime', 'email', 'ip', 'url', 'enum', 'relationship', 'point', 'line', 'polygon'];
+const DBS = [{ $id: 'contracts', name: 'Contracts', tables: [
+  { $id: 'agreements', name: 'Agreements', rowSecurity: true, $permissions: [`read("team:${TEAM.$id}")`, `create("team:${TEAM.$id}/owner")`, `update("team:${TEAM.$id}/owner")`, `delete("team:${TEAM.$id}/owner")`],
+    columns: [{ key: 'title', type: 'varchar', size: 255, required: true }, { key: 'counterparty', type: 'varchar', size: 128, required: true }, { key: 'value', type: 'integer', min: 0, required: false },
+      { key: 'status', type: 'enum', elements: ['draft', 'active', 'expired'], default: 'draft' }, { key: 'renews_at', type: 'datetime' }, { key: 'auto_renew', type: 'boolean', default: true }, { key: 'portal', type: 'url' }],
+    rows: [] },
+  { $id: 'clauses', name: 'Clauses', rowSecurity: false, $permissions: ['read("users")', 'create("label:legal")', 'update("label:legal")'],
+    columns: [{ key: 'heading', type: 'varchar', size: 128, required: true }, { key: 'body', type: 'text' }, { key: 'risk', type: 'enum', elements: ['low', 'medium', 'high'] }, { key: 'agreement', type: 'relationship', relatedTable: 'agreements', relationType: 'manyToOne' }],
+    rows: [] }] }];
+const T = (id) => DBS[0].tables.find((t) => t.$id === id);
+const row = (t, data, perms = []) => { const now = iso(); T(t).rows.push({ $id: uniq(), $sequence: T(t).rows.length + 1, $tableId: t, $databaseId: 'contracts', $createdAt: now, $updatedAt: now, $permissions: perms, ...data }); };
+const day = (n) => iso(new Date(Date.now() + n * 864e5));
+[['Master Services Agreement', 'Contoso Holdings LLC', 150000, 'active', 45, true, []], ['Software Licence', 'Fabrikam GmbH', 64000, 'active', 20, false, [`read("user:${USERS.raj.$id}")`]],
+  ['Reseller Agreement', 'Tailspin SARL', 82000, 'draft', 300, true, []], ['Cloud Hosting Order', 'Litware Ltd', 39000, 'expired', -12, false, ['read("any")']], ['Support Renewal', 'Contoso Holdings LLC', 12500, 'active', 75, true, []]]
+  .forEach(([title, counterparty, value, status, d, auto_renew, perms]) => row('agreements', { title, counterparty, value, status, renews_at: day(d), auto_renew, portal: `https://portal.${counterparty.split(' ')[0].toLowerCase()}.example` }, perms));
+[['Limitation of Liability', 'Liability capped at twelve months of fees.', 'medium'], ['Auto Renewal', 'Renews for 12 months unless 90 days notice is given.', 'high'], ['Confidentiality', 'Survives termination for five years.', 'low']]
+  .forEach(([heading, body, risk]) => row('clauses', { heading, body, risk, agreement: T('agreements').rows[0].$id }));
+
+/* ------------------------------------------------ permissions */
+const parsePerm = (p) => { const m = p.match(/^(\w+)\("(.+)"\)$/); return m ? { action: m[1], role: m[2] } : null; };
+function allowed(action, table, r, who) {
+  const roles = rolesOf(who); if (!roles) return { ok: true, why: 'API key' };
+  const hit = (perms) => perms.map(parsePerm).filter(Boolean).some((p) => (p.action === action || (p.action === 'write' && action !== 'read')) && roles.includes(p.role));
+  if (hit(table.$permissions)) return { ok: true, why: 'table permission' };
+  if (table.rowSecurity && r && hit(r.$permissions)) return { ok: true, why: 'row permission' };
+  return { ok: false, why: table.rowSecurity ? 'no table or row permission' : 'no table permission (row security off)' };
+}
+
+/* ------------------------------------------------ console */
+let tid = 'agreements', sub = 'rows', editing = null;
+$('#as').replaceChildren(...Object.entries(AS).map(([k, v]) => el('option', { value: k }, v.label)));
+function nav() {
+  $('#nav').replaceChildren(el('div', { class: 'lbl' }, 'Project · Contract Tools'), el('div', { class: 'lbl' }, 'Databases'),
+    ...DBS.flatMap((d) => [el('div', { class: 'note', style: { padding: '2px 9px' } }, d.name), ...d.tables.map((t) => el('button', { 'aria-current': String(t.$id === tid), onclick: () => { tid = t.$id; editing = null; draw(); } }, t.name, el('span', { class: 'id' }, `${t.rows.length}`)))]),
+    el('div', { class: 'lbl' }, 'Auth'), ...Object.values(USERS).map((u) => el('div', { class: 'note', style: { padding: '2px 9px' } }, `${u.name}${u.labels.length ? ' · label:' + u.labels.join(',') : ''}`)), el('div', { class: 'note', style: { padding: '2px 9px' } }, `Team ${TEAM.name}`));
+}
+const show = (v, c) => {
+  if (c.type === 'boolean') return el('span', { class: 'pill ' + (v ? 'good' : '') }, String(!!v));
+  if (c.type === 'enum') return el('span', { class: 'pill' }, v ?? '');
+  if (c.type === 'datetime') return el('span', { class: 'mono' }, String(v || '').slice(0, 16).replace('T', ' '));
+  if (c.type === 'integer' || c.type === 'float' || c.type === 'bigint') return el('span', { class: 'mono' }, v == null ? '' : fmt(v));
+  if (c.type === 'relationship') { const x = T(c.relatedTable).rows.find((r) => r.$id === v); return el('span', { class: 'perm' }, x ? x.title : v || ''); }
+  return String(v ?? '');
+};
+function draw() {
+  nav(); const t = T(tid); $('#t-name').textContent = t.name; $('#t-id').textContent = `contracts / ${t.$id}`;
+  $$('.subtabs button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.sub === sub)));
+  ['rows', 'columns', 'settings'].forEach((s) => { $('#sub-' + s).hidden = s !== sub; });
+  if (sub === 'rows') rows(); else if (sub === 'columns') columns(); else settings();
+}
+function rows() {
+  const t = T(tid), who = $('#as').value, vis = t.rows.filter((r) => allowed('read', t, r, who).ok);
+  $('#r-note').textContent = `${vis.length} of ${t.rows.length} rows readable as ${AS[who].label}.`;
+  $('#r-table').replaceChildren(el('tr', {}, el('th', {}, '$id'), ...t.columns.map((c) => el('th', {}, c.key)), el('th', {}, 'Row permissions'), el('th', {}, '')),
+    ...vis.map((r) => el('tr', {}, el('td', { class: 'mono note' }, r.$id.slice(0, 8) + '…'), ...t.columns.map((c) => el('td', {}, show(r[c.key], c))),
+      el('td', {}, ...(r.$permissions.length ? r.$permissions.map((p) => el('span', { class: 'perm' }, p)) : [el('span', { class: 'note' }, '—')])),
+      el('td', {}, el('div', { class: 'row' }, el('button', { class: 'btn small', onclick: () => { editing = r; form(); } }, 'Edit'), el('button', { class: 'btn small', onclick: () => del(r) }, 'Delete'))))));
+  form();
+}
+function form() {
+  const box = $('#r-form'), t = T(tid); if (!editing) { box.hidden = true; return; }
+  const isNew = !editing.$id, data = { ...editing }; let perms = (editing.$permissions || []).join('\n');
+  const ctl = (c) => {
+    const v = data[c.key] ?? c.default ?? '', set = (x) => { data[c.key] = x; };
+    if (c.type === 'boolean') return el('input', { type: 'checkbox', checked: !!v, onchange: (e) => set(e.target.checked) });
+    if (c.type === 'enum') return el('select', { onchange: (e) => set(e.target.value) }, ...c.elements.map((x) => el('option', { selected: x === v }, x)));
+    if (c.type === 'relationship') return el('select', { onchange: (e) => set(e.target.value) }, el('option', { value: '' }, '—'), ...T(c.relatedTable).rows.map((r) => el('option', { value: r.$id, selected: r.$id === v }, r.title)));
+    if (['integer', 'float', 'bigint'].includes(c.type)) return el('input', { type: 'number', value: v, oninput: (e) => set(e.target.value === '' ? null : +e.target.value) });
+    return el(c.type === 'text' ? 'textarea' : 'input', { type: 'text', rows: 2, value: v, oninput: (e) => set(e.target.value) });
+  };
+  box.hidden = false;
+  box.replaceChildren(el('h2', {}, isNew ? 'Create row' : `Update row ${editing.$id}`),
+    el('div', { class: 'form' }, ...t.columns.map((c) => el('label', { class: 'field' }, `${c.key} · ${c.type}${c.required ? ' · required' : ''}`, ctl(c)))),
+    t.rowSecurity ? el('label', { class: 'field' }, 'Row permissions, one per line, e.g. read("user:<id>")', el('textarea', { rows: 2, value: perms, oninput: (e) => { perms = e.target.value; } })) : el('p', { class: 'note' }, 'Row security is off for this table: only table permissions apply.'),
+    el('div', { class: 'row' }, el('button', { class: 'btn primary', onclick: () => save(data, perms, isNew) }, isNew ? 'Create' : 'Update'), el('button', { class: 'btn', onclick: () => { editing = null; form(); } }, 'Cancel'), el('span', { class: 'status', id: 'f-status' })));
+}
+function validate(t, data) {
+  for (const c of t.columns) {
+    const v = data[c.key];
+    if (c.required && (v == null || v === '')) return `Invalid document structure: Missing required attribute "${c.key}"`;
+    if (v == null || v === '') continue;
+    if (c.type === 'url' && !/^https?:\/\/[^\s]+\.[^\s]+/.test(v)) return `Invalid document structure: Attribute "${c.key}" has invalid format. Value must be a valid URL`;
+    if (c.type === 'varchar' && String(v).length > c.size) return `Invalid document structure: Attribute "${c.key}" has invalid type. Value must be a valid string and no longer than ${c.size} chars`;
+    if (c.type === 'integer' && (!Number.isInteger(v) || (c.min != null && v < c.min))) return `Invalid document structure: Attribute "${c.key}" has invalid type. Value must be a valid integer`;
+  }
+  return null;
+}
+function save(data, perms, isNew) {
+  const t = T(tid), who = $('#as').value, say = (x) => { $('#f-status').textContent = x; };
+  const ok = allowed(isNew ? 'create' : 'update', t, isNew ? null : editing, who); if (!ok.ok) return say(`401 user_unauthorized: The current user is not authorized to perform the requested action (${ok.why}).`);
+  const err = validate(t, data); if (err) return say('400 ' + err);
+  const p = perms.split('\n').map((s) => s.trim()).filter(Boolean); const bad = p.find((x) => !parsePerm(x)); if (bad) return say(`400 Invalid permissions: ${bad}`);
+  if (isNew) { row(tid, Object.fromEntries(t.columns.map((c) => [c.key, data[c.key] ?? c.default ?? null])), p); }
+  else { Object.assign(editing, Object.fromEntries(t.columns.map((c) => [c.key, data[c.key]])), { $updatedAt: iso(), $permissions: p }); }
+  editing = null; draw(); toast(isNew ? 'Row created' : 'Row updated');
+}
+function del(r) { const t = T(tid), ok = allowed('delete', t, r, $('#as').value); if (!ok.ok) return toast(`401: not allowed to delete (${ok.why})`); t.rows.splice(t.rows.indexOf(r), 1); draw(); toast('Row deleted'); }
+function columns() {
+  const t = T(tid);
+  $('#c-table').replaceChildren(el('tr', {}, ...['Key', 'Type', 'Required', 'Default', 'Options'].map((h) => el('th', {}, h))),
+    ...t.columns.map((c) => el('tr', {}, el('td', { class: 'mono' }, c.key), el('td', {}, el('span', { class: 'pill' }, c.type)), el('td', {}, c.required ? 'yes' : 'no'), el('td', { class: 'mono' }, c.default == null ? '—' : String(c.default)),
+      el('td', { class: 'note' }, c.size ? `size ${c.size}` : c.elements ? c.elements.join(', ') : c.relatedTable ? `${c.relationType} → ${c.relatedTable}` : c.min != null ? `min ${c.min}` : ''))));
+  $('#c-note').textContent = `Column types in this TablesDB build: ${TYPES.join(', ')}. Each is created with POST /v1/tablesdb/{databaseId}/tables/{tableId}/columns/{type}.`;
+}
+function settings() {
+  const t = T(tid);
+  $('#sub-settings').replaceChildren(el('div', { class: 'panel' }, el('h2', {}, 'Permissions'), el('div', {}, ...t.$permissions.map((p) => el('span', { class: 'perm' }, p))),
+    el('p', { class: 'note' }, 'Roles: any, guests, users, users/verified, user:<id>, team:<id>, team:<id>/<role>, member:<id>, label:<name>. Actions: create, read, update, delete, and write for the three that change data.')),
+    el('div', { class: 'panel' }, el('h2', {}, 'Row security'), el('label', { class: 'field inline' }, el('input', { type: 'checkbox', checked: t.rowSecurity, onchange: (e) => { t.rowSecurity = e.target.checked; toast(`Row security ${t.rowSecurity ? 'on' : 'off'}`); } }), 'Users can also be given access to single rows through row permissions')),
+    el('div', { class: 'panel' }, el('h2', {}, 'Your roles as ' + AS[$('#as').value].label), el('div', {}, ...((rolesOf($('#as').value)) || ['API key: scopes rows.read, rows.write']).map((r) => el('span', { class: 'perm' }, r)))));
+}
+$$('.subtabs button').forEach((b) => b.onclick = () => { sub = b.dataset.sub; draw(); });
+$('#as').onchange = () => { draw(); runQuery(); };
+$('#r-new').onclick = () => { editing = {}; form(); };
+
+/* ------------------------------------------------ queries */
+const METHODS = { equal: 'values', notEqual: 'values', lessThan: 'value', lessThanEqual: 'value', greaterThan: 'value', greaterThanEqual: 'value', between: 'pair', startsWith: 'value', endsWith: 'value', contains: 'values', search: 'value', isNull: 'none', isNotNull: 'none' };
+let clauses = [{ m: 'equal', a: 'status', v: 'active' }, { m: 'greaterThan', a: 'value', v: '20000' }];
+const typed = (a, v) => { const c = T('agreements').columns.find((x) => x.key === a); return c && ['integer', 'float', 'bigint'].includes(c.type) ? Number(v) : c?.type === 'boolean' ? v === 'true' : v; };
+const values = (q) => { const k = METHODS[q.m]; if (k === 'none') return []; if (k === 'pair') return String(q.v).split(',').map((x) => typed(q.a, x.trim())); if (k === 'values') return String(q.v).split(',').map((x) => typed(q.a, x.trim())); return [typed(q.a, q.v)]; };
+const lit = (x) => (typeof x === 'string' ? `'${x}'` : String(x));
+function sdk(q) { const v = values(q), k = METHODS[q.m]; return k === 'none' ? `Query.${q.m}('${q.a}')` : k === 'values' ? `Query.${q.m}('${q.a}', [${v.map(lit).join(', ')}])` : k === 'pair' ? `Query.${q.m}('${q.a}', ${v.map(lit).join(', ')})` : `Query.${q.m}('${q.a}', ${lit(v[0])})`; }
+const json = (q) => JSON.stringify(METHODS[q.m] === 'none' ? { method: q.m, attribute: q.a } : { method: q.m, attribute: q.a, values: values(q) });
+function test(q, r) {
+  const x = r[q.a], v = values(q), s = (y) => String(y ?? '').toLowerCase();
+  switch (q.m) {
+    case 'equal': return v.some((y) => x === y); case 'notEqual': return v.every((y) => x !== y);
+    case 'lessThan': return x < v[0]; case 'lessThanEqual': return x <= v[0]; case 'greaterThan': return x > v[0]; case 'greaterThanEqual': return x >= v[0];
+    case 'between': return x >= v[0] && x <= v[1]; case 'startsWith': return String(x ?? '').startsWith(v[0]); case 'endsWith': return String(x ?? '').endsWith(v[0]);
+    case 'contains': return v.some((y) => s(x).includes(s(y))); case 'search': return s(v[0]).split(/\s+/).every((w) => s(x).includes(w));
+    case 'isNull': return x == null; case 'isNotNull': return x != null;
+  }
+}
+function clauseUI() {
+  const cols = ['$id', '$createdAt', ...T('agreements').columns.map((c) => c.key)];
+  $('#clauses').replaceChildren(...clauses.map((q, i) => el('div', { class: 'clause' },
+    el('select', { 'aria-label': 'Method', onchange: (e) => { q.m = e.target.value; clauseUI(); runQuery(); } }, ...Object.keys(METHODS).map((m) => el('option', { selected: m === q.m }, m))),
+    el('select', { 'aria-label': 'Column', onchange: (e) => { q.a = e.target.value; runQuery(); } }, ...cols.map((c) => el('option', { selected: c === q.a }, c))),
+    METHODS[q.m] === 'none' ? el('span', { class: 'note' }, 'no value') : el('input', { type: 'text', value: q.v, 'aria-label': 'Value', placeholder: METHODS[q.m] === 'pair' ? 'low, high' : METHODS[q.m] === 'values' ? 'one or more, comma separated' : 'value', oninput: (e) => { q.v = e.target.value; runQuery(); } }),
+    el('button', { class: 'btn small', 'aria-label': 'Remove query', onclick: () => { clauses.splice(i, 1); clauseUI(); runQuery(); } }, '×'))));
+}
+function runQuery() {
+  const t = T('agreements'), who = $('#as').value, [dir, col] = ($('#q-order').value || ':').split(':'), limit = +$('#q-limit').value || 25;
+  let list = t.rows.filter((r) => allowed('read', t, r, who).ok && clauses.every((q) => test(q, r)));
+  if (col) list = list.slice().sort((a, b) => (a[col] < b[col] ? -1 : a[col] > b[col] ? 1 : 0) * (dir === 'orderDesc' ? -1 : 1));
+  const all = [...clauses.map(sdk), col ? `Query.${dir}('${col}')` : null, `Query.limit(${limit})`].filter(Boolean);
+  const js = [...clauses.map(json), col ? JSON.stringify({ method: dir, attribute: col }) : null, JSON.stringify({ method: 'limit', values: [limit] })].filter(Boolean);
+  $('#q-out').replaceChildren(el('span', { class: 'pill good' }, `total: ${list.length}`), el('div', { class: 'table-wrap' }, el('table', { class: 'data' }, el('tr', {}, ...['title', 'counterparty', 'value', 'status'].map((h) => el('th', {}, h))),
+    ...list.slice(0, limit).map((r) => el('tr', {}, el('td', {}, r.title), el('td', {}, r.counterparty), el('td', { class: 'mono' }, fmt(r.value)), el('td', {}, el('span', { class: 'pill' }, r.status)))))));
+  $('#q-js').textContent = `import { Client, TablesDB, Query } from 'appwrite';\n\nconst client = new Client()\n  .setEndpoint('http://localhost:8096/v1')\n  .setProject('<PROJECT_ID>');\nconst tablesDB = new TablesDB(client);\n\nconst { total, rows } = await tablesDB.listRows({\n  databaseId: 'contracts',\n  tableId: 'agreements',\n  queries: [\n    ${all.join(',\n    ')}\n  ]\n});`;
+  $('#q-json').textContent = js.join('\n');
+  $('#q-rest').textContent = `GET /v1/tablesdb/contracts/tables/agreements/rows?${js.map((q) => 'queries[]=' + encodeURIComponent(q)).join('&')}\nX-Appwrite-Project: <PROJECT_ID>${AS[who].key ? '\nX-Appwrite-Key: <API_KEY>' : ''}`;
+}
+$('#q-add').onclick = () => { clauses.push({ m: 'contains', a: 'title', v: 'Agreement' }); clauseUI(); runQuery(); };
+['#q-order', '#q-limit'].forEach((s) => $(s).addEventListener('input', runQuery));
+
+/* ------------------------------------------------ endpoints */
+const EPS = [
+  ['GET', '/v1/health/version', 'Wait for the API; returns {"version": "2.6.2"}.', ''],
+  ['POST', '/v1/account', 'Create the console account.', '{"userId":"unique()","email":"…","password":"…","name":"Harness"}'],
+  ['POST', '/v1/account/sessions/email', 'Sign in: the session cookie carries the console calls that follow.', '{"email":"…","password":"…"}'],
+  ['POST', '/v1/teams', 'Create the organization (a team).', '{"teamId":"unique()","name":"Harness Legal"}'],
+  ['POST', '/v1/projects', 'Create the project in that organization.', '{"projectId":"unique()","name":"…","teamId":"<team>","region":"default"}'],
+  ['POST', '/v1/organization/projects/{projectId}/keys', 'A server API key with database scopes; header X-Appwrite-Organization.', '{"keyId":"unique()","name":"harness","scopes":["databases.read","databases.write","tables.read","tables.write","columns.read","columns.write","rows.read","rows.write"],"expire":null}'],
+  ['POST', '/v1/tablesdb', 'Create the database, with X-Appwrite-Project and X-Appwrite-Key.', '{"databaseId":"contracts","name":"Contracts"}'],
+  ['POST', '/v1/tablesdb/contracts/tables', 'Create the table.', '{"tableId":"agreements","name":"Agreements"}'],
+  ['POST', '/v1/tablesdb/contracts/tables/agreements/columns/string', 'Add a column (202: a worker creates it); poll it until its status is available.', '{"key":"title","size":256,"required":true}'],
+  ['POST', '/v1/tablesdb/contracts/tables/agreements/rows', 'Create rows.', '{"rowId":"unique()","data":{"title":"…"}}'],
+  ['GET', '/v1/tablesdb/contracts/tables/agreements/rows', 'List them back; a wrong key must get 401.', ''],
+];
+$('#eps').replaceChildren(...EPS.map(([m, p, d, b]) => el('div', { class: 'ep' }, el('span', { class: 'm ' + m }, m), el('div', { class: 'stack' }, el('code', {}, p), el('span', { class: 'note' }, d), b ? el('pre', { class: 'code', style: { whiteSpace: 'pre-wrap' } }, b) : null))));
+
+renderInstall($('#install'), CHECKS, {
+  setup: 'systems/appwrite/setup.sh', serve: './start.sh appwrite   # the console, http://localhost:8096', test: 'python3 systems/appwrite/test_appwrite.py -v', port: 8096, ui: 'Appwrite console',
+  notes: ["Appwrite's own installer, headless: docker run … --entrypoint install appwrite/appwrite:2.6.2 --http-port=127.0.0.1:8096 --interactive=N", 'Through the API: account, session, organization, project, server key, then a TablesDB database, table, column and rows', 'The console in a browser: sign in and open the project'],
+});
+initTabs((n) => { if (n === 'query') { clauseUI(); runQuery(); } });
+draw(); clauseUI(); runQuery();
+</script>
