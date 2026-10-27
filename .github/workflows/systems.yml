@@ -67,6 +67,7 @@ jobs:
           - { label: opus-videos, system: opus-videos, setup: "", ui: true }
           - { label: appwrite (self-hosted), system: appwrite, setup: "", ui: true, timeout: 90 }
           - { label: pocketbase, system: pocketbase, setup: "", ui: true }
+          - { label: post-studio (post grabber), system: post-studio, setup: "", ui: true, timeout: 30 }
     steps:
       - uses: actions/checkout@v4
 
@@ -114,7 +115,7 @@ jobs:
           libayatana-appindicator3-dev librsvg2-dev libxdo-dev libssl-dev pkg-config
 
       - name: Clone upstream
-        if: matrix.system != 'prism-ui'
+        if: matrix.system != 'prism-ui' && matrix.system != 'post-studio'
         run: scripts/clone_all.sh ${{ matrix.system }}
 
       - name: Set up ${{ matrix.label }}

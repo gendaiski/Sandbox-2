@@ -42,3 +42,4 @@ systems/pocketbase/.bin/
 systems/pocketbase/.pb_data/
 systems/pocketbase/.superuser
 systems/appwrite/.install/
+systems/post-studio/library/

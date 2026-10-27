@@ -207,6 +207,14 @@ SYSTEMS = {
               "runs upstream's Go tests.",
         extras="",
     ),
+    "post-studio": dict(
+        name="Post Studio", jobs=["post-studio"],
+        what="Paste a social post link; get its text, images and videos saved apart, then rewrite it in your voice and narrate it.",
+        tests="Against local stand-ins for FxTwitter, a media CDN, Izwi and Ollama: reads X, Threads, Instagram and Facebook "
+              "data, saves images and videos apart, zips them, streams a rewrite, saves a cloned voice with consent, "
+              "narrates, and drives the UI in a browser; then reads a real X post when the network allows.",
+        extras="",
+    ),
 }
 
 STYLE = """

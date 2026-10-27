@@ -192,6 +192,12 @@ SYSTEMS = {
         code="systems/pocketbase",
         finding="Needs Go 1.27; the toolchain is fetched automatically.",
     ),
+    "report-post-studio": dict(
+        job_name="post-studio",
+        system="Post Studio", kind="Post grabber and rewriter", upstream="yt-dlp/yt-dlp",
+        code="systems/post-studio", variant="built in Sandbox-2",
+        finding="Built here on yt-dlp, gallery-dl and FxTwitter; Threads has no extractor in either tool, so it reads the page's JSON.",
+    ),
 }
 
 

@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Post Studio</title>
+<style>
+:root { --bg: #f6f5f2; --panel: #fff; --ink: #1d1f22; --muted: #646a70; --line: #dedbd4; --sunk: #efede8;
+  --accent: #3b5bdb; --accent-ink: #fff; --good: #2b7a3d; --bad: #b3261e; --r: 10px;
+  --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; --mono: ui-monospace, SFMono-Regular, Menlo, monospace; }
+@media (prefers-color-scheme: dark) { :root { --bg: #15171a; --panel: #1d2024; --ink: #e8eaed; --muted: #9aa1a8; --line: #30353b;
+  --sunk: #24282d; --accent: #8ea6ff; --accent-ink: #0d1230; --good: #7fd08e; --bad: #f08a80; color-scheme: dark; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--sans); }
+header { background: var(--panel); border-bottom: 1px solid var(--line); }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 max(16px, env(safe-area-inset-left)); }
+header .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; padding-block: 12px; }
+h1 { font-size: 19px; margin: 0; } h2 { font-size: 15px; margin: 0 0 10px; } h3 { font-size: 13px; margin: 0; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+nav { display: flex; gap: 4px; flex-wrap: wrap; }
+nav button { background: none; border: 0; padding: 6px 12px; border-radius: 999px; font: inherit; color: var(--muted); cursor: pointer; }
+nav button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+main { padding-block: 20px 60px; display: grid; gap: 16px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; min-width: 0; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 860px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+input, select, textarea { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; min-width: 0; }
+textarea { width: 100%; resize: vertical; }
+input.url { flex: 1 1 320px; font-size: 16px; padding: 10px 12px; }
+label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+label.inline { display: flex; align-items: center; gap: 6px; }
+button.btn { font: inherit; font-size: 14px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 8px; padding: 8px 14px; cursor: pointer; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:disabled { opacity: .5; cursor: progress; }
+.status { font-size: 13px; color: var(--muted); } .status.bad { color: var(--bad); }
+.text { white-space: pre-wrap; background: var(--sunk); border-radius: 8px; padding: 12px; margin: 0; overflow-wrap: anywhere; }
+.media { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+.media figure { margin: 0; display: grid; gap: 4px; }
+.media img, .media video { width: 100%; border-radius: 8px; background: var(--sunk); aspect-ratio: 1; object-fit: cover; }
+.media figcaption { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 6px; }
+.media a { color: var(--accent); }
+.meta { font-size: 13px; color: var(--muted); }
+.lib { display: grid; gap: 8px; }
+.lib .item { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 12px; align-items: center; border: 1px solid var(--line); border-radius: 8px; padding: 8px; cursor: pointer; background: var(--panel); }
+.lib .item img { width: 64px; height: 64px; object-fit: cover; border-radius: 6px; background: var(--sunk); }
+.lib .item .t { overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-size: 14px; }
+.pill { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--sunk); color: var(--muted); }
+.samples textarea { min-height: 90px; }
+.note { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+.out { min-height: 220px; font-family: var(--sans); }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>Post Studio</h1>
+  <nav><button data-tab="grab" aria-selected="true">Grab a post</button><button data-tab="library">Library</button><button data-tab="voice">My voice</button><button data-tab="setup">Setup</button></nav></div></header>
+
+<main class="wrap">
+  <section data-panel="grab" class="panel">
+    <form class="row" id="grab-form"><input class="url" id="url" placeholder="Paste a Facebook, Instagram, X or Threads post link" autocomplete="off">
+      <button class="btn primary" id="grab-btn">Grab</button></form>
+    <p class="status" id="grab-status"></p>
+  </section>
+
+  <section data-panel="grab" id="post" hidden>
+    <div class="grid2">
+      <div class="panel">
+        <div class="row" style="justify-content:space-between"><h2 id="post-title"></h2><a id="post-link" target="_blank" rel="noopener" class="meta">Open the original</a></div>
+        <p class="meta" id="post-meta"></p>
+        <pre class="text" id="post-text"></pre>
+        <div class="row" style="margin-top:8px"><button class="btn" id="copy-text">Copy text</button></div>
+        <h3 style="margin-top:16px">Images <span id="n-images"></span></h3>
+        <div class="media" id="images"></div>
+        <h3 style="margin-top:16px">Videos <span id="n-videos"></span></h3>
+        <div class="media" id="videos"></div>
+        <div class="row" style="margin-top:14px"><button class="btn" data-zip="images">Download images</button><button class="btn" data-zip="videos">Download videos</button><button class="btn" data-zip="all">Download everything</button></div>
+        <p class="note" id="post-notes"></p>
+      </div>
+      <div class="panel">
+        <h2>Regenerate</h2>
+        <div class="grid2" style="gap:10px">
+          <label>Voice <select id="voice"></select></label>
+          <label>Format <select id="format"></select></label>
+          <label>Language <input id="language" placeholder="same as the original" list="langs"></label>
+          <label>Writer <select id="engine"><option value="claude">Claude</option><option value="local">Local model (Ollama)</option></select></label>
+        </div>
+        <datalist id="langs"><option>English</option><option>Arabic (Modern Standard)</option><option>Egyptian Arabic</option><option>French</option><option>Spanish</option><option>German</option></datalist>
+        <label style="margin-top:10px">Anything else <input id="extra" placeholder="e.g. aim it at law firm partners, keep it under 120 words"></label>
+        <div class="row" style="margin-top:10px"><label class="inline"><input type="checkbox" id="credit" checked> Credit the original author</label>
+          <button class="btn primary" id="regen">Regenerate</button><span class="status" id="regen-status"></span></div>
+        <textarea class="out" id="out" placeholder="The new post appears here. You can edit it before narrating."></textarea>
+        <div class="row"><button class="btn" id="copy-out">Copy</button></div>
+        <h2 style="margin-top:16px">Narrate</h2>
+        <div class="row"><select id="speaker"></select><button class="btn" id="narrate">Read it aloud</button><span class="status" id="narrate-status"></span></div>
+        <audio id="audio" controls hidden style="width:100%;margin-top:8px"></audio>
+        <p class="note">Your own voice comes from the My voice tab; the others are Izwi's built-in voices.</p>
+      </div>
+    </div>
+  </section>
+
+  <section data-panel="library" class="panel" hidden>
+    <div class="row" style="justify-content:space-between"><h2>Saved posts</h2><span class="status" id="lib-count"></span></div>
+    <div class="lib" id="lib"></div>
+  </section>
+
+  <section data-panel="voice" hidden>
+    <div class="grid2">
+      <div class="panel samples">
+        <h2>How I write</h2>
+        <p class="note">Paste 3 to 8 posts you wrote yourself. "My voice" rewrites match their tone, rhythm and habits.</p>
+        <label>About me (optional) <textarea id="about" rows="2" placeholder="e.g. Founder of a legal tech lab in Cairo; I write for lawyers who are curious about AI."></textarea></label>
+        <div id="samples" style="display:grid;gap:8px;margin-top:8px"></div>
+        <div class="row" style="margin-top:8px"><button class="btn" id="add-sample">Add a post</button><button class="btn primary" id="save-settings">Save</button><span class="status" id="settings-status"></span></div>
+      </div>
+      <div class="panel">
+        <h2>How I sound</h2>
+        <p class="note">Record yourself reading a sentence for 5 to 30 seconds in a quiet room, then upload it with the exact words you read. Izwi clones the voice locally; nothing leaves your machine.</p>
+        <form id="voice-form" style="display:grid;gap:8px;margin-top:8px">
+          <label>Name <input name="name" value="My voice"></label>
+          <label>Recording (WAV, MP3 or M4A) <input type="file" name="audio" accept="audio/*" required></label>
+          <label>The exact words in the recording <textarea name="reference_text" rows="3" required></textarea></label>
+          <label class="inline"><input type="checkbox" name="consent" value="true" required> This is my own voice, or its owner agreed to it being cloned.</label>
+          <div class="row"><button class="btn primary">Save my voice</button><span class="status" id="voice-status"></span></div>
+        </form>
+        <h3 style="margin-top:14px">Saved voices</h3>
+        <ul id="saved-voices" class="meta"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section data-panel="setup" class="panel" hidden>
+    <h2>Setup</h2>
+    <div id="setup"></div>
+    <label style="margin-top:12px">Cookies file for Instagram and Facebook (a cookies.txt exported from your browser while signed in)
+      <input id="cookies" placeholder="/path/to/cookies.txt"></label>
+    <label style="margin-top:8px">Local model for "Local model (Ollama)" <input id="ollama-model" placeholder="qwen3:8b"></label>
+    <div class="row" style="margin-top:8px"><button class="btn primary" id="save-setup">Save</button><span class="status" id="setup-status"></span></div>
+  </section>
+</main>
+
+<script>
+const $ = (s) => document.querySelector(s), $$ = (s) => [...document.querySelectorAll(s)];
+const el = (tag, props = {}, ...kids) => { const n = Object.assign(document.createElement(tag), props); n.append(...kids.filter((k) => k != null)); return n; };
+const api = async (path, opts = {}) => {
+  const r = await fetch(path, { headers: opts.body && !(opts.body instanceof FormData) ? { 'Content-Type': 'application/json' } : {}, ...opts });
+  if (!r.ok) { let m = r.statusText; try { m = (await r.json()).detail || m; } catch {} throw new Error(m); }
+  return r;
+};
+const copy = async (text, btn) => { try { await navigator.clipboard.writeText(text); btn.textContent = 'Copied'; setTimeout(() => { btn.textContent = 'Copy'; }, 1200); } catch {} };
+let current = null, status = {}, prefs = { my_samples: [], about_me: '', cookies: '', ollama_model: '' };
+
+function tab(name) {
+  $$('nav button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === name)));
+  $$('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== name || (p.id === 'post' && !current); });
+  if (name === 'library') showLibrary();
+  if (name === 'voice') showVoices();
+}
+$$('nav button').forEach((b) => { b.onclick = () => tab(b.dataset.tab); });
+
+const fileUrl = (key, rel) => `/api/posts/${key}/file/${rel}`;
+function showPost(rec) {
+  current = rec;
+  $('#post').hidden = false;
+  $('#post-title').textContent = `${rec.author_name || rec.author || 'Unknown'}${rec.author ? ' @' + rec.author : ''}`;
+  $('#post-link').href = rec.url;
+  $('#post-meta').textContent = [rec.platform, rec.date && new Date(rec.date).toLocaleString(), 'read with ' + (rec.sources || []).join(', ')].filter(Boolean).join(' · ');
+  $('#post-text').textContent = rec.text || '(no text)';
+  const files = rec.files || [];
+  for (const kind of ['image', 'video']) {
+    const list = files.filter((f) => f.kind === kind), box = $(kind === 'image' ? '#images' : '#videos');
+    $(kind === 'image' ? '#n-images' : '#n-videos').textContent = `(${list.filter((f) => f.path).length})`;
+    box.replaceChildren(...list.map((f, i) => f.path
+      ? el('figure', {}, kind === 'image' ? el('img', { src: fileUrl(rec.key, f.path), loading: 'lazy', alt: `Image ${i + 1}` }) : el('video', { src: fileUrl(rec.key, f.path), controls: true, preload: 'metadata' }),
+          el('figcaption', {}, el('span', { textContent: f.path.split('/').pop() + ' · ' + (f.bytes < 1024 ? f.bytes + ' B' : f.bytes < 1048576 ? Math.round(f.bytes / 1024) + ' KB' : (f.bytes / 1048576).toFixed(1) + ' MB') }), el('a', { href: fileUrl(rec.key, f.path), download: '', textContent: 'Save' })))
+      : el('figure', {}, el('figcaption', { textContent: `${kind} ${i + 1} could not be downloaded: ${f.error}` }))));
+    if (!list.length) box.replaceChildren(el('p', { className: 'note', textContent: `No ${kind}s in this post.` }));
+  }
+  $('#post-notes').textContent = (rec.notes || []).length ? 'Notes: ' + rec.notes.join(' · ') : '';
+  $('#out').value = '';
+  $('#audio').hidden = true;
+  tab('grab');
+}
+$$('[data-zip]').forEach((b) => { b.onclick = () => { if (current) location.href = `/api/posts/${current.key}/zip?which=${b.dataset.zip}`; }; });
+$('#copy-text').onclick = (e) => copy(current?.text || '', e.target);
+$('#copy-out').onclick = (e) => copy($('#out').value, e.target);
+
+$('#grab-form').onsubmit = async (e) => {
+  e.preventDefault();
+  const url = $('#url').value.trim(); if (!url) return;
+  const st = $('#grab-status'); st.className = 'status'; st.textContent = 'Reading the post and downloading its images and videos…'; $('#grab-btn').disabled = true;
+  try { const rec = await (await api('/api/extract', { method: 'POST', body: JSON.stringify({ url }) })).json(); st.textContent = `Saved to the library: ${rec.key}`; showPost(rec); }
+  catch (err) { st.className = 'status bad'; st.textContent = err.message; }
+  finally { $('#grab-btn').disabled = false; }
+};
+
+$('#regen').onclick = async () => {
+  if (!current) return;
+  const st = $('#regen-status'); st.className = 'status'; st.textContent = 'Writing…'; $('#regen').disabled = true; $('#out').value = '';
+  try {
+    const r = await api('/api/regenerate', { method: 'POST', body: JSON.stringify({ key: current.key, voice: $('#voice').value, format: $('#format').value, language: $('#language').value, extra: $('#extra').value, credit: $('#credit').checked, engine: $('#engine').value }) });
+    const reader = r.body.getReader(), dec = new TextDecoder();
+    for (;;) { const { done, value } = await reader.read(); if (done) break; $('#out').value += dec.decode(value, { stream: true }); }
+    st.textContent = 'Saved with the post.';
+  } catch (err) { st.className = 'status bad'; st.textContent = err.message; }
+  finally { $('#regen').disabled = false; }
+};
+
+$('#narrate').onclick = async () => {
+  const text = $('#out').value.trim() || current?.text || '';
+  const st = $('#narrate-status'); st.className = 'status'; st.textContent = 'Speaking…'; $('#narrate').disabled = true;
+  try {
+    const r = await api('/api/narrate', { method: 'POST', body: JSON.stringify({ text, voice: $('#speaker').value, key: current?.key || '' }) });
+    const a = $('#audio'); a.src = URL.createObjectURL(await r.blob()); a.hidden = false; a.play().catch(() => {});
+    st.textContent = r.headers.get('X-Saved-As') ? 'Saved with the post.' : '';
+  } catch (err) { st.className = 'status bad'; st.textContent = err.message; }
+  finally { $('#narrate').disabled = false; }
+};
+
+async function showLibrary() {
+  const posts = await (await api('/api/posts')).json();
+  $('#lib-count').textContent = `${posts.length} saved`;
+  $('#lib').replaceChildren(...posts.map((p) => {
+    const img = (p.files || []).find((f) => f.kind === 'image' && f.path);
+    const n = (k) => (p.files || []).filter((f) => f.kind === k && f.path).length;
+    return el('div', { className: 'item', onclick: () => showPost(p) },
+      img ? el('img', { src: fileUrl(p.key, img.path), loading: 'lazy', alt: '' }) : el('div', { className: 'pill', textContent: p.platform }),
+      el('div', {}, el('div', { className: 't', textContent: p.text || '(no text)' }), el('div', { className: 'meta', textContent: `${p.platform} · @${p.author || '?'} · ${n('image')} images · ${n('video')} videos · ${(p.regenerated || []).length} regenerated` })),
+      el('button', { className: 'btn', textContent: 'Delete', onclick: async (e) => { e.stopPropagation(); await api(`/api/posts/${p.key}`, { method: 'DELETE' }); showLibrary(); } }));
+  }));
+  if (!posts.length) $('#lib').append(el('p', { className: 'note', textContent: 'Nothing saved yet: grab a post first.' }));
+}
+
+function sampleBox(text = '') { $('#samples').append(el('textarea', { value: text, placeholder: 'One post you wrote' })); }
+$('#add-sample').onclick = () => sampleBox();
+async function saveSettings(st) {
+  prefs = { my_samples: $$('#samples textarea').map((t) => t.value), about_me: $('#about').value, cookies: $('#cookies').value.trim(), ollama_model: $('#ollama-model').value.trim() };
+  try { prefs = await (await api('/api/settings', { method: 'PUT', body: JSON.stringify(prefs) })).json(); st.textContent = 'Saved.'; } catch (err) { st.textContent = err.message; }
+}
+$('#save-settings').onclick = () => saveSettings($('#settings-status'));
+$('#save-setup').onclick = () => saveSettings($('#setup-status'));
+
+async function showVoices() {
+  let v = { saved: [], presets: [], error: '' };
+  try { v = await (await api('/api/voices')).json(); } catch {}
+  $('#saved-voices').replaceChildren(...(v.saved.length ? v.saved.map((s) => el('li', { textContent: `${s.name} (${s.id})` })) : [el('li', { textContent: v.error ? 'Izwi is not running: start it with ./start.sh izwi' : 'None yet.' })]));
+  $('#speaker').replaceChildren(
+    ...v.saved.map((s) => el('option', { value: 'saved:' + s.id, textContent: `${s.name} (cloned)` })),
+    ...v.presets.map((p) => el('option', { value: p, textContent: p })));
+}
+$('#voice-form').onsubmit = async (e) => {
+  e.preventDefault();
+  const st = $('#voice-status'); st.textContent = 'Saving…';
+  try { await api('/api/voices', { method: 'POST', body: new FormData(e.target) }); st.textContent = 'Saved. Pick it under Narrate.'; e.target.reset(); showVoices(); }
+  catch (err) { st.textContent = err.message; }
+};
+
+async function boot() {
+  status = await (await api('/api/status')).json();
+  prefs = await (await api('/api/settings')).json();
+  $('#voice').replaceChildren(...Object.entries(status.voices).map(([k, d]) => el('option', { value: k, textContent: k === 'mine' ? 'My voice' : k[0].toUpperCase() + k.slice(1), title: d })));
+  $('#format').replaceChildren(...Object.entries(status.formats).map(([k, d]) => el('option', { value: k, textContent: { same: 'Same as the original', x_thread: 'X thread', x_post: 'X post', linkedin: 'LinkedIn post', instagram: 'Instagram caption', facebook: 'Facebook post', threads: 'Threads post', video_script: 'Short video script', carousel: 'Carousel slides', newsletter: 'Newsletter section', voiceover: 'Voiceover script' }[k] || k, title: d })));
+  $('#engine').value = status.engine_default;
+  $('#about').value = prefs.about_me || ''; $('#cookies').value = prefs.cookies || ''; $('#ollama-model').value = prefs.ollama_model || '';
+  $('#samples').replaceChildren(); (prefs.my_samples.length ? prefs.my_samples : ['', '', '']).forEach(sampleBox);
+  const iz = status.izwi;
+  $('#setup').replaceChildren(el('ul', { className: 'meta' },
+    el('li', { textContent: status.claude ? `Claude: ready (${status.claude_model}).` : 'Claude: set ANTHROPIC_API_KEY before starting Post Studio to write with Claude.' }),
+    el('li', { textContent: `Local model: Ollama at ${status.ollama_url}, model ${status.ollama_model} (install Ollama, then: ollama pull ${status.ollama_model}).` }),
+    el('li', { textContent: iz.online ? `Izwi: running at ${iz.url}. Cloning model ${iz.clone_model}: ${iz.clone_status}. Built-in voices model ${iz.preset_model}: ${iz.preset_status}.` : `Izwi: not running at ${iz.url}. Start it with ./start.sh izwi.` }),
+    iz.online && iz.clone_status !== 'downloaded' && iz.clone_status !== 'ready' ? el('li', {}, el('button', { className: 'btn', textContent: `Download ${iz.clone_model} for my voice`, onclick: async (e) => { e.target.disabled = true; try { await api('/api/izwi/download', { method: 'POST' }); e.target.textContent = 'Downloading in Izwi…'; } catch (err) { e.target.textContent = err.message; } } })) : null,
+    el('li', { textContent: `Library: ${status.library}` })));
+  showVoices();
+  const shared = new URLSearchParams(location.search).get('url');
+  if (shared) { $('#url').value = shared; $('#grab-form').requestSubmit(); }
+}
+boot();
+</script>
+</body>
+</html>
