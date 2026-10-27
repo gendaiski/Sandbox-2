@@ -65,6 +65,7 @@ footer { font-size: 0.8rem; color: var(--muted); }
 .sysgrid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
 .sys { display: grid; gap: 4px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); text-decoration: none; color: var(--ink); }
 .sys:hover { border-color: var(--accent); }
+a.open { font-weight: 600; white-space: nowrap; }
 .sys b { font-weight: 600; } .sys span { font-size: 0.82rem; color: var(--muted); } .sys em { font-style: normal; font-size: 0.82rem; color: var(--accent); }
 .diagrams { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 28rem), 1fr)); }
 pre.mermaid { margin: 0; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 14px; overflow-x: auto; text-align: center; }
@@ -83,6 +84,17 @@ pre.mermaid { margin: 0; background: var(--bg); border: 1px solid var(--line); b
     <div class="tile"><span>Checks skipped</span><b id="t-skipped"></b></div>
   </section>
 
+  <section class="card" id="batch">
+    <h2>Latest batch: 16 repos installed with their own UIs</h2>
+    <p class="note">Each was installed natively in Sandbox-2 (systems/&lt;id&gt;/setup.sh) and tested in its own CI job. Open its live page to try it here; <span class="mono">./start.sh &lt;id&gt;</span> opens the real app in the Codespace.</p>
+    <div class="scroll">
+      <table>
+        <thead><tr><th class="num">#</th><th>System</th><th>Live page</th><th>What you can do there</th><th>CI</th><th>Real UI</th><th>Code</th><th>Upstream</th></tr></thead>
+        <tbody id="batch-body"></tbody>
+      </table>
+    </div>
+  </section>
+
   <section class="card" id="open">
     <h2>Open a system</h2>
     <p class="note">Each page is an interactive version of the system that runs in your browser: its features work on the sample contract, and each page has a diagram of how the real system works.</p>
@@ -94,13 +106,13 @@ pre.mermaid { margin: 0; background: var(--bg); border: 1px solid var(--line); b
     <div class="diagrams">
 <pre class="mermaid">
 flowchart LR
-  UP["12 upstream repos<br/>(scripts/clone_all.sh)"] --> SET["systems/NAME/setup.sh<br/>own venv, node_modules or Docker"]
+  UP["28 upstream repos<br/>(scripts/clone_all.sh, setup.sh)"] --> SET["systems/NAME/setup.sh<br/>own venv, node_modules or Docker"]
   SET --> TEST["systems/NAME/test_*.py<br/>standalone checks"]
   TEST --> CI["GitHub Actions<br/>one job per system"]
   CI --> REP["reports/latest.json"]
   REP --> BENCH["bench data job<br/>systems.json, checks.json"]
   BENCH --> PAGE["This page"]
-  SRC["interactive/pages"] --> BUILD["scripts/build_interactive.py"] --> APPS["12 interactive systems"]
+  SRC["interactive/pages"] --> BUILD["scripts/build_interactive.py"] --> APPS["28 interactive systems"]
   SET --> RUN["serve.sh, start.sh, portal :8080<br/>(the real apps, in Codespaces)"]
 </pre>
 <pre class="mermaid">
@@ -174,6 +186,17 @@ const BENCH = /*BENCH_DATA*/null;
     : `${BENCH.pages.length} systems, each tested on its own in a separate CI job and each open to use below. Every job passes.`;
   document.getElementById('sysgrid').replaceChildren(...BENCH.pages.map((p) => el('a', { className: 'sys', href: p.url, target: '_blank', rel: 'noopener' },
     el('b', { textContent: p.name }), el('span', { textContent: p.what }), el('em', { textContent: 'Open the system →' }))));
+
+  document.getElementById('batch-body').replaceChildren(...(BENCH.batch || []).map((b, i) => el('tr', {},
+    el('td', { className: 'num', textContent: String(i + 1) }),
+    el('td', { className: 'name', textContent: b.name }),
+    el('td', {}, b.url ? el('a', { href: b.url, target: '_blank', rel: 'noopener', className: 'open', textContent: 'Open →' }) : '—'),
+    el('td', { className: 'wrapcell', textContent: b.what }),
+    el('td', {}, pill(b.status || 'Unknown'), ' ', b.ci_url ? link(`${b.passed} passed${b.failed ? `, ${b.failed} failed` : ''}`, b.ci_url) : ''),
+    el('td', { className: 'wrapcell', textContent: `${b.ui}, port ${b.port}` }),
+    el('td', { className: 'mono' }, link(b.code, b.code_url)),
+    el('td', { className: 'mono' }, link(b.upstream, b.upstream_url)),
+  )));
 
   const sysBody = document.getElementById('systems-body');
   for (const s of systems) {

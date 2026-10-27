@@ -1,0 +1,624 @@
+<title>Loopcut Agent Workbench</title>
+{{HEAD}}
+<style>
+  :root { --accent: #c4610a; --accent-soft: #fbeadb; --o0: #8a9bb0; --o1: #b98a5e; --o2: #6d8f6a; --o3: #c9a227; --o4: #7a6fb5; --o5: #b8665f; --o6: #4f9aa6; --floor: #d9d4cc; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #f2913a; --accent-ink: #2a1300; --accent-soft: #3a2412; --o0: #6f8197; --o1: #a0754d; --o2: #5d7f5a; --o3: #b08d1c; --o4: #6c62a3; --o5: #a65a54; --o6: #438591; --floor: #3a3632; } }
+  :root[data-theme="dark"] { --accent: #f2913a; --accent-ink: #2a1300; --accent-soft: #3a2412; --o0: #6f8197; --o1: #a0754d; --o2: #5d7f5a; --o3: #b08d1c; --o4: #6c62a3; --o5: #a65a54; --o6: #438591; --floor: #3a3632; }
+  .views { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 1100px) { .views { grid-template-columns: 1fr; } }
+  .view { border: 1px solid var(--line); border-radius: 8px; background: var(--sunk); position: relative; min-width: 0; }
+  .view .lbl { position: absolute; left: 8px; top: 6px; font: 11px var(--mono); color: var(--muted); pointer-events: none; }
+  .view svg { display: block; width: 100%; height: auto; touch-action: none; }
+  .view rect.part { stroke: var(--fg); stroke-opacity: .35; stroke-width: 1; cursor: grab; }
+  .view rect.part.sel { stroke: var(--accent); stroke-opacity: 1; stroke-width: 2; }
+  .view rect.part.bad { stroke: var(--bad); stroke-opacity: 1; stroke-dasharray: 4 3; stroke-width: 1.5; }
+  .view rect.floor { fill: var(--floor); }
+  .view text { font: 10px var(--mono); fill: var(--fg); pointer-events: none; }
+  .objs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .objs .btn[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .loc { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .pairs { display: flex; flex-direction: column; gap: 6px; }
+  .pairrow { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 72px auto; gap: 6px; align-items: center; }
+  @media (max-width: 560px) { .pairrow { grid-template-columns: 1fr 1fr; } }
+  .pairrow input, .pairrow select { min-width: 0; width: 100%; }
+  .report { white-space: pre-wrap; font: 12px/1.6 var(--mono); background: var(--sunk); border-radius: 7px; padding: 10px 12px; margin: 0; overflow-x: auto; }
+  .verdicts { display: flex; flex-direction: column; gap: 8px; }
+  .verdict { border: 1px solid var(--line); border-left: 3px solid var(--good); border-radius: 7px; padding: 8px 10px; background: var(--panel); display: flex; flex-direction: column; gap: 4px; }
+  .verdict.fail { border-left-color: var(--bad); } .verdict.unavailable { border-left-color: var(--warn); }
+  .verdict .ln { font: 12px/1.5 var(--mono); overflow-wrap: anywhere; }
+  .raw { white-space: pre-wrap; font: 11.5px/1.55 var(--mono); background: var(--sunk); border-radius: 7px; padding: 10px; margin: 0; max-height: 340px; overflow: auto; overflow-wrap: anywhere; }
+  .lvl { display: flex; gap: 6px; flex-wrap: wrap; }
+  .lvl span { border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; font-size: 12px; color: var(--muted); }
+  .lvl span.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
+  .workers { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+  .worker { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--panel); display: flex; flex-direction: column; gap: 3px; }
+  .worker b { font-family: var(--mono); font-size: 12.5px; } .worker .q { font-size: 12px; color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .fails { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">Lc</span><h1>Loopcut Agent Workbench</h1><span class="tag">The AI agent inside a Blender 5.2 fork: how it routes a request, and how it checks that things sit where they should</span>
+      <span class="links"><a href="https://github.com/Samffprice/loopcut" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/loopcut" target="_blank" rel="noopener">Install and test code</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="contact">Placement checks</button><button data-tab="router">Router</button><button data-tab="how">How it works</button><button data-tab="install">Install &amp; test</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">Loopcut is a desktop app (Blender built from source), so it can't run in a browser. This page runs two of its pieces. <b>Placement checks</b> uses check_contact's verdict and wording code from contact.py, ported line for line, on a scene made of boxes; Loopcut measures real meshes inside Blender. <b>Router</b> uses router.py's parsing and its &lt;routing&gt; note; Claude stands in for Loopcut's router model, whose prompt Loopcut serves from its own servers.</p>
+
+  <section data-panel="contact">
+    <div class="grid cols-2">
+      <div class="stack" style="min-width:0">
+        <div class="views">
+          <div class="view"><span class="lbl">Front (X right, Z up)</span><svg id="side" viewBox="0 0 520 300"></svg></div>
+          <div class="view"><span class="lbl">Top (X right, Y up)</span><svg id="top" viewBox="0 0 520 300"></svg></div>
+        </div>
+        <div class="panel"><header><h2 class="grow">Objects</h2><button class="btn small" id="reset">Reset the scene</button></header>
+          <div class="objs" id="objs"></div>
+          <div class="loc" id="loc"></div>
+          <p class="note">Drag an object in either view, or type its location in metres (steps of 1 mm). Table and Lamp are empties: like Loopcut, each is measured as the union of its child meshes, and each leg or base is a separate support.</p>
+        </div>
+      </div>
+      <div class="stack" style="min-width:0">
+        <div class="panel"><header><h2 class="grow">Pairs to check</h2><button class="btn small" id="addpair">Add a pair</button></header>
+          <div class="pairs" id="pairs"></div>
+          <label class="field inline">Tolerance (mm) <input type="number" id="tol" value="2" min="0" step="0.5"></label>
+        </div>
+        <div class="panel"><h2>Verdicts</h2><div class="verdicts" id="verdicts"></div></div>
+      </div>
+    </div>
+    <div class="panel"><header><h2 class="grow">What check_contact returns to the agent</h2><button class="btn small" id="copyrep">Copy</button></header><pre class="report" id="report"></pre>
+      <p class="note">Loopcut never moves anything itself: a failure carries the move that would fix it, and the agent decides. "Apply the fix" here does what the agent would then do.</p></div>
+  </section>
+
+  <section data-panel="router" hidden>
+    <div class="grid cols-2">
+      <div class="panel stack"><h2>The request</h2>
+        <div class="chips" id="examples"></div>
+        <label class="field">What the user typed in the Loopcut panel <textarea id="req" rows="3"></textarea></label>
+        <label class="field">Scene (the &lt;scene_context&gt; lines the router sees) <textarea id="scene" rows="4"></textarea></label>
+        <label class="field">Previous turn <input id="prev" value="none"></label>
+        <div class="row"><label class="field inline"><input type="checkbox" id="img"> The user attached an image</label>
+          <label class="field inline">Worker limit <input type="number" id="workers" value="0" min="0" max="8" style="width:64px"></label></div>
+        <div class="row"><button class="btn primary ai-only" id="route">Route with Claude</button><button class="btn small" id="stop" hidden>Stop</button><span class="status" id="rstatus"></span></div>
+        <p class="note ai-off">Open this page in Claude to have Claude route the request. You can still edit the router's reply on the right and see what Loopcut makes of it.</p>
+        <details><summary>What the router is sent</summary><pre class="raw" id="rinput"></pre>
+          <p class="note">This is router.request_text(), word for word. The instructions before it are this page's stand-in (Loopcut's are served as prompt_id "router" and are not public).</p></details>
+      </div>
+      <div class="panel stack"><h2>What Loopcut makes of the reply</h2>
+        <label class="field">The router's reply (edit it and press Parse) <textarea id="reply" rows="5" spellcheck="false"></textarea></label>
+        <div class="row"><button class="btn small" id="parse">Parse</button><span class="note" id="pnote"></span></div>
+        <div class="lvl" id="levels"></div>
+        <div id="decision" class="stack"></div>
+        <h3 style="margin:0;font-size:13px">The note added to the user's message for the orchestrator</h3>
+        <pre class="raw" id="note"></pre>
+      </div>
+    </div>
+    <div class="panel"><h2>Workers this turn would start</h2><div class="workers" id="wk"></div></div>
+  </section>
+
+  <section data-panel="how" hidden>
+    <div class="grid cols-2">
+      <div class="panel"><h2>One turn in Loopcut</h2>
+<pre class="mermaid">
+flowchart TD
+  U[User types in the Loopcut panel] --> R{Router: level 0-3}
+  R -->|0 question| A[Answer, change nothing]
+  R -->|1 small edit| S[Orchestrator edits the scene itself]
+  R -->|2 one deliverable| P[Build it, or one worker]
+  R -->|3 several| W[One worker each, dry_run first]
+  P --> L[run_python in Blender]
+  W --> L
+  S --> L
+  L --> C[check_contact, acceptance checks, camera framing]
+  C -->|fail: the move that fixes it| L
+  C -->|pass| F[Final reply with what was verified]
+</pre></div>
+      <div class="panel"><h2>rests_on, one support at a time</h2>
+<pre class="mermaid">
+flowchart LR
+  A[a's vertices near its lowest point] --> B[split into supports: legs, feet]
+  B --> C[vertical lines down onto b]
+  C --> D{per support}
+  D -->|within tolerance| T[touching]
+  D -->|above| FL[floating]
+  D -->|below b's top| IN[into / through b]
+  T & FL & IN --> V[verdict + move a by 0,0,dz; a lone foot moved by itself]
+</pre>
+        <p class="note">touches and clear_of measure the nearest approach both ways, from every vertex and face centre; inside measures against b's convex hull. A pair is re-measured after every later run_python when the agent asks to watch it.</p></div>
+    </div>
+  </section>
+
+  <section data-panel="install" hidden>
+    <div class="panel"><h2>The two red checks</h2>
+      <div class="fails">
+        <div class="stack"><b>merge_check.py</b><p class="note">The harness expects a checkpoint restore to write a new .blend file. The Loopcut build at the same commit restores in place, which its own unit tests (all 4,196 passing) expect. The harness assertion is older than the code.</p></div>
+        <div class="stack"><b>m4_e2e_check.py</b><p class="note">The scripted end-to-end run with workers completes, then the harness reads the contact sheet as a PNG. Loopcut now writes it as a JPEG, so that one assertion fails.</p></div>
+      </div>
+      <p class="note">Both are upstream test files that lag the app. The install, the app and every other check pass; nothing in Sandbox-2 is patched to hide them.</p></div>
+    <div id="install" class="stack"></div>
+  </section>
+</main>
+<p class="footer">Loopcut © Samffprice; Blender © the Blender Foundation, GPL. Ported pieces: loopcut/contact.py and loopcut/router.py.</p>
+{{LIB}}
+{{LIVE}}
+{{AI}}
+<script>
+const CHECKS = {{CHECKS:loopcut}};
+
+/* ---------------- contact.py, the pure half ---------------- */
+const RELATIONS = ['rests_on', 'touches', 'clear_of', 'inside'];
+const MAX_SUPPORTS = 32, SUPPORT_LINES = 6, INSET = 1e-4, SIDE = 1e-6;
+const r3 = (v) => Math.round(v * 1000) / 1000;
+const _m = (v) => { const t = v.toFixed(4).replace(/0+$/, '').replace(/\.$/, ''); return t === '-0' || t === '' ? '0' : t; };
+const vector = (v) => `(${v.map(_m).join(', ')})`;
+const _mm = (v) => Math.abs(v) < 1 ? `${(v * 1000).toFixed(1)} mm` : `${_m(r3(v))} m`;
+const _fix = (moves) => moves.length ? '. Fix: ' + moves.map(([n, v]) => `move ${n} by ${vector(v)} m`).join('; ') : '';
+const band = (h) => Math.min(Math.max(0.05 * h, 0.01), 0.03);
+const relationOf = (n) => { const s = String(n || '').trim().toLowerCase().replace(/[ -]/g, '_'); return RELATIONS.includes(s) ? s : ''; };
+
+function _what(offset, how, b) {
+  if (how === 'gap' || offset > 0) return `gap ${_mm(Math.max(offset, 0))}`;
+  if (how === 'through') return `through ${b}, ${_mm(-offset)} below its top`;
+  return `${_mm(-offset)} into ${b}`;
+}
+const _solids = (c) => { const s = []; for (let i = 0; i < c.length; i += 2) s.push([c[i], c[Math.min(i + 1, c.length - 1)]]); return s; };
+function offsetBelow(z, cr, tol) {
+  if (!cr.length) return null;
+  const S = _solids(cr);
+  for (const [[top, face], [bottom]] of S) if (bottom - tol <= z && z < top - tol) return [z - top, face, z <= bottom + tol ? 'through' : 'into'];
+  for (const [[top, face]] of S) if (top < z + tol) return [z - top, face, 'gap'];
+  const [[top, face]] = S[S.length - 1];
+  return [z - top, face, 'through'];
+}
+function offsetAbove(z, cr, tol) {
+  if (!cr.length) return null;
+  const S = _solids(cr);
+  for (const [[top], [bottom, face]] of S) if (bottom + tol < z && z <= top + tol) return [bottom - z, face, z >= top - tol ? 'through' : 'into'];
+  for (const [, [bottom, face]] of [...S].reverse()) if (bottom > z - tol) return [bottom - z, face, 'gap'];
+  const [, [bottom, face]] = S[0];
+  return [bottom - z, face, 'through'];
+}
+
+function restsOn(pair, found, tol, whole, over) {
+  const { a, b } = pair, measured = found.filter((s) => s.offset !== null);
+  const result = { status: 'fail', supports: found, details: [], fixes: [] };
+  if (!measured.length) {
+    result.fixes = over ? [[whole, over]] : [];
+    result.line = `no part of ${a} is over ${b}` + _fix(result.fixes);
+    return result;
+  }
+  const low = Math.min(...measured.map((s) => s.offset));
+  const lift = Math.abs(low) > tol ? -low : 0;
+  const moves = lift ? [[whole, [0, 0, lift]]] : [], still = [], counts = new Map();
+  for (const s of found) {
+    let word;
+    if (s.offset === null) word = 'not over ' + b;
+    else if (Math.abs(s.offset) <= tol) word = 'touching';
+    else word = s.offset > 0 ? 'floating' : `${s.how} ${b}`;
+    counts.set(word, (counts.get(word) || 0) + 1);
+    if (word !== 'touching') result.details.push(`${s.part} at ${vector(s.xy)}: ${s.offset === null ? word : _what(s.offset, s.how, b)}`);
+    const residual = s.offset === null ? null : s.offset + lift;
+    if (residual !== null && residual > tol && s.alone) moves.push([s.part, [0, 0, -residual]]);
+    else if (residual !== null && residual > tol) still.push([s, residual]);
+  }
+  result.fixes = moves;
+  const plural = found.length > 1 ? 's' : '';
+  if (counts.size === 1 && counts.has('touching')) {
+    result.status = 'pass';
+    const largest = Math.max(...found.map((s) => Math.abs(s.offset)));
+    result.line = `${found.length} support${plural} touching` + (largest >= 5e-5 ? ` (within ${_mm(largest)})` : '');
+    return result;
+  }
+  result.line = `${found.length} support${plural}: ` + [...counts].map(([w, n]) => `${n} ${w}`).join(', ');
+  result.line += _fix(moves);
+  if (still.length) {
+    const [s, residual] = still.reduce((m, x) => (x[1] > m[1] ? x : m));
+    result.line += `. Then ${s.part} at ${vector(s.xy)} would still float ${_mm(residual)}: ${a} is tilted or uneven`;
+  }
+  if (result.details.length > SUPPORT_LINES) {
+    const extra = result.details.length - SUPPORT_LINES;
+    result.details = [...result.details.slice(0, SUPPORT_LINES), `(+${extra} more)`];
+  }
+  return result;
+}
+function touches(pair, m, tol) {
+  const { a, b } = pair;
+  if (m.depth > tol) { const moves = [[a, m.out]]; return { status: 'fail', failure_reason: 'overlap', line: `${_mm(m.depth)} into ${b}` + _fix(moves), fixes: moves }; }
+  const distance = m.meet ? 0 : m.distance;
+  if (distance <= tol) {
+    const note = m.depth >= 5e-5 ? ` (${_mm(m.depth)} into)` : distance >= 5e-5 ? ` (gap ${_mm(distance)})` : '';
+    return { status: 'pass', line: 'in contact' + note, fixes: [] };
+  }
+  const moves = [[a, m.toward]];
+  return { status: 'fail', failure_reason: 'too_far', line: `gap ${_mm(m.distance)}` + _fix(moves), fixes: moves };
+}
+function _away(dir, length) {
+  const size = Math.hypot(...dir) || 1;
+  length = Math.ceil(length * 10000 - 0.01) / 10000;
+  return dir.map((c) => c / size * length);
+}
+function clearOf(pair, m, tol, apart = [0, 0, 1]) {
+  const { a, b } = pair, needed = Math.max(pair.gap, tol);
+  if (m.depth > 1e-6) { const moves = [[a, _away(m.out, m.depth + needed)]]; return { status: 'fail', failure_reason: 'overlap', line: `${_mm(m.depth)} into ${b}` + _fix(moves), fixes: moves }; }
+  const distance = m.meet ? 0 : m.distance;
+  if (distance > tol && distance >= pair.gap) return { status: 'pass', line: `clear by ${_mm(distance)}`, fixes: [] };
+  const toward = distance > 0 && m.toward.some((c) => c) ? m.toward : apart.map((c) => -c);
+  const moves = [[a, _away(toward.map((c) => -c), needed - distance)]];
+  const what = distance <= tol ? 'touching' : `${_mm(distance)} apart, needs ${_mm(needed)}`;
+  return { status: 'fail', failure_reason: 'too_close', line: what + _fix(moves), fixes: moves };
+}
+function inside(pair, m, tol) {
+  const { a, b } = pair;
+  if (m.worst <= tol) return { status: 'pass', line: `inside ${b}'s convex hull`, fixes: [] };
+  const moves = m.larger.length ? [] : [[a, m.back]];
+  let line = `${Math.round(m.outside * 100)}% of ${a}'s vertices outside ${b}'s convex hull, up to ${_mm(m.worst)}`;
+  if (m.larger.length) line += `; ${a} is larger than ${b} along ${m.larger.join(', ')}`;
+  return { status: 'fail', line: line + _fix(moves), fixes: moves };
+}
+const unavailable = (pair, reason) => ({ ...pair, status: 'unavailable', line: reason, fixes: [] });
+const title = (p) => `${p.a || '?'} ${p.relation || '?'} ${p.b || '?'}`;
+const pairLine = (r) => `${r.status === 'fail' ? 'FAIL' : r.status}: ${title(r)}${(r.notes || []).map((n) => ` (${n})`).join('')}: ${r.line}.`;
+function report(results, tol) {
+  const c = (s) => results.filter((r) => r.status === s).length;
+  const lines = [`Contact: ${c('pass')} pass, ${c('fail')} fail, ${c('unavailable')} unavailable (tolerance ${_mm(tol)}; moves are world-space, nothing was moved).`];
+  for (const r of results) { lines.push(pairLine(r)); if (r.status === 'fail') lines.push(...(r.details || []).map((d) => `  ${d}`)); }
+  return lines.join('\n');
+}
+
+/* ---------------- the measuring half, on boxes ---------------- */
+const corners = (p) => { const r = []; for (const x of [p.lo[0], p.hi[0]]) for (const y of [p.lo[1], p.hi[1]]) for (const z of [p.lo[2], p.hi[2]]) r.push([x, y, z]); return r; };
+const faceCentres = (p) => { const c = p.lo.map((l, i) => (l + p.hi[i]) / 2), r = []; for (let i = 0; i < 3; i++) for (const v of [p.lo[i], p.hi[i]]) { const q = [...c]; q[i] = v; r.push(q); } return r; };
+const wparts = (o) => o.parts.map((p) => ({ label: p.label, lo: p.lo.map((v, i) => v + o.loc[i]), hi: p.hi.map((v, i) => v + o.loc[i]) }));
+const bounds = (ps) => [[0, 1, 2].map((i) => Math.min(...ps.map((p) => p.lo[i]))), [0, 1, 2].map((i) => Math.max(...ps.map((p) => p.hi[i])))];
+function crossings(ps, x, y) {
+  const c = [];
+  ps.forEach((p, k) => { if (x > p.lo[0] && x < p.hi[0] && y > p.lo[1] && y < p.hi[1]) c.push([p.hi[2], k], [p.lo[2], k]); });
+  return c.sort((u, v) => v[0] - u[0]);
+}
+function _inset(x, y, cx, cy) { const dx = cx - x, dy = cy - y, s = Math.hypot(dx, dy); return s <= INSET ? [x, y] : [x + dx / s * INSET, y + dy / s * INSET]; }
+function measureRestsOn(pair, A, B, tol) {
+  const ap = wparts(A), bp = wparts(B);
+  const zs = ap.flatMap((p) => [p.lo[2], p.hi[2]]), lowest = Math.min(...zs), reach = lowest + band(Math.max(...zs) - lowest);
+  let groups = ap.map((p, k) => ({ k, pts: corners(p).filter((c) => c[2] <= reach) })).filter((g) => g.pts.length)
+    .map((g) => ({ ...g, low: Math.min(...g.pts.map((c) => c[2])) })).sort((g, h) => g.low - h.low || g.k - h.k);
+  const all = groups.flatMap((g) => g.pts);
+  groups = groups.filter((g) => {
+    const xs = g.pts.map((c) => c[0]), ys = g.pts.map((c) => c[1]);
+    return !all.some(([x, y, z]) => z < g.low - tol && Math.min(...xs) <= x && x <= Math.max(...xs) && Math.min(...ys) <= y && y <= Math.max(...ys));
+  }).slice(0, MAX_SUPPORTS);
+  const found = groups.map((g) => {
+    const cx = g.pts.reduce((s, c) => s + c[0], 0) / g.pts.length, cy = g.pts.reduce((s, c) => s + c[1], 0) / g.pts.length, hits = [];
+    for (const [x, y, z] of g.pts) { const h = offsetBelow(z, crossings(bp, ..._inset(x, y, cx, cy)), tol); if (h) hits.push(h); }
+    return { part: ap[g.k].label, k: g.k, xy: [r3(cx), r3(cy)], hits };
+  });
+  // b's vertices under a's lowest parts, measured upwards (a small block under a wide base).
+  const xs = all.map((c) => c[0]), ys = all.map((c) => c[1]);
+  const box = [Math.min(...xs) - tol, Math.max(...xs) + tol, Math.min(...ys) - tol, Math.max(...ys) + tol];
+  const cx = xs.reduce((s, v) => s + v, 0) / xs.length, cy = ys.reduce((s, v) => s + v, 0) / ys.length;
+  for (const [x, y, z] of bp.flatMap(corners)) {
+    if (z > reach + tol || !(box[0] <= x && x <= box[1] && box[2] <= y && y <= box[3])) continue;
+    const h = offsetAbove(z, crossings(ap, ..._inset(x, y, cx, cy)), tol);
+    const s = h && found.find((f) => f.k === h[1]);
+    if (s) s.hits.push(h);
+  }
+  const parts = found.map((s) => s.part);
+  for (const s of found) {
+    const best = s.hits.reduce((m, h) => (m === null || h[0] < m[0] ? h : m), null);
+    Object.assign(s, { offset: best ? best[0] : null, how: best ? best[2] : '', alone: ap.length > 1 && parts.filter((p) => p === s.part).length === 1 });
+    delete s.hits;
+  }
+  const [blo, bhi] = bounds(bp);
+  return restsOn(pair, found, tol, pair.a, [(blo[0] + bhi[0]) / 2 - cx, (blo[1] + bhi[1]) / 2 - cy, bhi[2] - lowest]);
+}
+function nearestOn(ps, p) {
+  let best = null, holds = false;
+  for (const b of ps) {
+    let q, d;
+    if (p.every((c, i) => c > b.lo[i] && c < b.hi[i])) {
+      holds = true; d = Infinity;
+      for (let i = 0; i < 3; i++) for (const v of [b.lo[i], b.hi[i]]) { const dd = Math.abs(p[i] - v); if (dd < d) { d = dd; q = [...p]; q[i] = v; } }
+    } else { q = p.map((c, i) => Math.min(Math.max(c, b.lo[i]), b.hi[i])); d = Math.hypot(...q.map((c, i) => c - p[i])); }
+    if (!best || d < best.d) best = { q, d };
+  }
+  return { ...best, holds };
+}
+const meets = (a, b) => [0, 1, 2].every((i) => a.lo[i] <= b.hi[i] && b.lo[i] <= a.hi[i]);
+const strictlyIn = (a, b) => [0, 1, 2].every((i) => a.lo[i] > b.lo[i] && a.hi[i] < b.hi[i]);
+function measureNearest(A, B) {
+  const ap = wparts(A), bp = wparts(B);
+  const m = { distance: Infinity, toward: [0, 0, 0], depth: 0, out: [0, 0, 0], meet: ap.some((a) => bp.some((b) => meets(a, b) && !strictlyIn(a, b) && !strictlyIn(b, a))) };
+  for (const [src, tgt, sign] of [[ap, bp, 1], [bp, ap, -1]]) {
+    for (const p of src.flatMap((s) => [...corners(s), ...faceCentres(s)])) {
+      const { q, d, holds } = nearestOn(tgt, p);
+      if (m.distance <= d && d <= m.depth) continue;
+      if (d > SIDE && holds) { if (d > m.depth) { m.depth = d; m.out = q.map((c, i) => sign * (c - p[i])); } }
+      else if (d < m.distance) { m.distance = d; m.toward = q.map((c, i) => sign * (c - p[i])); }
+    }
+  }
+  return m;
+}
+function measureInside(pair, A, B, tol) {
+  const ap = wparts(A), [lo, hi] = bounds(wparts(B));
+  if ([0, 1, 2].some((i) => hi[i] - lo[i] <= 0)) return unavailable(pair, `${pair.b} is flat: it has no volume to be inside of`);
+  let worst = 0, back = [0, 0, 0], out = 0;
+  const taken = ap.flatMap(corners);
+  for (const p of taken) {
+    const q = p.map((c, i) => Math.min(Math.max(c, lo[i]), hi[i])), d = Math.hypot(...q.map((c, i) => c - p[i]));
+    if (d > 0) { out += d > tol ? 1 : 0; if (d > worst) { worst = d; back = q.map((c, i) => c - p[i]); } }
+  }
+  const [alo, ahi] = bounds(ap);
+  const larger = [...'xyz'].filter((ax, k) => ahi[k] - alo[k] > hi[k] - lo[k] + tol);
+  return inside(pair, { outside: out / taken.length, worst, back, larger }, tol);
+}
+function check(pair, tol) {
+  if (!pair.a || !pair.b) return unavailable(pair, 'needs both a and b');
+  if (!relationOf(pair.relation)) return unavailable(pair, `unknown relation '${pair.relation}': use ${RELATIONS.join(', ')}`);
+  if (!(pair.gap >= 0)) return unavailable(pair, 'gap is a distance in m, 0 or more');
+  const A = scene.find((o) => o.name === pair.a), B = scene.find((o) => o.name === pair.b);
+  for (const [n, o] of [[pair.a, A], [pair.b, B]]) if (!o) return unavailable(pair, `no object named "${n}" in this scene`);
+  if (A === B) return unavailable(pair, `${A.name} is part of both ${A.name} and ${B.name}`);
+  const r = pair.relation === 'rests_on' ? measureRestsOn(pair, A, B, tol)
+    : pair.relation === 'inside' ? measureInside(pair, A, B, tol)
+    : pair.relation === 'touches' ? touches(pair, measureNearest(A, B), tol)
+    : (() => { const [al, ah] = bounds(wparts(A)), [bl, bh] = bounds(wparts(B)); const apart = [0, 1, 2].map((k) => (al[k] + ah[k] - bl[k] - bh[k]) / 2); return clearOf(pair, measureNearest(A, B), tol, apart.some((c) => c) ? apart : [0, 0, 1]); })();
+  return { ...pair, ...r };
+}
+
+/* ---------------- the scene ---------------- */
+const box = (label, lo, hi) => ({ label, lo, hi });
+const leg = (label, x, y) => box(label, [x - 0.025, y - 0.025, 0], [x + 0.025, y + 0.025, 0.72]);
+const START = () => [
+  { name: 'Floor', loc: [0, 0, 0], parts: [box('Floor', [-1.4, -1, -0.02], [1.4, 1, 0])] },
+  { name: 'Rug', loc: [0, 0, 0], parts: [box('Rug', [-0.9, -0.65, 0], [0.9, 0.65, 0.015])] },
+  { name: 'Table', loc: [0, 0, 0], empty: true, parts: [box('Top', [-0.6, -0.4, 0.72], [0.6, 0.4, 0.76]), leg('Leg_FL', -0.55, -0.35), leg('Leg_FR', 0.55, -0.35), leg('Leg_BL', -0.55, 0.35), leg('Leg_BR', 0.55, 0.35)] },
+  { name: 'Lamp', loc: [0.3, 0.1, 0.768], empty: true, parts: [box('Base', [-0.08, -0.08, 0], [0.08, 0.08, 0.03]), box('Stem', [-0.01, -0.01, 0.03], [0.01, 0.01, 0.4]), box('Shade', [-0.12, -0.12, 0.4], [0.12, 0.12, 0.55])] },
+  { name: 'Book_1', loc: [0, 0, 0], parts: [box('Book_1', [-0.3, -0.25, 0.76], [-0.05, -0.08, 0.79])] },
+  { name: 'Bowl', loc: [0, 0, 0], parts: [box('Bowl', [-0.4, 0.08, 0.76], [-0.18, 0.3, 0.84])] },
+  { name: 'Apple', loc: [0, 0, 0], parts: [box('Apple', [-0.33, 0.15, 0.79], [-0.25, 0.23, 0.87])] },
+];
+const START_PAIRS = () => [
+  { a: 'Table', relation: 'rests_on', b: 'Rug', gap: 0 }, { a: 'Lamp', relation: 'rests_on', b: 'Table', gap: 0 },
+  { a: 'Book_1', relation: 'rests_on', b: 'Table', gap: 0 }, { a: 'Book_1', relation: 'clear_of', b: 'Lamp', gap: 0.02 },
+  { a: 'Apple', relation: 'inside', b: 'Bowl', gap: 0 }, { a: 'Bowl', relation: 'touches', b: 'Table', gap: 0 },
+];
+let scene = START(), pairs = START_PAIRS(), sel = 'Lamp', results = [];
+const tolerance = () => Math.max(0, (+$('#tol').value || 0) / 1000);
+
+function svgEl(tag, attrs) { const e = document.createElementNS('http://www.w3.org/2000/svg', tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; }
+let frame;  // the world rectangle both views show
+function fitFrame() {
+  const ps = scene.filter((o) => o.name !== 'Floor').flatMap(wparts), [lo, hi] = bounds(ps);
+  frame = { lo: lo.map((v) => v - 0.12), hi: hi.map((v) => v + 0.12) };
+}
+function draw(svg, ax, ay) {
+  const W = 520, H = 300, sx = (frame.hi[ax] - frame.lo[ax]), sy = (frame.hi[ay] - frame.lo[ay]);
+  const s = Math.min(W / sx, H / sy), ox = (W - sx * s) / 2, oy = (H - sy * s) / 2;
+  const px = (v) => ox + (v - frame.lo[ax]) * s, py = (v) => H - oy - (v - frame.lo[ay]) * s;
+  svg._map = { s, toWorld: (cx, cy) => [frame.lo[ax] + (cx - ox) / s, frame.lo[ay] + (H - oy - cy) / s], ax, ay };
+  const bad = new Set(results.filter((r) => r.status === 'fail').flatMap((r) => [r.a]));
+  const drawn = scene.map((o, i) => ({ o, i, ps: wparts(o) }));
+  // nearer objects last: in the front view smaller y is nearer, in the top view higher z is nearer
+  const depth = ax === 0 && ay === 2 ? (d) => -Math.min(...d.ps.map((p) => p.lo[1])) : (d) => Math.max(...d.ps.map((p) => p.hi[2]));
+  drawn.sort((u, v) => depth(u) - depth(v));
+  svg.replaceChildren(...drawn.flatMap(({ o, i, ps }) => ps.map((p) => {
+    const r = svgEl('rect', { x: px(p.lo[ax]), y: py(p.hi[ay]), width: Math.max(1, (p.hi[ax] - p.lo[ax]) * s), height: Math.max(1, (p.hi[ay] - p.lo[ay]) * s),
+      class: 'part' + (o.name === 'Floor' ? ' floor' : '') + (o.name === sel ? ' sel' : bad.has(o.name) ? ' bad' : '') });
+    if (o.name !== 'Floor') r.style.fill = `var(--o${i % 7})`;
+    r.dataset.obj = o.name;
+    return r;
+  })));
+  const ps = wparts(scene.find((o) => o.name === sel));
+  const [lo, hi] = bounds(ps);
+  svg.append(Object.assign(svgEl('text', { x: px((lo[ax] + hi[ax]) / 2), y: Math.max(12, py(hi[ay]) - 4), 'text-anchor': 'middle' }), { textContent: sel }));
+}
+function drag(svg) {
+  let start = null;
+  svg.addEventListener('pointerdown', (e) => {
+    const name = e.target.dataset && e.target.dataset.obj;
+    if (!name || name === 'Floor') return;
+    sel = name; const o = scene.find((x) => x.name === name), pt = svg.createSVGPoint();
+    const at = (ev) => { pt.x = ev.clientX; pt.y = ev.clientY; const p = pt.matrixTransform(svg.getScreenCTM().inverse()); return svg._map.toWorld(p.x, p.y); };
+    start = { o, w: at(e), loc: [...o.loc], at, ax: svg._map.ax, ay: svg._map.ay };
+    svg.setPointerCapture(e.pointerId); update();
+  });
+  svg.addEventListener('pointermove', (e) => {
+    if (!start) return;
+    const w = start.at(e);
+    start.o.loc[start.ax] = r3(start.loc[start.ax] + w[0] - start.w[0]);
+    start.o.loc[start.ay] = r3(start.loc[start.ay] + w[1] - start.w[1]);
+    update(false);
+  });
+  const end = () => { if (start) { start = null; update(); } };
+  svg.addEventListener('pointerup', end); svg.addEventListener('pointercancel', end);
+}
+function objectsUI() {
+  $('#objs').replaceChildren(...scene.filter((o) => o.name !== 'Floor').map((o) => el('button', { class: 'btn small', 'aria-pressed': String(o.name === sel), onclick: () => { sel = o.name; update(); } }, o.name + (o.empty ? ` (${o.parts.length} parts)` : ''))));
+  const o = scene.find((x) => x.name === sel);
+  $('#loc').replaceChildren(...'xyz'.split('').map((ax, i) => el('label', { class: 'field' }, `${o.name} ${ax.toUpperCase()} (m)`,
+    el('input', { type: 'number', step: '0.001', value: _m(o.loc[i]), oninput: (e) => { o.loc[i] = +e.target.value || 0; update(false, false); } }))));
+}
+function pairsUI() {
+  const names = scene.map((o) => o.name);
+  const pick = (val, on) => el('select', { onchange: (e) => on(e.target.value) }, ...names.map((n) => el('option', { value: n, selected: n === val }, n)));
+  $('#pairs').replaceChildren(...pairs.map((p, i) => el('div', { class: 'pairrow' },
+    pick(p.a, (v) => { p.a = v; update(); }),
+    el('select', { onchange: (e) => { p.relation = e.target.value; update(); } }, ...RELATIONS.map((r) => el('option', { value: r, selected: r === p.relation }, r))),
+    pick(p.b, (v) => { p.b = v; update(); }),
+    el('input', { type: 'number', step: '0.005', min: '0', value: p.gap, title: 'clear_of: minimum gap in m', disabled: p.relation !== 'clear_of', oninput: (e) => { p.gap = +e.target.value || 0; update(true, true, false); } }),
+    el('button', { class: 'btn small', title: 'Remove', onclick: () => { pairs.splice(i, 1); update(); } }, '×'))));
+}
+function applyFix(moves) {
+  for (const [name, v] of moves) {
+    const o = scene.find((x) => x.name === name);
+    if (o) { o.loc = o.loc.map((c, i) => r3(c + v[i])); continue; }
+    for (const ob of scene) for (const p of ob.parts) if (p.label === name) { p.lo = p.lo.map((c, i) => r3(c + v[i])); p.hi = p.hi.map((c, i) => r3(c + v[i])); }
+  }
+  toast('Moved as the fix says; measured again.');
+  update();
+}
+function update(redrawLists = true, redrawLoc = true, redrawPairs = true) {
+  const tol = tolerance();
+  results = pairs.map((p) => check(p, tol));
+  draw($('#side'), 0, 2); draw($('#top'), 0, 1);
+  if (redrawLists && redrawLoc) objectsUI();
+  if (redrawLists && redrawPairs) pairsUI();
+  $('#verdicts').replaceChildren(...results.map((r) => el('div', { class: 'verdict ' + r.status },
+    el('div', { class: 'row' }, el('span', { class: 'pill ' + ({ pass: 'good', fail: 'bad' }[r.status] || 'warn') }, r.status), el('b', { class: 'grow' }, title(r)),
+      r.fixes && r.fixes.length ? el('button', { class: 'btn small', onclick: () => applyFix(r.fixes) }, 'Apply the fix') : null),
+    el('span', { class: 'ln' }, r.line),
+    ...(r.status === 'fail' ? (r.details || []).map((d) => el('span', { class: 'ln note' }, d)) : []))));
+  $('#report').textContent = report(results, tol);
+  $('#scene').dataset.auto === '1' && ($('#scene').value = sceneContext());
+}
+$('#tol').oninput = () => update(false);
+$('#addpair').onclick = () => { pairs.push({ a: sel, relation: 'touches', b: 'Table', gap: 0 }); update(); };
+$('#reset').onclick = () => { scene = START(); pairs = START_PAIRS(); sel = 'Lamp'; fitFrame(); update(); };
+$('#copyrep').onclick = () => copyText($('#report').textContent, 'Report copied');
+drag($('#side')); drag($('#top'));
+
+/* ---------------- router.py ---------------- */
+const ROLES = ['modeling', 'materials', 'lighting', 'camera', 'animation', 'shot'], SHOT_ASPECTS = ['lighting', 'camera'];
+const MAX_DELIVERABLES = 8, MAX_NAME = 32, MAX_QUOTE = 80, MAX_WHY = 160, MAX_PURPOSE = 8;
+const SHARED_SETUP = 'palette, supports, render and output settings', STYLE = 'look, parts, detail, finish';
+const CALLS_FOR = { sound: 'ambience or sound effects', voice: 'a voice line', motion: 'character motion', rig: 'a rig', game_ready: 'a game-ready mesh within a triangle budget', custom_model: 'a made picture turned into 3D', custom_image: 'a made picture', render: 'a camera move ready to render' };
+const LOOK_ROLES = ['materials', 'lighting', 'shot', 'camera'], LOOK_MAX = 2;
+const oneLine = (v, limit) => String(v ?? '').split(/\s+/).filter(Boolean).join(' ').replace(/^[ "']+|[ "']+$/g, '').slice(0, limit);
+function deliverables(value) {
+  const found = [], seen = new Set();
+  for (const entry of Array.isArray(value) ? value : []) {
+    let name, quote, role;
+    if (entry && typeof entry === 'object' && !Array.isArray(entry)) ({ name, quote, role } = entry); else [name, quote, role] = [entry, '', null];
+    name = String(name ?? '').replace(/[^A-Za-z0-9_]/g, '').slice(0, MAX_NAME);
+    role = ROLES.includes(role) ? role : 'modeling';
+    if (name && !seen.has(name.toLowerCase())) { seen.add(name.toLowerCase()); found.push([name, oneLine(quote, MAX_QUOTE), role]); }
+    if (found.length === MAX_DELIVERABLES) break;
+  }
+  return found;
+}
+const purposeOf = (v) => typeof v === 'string' ? oneLine(v, MAX_WHY).split(' ').filter(Boolean).slice(0, MAX_PURPOSE).join(' ').replace(/[ .;:,]+$/, '') : '';
+const callsFor = (v) => { const f = []; for (const e of Array.isArray(v) ? v : []) { const k = typeof e === 'string' ? e.trim().toLowerCase() : ''; if (k in CALLS_FOR && !f.includes(k)) f.push(k); } return f; };
+function rawDecode(text, start) {  // the JSON value that starts at text[start], as json.JSONDecoder.raw_decode
+  let depth = 0, str = false;
+  for (let i = start; i < text.length; i++) {
+    const ch = text[i];
+    if (str) { if (ch === '\\') i++; else if (ch === '"') str = false; continue; }
+    if (ch === '"') str = true; else if (ch === '{') depth++; else if (ch === '}' && --depth === 0) return JSON.parse(text.slice(start, i + 1));
+  }
+  throw new Error('unterminated');
+}
+function parseDecision(text) {
+  text = text || '';
+  for (let i = text.indexOf('{'); i >= 0; i = text.indexOf('{', i + 1)) {
+    let reply;
+    try { reply = rawDecode(text, i); } catch { continue; }
+    if (!reply || typeof reply !== 'object' || Array.isArray(reply) || !('level' in reply)) continue;
+    let level = reply.level;
+    if (typeof level === 'string' && /^\d+$/.test(level.trim())) level = parseInt(level, 10);
+    if (typeof level !== 'number' || !Number.isInteger(level) || level < 0 || level > 3) return null;
+    return { level, deliverables: level >= 2 ? deliverables(reply.deliverables) : [], why: oneLine(reply.why, MAX_WHY), source: 'model', purpose: purposeOf(reply.purpose), calls_for: callsFor(reply.calls_for) };
+  }
+  return null;
+}
+const listing = (d) => d.deliverables.map(([n, q]) => q ? `${n} ("${q}")` : n).join(', ');
+const skId = (n) => n.toLowerCase().replace(/[^a-z0-9]/g, '') || 'w';
+const skPrefix = (n) => { const c = n.replace(/[^A-Za-z0-9]/g, ''); return c ? c[0].toUpperCase() + c.slice(1) : 'Item'; };
+function skeleton(d) {
+  return 'workers: [' + d.deliverables.map(([name, quote, role]) => {
+    role = ROLES.includes(role) ? role : 'modeling';
+    const shot = role === 'shot';
+    return `{"id": "${skId(name)}", "deliverable": "${name}", "role": "${shot ? 'lighting' : role}", ` + (shot ? `"aspects": ${JSON.stringify(SHOT_ASPECTS).replace(/,/g, ', ')}, ` : '') + `"prefix": "${skPrefix(name)}", "quote": "${quote}"}`;
+  }).join(', ') + ']';
+}
+function purposeLine(d) {
+  if (!d.purpose) return '';
+  const fin = d.calls_for.map((k) => CALLS_FOR[k]).join(', ');
+  return `Purpose: ${d.purpose}.` + (fin ? ` A finished one usually also has: ${fin}.` : '');
+}
+function note(d, workers = 0) {
+  const l = listing(d); let body;
+  if (d.level === 0) body = 'level 0 — a question: answer it; change nothing.';
+  else if (d.level === 1) body = 'level 1 — a small edit: do it yourself.';
+  else if (d.level === 2) body = `level 2 — one deliverable${l ? ': ' + l : ''}. Build it yourself if it takes about 8 steps, else delegate it to one worker with a style (${STYLE}).`;
+  else body = `level 3 — deliverables: ${l || 'several'}. Delegate these, one worker each, with a style (${STYLE}), planned bounds and a dry_run first; do shared setup (${SHARED_SETUP}) yourself.`;
+  if (d.level >= 2 && d.deliverables.length) body += ` Skeleton: ${skeleton(d)}`;
+  if (d.level >= 2 && workers) body += ` This turn can start at most ${workers} workers.`;
+  const p = purposeLine(d);
+  if (p) body += `\n${p}`;
+  return `<routing>${body}</routing>`;
+}
+const toWorkspace = (d) => d.level >= 2 && d.deliverables.length > 0 && d.deliverables.length <= LOOK_MAX && d.deliverables.every(([, , r]) => LOOK_ROLES.includes(r));
+const requestText = (request, scene, previous = 'none', image = false) => `Scene:\n${scene}\n\nPrevious turn: ${previous}\n${image ? 'The user attached an image with this request.\n' : ''}\nRequest: ${request}`;
+
+function sceneContext() {
+  const kinds = scene.map((o) => o.empty ? `${o.name} (empty, ${o.parts.length} child meshes: ${o.parts.map((p) => p.label).join(', ')})` : `${o.name} (mesh)`);
+  return `Scene "Reading corner", frame 1 of 250, units metres\nObjects (${scene.length}): ${kinds.join('; ')}\nCamera: none. Lights: none.`;
+}
+const ROUTER_RULES = `You are the router of Loopcut, the AI agent inside Blender. Read one user request and decide how the agent should work on it. Reply with one JSON object and nothing else:
+{"level": 0|1|2|3, "deliverables": [{"name": "...", "quote": "...", "role": "..."}], "why": "...", "purpose": "..." or null, "calls_for": [...]}
+level 0: a question; nothing in the scene changes.
+level 1: a small edit the agent makes itself (a colour, a move, a rename, one modifier).
+level 2: one deliverable to build (one new object or one look).
+level 3: several deliverables that workers can build side by side.
+deliverables (levels 2 and 3 only): name is a short CamelCase identifier (letters, digits, underscores, at most 32), quote is the user's own words for it (at most 80 characters), role is one of modeling, materials, lighting, camera, animation, shot (a camera with its lighting).
+why: one short line. purpose: what the work is for in at most 8 words if the user said so, else null.
+calls_for: the finishes such work usually has, from: sound, voice, motion, rig, game_ready, custom_model, custom_image, render. Empty when none.`;
+const EXAMPLES = [
+  ['A question', 'How tall is the lamp, and is it actually standing on the table?'],
+  ['Small edit', 'Make the rug a deep red wool.'],
+  ['One deliverable', 'Add a bookshelf against the back wall, about as tall as a person.'],
+  ['Several', 'Turn this into a cozy reading corner: an armchair by the table, a stack of books on the floor, and warm evening light from the window.'],
+  ['With a purpose', 'Make this the opening shot of a horror game trailer: a slow push in on the lamp as it flickers.'],
+];
+function routerInput() { return requestText($('#req').value.trim(), $('#scene').value.trim() || 'unknown', $('#prev').value.trim() || 'none', $('#img').checked); }
+function showInput() { $('#rinput').textContent = ROUTER_RULES + '\n\n---\n\n' + routerInput(); }
+function showDecision() {
+  let d = parseDecision($('#reply').value);
+  const image = $('#img').checked;
+  if (image) { if (!d) d = { level: 2, deliverables: [], why: 'an attached image', source: 'rules', purpose: '', calls_for: [] }; else if (d.level < 2) Object.assign(d, { level: 2, source: 'rules' }); }
+  $('#levels').replaceChildren(...['0 question', '1 small edit', '2 one deliverable', '3 several'].map((t, i) => el('span', { class: d && d.level === i ? 'on' : '' }, t)));
+  if (!d) {
+    $('#pnote').textContent = 'No JSON object with a level 0 to 3: Loopcut adds no note ("no note is better than a wrong one").';
+    $('#decision').replaceChildren(); $('#wk').replaceChildren(el('p', { class: 'note' }, 'None.'));
+    const w = +$('#workers').value || 0;
+    $('#note').textContent = w ? `<routing>This turn can start at most ${w} workers.</routing>` : '(no note)';
+    return;
+  }
+  $('#pnote').textContent = d.source === 'rules' ? 'The image rule raised this to level 2: an attached image means planning at least.' : '';
+  const ws = toWorkspace(d);
+  $('#decision').replaceChildren(...[
+    el('p', { class: 'note' }, el('b', {}, 'Why: '), d.why || '(none given)'),
+    d.purpose ? el('p', { class: 'note' }, el('b', {}, 'Purpose: '), d.purpose, d.calls_for.length ? ` · usually also needs ${d.calls_for.map((k) => CALLS_FOR[k]).join(', ')}` : '') : null,
+    el('p', { class: 'note' }, el('b', {}, 'Goes to: '), d.level < 2 ? 'the orchestrator, working alone' : ws ? "the single agent's workspace loop (a look of one or two deliverables; no note is added then)" : 'the orchestrator, which plans the workers below')].filter(Boolean));
+  $('#note').textContent = ws ? '(none: the turn is diverted to the workspace loop, which records the decision but adds no note)' : note(d, +$('#workers').value || 0);
+  $('#wk').replaceChildren(...(d.level >= 2 && d.deliverables.length ? d.deliverables.map(([n, q, r]) => el('div', { class: 'worker' },
+    el('b', {}, skId(n)), el('span', {}, `${n} · ${r === 'shot' ? 'lighting + camera' : r} · objects named ${skPrefix(n)}…`), q ? el('span', { class: 'q' }, `"${q}"`) : null))
+    : [el('p', { class: 'note' }, d.level >= 2 ? 'No deliverables named: the orchestrator plans them itself.' : 'None: levels 0 and 1 are done by the orchestrator alone.')]));
+}
+$('#examples').replaceChildren(...EXAMPLES.map(([t, r]) => el('button', { class: 'btn small', onclick: () => { $('#req').value = r; showInput(); } }, t)));
+$('#req').value = EXAMPLES[3][1];
+$('#scene').dataset.auto = '1';
+$('#scene').oninput = () => { $('#scene').dataset.auto = '0'; showInput(); };
+for (const id of ['#req', '#prev']) $(id).oninput = showInput;
+$('#img').onchange = () => { showInput(); showDecision(); };
+$('#workers').oninput = showDecision;
+$('#reply').value = '{"level":3,"deliverables":[{"name":"BoxA","quote":"a small box"},{"name":"BoxB","quote":"a tall box"}],"why":"two boxes"}';
+$('#parse').onclick = showDecision;
+$('#route').onclick = async () => {
+  showInput();
+  try {
+    const { text } = await AI.run(ROUTER_RULES + '\n\n---\n\n' + routerInput(), { btn: $('#route'), stop: $('#stop'), status: $('#rstatus'), tier: 'quick', cache: false, onText: ({ text }) => { $('#reply').value = text; } });
+    $('#reply').value = text.trim();
+    showDecision();
+  } catch {}
+};
+
+renderInstall($('#install'), CHECKS, {
+  setup: 'systems/loopcut/setup.sh   # clones Loopcut and builds its Blender 5.2 fork from source', serve: './start.sh loopcut   # the desktop app on an X display (noVNC on http://localhost:6080)', test: 'python3 systems/loopcut/test_loopcut.py -v', port: 6080, ui: 'desktop app (noVNC)',
+  notes: ['Blender 5.2.2 LTS built from the Loopcut source with its own make deps and CMake, as its developer guide describes (no Linux release exists)', "The add-on's 4,196 unit tests", 'Its headless harness checks inside the built app: camera framing, contact checks, GLB export, acceptance checks, merges, and the scripted end-to-end run with workers', 'The app started under Xvfb with the Loopcut panel, and a screenshot'],
+});
+fitFrame(); update(); showInput(); showDecision();
+initTabs();
+</script>
