@@ -2,6 +2,7 @@
 # Each is the default-branch commit CI run 40523798841 cloned (2026-10-27, 14:45 UTC).
 # Clone the newest commits instead with UPSTREAM_LATEST=1 scripts/clone_all.sh [name ...];
 # when they pass in CI, write them here with: scripts/clone_all.sh --pin [name ...]
+agents-from-scratch da3f9df28a9c30bcce55f42dd36692abcfc97dc8
 appwrite 519bafa400ba7b6d827a3410c6066b93a0128d5c
 autogpt c151e200c993a778c60d7520b5448855b0571ef7
 camel 64b9a613d1c3f4606be64aa6b66ebca437e50cda

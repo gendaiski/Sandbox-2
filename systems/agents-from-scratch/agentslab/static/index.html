@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agents Lab</title>
+<style>
+:root { --bg: #f5f4ef; --panel: #fff; --ink: #1c1d1f; --muted: #62666b; --line: #dcd9d0; --sunk: #eeece5;
+  --accent: #2f6f4f; --accent-ink: #fff; --accent-soft: #e2efe7; --good: #2b7a3d; --bad: #b3261e; --warn: #8a5a00; --r: 10px;
+  --sans: system-ui, -apple-system, "Segoe UI", sans-serif; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+@media (prefers-color-scheme: dark) { :root { --bg: #141615; --panel: #1c1f1d; --ink: #e6e8e6; --muted: #9aa19c; --line: #2f3531;
+  --sunk: #232825; --accent: #7fcca3; --accent-ink: #0b2a1a; --accent-soft: #1e3328; --good: #7fd08e; --bad: #f08a80; --warn: #e3b55a; color-scheme: dark; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 var(--sans); }
+.wrap { max-width: 1240px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+header { background: var(--panel); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 5; }
+header .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; padding-block: 10px; }
+h1 { font-size: 18px; margin: 0; } h1 small { font-weight: 400; color: var(--muted); font-size: 13px; }
+nav { display: flex; gap: 2px; flex-wrap: wrap; }
+nav button { background: none; border: 0; padding: 6px 11px; border-radius: 999px; font: inherit; font-size: 14px; color: var(--muted); cursor: pointer; }
+nav button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+.model { margin-left: auto; font: 12px var(--mono); color: var(--muted); }
+.model.bad { color: var(--bad); }
+main { padding-block: 18px 60px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; min-width: 0; }
+.cols { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 16px; align-items: start; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 860px) { .cols, .two { grid-template-columns: minmax(0, 1fr); } }
+.list { display: flex; flex-direction: column; gap: 2px; }
+.list button { text-align: left; background: none; border: 0; border-radius: 8px; padding: 7px 10px; font: inherit; font-size: 14px; color: var(--ink); cursor: pointer; display: flex; gap: 8px; }
+.list button b { font: 12px var(--mono); color: var(--muted); padding-top: 2px; }
+.list button[aria-current="true"] { background: var(--accent-soft); }
+.doc { max-width: 78ch; } .doc h1 { font-size: 24px; margin: 0 0 8px; } .doc h2 { font-size: 18px; margin-top: 24px; } .doc h3 { font-size: 15px; }
+.doc pre { background: var(--sunk); padding: 10px 12px; border-radius: 8px; overflow-x: auto; font: 13px/1.5 var(--mono); }
+.doc code { font-family: var(--mono); font-size: 0.92em; } .doc :not(pre) > code { background: var(--sunk); padding: 1px 5px; border-radius: 4px; }
+.doc img { max-width: 100%; border-radius: 8px; border: 1px solid var(--line); cursor: zoom-in; background: #fff; }
+.doc table { border-collapse: collapse; } .doc td, .doc th { border: 1px solid var(--line); padding: 4px 8px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+button.btn { font: inherit; font-size: 14px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 8px; padding: 7px 14px; cursor: pointer; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:disabled { opacity: .5; cursor: progress; }
+.console { background: #101311; color: #d6e6dc; font: 12.5px/1.55 var(--mono); border-radius: 8px; padding: 12px; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 420px; overflow: auto; margin: 10px 0 0; min-height: 60px; }
+label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+input, select, textarea { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; min-width: 0; width: 100%; }
+textarea { resize: vertical; font-family: var(--mono); font-size: 13px; }
+.caps { display: flex; flex-wrap: wrap; gap: 6px; }
+.caps button { font: inherit; font-size: 13px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+.caps button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.form { display: grid; gap: 10px; margin-top: 12px; }
+.out { font: 13px/1.55 var(--mono); background: var(--sunk); border-radius: 8px; padding: 10px 12px; white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; }
+.call { border: 1px solid var(--line); border-radius: 8px; margin-top: 8px; }
+.call summary { cursor: pointer; padding: 6px 10px; font-size: 13px; }
+.call pre { margin: 0; padding: 8px 10px; font: 12px/1.5 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; border-top: 1px solid var(--line); max-height: 300px; overflow: auto; }
+.note { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+.status { font-size: 13px; color: var(--muted); } .status.bad { color: var(--bad); }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.gallery figure { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; cursor: zoom-in; }
+.gallery img { width: 100%; display: block; background: #fff; aspect-ratio: 16 / 10; object-fit: contain; }
+.gallery figcaption { padding: 8px 12px; font-size: 14px; }
+.projector { position: fixed; inset: 0; background: #050606; z-index: 50; display: grid; grid-template-rows: auto 1fr auto; }
+.projector[hidden] { display: none; }
+.projector .bar { display: flex; gap: 10px; align-items: center; padding: 10px max(16px, env(safe-area-inset-left)); color: #cfd8d3; font-size: 14px; }
+.projector .bar .grow { flex: 1; }
+.projector .bar button { background: #1c201e; color: #e6ece8; border: 1px solid #333a36; border-radius: 8px; padding: 6px 12px; font: inherit; cursor: pointer; }
+.projector .stage { display: grid; place-items: center; min-height: 0; padding: 0 12px; }
+.projector .stage img { max-width: calc(100vw - 24px); max-height: calc(100vh - 110px); width: auto; height: auto; object-fit: contain; background: #fff; border-radius: 6px; }
+.projector .dots { display: flex; gap: 6px; justify-content: center; padding: 10px; }
+.projector .dots button { width: 10px; height: 10px; border-radius: 50%; border: 0; background: #4a524e; cursor: pointer; padding: 0; }
+.projector .dots button[aria-current="true"] { background: #7fcca3; }
+table.t { border-collapse: collapse; width: 100%; font-size: 13px; }
+table.t th, table.t td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t td.mono { font-family: var(--mono); font-size: 12px; overflow-wrap: anywhere; }
+.pill { font-size: 11.5px; padding: 1px 8px; border-radius: 999px; background: var(--sunk); white-space: nowrap; }
+.pill.good { color: var(--good); } .pill.bad { color: var(--bad); }
+.scroll { overflow-x: auto; }
+.kpis { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.kpi { background: var(--sunk); border-radius: 8px; padding: 8px 14px; } .kpi b { display: block; font-size: 20px; } .kpi span { font-size: 12px; color: var(--muted); }
+svg.graph { width: 100%; height: auto; max-height: 340px; }
+svg.graph rect { fill: var(--accent-soft); stroke: var(--accent); } svg.graph text { fill: var(--ink); font: 12px var(--sans); }
+svg.graph path { stroke: var(--muted); fill: none; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>Agents Lab <small>· AI Agents from Scratch</small></h1>
+  <nav><button data-tab="lessons" aria-selected="true">Lessons</button><button data-tab="play">Playground</button><button data-tab="diagrams">Diagrams</button><button data-tab="evals">Evals</button><button data-tab="telemetry">Telemetry</button><button data-tab="setup">Setup</button></nav>
+  <span class="model" id="model">checking model…</span></div></header>
+
+<main class="wrap">
+  <section data-panel="lessons" class="cols">
+    <div class="panel"><div class="list" id="lesson-list"></div>
+      <p class="note" style="margin-top:12px"><a href="#" id="open-readme">README</a> · <a href="#" id="open-philosophy">Philosophy</a> · <a href="#" id="open-quickstart">Quick start</a></p></div>
+    <div class="panel">
+      <div class="row" id="lesson-actions"><button class="btn primary" id="run-lesson">Run this lesson's demo</button><button class="btn" id="try-lesson">Try it in the playground</button><span class="status" id="lesson-status"></span></div>
+      <pre class="console" id="lesson-console" hidden></pre>
+      <article class="doc" id="lesson-doc"></article>
+    </div>
+  </section>
+
+  <section data-panel="play" class="two" hidden>
+    <div class="panel">
+      <div class="caps" id="caps"></div>
+      <div class="form" id="form"></div>
+      <div class="row" style="margin-top:10px"><button class="btn primary" id="go">Run</button><button class="btn" id="mem-reset" hidden>Forget everything</button><span class="status" id="play-status"></span></div>
+      <p class="note" id="cap-note"></p>
+    </div>
+    <div class="panel">
+      <h3 style="margin:0 0 8px;font-size:14px">Result</h3>
+      <pre class="out" id="result">Run something on the left.</pre>
+      <div id="extra"></div>
+      <h3 style="margin:14px 0 0;font-size:14px">Every prompt the agent sent <span class="status" id="ncalls"></span></h3>
+      <div id="calls"></div>
+    </div>
+  </section>
+
+  <section data-panel="diagrams" hidden>
+    <div class="row" style="margin-bottom:12px"><button class="btn primary" id="project">Project the diagrams</button><span class="note">Full screen; ← → to move, Space to autoplay, F for fullscreen, Esc to close.</span></div>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <section data-panel="evals" hidden class="panel">
+    <h2 style="margin:0 0 6px;font-size:16px">Golden datasets (lesson 11)</h2>
+    <div class="row"><span id="suite-boxes" class="row"></span><label style="display:flex;align-items:center;gap:6px">Cases per suite <input type="number" id="eval-limit" value="2" min="1" max="50" style="width:70px"></label>
+      <button class="btn primary" id="run-evals">Run evals</button><span class="status" id="eval-status"></span></div>
+    <div id="eval-out" style="margin-top:12px"></div>
+  </section>
+
+  <section data-panel="telemetry" hidden class="panel">
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0;font-size:16px">Telemetry (lesson 12): agent_telemetry.jsonl</h2>
+      <span class="row"><button class="btn" id="tel-refresh">Refresh</button><button class="btn" id="tel-clear">Clear</button></span></div>
+    <p class="note">Every playground run and lesson 12's demo log spans here, through the repository's own Telemetry class.</p>
+    <div id="tel" style="margin-top:10px"></div>
+  </section>
+
+  <section data-panel="setup" hidden class="panel doc">
+    <h2 style="margin-top:0">Setup</h2>
+    <div id="setup"></div>
+  </section>
+</main>
+
+<div class="projector" id="projector" hidden>
+  <div class="bar"><b id="p-title" class="grow"></b><span id="p-count"></span><button id="p-play">Autoplay</button><button id="p-full">Fullscreen</button><button id="p-close">Close</button></div>
+  <div class="stage" id="p-stage"><img id="p-img" alt=""></div>
+  <div class="dots" id="p-dots"></div>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s), $$ = (s) => [...document.querySelectorAll(s)];
+const el = (tag, props = {}, ...kids) => { const n = Object.assign(document.createElement(tag), props); n.append(...kids.filter((k) => k != null)); return n; };
+const api = async (path, opts = {}) => {
+  const r = await fetch(path, { headers: opts.body ? { 'Content-Type': 'application/json' } : {}, ...opts });
+  if (!r.ok) { let m = r.statusText; try { m = (await r.json()).detail || m; } catch {} throw new Error(m); }
+  return r;
+};
+const pretty = (v) => typeof v === 'string' ? v : JSON.stringify(v, null, 2);
+let lessons = [], current = 1, diagrams = [], pIndex = 0, pTimer = null;
+
+function tab(name) {
+  $$('nav button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === name)));
+  $$('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== name; });
+  if (name === 'telemetry') showTelemetry();
+  try { history.replaceState(null, '', '#' + name); } catch {}
+}
+$$('nav button').forEach((b) => { b.onclick = () => tab(b.dataset.tab); });
+
+/* ---------------- lessons */
+function showLesson(n) {
+  current = n;
+  const l = lessons.find((x) => x.n === n);
+  $$('#lesson-list button').forEach((b) => b.setAttribute('aria-current', String(+b.dataset.n === n)));
+  $('#lesson-actions').hidden = false;
+  $('#lesson-doc').innerHTML = (l.diagram && !l.html.includes(l.diagram) ? `<p><img src="/diagrams/${l.diagram}" alt="${l.title} diagram"></p>` : '') + l.html;
+  $$('#lesson-doc img').forEach((img) => { img.onclick = () => project(diagrams.findIndex((d) => img.src.endsWith(d.file))); });
+  $('#lesson-console').hidden = true; $('#lesson-status').textContent = '';
+  try { localStorage.setItem('afs-lesson', n); } catch {}
+}
+async function showDoc(name) {
+  const { html } = await (await api('/api/docs/' + name)).json();
+  $$('#lesson-list button').forEach((b) => b.setAttribute('aria-current', 'false'));
+  $('#lesson-actions').hidden = true; $('#lesson-console').hidden = true;
+  $('#lesson-doc').innerHTML = html;
+}
+$('#open-readme').onclick = (e) => { e.preventDefault(); showDoc('README.md'); };
+$('#open-philosophy').onclick = (e) => { e.preventDefault(); showDoc('PHILOSOPHY.md'); };
+$('#open-quickstart').onclick = (e) => { e.preventDefault(); showDoc('QUICKSTART.md'); };
+$('#run-lesson').onclick = async () => {
+  const out = $('#lesson-console'), st = $('#lesson-status');
+  out.hidden = false; out.textContent = ''; st.className = 'status'; st.textContent = 'Running on the local model…'; $('#run-lesson').disabled = true;
+  try {
+    const r = await api(`/api/lessons/${current}/run`, { method: 'POST' });
+    const reader = r.body.getReader(), dec = new TextDecoder();
+    for (;;) { const { done, value } = await reader.read(); if (done) break; out.textContent += dec.decode(value, { stream: true }); out.scrollTop = out.scrollHeight; }
+    st.textContent = 'Done: this is complete_example.py\'s lesson function, unchanged.';
+  } catch (e) { st.className = 'status bad'; st.textContent = e.message; out.hidden = true; }
+  finally { $('#run-lesson').disabled = false; }
+};
+const LESSON_CAP = { 1: 'simple', 2: 'role', 3: 'structured', 4: 'decide', 5: 'tool', 6: 'loop', 7: 'memory', 8: 'plan', 9: 'atomic', 10: 'aot' };
+$('#try-lesson').onclick = () => { if (current === 11) return tab('evals'); if (current === 12) return tab('telemetry'); pickCap(LESSON_CAP[current]); tab('play'); };
+
+/* ---------------- playground */
+const CAPS = {
+  simple: { label: '01 Chat', note: 'agent.simple_generate: the prompt is just your text.', input: 'Explain what an AI agent is?' },
+  role: { label: '02 System prompt', note: 'agent.generate_with_role: the system prompt goes first.', input: 'Explain what an AI agent is?' },
+  structured: { label: '03 Structured', note: 'agent.generate_structured: JSON only, parsed and retried up to 3 times.', input: 'Explain quantum computing', schema: '{\n  "topic": string,\n  "difficulty": "beginner" | "intermediate" | "advanced"\n}' },
+  decide: { label: '04 Decide', note: 'agent.decide: the model must pick one of a fixed set.', input: 'Can you summarize this article for me?', choices: 'answer_question\nsummarize_text\ntranslate' },
+  tool: { label: '05 Tool', note: 'agent.request_tool, then the system (not the model) runs the calculator.', input: 'What is 42 * 7?' },
+  loop: { label: '06 Agent loop', note: 'agent.run_loop: observe → decide → act until "done" or the step limit.', input: 'Help me understand loops', steps: 3 },
+  memory: { label: '07 Memory', note: 'agent.run_with_memory: this agent keeps its memory between runs until you reset it.', input: 'My name is Alice' },
+  plan: { label: '08 Plan', note: 'agent.create_plan, then agent.execute_plan step by step.', input: 'Write a blog post about AI agents' },
+  atomic: { label: '09 Atomic action', note: 'agent.create_atomic_action: one step becomes one validated action.', input: 'Write an explanation of AI agents' },
+  aot: { label: '10 Atom of Thought', note: 'agent.create_aot_plan, then execute_graph in dependency order.', input: 'Research and write article' },
+};
+let cap = 'simple';
+function pickCap(c) {
+  cap = c; const d = CAPS[c];
+  $$('#caps button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.cap === c)));
+  const f = $('#form'); f.replaceChildren(el('label', {}, 'Input', el('textarea', { id: 'f-input', rows: 3, value: d.input })));
+  if (d.schema) f.append(el('label', {}, 'Schema', el('textarea', { id: 'f-schema', rows: 5, value: d.schema })));
+  if (d.choices) f.append(el('label', {}, 'Choices, one per line', el('textarea', { id: 'f-choices', rows: 3, value: d.choices })));
+  if (d.steps) f.append(el('label', {}, 'Max steps', el('input', { id: 'f-steps', type: 'number', min: 1, max: 8, value: d.steps })));
+  $('#cap-note').textContent = d.note; $('#mem-reset').hidden = c !== 'memory';
+}
+$('#caps').replaceChildren(...Object.entries(CAPS).map(([k, d]) => el('button', { textContent: d.label, onclick: () => pickCap(k) })));
+$$('#caps button').forEach((b, i) => { b.dataset.cap = Object.keys(CAPS)[i]; });
+function graph(g) {
+  const nodes = g.nodes || [], depth = {}, byId = Object.fromEntries(nodes.map((n) => [n.id, n]));
+  const d = (id, seen = new Set()) => { if (depth[id] != null) return depth[id]; if (seen.has(id)) return 0; seen.add(id); const n = byId[id]; return (depth[id] = n && n.depends_on.length ? 1 + Math.max(...n.depends_on.map((x) => d(x, seen))) : 0); };
+  nodes.forEach((n) => d(n.id));
+  const cols = {}; nodes.forEach((n) => (cols[depth[n.id]] = cols[depth[n.id]] || []).push(n));
+  const W = 150, H = 44, gx = 50, gy = 18, pos = {};
+  Object.entries(cols).forEach(([c, list]) => list.forEach((n, i) => { pos[n.id] = { x: 10 + c * (W + gx), y: 10 + i * (H + gy) }; }));
+  const width = 20 + (Object.keys(cols).length) * (W + gx), height = 20 + Math.max(...Object.values(cols).map((l) => l.length)) * (H + gy);
+  const ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', `0 0 ${width} ${height}`); svg.setAttribute('class', 'graph');
+  for (const n of nodes) for (const dep of n.depends_on) if (pos[dep]) {
+    const a = pos[dep], b = pos[n.id], p = document.createElementNS(ns, 'path');
+    p.setAttribute('d', `M${a.x + W},${a.y + H / 2} C${a.x + W + 25},${a.y + H / 2} ${b.x - 25},${b.y + H / 2} ${b.x},${b.y + H / 2}`); svg.append(p);
+  }
+  for (const n of nodes) {
+    const g2 = document.createElementNS(ns, 'g'), r = document.createElementNS(ns, 'rect'), t = document.createElementNS(ns, 'text');
+    r.setAttribute('x', pos[n.id].x); r.setAttribute('y', pos[n.id].y); r.setAttribute('width', W); r.setAttribute('height', H); r.setAttribute('rx', 8);
+    t.setAttribute('x', pos[n.id].x + 10); t.setAttribute('y', pos[n.id].y + 27); t.textContent = `${n.id}. ${String(n.action).slice(0, 18)}`;
+    g2.append(r, t); svg.append(g2);
+  }
+  return svg;
+}
+$('#go').onclick = async () => {
+  const st = $('#play-status'); st.className = 'status'; st.textContent = 'Running on the local model…'; $('#go').disabled = true;
+  const body = { capability: cap, input: $('#f-input').value, schema_: $('#f-schema')?.value || '', choices: ($('#f-choices')?.value || '').split('\n'), max_steps: +($('#f-steps')?.value || 3) };
+  try {
+    const r = await (await api('/api/run', { method: 'POST', body: JSON.stringify(body) })).json();
+    $('#result').textContent = r.result == null ? 'null: no valid output after the agent\'s retries (the lessons explain why this happens with small models).' : pretty(r.result);
+    const x = $('#extra'); x.replaceChildren();
+    if (r.tool_result !== undefined) x.append(el('p', { className: 'note', textContent: `The system ran the tool: ${pretty(r.tool_result)}` }));
+    if (r.tool_error) x.append(el('p', { className: 'note', textContent: `Tool error: ${r.tool_error}` }));
+    if (r.state) x.append(el('p', { className: 'note', textContent: `State: ${pretty(r.state)}` }));
+    if (r.memory) x.append(el('p', { className: 'note', textContent: `Memory: ${r.memory.length ? r.memory.join(' · ') : '(empty)'}` }));
+    if (cap === 'aot' && r.result && r.result.nodes) x.append(graph(r.result));
+    if (r.execution) x.append(el('pre', { className: 'out', style: 'margin-top:8px', textContent: 'Execution:\n' + pretty(r.execution) }));
+    $('#ncalls').textContent = `(${r.calls.length} call${r.calls.length === 1 ? '' : 's'}, ${r.ms} ms)`;
+    $('#calls').replaceChildren(...r.calls.map((c, i) => el('details', { className: 'call', open: i === r.calls.length - 1 },
+      el('summary', { textContent: `Call ${i + 1} · ${c.ms} ms · ${c.prompt.length} chars in, ${c.response.length} out` }),
+      el('pre', { textContent: 'PROMPT\n' + c.prompt }), el('pre', { textContent: 'RESPONSE\n' + c.response }))));
+    st.textContent = '';
+  } catch (e) { st.className = 'status bad'; st.textContent = e.message; }
+  finally { $('#go').disabled = false; }
+};
+$('#mem-reset').onclick = async () => { await api('/api/memory/reset', { method: 'POST' }); $('#play-status').textContent = 'Memory cleared.'; };
+
+/* ---------------- diagrams and the projector */
+function project(i = 0) {
+  if (!diagrams.length) return;
+  pIndex = (i + diagrams.length) % diagrams.length; const d = diagrams[pIndex];
+  $('#projector').hidden = false; $('#p-img').src = '/diagrams/' + d.file; $('#p-img').alt = d.title;
+  $('#p-title').textContent = d.title; $('#p-count').textContent = `${pIndex + 1} / ${diagrams.length}`;
+  $$('#p-dots button').forEach((b, k) => b.setAttribute('aria-current', String(k === pIndex)));
+}
+function closeProjector() { $('#projector').hidden = true; clearInterval(pTimer); pTimer = null; $('#p-play').textContent = 'Autoplay'; if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); }
+function autoplay() { if (pTimer) { clearInterval(pTimer); pTimer = null; $('#p-play').textContent = 'Autoplay'; } else { pTimer = setInterval(() => project(pIndex + 1), 6000); $('#p-play').textContent = 'Pause'; } }
+$('#project').onclick = () => project(0);
+$('#p-close').onclick = closeProjector; $('#p-play').onclick = autoplay;
+$('#p-full').onclick = () => { const p = $('#projector'); (document.fullscreenElement ? document.exitFullscreen() : p.requestFullscreen?.())?.catch?.(() => {}); };
+$('#p-stage').onclick = (e) => project(pIndex + (e.clientX > innerWidth / 2 ? 1 : -1));
+document.addEventListener('keydown', (e) => {
+  if ($('#projector').hidden) return;
+  if (e.key === 'ArrowRight' || e.key === 'PageDown') project(pIndex + 1);
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') project(pIndex - 1);
+  else if (e.key === 'Escape') closeProjector();
+  else if (e.key === ' ') { e.preventDefault(); autoplay(); }
+  else if (e.key === 'f' || e.key === 'F') $('#p-full').click();
+});
+let touchX = null;
+$('#p-stage').addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+$('#p-stage').addEventListener('touchend', (e) => { if (touchX == null) return; const dx = e.changedTouches[0].clientX - touchX; if (Math.abs(dx) > 40) project(pIndex + (dx < 0 ? 1 : -1)); touchX = null; });
+
+/* ---------------- evals */
+const SUITES = { structured: 'Structured output', tool: 'Tool calls', decision: 'Decisions', memory: 'Memory' };
+$('#run-evals').onclick = async () => {
+  const st = $('#eval-status'); st.className = 'status'; st.textContent = 'Running the golden cases on the local model…'; $('#run-evals').disabled = true;
+  try {
+    const suites = $$('#suite-boxes input:checked').map((i) => i.value);
+    const r = await (await api('/api/evals', { method: 'POST', body: JSON.stringify({ suites, limit: +$('#eval-limit').value }) })).json();
+    $('#eval-out').replaceChildren(el('div', { className: 'kpis' }, ...r.suites.map((s) => el('div', { className: 'kpi' }, el('b', { textContent: `${Math.round(s.pass_rate * 100)}%` }), el('span', { textContent: `${s.name}: ${s.passed}/${s.passed + s.failed}` })))),
+      ...r.suites.map((s) => el('div', { className: 'scroll' }, el('h3', { textContent: s.name, style: 'font-size:14px' }), el('table', { className: 't' },
+        el('tr', {}, el('th', { textContent: '' }), el('th', { textContent: 'Input' }), el('th', { textContent: 'Expected' }), el('th', { textContent: 'Actual' })),
+        ...s.results.map((x) => el('tr', {}, el('td', {}, el('span', { className: 'pill ' + (x.passed ? 'good' : 'bad'), textContent: x.passed ? 'pass' : 'fail' })),
+          el('td', { className: 'mono', textContent: x.input }), el('td', { className: 'mono', textContent: pretty(x.expected) }), el('td', { className: 'mono', textContent: x.error ? `${pretty(x.actual)}\n${x.error}` : pretty(x.actual) })))))));
+    st.textContent = `${r.llm_calls} model calls in ${(r.ms / 1000).toFixed(1)} s.`;
+  } catch (e) { st.className = 'status bad'; st.textContent = e.message; }
+  finally { $('#run-evals').disabled = false; }
+};
+
+/* ---------------- telemetry */
+async function showTelemetry() {
+  const t = await (await api('/api/telemetry')).json();
+  $('#tel').replaceChildren(el('div', { className: 'kpis' },
+      el('div', { className: 'kpi' }, el('b', { textContent: t.count }), el('span', { textContent: 'spans' })),
+      el('div', { className: 'kpi' }, el('b', { textContent: t.llm_calls }), el('span', { textContent: 'LLM calls' })),
+      el('div', { className: 'kpi' }, el('b', { textContent: t.llm_success_rate == null ? '–' : Math.round(t.llm_success_rate * 100) + '%' }), el('span', { textContent: 'LLM success' })),
+      el('div', { className: 'kpi' }, el('b', { textContent: t.avg_llm_ms == null ? '–' : t.avg_llm_ms + ' ms' }), el('span', { textContent: 'avg LLM latency' }))),
+    t.spans.length ? el('div', { className: 'scroll' }, el('table', { className: 't' },
+      el('tr', {}, ...['Time', 'Event', 'Trace', 'ms', 'Data'].map((h) => el('th', { textContent: h }))),
+      ...t.spans.map((s) => el('tr', {}, el('td', { className: 'mono', textContent: (s.timestamp || '').replace('T', ' ').slice(0, 19) }), el('td', {}, el('span', { className: 'pill', textContent: s.event_type })),
+        el('td', { className: 'mono', textContent: s.trace_id }), el('td', { className: 'mono', textContent: s.duration_ms ?? '' }), el('td', { className: 'mono', textContent: JSON.stringify(s.data || {}) + (s.error ? '  ' + s.error : '') })))))
+      : el('p', { className: 'note', textContent: 'No spans yet: run something in the playground, or lesson 12\'s demo.' }));
+}
+$('#tel-refresh').onclick = showTelemetry;
+$('#tel-clear').onclick = async () => { await api('/api/telemetry', { method: 'DELETE' }); showTelemetry(); };
+
+/* ---------------- boot */
+(async () => {
+  const s = await (await api('/api/status')).json();
+  const m = $('#model');
+  if (s.stand_in) { m.textContent = 'test stand-in model (no GGUF)'; m.classList.add('bad'); }
+  else if (s.model_exists) m.textContent = `${s.model.split('/').pop()} · ${s.model_mb} MB · llama.cpp ${s.llama_cpp}`;
+  else { m.textContent = 'no model yet: see Setup'; m.classList.add('bad'); }
+  $('#setup').innerHTML = `<p>This interface runs the repository's own code (<code>${s.repo}</code>${s.commit ? `, commit <code>${s.commit}</code>` : ''}) on a local model through <b>llama.cpp</b> ${s.llama_cpp}. Nothing goes to a cloud API.</p>
+    <p><b>Model:</b> ${s.model_exists ? `<code>${s.model}</code> (${s.model_mb} MB)` : '<span style="color:var(--bad)">none found</span>'}${s.stand_in ? ' — a scripted test stand-in is answering instead' : ''}</p>
+    <h3>Get a model</h3><pre>systems/agents-from-scratch/setup.sh                  # Qwen2.5 1.5B Instruct, ~1 GB, fine on a laptop CPU
+systems/agents-from-scratch/setup.sh --model llama3   # the lessons' Llama 3 8B Instruct Q4_K_M, ~5 GB, 8 GB+ RAM</pre>
+    <p>Or put any GGUF file in <code>vendor/agents-from-scratch/models/</code>, or set <code>AFS_MODEL=/path/to/model.gguf</code>, then restart (<code>./start.sh --restart agents-from-scratch</code>).</p>
+    <p class="note">Small models fail JSON contracts more often; the lessons say so, and the retries, nulls and eval failures you see are the point of lessons 03, 11 and 12.</p>`;
+  lessons = await (await api('/api/lessons')).json();
+  diagrams = await (await api('/api/diagrams')).json();
+  $('#lesson-list').replaceChildren(...lessons.map((l) => el('button', { onclick: () => showLesson(l.n) }, el('b', { textContent: String(l.n).padStart(2, '0') }), l.title, l.diagram ? ' ◫' : '')));
+  $$('#lesson-list button').forEach((b, i) => { b.dataset.n = lessons[i].n; });
+  $('#gallery').replaceChildren(...diagrams.map((d, i) => el('figure', { onclick: () => project(i) }, el('img', { src: '/diagrams/' + d.file, alt: d.title, loading: 'lazy' }), el('figcaption', { textContent: d.title }))));
+  $('#p-dots').replaceChildren(...diagrams.map((d, i) => el('button', { title: d.title, onclick: (e) => { e.stopPropagation(); project(i); } })));
+  const counts = await (await api('/api/evals/datasets')).json();
+  $('#suite-boxes').replaceChildren(...Object.entries(SUITES).map(([k, t]) => el('label', { style: 'display:flex;align-items:center;gap:6px;color:var(--ink)' }, el('input', { type: 'checkbox', value: k, checked: true, style: 'width:auto' }), `${t} (${counts[k]})`)));
+  let start = 1; try { start = +localStorage.getItem('afs-lesson') || 1; } catch {}
+  showLesson(lessons.some((l) => l.n === start) ? start : 1); pickCap('simple');
+  const h = location.hash.slice(1); if (['play', 'diagrams', 'evals', 'telemetry', 'setup'].includes(h)) tab(h);
+})();
+</script>
+</body>
+</html>

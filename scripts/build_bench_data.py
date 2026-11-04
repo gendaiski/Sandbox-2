@@ -192,6 +192,12 @@ SYSTEMS = {
         code="systems/pocketbase",
         finding="Needs Go 1.27; the toolchain is fetched automatically.",
     ),
+    "report-agents-from-scratch": dict(
+        job_name="agents-from-scratch",
+        system="AI Agents from Scratch", kind="Agent course", upstream="pguso/agents-from-scratch",
+        code="systems/agents-from-scratch", variant="with Agents Lab",
+        finding="No interface upstream; Agents Lab, built here, runs its lessons, agent, evals and telemetry on llama.cpp.",
+    ),
     "report-post-studio": dict(
         job_name="post-studio",
         system="Post Studio", kind="Post grabber and rewriter", upstream="yt-dlp/yt-dlp",

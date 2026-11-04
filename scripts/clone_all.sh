@@ -37,6 +37,7 @@ declare -A REPOS=(
   [metagpt]="FoundationAgents/MetaGPT"
   [appwrite]="appwrite/appwrite"
   [pocketbase]="pocketbase/pocketbase"
+  [agents-from-scratch]="pguso/agents-from-scratch"
 )
 
 LOCK="$ROOT/scripts/upstream.lock"

@@ -11,7 +11,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 RUN="$ROOT/.run"
 DEFAULT=(langfuse rag-anything pdfstract chunckerflow chunknorris prism-ui openflow)
 SERVED=("${DEFAULT[@]}" lobehub autogpt continue camel dspy metagpt izwi skills-manager loopcut
-        fabricjs fabricjs-site gods-eye-view claude-code-best-practice opus-videos appwrite pocketbase post-studio)
+        fabricjs fabricjs-site gods-eye-view claude-code-best-practice opus-videos appwrite pocketbase post-studio agents-from-scratch)
 mkdir -p "$RUN/logs"
 
 running() { [ -f "$RUN/$1.pid" ] && kill -0 "$(cat "$RUN/$1.pid")" 2>/dev/null; }

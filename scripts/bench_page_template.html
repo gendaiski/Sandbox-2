@@ -85,7 +85,7 @@ pre.mermaid { margin: 0; background: var(--bg); border: 1px solid var(--line); b
   </section>
 
   <section class="card" id="batch">
-    <h2>Latest batch: 16 repos installed with their own UIs</h2>
+    <h2>Latest batch: <span id="batch-count"></span> repos installed with their own UIs</h2>
     <p class="note">Each was installed natively in Sandbox-2 (systems/&lt;id&gt;/setup.sh) and tested in its own CI job. Open its live page to try it here; <span class="mono">./start.sh &lt;id&gt;</span> opens the real app in the Codespace.</p>
     <div class="scroll">
       <table>
@@ -187,6 +187,7 @@ const BENCH = /*BENCH_DATA*/null;
   document.getElementById('sysgrid').replaceChildren(...BENCH.pages.map((p) => el('a', { className: 'sys', href: p.url, target: '_blank', rel: 'noopener' },
     el('b', { textContent: p.name }), el('span', { textContent: p.what }), el('em', { textContent: 'Open the system →' }))));
 
+  document.getElementById('batch-count').textContent = (BENCH.batch || []).length;
   document.getElementById('batch-body').replaceChildren(...(BENCH.batch || []).map((b, i) => el('tr', {},
     el('td', { className: 'num', textContent: String(i + 1) }),
     el('td', { className: 'name', textContent: b.name }),

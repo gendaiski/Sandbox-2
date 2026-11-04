@@ -1,0 +1,42 @@
+// Drives Agents Lab: a lesson with its diagram, a lesson demo run, a playground run with its
+// prompts, the AoT graph, and the diagram projector.   node ui_check.cjs <url> <shots dir>
+const { chromium } = require('playwright');
+const [url, shots] = process.argv.slice(2);
+(async () => {
+  const b = await chromium.launch();
+  const p = await b.newPage({ viewport: { width: 1400, height: 950 } });
+  const errors = [];
+  p.on('pageerror', (e) => errors.push(e.message));
+  const fail = async (what) => { await p.screenshot({ path: `${shots}/agents-lab-fail.png`, fullPage: true }); console.error('FAIL ' + what, errors); process.exit(1); };
+  await p.goto(url, { waitUntil: 'networkidle' });
+  await p.waitForSelector('#lesson-list button');
+  if ((await p.$$('#lesson-list button')).length !== 12) await fail('12 lessons listed');
+  await p.click('#lesson-list button[data-n="6"]');
+  await p.waitForSelector('#lesson-doc img').catch(() => fail('lesson 06 diagram'));
+  await p.click('#run-lesson');
+  await p.waitForFunction(() => document.querySelector('#lesson-console').textContent.includes('Iteration'), null, { timeout: 60000 }).catch(() => fail('lesson 06 demo output'));
+  await p.screenshot({ path: `${shots}/agents-lab-lesson.png` });
+  await p.click('#try-lesson');
+  await p.click('#go');
+  await p.waitForSelector('#calls details', { timeout: 60000 }).catch(() => fail('playground prompts'));
+  await p.click('#caps button[data-cap="aot"]');
+  await p.click('#go');
+  await p.waitForSelector('#extra svg.graph', { timeout: 60000 }).catch(() => fail('AoT graph drawn'));
+  await p.screenshot({ path: `${shots}/agents-lab-playground.png` });
+  await p.click('nav button[data-tab="diagrams"]');
+  if ((await p.$$('#gallery figure')).length !== 6) await fail('6 diagrams in the gallery');
+  await p.click('#project');
+  await p.waitForFunction(() => { const i = document.querySelector('#p-img'); return !document.querySelector('#projector').hidden && i.complete && i.naturalWidth > 0; }).catch(() => fail('projector shows a diagram'));
+  const first = await p.textContent('#p-title');
+  await p.keyboard.press('ArrowRight');
+  const second = await p.textContent('#p-title');
+  if (first === second) await fail('arrow key moves to the next diagram');
+  await p.screenshot({ path: `${shots}/agents-lab-projector.png` });
+  await p.keyboard.press('Escape');
+  if (!(await p.$eval('#projector', (e) => e.hidden))) await fail('Esc closes the projector');
+  await p.click('nav button[data-tab="telemetry"]');
+  await p.waitForSelector('#tel table', { timeout: 10000 }).catch(() => fail('telemetry table'));
+  if (errors.length) await fail('page errors');
+  console.log(`UI OK: lessons, lesson 06 demo, playground with prompts, AoT graph, projector ("${first}" -> "${second}"), telemetry`);
+  await b.close();
+})();

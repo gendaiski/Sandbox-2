@@ -89,6 +89,7 @@ BATCH = [
     ("opus-videos", "Awesome Opus 5.5 Videos", "703 video prompts, and a way to remake one", "the README and prompt pages", 8022),
     ("appwrite", "Appwrite", "TablesDB, queries and permissions, with the API calls", "the Appwrite console", 8096),
     ("pocketbase", "PocketBase", "Collections, records, API rules and filters", "the superuser dashboard", 8095),
+    ("agents-from-scratch", "AI Agents from Scratch", "12 lessons, a diagram projector, and its agent's own prompts", "Agents Lab, built here", 8098),
 ]
 by_job = {s["job"].removesuffix("-full"): s for s in systems}
 batch = []
@@ -100,7 +101,7 @@ for k, n, w, ui, port in BATCH:
                   "code_url": s.get("code_url", ""), "upstream": s.get("upstream", ""), "upstream_url": s.get("upstream_url", "")})
 pages = [{"id": k, "name": n, "what": w, "url": artifacts[k]} for k, n, w in PAGES if artifacts.get(k)]
 pages += [{"id": b["id"], "name": b["name"], "what": b["what"], "url": b["url"]} for b in batch if b["url"]]
-lines += ["", "## Latest batch: 16 repos installed with their own UIs", "",
+lines += ["", f"## Latest batch: {len(batch)} repos installed with their own UIs", "",
           "| # | System | Live page | What you can do there | CI | Real UI (`./start.sh <id>`) | Code | Upstream |",
           "|---:|---|---|---|---|---|---|---|"]
 for i, b in enumerate(batch, 1):

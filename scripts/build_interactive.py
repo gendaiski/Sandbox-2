@@ -16,6 +16,7 @@ here). Output: bench/interactive/<id>.html
 
 import base64
 import json
+import mimetypes
 import re
 import sys
 from pathlib import Path
@@ -66,6 +67,10 @@ def build(page: Path) -> Path:
     html = re.sub(r"\{\{TEXT:([^}]+)\}\}", lambda m: json.dumps((ROOT / m.group(1)).read_text()).replace("</", "<\\/"), html)
     # {{LINES:path}}: a text file's non-empty lines as a JSON array (e.g. upstream role lists).
     html = re.sub(r"\{\{LINES:([^}]+)\}\}", lambda m: json.dumps([l.strip() for l in (ROOT / m.group(1)).read_text().splitlines() if l.strip()]), html)
+    # {{DATAURI:path}}: an image as a JS string data: URI (e.g. an upstream diagram), since a page loads nothing external.
+    html = re.sub(r"\{\{DATAURI:([^}]+)\}\}", lambda m: json.dumps(
+        f"data:{mimetypes.guess_type(m.group(1))[0] or 'application/octet-stream'};base64,"
+        + base64.b64encode((ROOT / m.group(1)).read_bytes()).decode()), html)
     html = re.sub(r"\{\{CHECKS:([^}]+)\}\}", lambda m: checks(m.group(1).split(",")), html)
     html = re.sub(r"\{\{SCRIPT:([^}]+)\}\}", lambda m: "<script>\n" + (ROOT / m.group(1)).read_text().replace("</script", "<\\/script") + "\n</script>", html)
     OUT.mkdir(parents=True, exist_ok=True)

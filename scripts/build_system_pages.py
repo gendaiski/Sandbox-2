@@ -207,6 +207,14 @@ SYSTEMS = {
               "runs upstream's Go tests.",
         extras="",
     ),
+    "agents-from-scratch": dict(
+        name="AI Agents from Scratch", jobs=["agents-from-scratch"],
+        what="A 12-lesson course that builds one agent from a single local LLM call, with Agents Lab, a web interface built here.",
+        tests="The repository's tools, memory, state and AoT executor; Agents Lab's lessons, diagrams, playground, lesson demos, "
+              "evals and telemetry against a scripted stand-in, and the diagram projector in a browser; then every lesson's demo "
+              "and the evals on Qwen2.5 1.5B Instruct through llama.cpp.",
+        extras="",
+    ),
     "post-studio": dict(
         name="Post Studio", jobs=["post-studio"],
         what="Paste a social post link; get its text, images and videos saved apart, then rewrite it in your voice and narrate it.",

@@ -1,0 +1,394 @@
+<title>AI Agents from Scratch</title>
+{{HEAD}}
+<style>
+  :root { --accent: #2f6f4f; --accent-soft: #e2efe7; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #7fcca3; --accent-ink: #0b2a1a; --accent-soft: #1e3328; } }
+  :root[data-theme="dark"] { --accent: #7fcca3; --accent-ink: #0b2a1a; --accent-soft: #1e3328; }
+  .lessons { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 14px; align-items: start; }
+  @media (max-width: 820px) { .lessons { grid-template-columns: minmax(0, 1fr); } }
+  .llist { display: flex; flex-direction: column; gap: 2px; }
+  @media (max-width: 820px) { .llist { flex-direction: row; overflow-x: auto; gap: 4px; padding-bottom: 4px; } .llist button { white-space: nowrap; } }
+  .llist button { text-align: left; background: none; border: 0; border-radius: 7px; padding: 7px 10px; font: inherit; font-size: 14px; color: var(--ink); cursor: pointer; display: flex; gap: 8px; }
+  .llist button b { font: 12px var(--mono); color: var(--muted); padding-top: 2px; }
+  .llist button[aria-current="true"] { background: var(--accent-soft); }
+  .doc { max-width: 78ch; min-width: 0; overflow-wrap: anywhere; }
+  .doc h1 { font-size: 22px; margin: 0 0 8px; } .doc h2 { font-size: 17px; margin-top: 22px; } .doc h3 { font-size: 15px; }
+  .doc pre { background: var(--sunk); padding: 10px 12px; border-radius: 8px; overflow-x: auto; font: 12.5px/1.5 var(--mono); }
+  .doc code { font-family: var(--mono); font-size: .92em; } .doc :not(pre) > code { background: var(--sunk); padding: 1px 5px; border-radius: 4px; }
+  .doc img { max-width: 100%; border-radius: 8px; border: 1px solid var(--line); background: #fff; cursor: zoom-in; }
+  .doc table { border-collapse: collapse; display: block; overflow-x: auto; } .doc td, .doc th { border: 1px solid var(--line); padding: 4px 8px; }
+  .console { background: #101311; color: #d6e6dc; font: 12.5px/1.55 var(--mono); border-radius: 8px; padding: 12px; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 420px; overflow: auto; margin: 10px 0; }
+  .caps { display: flex; flex-wrap: wrap; gap: 6px; }
+  .caps button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .out { font: 12.5px/1.55 var(--mono); background: var(--sunk); border-radius: 8px; padding: 10px 12px; white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; }
+  .call { border: 1px solid var(--line); border-radius: 8px; margin-top: 8px; }
+  .call summary { cursor: pointer; padding: 6px 10px; font-size: 13px; }
+  .call pre { margin: 0; padding: 8px 10px; font: 11.5px/1.5 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; border-top: 1px solid var(--line); max-height: 260px; overflow: auto; }
+  .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .gallery figure { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; cursor: zoom-in; }
+  .gallery img { width: 100%; display: block; background: #fff; aspect-ratio: 16 / 10; object-fit: contain; }
+  .gallery figcaption { padding: 8px 12px; font-size: 14px; }
+  .projector { position: fixed; inset: 0; background: #050606; z-index: 50; display: grid; grid-template-rows: auto 1fr auto; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .projector .bar { display: flex; gap: 8px; align-items: center; padding: 10px max(16px, env(safe-area-inset-left, 0px)); color: #cfd8d3; font-size: 14px; flex-wrap: wrap; }
+  .projector .bar .grow { flex: 1; min-width: 0; }
+  .projector .bar button { background: #1c201e; color: #e6ece8; border: 1px solid #333a36; border-radius: 8px; padding: 6px 12px; font: inherit; cursor: pointer; }
+  .projector .stage { display: grid; place-items: center; min-height: 0; padding: 0 12px; }
+  .projector .stage img { max-width: calc(100vw - 24px); max-height: calc(100vh - 120px); object-fit: contain; background: #fff; border-radius: 6px; }
+  .projector .dots { display: flex; gap: 8px; justify-content: center; padding: 10px; }
+  .projector .dots button { width: 10px; height: 10px; border-radius: 50%; border: 0; background: #4a524e; cursor: pointer; padding: 0; }
+  .projector .dots button[aria-current="true"] { background: #7fcca3; }
+  svg.graph { width: 100%; height: auto; max-height: 320px; margin-top: 8px; }
+  svg.graph rect { fill: var(--accent-soft); stroke: var(--accent); } svg.graph text { fill: var(--ink); font: 12px var(--font); }
+  svg.graph path { stroke: var(--muted); fill: none; }
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">Ag</span><h1>AI Agents from Scratch</h1><span class="tag">One agent built in 12 lessons from a single LLM call: no frameworks, no hidden reasoning</span>
+      <span class="links"><a href="https://github.com/pguso/agents-from-scratch" target="_blank" rel="noopener">Upstream project</a><a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/agents-from-scratch" target="_blank" rel="noopener">Install and Agents Lab</a></span></div>
+    <nav class="tabs" aria-label="Sections"><button data-tab="lessons">Lessons</button><button data-tab="play">Playground</button><button data-tab="diagrams">Diagrams</button><button data-tab="install">Install &amp; test</button></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="banner">The 12 lessons and 6 diagrams from pguso/agents-from-scratch. The repository runs a local model through llama.cpp; here Claude stands in for that model and receives the repository's exact prompts, recorded from its own <code>Agent</code> class. The same retries, JSON parsing, stop sequences, tools, memory and graph execution apply. Installed locally, Agents Lab runs all of it on your own GGUF model.</p>
+
+  <section data-panel="lessons" class="lessons">
+    <div class="panel"><div class="llist" id="llist"></div>
+      <p class="note" style="margin-top:10px"><a href="#" data-doc="README.md">README</a> · <a href="#" data-doc="PHILOSOPHY.md">Philosophy</a> · <a href="#" data-doc="QUICKSTART.md">Quick start</a></p></div>
+    <div class="panel">
+      <div class="row" id="lactions"><button class="btn primary ai-only" id="lrun">Run this lesson's demo</button><button class="btn" id="ltry">Try it in the playground</button><span class="status" id="lstatus"></span></div>
+      <p class="note ai-off" id="loff">Open this page in Claude to run the lesson demos.</p>
+      <pre class="console" id="lconsole" hidden></pre>
+      <article class="doc" id="ldoc"></article>
+    </div>
+  </section>
+
+  <section data-panel="play" hidden>
+    <div class="grid cols-2">
+      <div class="panel">
+        <div class="caps" id="caps"></div>
+        <div class="stack" id="form" style="margin-top:12px"></div>
+        <div class="row" style="margin-top:10px"><button class="btn primary ai-only" id="go">Run</button><button class="btn small" id="stop" hidden>Stop</button><button class="btn small" id="memreset" hidden>Forget everything</button><span class="status" id="pstatus"></span></div>
+        <p class="note" id="capnote"></p>
+        <p class="note ai-off">Open this page in Claude to run the agent. The prompts below are the repository's, filled in as you type.</p>
+      </div>
+      <div class="panel">
+        <h2>Result</h2>
+        <pre class="out" id="result">Run something on the left.</pre>
+        <div id="extra"></div>
+        <h2 style="margin-top:14px">Every prompt the agent sent <span class="status" id="ncalls"></span></h2>
+        <div id="calls"></div>
+      </div>
+    </div>
+  </section>
+
+  <section data-panel="diagrams" hidden>
+    <div class="row" style="margin-bottom:12px"><button class="btn primary" id="project">Project the diagrams</button><span class="note">Full screen. Swipe or use ← → to move, Space autoplays, Esc closes.</span></div>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <section data-panel="install" hidden><div id="install" class="stack"></div></section>
+</main>
+
+<div class="projector" id="projector" hidden>
+  <div class="bar"><b id="ptitle" class="grow"></b><span id="pcount"></span><button id="pplay">Autoplay</button><button id="pfull">Fullscreen</button><button id="pclose">Close</button></div>
+  <div class="stage" id="pstage"><img id="pimg" alt=""></div>
+  <div class="dots" id="pdots"></div>
+</div>
+<p class="footer">AI Agents from Scratch © its contributors, MIT licence. Lessons and diagrams at commit <span id="commit"></span>, embedded unchanged.</p>
+{{LIB}}
+{{LIVE}}
+{{AI}}
+<script>
+const CHECKS = {{CHECKS:agents-from-scratch}};
+const AFS = {{JSON:interactive/data/afs_prompts.json}};
+const DIAG = {
+  'agent-architecture.png': {{DATAURI:vendor/agents-from-scratch/diagrams/agent-architecture.png}},
+  'lesson-05-tool-calling.png': {{DATAURI:vendor/agents-from-scratch/diagrams/lesson-05-tool-calling.png}},
+  'lesson-06-agent-loop.png': {{DATAURI:vendor/agents-from-scratch/diagrams/lesson-06-agent-loop.png}},
+  'lesson-07-memory.png': {{DATAURI:vendor/agents-from-scratch/diagrams/lesson-07-memory.png}},
+  'lesson-08-planning.png': {{DATAURI:vendor/agents-from-scratch/diagrams/lesson-08-planning.png}},
+  'lesson-10-atom-of-thoght.png': {{DATAURI:vendor/agents-from-scratch/diagrams/lesson-10-atom-of-thoght.png}},
+};
+/* el() with text: as a property, for the many one-line nodes below. */
+const E = (tag, props = {}, ...kids) => { if (props && 'text' in props) { const { text, ...rest } = props; return el(tag, rest, text, ...kids); } return el(tag, props, ...kids); };
+const T = AFS.templates, STOP = AFS.default_stop;
+const pretty = (v) => v === undefined ? 'undefined' : typeof v === 'string' ? v : JSON.stringify(v, null, 2);
+const pyBool = (b) => (b ? 'True' : 'False');
+
+/* ---------------- shared/utils.py, ported */
+function safeJson(t) { try { return JSON.parse(t); } catch { return null; } }
+function extractJson(text) {
+  if (!text) return null;
+  text = text.trim();
+  if (text.startsWith('```json')) text = text.slice(7); else if (text.startsWith('```')) text = text.slice(3);
+  if (text.endsWith('```')) text = text.slice(0, -3);
+  text = text.trim();
+  for (const p of ['JSON:', 'Response:', 'Answer:', "Here's the JSON:", 'The JSON is:']) if (text.startsWith(p)) text = text.slice(p.length).trim();
+  let r = safeJson(text); if (r !== null) return r;
+  let s = text.indexOf('{'), e = text.lastIndexOf('}');
+  if (s !== -1 && e !== -1 && e > s) {
+    const j = text.slice(s, e + 1); r = safeJson(j); if (r !== null) return r;
+    if ((j.split('"').length - 1) % 2 !== 0) {
+      const lq = j.lastIndexOf('"');
+      if (lq > 0 && (j.slice(0, lq).split('"').length - 1) % 2 === 0) { r = safeJson(j.slice(0, lq + 1) + '"' + j.slice(lq + 1) + '}'); if (r !== null) return r; }
+    }
+  }
+  s = text.indexOf('['); e = text.lastIndexOf(']');
+  if (s !== -1 && e !== -1 && e > s) { r = safeJson(text.slice(s, e + 1)); if (r !== null) return r; }
+  if (text.includes('{') || text.includes('[')) for (let line of text.split('\n')) { line = line.trim(); if (line.startsWith('{') || line.startsWith('[')) { r = safeJson(line); if (r !== null) return r; } }
+  return null;
+}
+const isObj = (v) => v && typeof v === 'object' && !Array.isArray(v);
+
+/* ---------------- shared/llm.py's LocalLLM.generate, with Claude as the model */
+let calls = [], ctl = null;
+async function generate(prompt, temperature = 0.2) {
+  const t0 = performance.now();
+  const r = await AI.run([{ role: 'user', content: prompt }], { tier: 'quick', cache: false, status: $('#pstatus') });
+  const raw = r.text || '';
+  // The repository's default stop sequences, applied as llama.cpp would: output ends at the first one.
+  let cut = raw.length; for (const s of STOP) { const i = raw.indexOf(s); if (i !== -1 && i < cut) cut = i; }
+  const out = raw.slice(0, cut).trim();
+  calls.push({ prompt, raw, out, ms: Math.round(performance.now() - t0), temperature, stopped: cut < raw.length });
+  renderCalls();
+  return out;
+}
+async function retry3(prompt, valid) {
+  for (let i = 0; i < 3; i++) { const p = extractJson(await generate(prompt, 0.0)); if (valid(p)) return p; }
+  return null;
+}
+const fill = (tpl, map) => Object.entries(map).reduce((s, [k, v]) => s.split(k).join(v), tpl);
+
+/* ---------------- agent/agent.py, agent/tools.py, agent/planner.py, ported */
+let memory = [], state = { steps: 0, done: false };
+const CALC = { add: (a, b) => a + b, subtract: (a, b) => a - b, multiply: (a, b) => a * b, divide: (a, b) => (b !== 0 ? a / b : Infinity) };
+function executeTool(name, args) {
+  if (name !== 'calculator') throw new Error(`Unknown tool: ${name}`);
+  const op = args.operation ?? 'add';
+  if (!(op in CALC)) throw new Error(`Unknown operation: ${op}`);
+  return CALC[op](+args.a, +args.b);
+}
+function executeGraph(graph, run = (a) => `Executed: ${a}`) {
+  if (!graph || !graph.nodes) return [];
+  const nodes = graph.nodes, done = new Set(), out = [];
+  let it = 0;
+  while (done.size < nodes.length && it < nodes.length * 2) {
+    it++;
+    for (const n of nodes) {
+      if (done.has(n.id)) continue;
+      if ((n.depends_on || []).every((d) => done.has(d))) {
+        try { out.push({ node_id: n.id, action: n.action, result: run(n.action), success: true }); } catch (e) { out.push({ node_id: n.id, action: n.action, error: String(e), success: false }); }
+        done.add(n.id);
+      }
+    }
+  }
+  return out;
+}
+const AGENT = {
+  simple: (input) => generate(fill(T.simple.prompt, { '<<INPUT>>': input })),
+  role: async (input) => (await generate(fill(T.role.prompt, { '<<INPUT>>': input }))).replace(/<\/?SYSTEM>|<\/?USER>/g, '').trim(),
+  structured: (input, schema) => retry3(fill(T.structured.prompt, { '<<INPUT>>': input, '<<SCHEMA>>': schema }), (p) => p !== null),
+  decide: async (input, choices) => {
+    const prompt = fill(T.decide.prompt, { '- <<CHOICE>>': choices.map((c) => `- ${c}`).join('\n'), '<<INPUT>>': input });
+    for (let i = 0; i < 3; i++) { const p = extractJson(await generate(prompt, 0.0)); if (isObj(p) && 'decision' in p && choices.includes(p.decision)) return p.decision; }
+    return null;
+  },
+  tool: (input) => retry3(fill(T.tool.prompt, { '<<INPUT>>': input }), (p) => isObj(p) && 'tool' in p && 'arguments' in p),
+  step: async (input) => {
+    const prompt = fill(T.loop.prompt, { '<<STEPS>>': String(state.steps), '<<DONE>>': pyBool(state.done), '<<INPUT>>': input });
+    for (let i = 0; i < 3; i++) {
+      const p = extractJson(await generate(prompt, 0.0));
+      if (isObj(p) && 'action' in p) { if (!('reason' in p)) p.reason = `Taking action: ${p.action}`; state.steps++; return p; }
+    }
+    return null;
+  },
+  loop: async (input, max = 5) => {
+    state = { steps: 0, done: false };
+    const results = [];
+    while (!state.done && state.steps < max) {
+      const a = await AGENT.step(input);
+      if (!a) break;
+      results.push(a);
+      if (a.action === 'done') state.done = true;
+    }
+    return results;
+  },
+  memory: async (input) => {
+    const prompt = memory.length ? fill(T.memory_full.prompt, { '- <<MEM>>': memory.map((m) => `- ${m}`).join('\n'), '<<INPUT>>': input })
+      : fill(T.memory_empty.prompt, { '<<INPUT>>': input });
+    for (let i = 0; i < 3; i++) {
+      const p = extractJson(await generate(prompt, 0.0));
+      if (isObj(p) && 'reply' in p) { if (p.save_to_memory) memory.push(p.save_to_memory); state.steps++; return p; }
+    }
+    return null;
+  },
+  plan: (goal) => retry3(fill(T.plan.prompt, { '<<INPUT>>': goal }), (p) => isObj(p) && Array.isArray(p.steps)),
+  atomic: (step) => retry3(fill(T.atomic.prompt, { '<<INPUT>>': step }), (p) => isObj(p) && 'action' in p),
+  aot: async (goal) => {
+    const prompt = fill(T.aot.prompt, { '<<INPUT>>': goal });
+    for (let i = 0; i < 3; i++) {
+      const g = extractJson(await generate(prompt, 0.0));
+      if (isObj(g) && Array.isArray(g.nodes)) {
+        const valid = g.nodes.filter((n) => isObj(n) && 'id' in n && 'action' in n && 'depends_on' in n && Array.isArray(n.depends_on));
+        if (valid.length) return { nodes: valid };
+      }
+    }
+    return null;
+  },
+};
+
+/* ---------------- complete_example.py's lesson demos, the same inputs and output */
+const DEMOS = {
+  1: async (p) => { p('LESSON 01: Basic LLM Chat'); p(`Response: ${await AGENT.simple('Explain what an AI agent is?')}`); },
+  2: async (p) => { p('LESSON 02: With System Prompt'); p(`Response: ${await AGENT.role('Explain what an AI agent is?')}`); },
+  3: async (p) => { p('LESSON 03: Structured Output'); p(`Structured result: ${pretty(await AGENT.structured('Explain quantum computing', '{\n  "topic": string,\n  "difficulty": "beginner" | "intermediate" | "advanced"\n}'))}`); },
+  4: async (p) => { p('LESSON 04: Decision Making'); p(`Decision: ${await AGENT.decide('Can you summarize this article for me?', ['answer_question', 'summarize_text', 'translate'])}`); },
+  5: async (p) => { p('LESSON 05: Tool Calling'); const t = await AGENT.tool('What is 42 * 7?'); p(`Tool request: ${pretty(t)}`); if (t) p(`Tool result: ${executeTool(t.tool, t.arguments)}`); },
+  6: async (p) => { p('LESSON 06: Agent Loop'); const r = await AGENT.loop('Help me understand loops', 3); r.forEach((x, i) => p(`Iteration ${i + 1}:\n  Action: ${x.action ?? 'unknown'}\n  Reason: ${x.reason ?? 'No reason provided'}`)); },
+  7: async (p) => { p('LESSON 07: Memory'); memory = []; const a = await AGENT.memory('My name is Alice'); p(`Response 1: ${a ? a.reply : a}${a && a.save_to_memory ? `\n  → Saved to memory: ${a.save_to_memory}` : ''}`); const b = await AGENT.memory("What's my name?"); p(`Response 2: ${b ? b.reply : b}`); p(`\nMemory contents: ${JSON.stringify(memory)}`); },
+  8: async (p) => { p('LESSON 08: Planning'); const plan = await AGENT.plan('Write a blog post about AI agents'); p(`Plan: ${pretty(plan)}`); if (plan) p(`Execution results: ${pretty(plan.steps.map((s) => ({ step: s, executed: true })))}`); },
+  9: async (p) => { p('LESSON 09: Atomic Actions'); const step = 'Write an explanation of AI agents'; p(`Step: ${step}\nAtomic action: ${pretty(await AGENT.atomic(step))}`); const plan = await AGENT.plan('Create a tutorial about Python'); if (plan && plan.steps.length) p(`\nPlan step: ${plan.steps[0]}\nAtomic action from plan step: ${pretty(await AGENT.atomic(plan.steps[0]))}`); },
+  10: async (p) => { p('LESSON 10: Atom of Thought'); const g = await AGENT.aot('Research and write article'); p(`AoT graph: ${pretty(g)}`); if (g) p(`Execution results: ${pretty(executeGraph(g))}`); },
+};
+
+/* ---------------- lessons */
+let current = 1;
+function fixImages(root) {
+  root.querySelectorAll('img').forEach((img) => {
+    const d = img.getAttribute('data-diagram');
+    if (d && DIAG[d]) { img.src = DIAG[d]; img.onclick = () => project(Math.max(0, AFS.diagrams.findIndex((x) => x.file === d))); }
+    else img.remove(); // badges from other sites: this page loads nothing external
+  });
+  root.querySelectorAll('a[href]').forEach((a) => { if (/^https?:/.test(a.getAttribute('href'))) { a.target = '_blank'; a.rel = 'noopener'; } else if (!a.getAttribute('href').startsWith('#')) a.removeAttribute('href'); });
+}
+function showLesson(n) {
+  current = n;
+  const l = AFS.lessons.find((x) => x.n === n);
+  $$('#llist button').forEach((b) => b.setAttribute('aria-current', String(+b.dataset.n === n)));
+  $('#lactions').hidden = false; $('#lconsole').hidden = true; $('#lstatus').textContent = '';
+  $('#lrun').hidden = !DEMOS[n];
+  const doc = $('#ldoc'); doc.innerHTML = AFS.lesson_html[l.file] || '';
+  if (l.diagram && !doc.querySelector(`img[data-diagram="${l.diagram}"]`)) doc.prepend(E('p', {}, E('img', { 'data-diagram': l.diagram, alt: l.title })));
+  fixImages(doc);
+  if (n >= 11) doc.prepend(E('p', { class: 'note', text: n === 11 ? 'Evals run the golden datasets against your local model: use the Evals tab in Agents Lab.' : 'Telemetry logs spans from your local runs: use the Telemetry tab in Agents Lab.' }));
+}
+$$('[data-doc]').forEach((a) => { a.onclick = (e) => { e.preventDefault(); $$('#llist button').forEach((b) => b.setAttribute('aria-current', 'false')); $('#lactions').hidden = true; $('#lconsole').hidden = true; const d = $('#ldoc'); d.innerHTML = AFS.docs_html[a.dataset.doc]; fixImages(d); }; });
+$('#lrun').onclick = async () => {
+  const out = $('#lconsole'); out.hidden = false; out.textContent = ''; calls = [];
+  const p = (s) => { out.textContent += (out.textContent ? '\n' : '') + s; out.scrollTop = out.scrollHeight; };
+  $('#lrun').disabled = true; $('#lstatus').textContent = 'Running with Claude as the model…';
+  try { await DEMOS[current](p); $('#lstatus').textContent = `Done: ${calls.length} model call${calls.length === 1 ? '' : 's'}; see them in the Playground tab.`; }
+  catch (e) { $('#lstatus').textContent = e && e.code ? AI.why(e.code) : String(e); }
+  finally { $('#lrun').disabled = false; }
+};
+const LCAP = { 1: 'simple', 2: 'role', 3: 'structured', 4: 'decide', 5: 'tool', 6: 'loop', 7: 'memory', 8: 'plan', 9: 'atomic', 10: 'aot' };
+$('#ltry').onclick = () => { if (LCAP[current]) pickCap(LCAP[current]); show('play'); };
+
+/* ---------------- playground */
+const CAPS = {
+  simple: ['01 Chat', 'agent.simple_generate: the prompt is just your text.', 'Explain what an AI agent is?'],
+  role: ['02 System prompt', 'agent.generate_with_role: the system prompt goes first.', 'Explain what an AI agent is?'],
+  structured: ['03 Structured', 'agent.generate_structured: JSON only, parsed and retried up to 3 times.', 'Explain quantum computing'],
+  decide: ['04 Decide', 'agent.decide: the model must pick one of a fixed set.', 'Can you summarize this article for me?'],
+  tool: ['05 Tool', 'agent.request_tool; then the system, not the model, runs the calculator.', 'What is 42 * 7?'],
+  loop: ['06 Agent loop', 'agent.run_loop: observe → decide → act until "done" or the step limit.', 'Help me understand loops'],
+  memory: ['07 Memory', 'agent.run_with_memory: memory persists between runs until you reset it.', 'My name is Alice'],
+  plan: ['08 Plan', 'agent.create_plan, then execute_plan step by step.', 'Write a blog post about AI agents'],
+  atomic: ['09 Atomic action', 'agent.create_atomic_action: one step becomes one action with inputs.', 'Write an explanation of AI agents'],
+  aot: ['10 Atom of Thought', 'agent.create_aot_plan, then execute_graph in dependency order.', 'Research and write article'],
+};
+let cap = 'simple';
+function pickCap(c) {
+  cap = c;
+  $$('#caps button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.cap === c)));
+  const f = $('#form');
+  f.replaceChildren(E('label', { class: 'field' }, 'Input', E('textarea', { id: 'fin', rows: 3, value: CAPS[c][2] })));
+  if (c === 'structured') f.append(E('label', { class: 'field' }, 'Schema', E('textarea', { id: 'fschema', rows: 5, value: '{\n  "topic": string,\n  "difficulty": "beginner" | "intermediate" | "advanced"\n}' })));
+  if (c === 'decide') f.append(E('label', { class: 'field' }, 'Choices, one per line', E('textarea', { id: 'fchoices', rows: 3, value: 'answer_question\nsummarize_text\ntranslate' })));
+  if (c === 'loop') f.append(E('label', { class: 'field inline' }, 'Max steps', E('input', { id: 'fsteps', type: 'number', min: 1, max: 8, value: 3 })));
+  $('#capnote').textContent = CAPS[c][1]; $('#memreset').hidden = c !== 'memory';
+}
+$('#caps').replaceChildren(...Object.entries(CAPS).map(([k, v]) => { const b = E('button', { class: 'btn small', text: v[0], onclick: () => pickCap(k) }); b.dataset.cap = k; return b; }));
+function graph(g) {
+  const nodes = g.nodes, depth = {}, by = Object.fromEntries(nodes.map((n) => [n.id, n]));
+  const d = (id, seen = new Set()) => { if (depth[id] != null) return depth[id]; if (seen.has(id) || !by[id]) return 0; seen.add(id); return (depth[id] = by[id].depends_on.length ? 1 + Math.max(...by[id].depends_on.map((x) => d(x, seen))) : 0); };
+  nodes.forEach((n) => d(n.id));
+  const cols = {}; nodes.forEach((n) => (cols[depth[n.id]] = cols[depth[n.id]] || []).push(n));
+  const W = 150, H = 42, gx = 46, gy = 16, pos = {};
+  Object.entries(cols).forEach(([c, l]) => l.forEach((n, i) => { pos[n.id] = { x: 10 + c * (W + gx), y: 10 + i * (H + gy) }; }));
+  const ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', `0 0 ${20 + Object.keys(cols).length * (W + gx)} ${20 + Math.max(...Object.values(cols).map((l) => l.length)) * (H + gy)}`); svg.setAttribute('class', 'graph');
+  for (const n of nodes) for (const dep of n.depends_on) if (pos[dep]) { const a = pos[dep], b = pos[n.id], p = document.createElementNS(ns, 'path'); p.setAttribute('d', `M${a.x + W},${a.y + H / 2} C${a.x + W + 24},${a.y + H / 2} ${b.x - 24},${b.y + H / 2} ${b.x},${b.y + H / 2}`); svg.append(p); }
+  for (const n of nodes) { const r = document.createElementNS(ns, 'rect'), t = document.createElementNS(ns, 'text'); r.setAttribute('x', pos[n.id].x); r.setAttribute('y', pos[n.id].y); r.setAttribute('width', W); r.setAttribute('height', H); r.setAttribute('rx', 8); t.setAttribute('x', pos[n.id].x + 10); t.setAttribute('y', pos[n.id].y + 26); t.textContent = `${n.id}. ${String(n.action).slice(0, 18)}`; svg.append(r, t); }
+  return svg;
+}
+function renderCalls() {
+  $('#ncalls').textContent = `(${calls.length})`;
+  $('#calls').replaceChildren(...calls.map((c, i) => E('details', { class: 'call', open: i === calls.length - 1 },
+    E('summary', { text: `Call ${i + 1} · ${c.ms} ms · temperature ${c.temperature}${c.stopped ? ' · cut at a stop sequence' : ''}` }),
+    E('pre', { text: 'PROMPT\n' + c.prompt }), E('pre', { text: 'RESPONSE' + (c.stopped ? ' (after the stop sequence)' : '') + '\n' + c.out }))));
+}
+$('#go').onclick = async () => {
+  calls = []; renderCalls(); $('#go').disabled = true; $('#extra').replaceChildren(); $('#result').textContent = '…';
+  const input = $('#fin').value;
+  try {
+    let r;
+    if (cap === 'structured') r = await AGENT.structured(input, $('#fschema').value);
+    else if (cap === 'decide') r = await AGENT.decide(input, $('#fchoices').value.split('\n').map((s) => s.trim()).filter(Boolean));
+    else if (cap === 'loop') { r = await AGENT.loop(input, Math.max(1, Math.min(+$('#fsteps').value || 3, 8))); $('#extra').append(E('p', { class: 'note', text: `State: ${JSON.stringify(state)}` })); }
+    else r = await AGENT[cap](input);
+    $('#result').textContent = r === null ? 'null: no valid output after the agent\'s 3 attempts.' : pretty(r);
+    const x = $('#extra');
+    if (cap === 'tool' && r) { try { x.append(E('p', { class: 'note', text: `The system ran the tool: ${executeTool(r.tool, r.arguments)}` })); } catch (e) { x.append(E('p', { class: 'note', text: `Tool error: ${e.message}` })); } }
+    if (cap === 'memory') x.append(E('p', { class: 'note', text: `Memory: ${memory.length ? memory.join(' · ') : '(empty)'}` }));
+    if (cap === 'plan' && r) x.append(E('pre', { class: 'out', style: { marginTop: '8px' }, text: 'Execution:\n' + pretty(r.steps.map((s) => ({ step: s, executed: true }))) }));
+    if (cap === 'aot' && r) { x.append(graph(r)); x.append(E('pre', { class: 'out', style: { marginTop: '8px' }, text: 'Execution:\n' + pretty(executeGraph(r)) })); }
+    $('#pstatus').textContent = '';
+  } catch (e) { $('#result').textContent = ''; $('#pstatus').textContent = e && e.code ? AI.why(e.code) : String(e); }
+  finally { $('#go').disabled = false; }
+};
+$('#memreset').onclick = () => { memory = []; state = { steps: 0, done: false }; $('#pstatus').textContent = 'Memory cleared.'; };
+
+/* ---------------- diagrams and the projector */
+let pi = 0, ptimer = null;
+function project(i = 0) {
+  const ds = AFS.diagrams; pi = (i + ds.length) % ds.length;
+  $('#projector').hidden = false; $('#pimg').src = DIAG[ds[pi].file]; $('#pimg').alt = ds[pi].title;
+  $('#ptitle').textContent = ds[pi].title; $('#pcount').textContent = `${pi + 1} / ${ds.length}`;
+  $$('#pdots button').forEach((b, k) => b.setAttribute('aria-current', String(k === pi)));
+}
+function closeP() { $('#projector').hidden = true; clearInterval(ptimer); ptimer = null; $('#pplay').textContent = 'Autoplay'; if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); }
+function autoplay() { if (ptimer) { clearInterval(ptimer); ptimer = null; $('#pplay').textContent = 'Autoplay'; } else { ptimer = setInterval(() => project(pi + 1), 6000); $('#pplay').textContent = 'Pause'; } }
+$('#project').onclick = () => project(0);
+$('#pclose').onclick = closeP; $('#pplay').onclick = autoplay;
+$('#pfull').onclick = () => { try { const p = document.fullscreenElement ? document.exitFullscreen() : $('#projector').requestFullscreen?.(); p?.catch?.(() => {}); } catch {} };
+$('#pstage').onclick = (e) => project(pi + (e.clientX > innerWidth / 2 ? 1 : -1));
+document.addEventListener('keydown', (e) => {
+  if ($('#projector').hidden) return;
+  if (e.key === 'ArrowRight') project(pi + 1); else if (e.key === 'ArrowLeft') project(pi - 1);
+  else if (e.key === 'Escape') closeP(); else if (e.key === ' ') { e.preventDefault(); autoplay(); }
+});
+let tx = null;
+$('#pstage').addEventListener('touchstart', (e) => { tx = e.touches[0].clientX; }, { passive: true });
+$('#pstage').addEventListener('touchend', (e) => { if (tx == null) return; const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 40) project(pi + (dx < 0 ? 1 : -1)); tx = null; });
+
+/* ---------------- boot */
+$('#commit').textContent = AFS.commit.slice(0, 7);
+$('#llist').replaceChildren(...AFS.lessons.map((l) => { const b = E('button', { onclick: () => showLesson(l.n) }, E('b', { text: String(l.n).padStart(2, '0') }), l.title + (l.diagram ? ' ◫' : '')); b.dataset.n = l.n; return b; }));
+$('#gallery').replaceChildren(...AFS.diagrams.map((d, i) => E('figure', { onclick: () => project(i) }, E('img', { src: DIAG[d.file], alt: d.title, loading: 'lazy' }), E('figcaption', { text: d.title }))));
+$('#pdots').replaceChildren(...AFS.diagrams.map((d, i) => E('button', { title: d.title, 'aria-label': d.title, onclick: (e) => { e.stopPropagation(); project(i); } })));
+const INSTALL = {
+  setup: 'systems/agents-from-scratch/setup.sh                 # Qwen2.5 1.5B Instruct, ~1 GB\nsystems/agents-from-scratch/setup.sh --model llama3  # the lessons\' Llama 3 8B, ~5 GB',
+  serve: './start.sh agents-from-scratch   # Agents Lab, http://localhost:8098', test: 'python3 systems/agents-from-scratch/test_agents_from_scratch.py -v', port: 8098, ui: 'Agents Lab',
+  notes: ['A venv with llama-cpp-python (a prebuilt CPU wheel, or compiled from source) and a GGUF model from Hugging Face in the repo\'s models/ folder', 'The repository has no interface: Agents Lab, built here, runs its lessons\' demos from complete_example.py, a playground per capability with every prompt shown, the golden-dataset evals, the telemetry log and a diagram projector', 'Tests: the repository\'s tools, memory, state and AoT executor; every Agents Lab page against a scripted stand-in and in a browser; then every lesson demo and the evals on the real model'],
+};
+const show = initTabs((n) => {
+  if (n !== 'install') return;
+  const ran = CHECKS.systems && CHECKS.systems.length;
+  renderInstall($('#install'), ran ? CHECKS : { systems: [], checks: [], run: {} }, INSTALL);
+  if (!ran) { const k = $('#install .kpi b'); if (k) k.textContent = 'Not run yet'; }
+});
+showLesson(1); pickCap('simple');
+</script>
