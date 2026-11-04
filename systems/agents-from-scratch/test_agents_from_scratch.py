@@ -156,6 +156,11 @@ with h.check("real model: every lesson's demo through llama.cpp") as c:
         code, r = call(base, "POST", "/api/run", {"capability": "tool", "input": "What is 42 * 7?"}, timeout=900)
         c.expect(code == 200 and r["calls"], f"tool call: {str(r)[:200]}")
         c.note(f"tool call on the real model: {r.get('result')} -> {r.get('tool_result')}")
+        # What the model actually returned, after LocalLLM's stop sequences, for each attempt.
+        c.note("raw replies: " + " | ".join(repr(x["response"][:160]) for x in r["calls"]))
+        code, s = call(base, "POST", "/api/run", {"capability": "structured", "input": "Explain quantum computing",
+                                                  "schema_": '{"topic": string, "difficulty": "beginner" | "intermediate" | "advanced"}'}, timeout=900)
+        c.note(f"structured on the real model: {s.get('result')}; raw replies: " + " | ".join(repr(x["response"][:160]) for x in s.get("calls", [])))
         code, ev = call(base, "POST", "/api/evals", {"limit": 1}, timeout=1800)
         c.expect(code == 200, f"evals HTTP {code}")
         c.note("evals on the real model: " + "; ".join(f"{s['name']} {s['passed']}/{s['passed'] + s['failed']}" for s in ev["suites"]))

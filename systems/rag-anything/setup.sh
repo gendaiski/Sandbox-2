@@ -13,7 +13,8 @@ PY="$HERE/.venv/bin/python"
 if [ "${1:-}" = "--full" ]; then
   # MinerU 4 renamed the `core` extra RAG-Anything asks for, which silently
   # installs MinerU without its parsing engine; stay on the 3.x line it targets.
-  uv pip install -q --python "$PY" -e "$ROOT/vendor/rag-anything[image,text]" "mineru[core]>=3.4.1,<4" \
+  # six: MinerU's OCR operators import it without declaring it (run 44, 2026-11-04).
+  uv pip install -q --python "$PY" -e "$ROOT/vendor/rag-anything[image,text]" "mineru[core]>=3.4.1,<4" six \
     sentence-transformers   # local embeddings for the Workbench when no OpenAI key is set
 else
   # Skip mineru[core]: only document parsing needs it.
