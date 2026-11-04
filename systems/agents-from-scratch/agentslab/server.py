@@ -91,6 +91,8 @@ def shared_llm():
             from shared.llm import LocalLLM
             _llm = LocalLLM(str(path), max_tokens=int(os.environ.get("AFS_MAX_TOKENS", "512")),
                             n_ctx=int(os.environ.get("AFS_N_CTX", "4096")))
+            if chat_template():
+                _llm.generate = _chat_generate(_llm)
         inner = _llm.generate
 
         def recorded(prompt, temperature=None, stop=None):
@@ -100,6 +102,28 @@ def shared_llm():
             return out
         _llm.generate = recorded
     return _llm
+
+
+def chat_template() -> bool:
+    """Send each prompt through the model's own chat template (default), or as raw text as
+    LocalLLM does (AFS_CHAT_TEMPLATE=0). Instruct models such as Qwen2.5 1.5B answer a raw
+    completion and then repeat it ('{...} {...}', run 45), which the repository's JSON extractor
+    cannot parse; in their chat template they end the reply after the JSON."""
+    return not os.environ.get("AFS_FAKE_LLM") and os.environ.get("AFS_CHAT_TEMPLATE", "1") != "0"
+
+
+def _chat_generate(llm):
+    """LocalLLM.generate with the same prompt, temperature, token limit and stop sequences, sent
+    as one user message in the GGUF's chat template instead of as raw text."""
+    def generate(prompt: str, temperature: float = None, stop: list[str] = None) -> str:
+        response = llm.llm.create_chat_completion(
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=llm.max_tokens,
+            temperature=temperature if temperature is not None else llm.temperature,
+            stop=stop if stop is not None else ["</s>", "\n\n", "User:", "Assistant:"],
+        )
+        return (response["choices"][0]["message"]["content"] or "").strip()
+    return generate
 
 
 def agent_module():
@@ -188,6 +212,7 @@ def status() -> dict:
     return {"model": str(path) if path else "", "model_exists": bool(path and path.exists()),
             "model_mb": round(path.stat().st_size / 1e6) if path and path.exists() else 0,
             "loaded": _llm is not None, "stand_in": bool(os.environ.get("AFS_FAKE_LLM")),
+            "chat_template": chat_template(),
             "llama_cpp": llama, "repo": str(REPO),
             "commit": (REPO / ".git" / "HEAD").exists() and _head()}
 

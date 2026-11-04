@@ -332,13 +332,14 @@ $('#tel-clear').onclick = async () => { await api('/api/telemetry', { method: 'D
   const s = await (await api('/api/status')).json();
   const m = $('#model');
   if (s.stand_in) { m.textContent = 'test stand-in model (no GGUF)'; m.classList.add('bad'); }
-  else if (s.model_exists) m.textContent = `${s.model.split('/').pop()} · ${s.model_mb} MB · llama.cpp ${s.llama_cpp}`;
+  else if (s.model_exists) m.textContent = `${s.model.split('/').pop()} · ${s.model_mb} MB · llama.cpp ${s.llama_cpp}${s.chat_template ? ' · chat template' : ' · raw prompts'}`;
   else { m.textContent = 'no model yet: see Setup'; m.classList.add('bad'); }
   $('#setup').innerHTML = `<p>This interface runs the repository's own code (<code>${s.repo}</code>${s.commit ? `, commit <code>${s.commit}</code>` : ''}) on a local model through <b>llama.cpp</b> ${s.llama_cpp}. Nothing goes to a cloud API.</p>
     <p><b>Model:</b> ${s.model_exists ? `<code>${s.model}</code> (${s.model_mb} MB)` : '<span style="color:var(--bad)">none found</span>'}${s.stand_in ? ' — a scripted test stand-in is answering instead' : ''}</p>
     <h3>Get a model</h3><pre>systems/agents-from-scratch/setup.sh                  # Qwen2.5 1.5B Instruct, ~1 GB, fine on a laptop CPU
 systems/agents-from-scratch/setup.sh --model llama3   # the lessons' Llama 3 8B Instruct Q4_K_M, ~5 GB, 8 GB+ RAM</pre>
     <p>Or put any GGUF file in <code>vendor/agents-from-scratch/models/</code>, or set <code>AFS_MODEL=/path/to/model.gguf</code>, then restart (<code>./start.sh --restart agents-from-scratch</code>).</p>
+    <p><b>Prompts:</b> ${s.chat_template ? 'each of the repository\'s prompts goes to the model as one user message in its own chat template, with LocalLLM\'s temperature, token limit and stop sequences. Set <code>AFS_CHAT_TEMPLATE=0</code> to send them as raw text, as LocalLLM does; small instruct models then tend to repeat their JSON answer, which the repository\'s parser rejects.' : 'sent as raw text, as LocalLLM does (AFS_CHAT_TEMPLATE=0).'}</p>
     <p class="note">Small models fail JSON contracts more often; the lessons say so, and the retries, nulls and eval failures you see are the point of lessons 03, 11 and 12.</p>`;
   lessons = await (await api('/api/lessons')).json();
   diagrams = await (await api('/api/diagrams')).json();
