@@ -38,6 +38,7 @@ declare -A REPOS=(
   [appwrite]="appwrite/appwrite"
   [pocketbase]="pocketbase/pocketbase"
   [agents-from-scratch]="pguso/agents-from-scratch"
+  [jakes-brain]="jake17007/jakes-brain"
 )
 
 LOCK="$ROOT/scripts/upstream.lock"

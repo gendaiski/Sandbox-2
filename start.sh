@@ -11,7 +11,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 RUN="$ROOT/.run"
 DEFAULT=(langfuse rag-anything pdfstract chunckerflow chunknorris prism-ui openflow)
 SERVED=("${DEFAULT[@]}" lobehub autogpt continue camel dspy metagpt izwi skills-manager loopcut
-        fabricjs fabricjs-site gods-eye-view claude-code-best-practice opus-videos appwrite pocketbase post-studio agents-from-scratch)
+        fabricjs fabricjs-site gods-eye-view claude-code-best-practice opus-videos appwrite pocketbase post-studio agents-from-scratch jakes-brain)
 mkdir -p "$RUN/logs"
 
 running() { [ -f "$RUN/$1.pid" ] && kill -0 "$(cat "$RUN/$1.pid")" 2>/dev/null; }
@@ -39,6 +39,7 @@ ready() {
     fabricjs-site) [ -d "$ROOT/systems/fabricjs-site/.bundle" ] ;;
     gods-eye-view) [ -d "$ROOT/vendor/gods-eye-view/node_modules" ] ;;
     claude-code-best-practice) [ -f "$ROOT/systems/claude-code-best-practice/.check.json" ] ;;
+    jakes-brain) [ -f "$ROOT/systems/jakes-brain/runtime/config.json" ] ;;
     *) [ -d "$ROOT/systems/$1/.venv" ] ;;
   esac
 }

@@ -198,6 +198,12 @@ SYSTEMS = {
         code="systems/agents-from-scratch", variant="with Agents Lab",
         finding="No interface upstream; Agents Lab, built here, runs its lessons, agent, evals and telemetry on llama.cpp.",
     ),
+    "report-jakes-brain": dict(
+        job_name="jakes-brain",
+        system="Jake's Brain", kind="Personal app suite", upstream="jake17007/jakes-brain",
+        code="systems/jakes-brain",
+        finding="Its config points at Jake's PC; setup.sh writes one for this machine, as its SPEC.md does for local runs.",
+    ),
     "report-post-studio": dict(
         job_name="post-studio",
         system="Post Studio", kind="Post grabber and rewriter", upstream="yt-dlp/yt-dlp",

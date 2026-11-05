@@ -24,7 +24,7 @@
   "postStartCommand": "./start.sh",
   "forwardPorts": [8080, 3000, 9621, 8000, 8001, 8501, 4173, 6080,
                    3210, 3006, 8443, 7860, 8888, 8889, 8090, 4321, 4000, 4174, 8021, 8022,
-                   8096, 8095, 8097, 8098],
+                   8096, 8095, 8097, 8098, 4800],
   "portsAttributes": {
     "8080": { "label": "Portal", "onAutoForward": "openBrowser" },
     "3000": { "label": "Langfuse" },
@@ -49,6 +49,7 @@
     "8096": { "label": "Appwrite Console" },
     "8095": { "label": "PocketBase" },
     "8097": { "label": "Post Studio" },
-    "8098": { "label": "Agents Lab (AI Agents from Scratch)" }
+    "8098": { "label": "Agents Lab (AI Agents from Scratch)" },
+    "4800": { "label": "Jake's Brain" }
   }
 }

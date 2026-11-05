@@ -215,6 +215,13 @@ SYSTEMS = {
               "and the evals on Qwen2.5 1.5B Instruct through llama.cpp.",
         extras="",
     ),
+    "jakes-brain": dict(
+        name="Jake's Brain", jobs=["jakes-brain"],
+        what="Jake's personal home-screen app: 24 small apps (notes, tasks, groceries, workout, food, JakeTube, graph...) on a zero-dependency Node server.",
+        tests="Its own node tests; then the server on fresh data, the apps' APIs end to end (tasks, notes, groceries, food totals, "
+              "habits, calendar, JakeTube, graph), and the real UI at iPhone size in light and dark with a task typed in.",
+        extras="",
+    ),
     "post-studio": dict(
         name="Post Studio", jobs=["post-studio"],
         what="Paste a social post link; get its text, images and videos saved apart, then rewrite it in your voice and narrate it.",
