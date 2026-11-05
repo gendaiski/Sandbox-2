@@ -89,7 +89,7 @@ footer { font-size: 0.8rem; color: var(--muted); }
     <h2>Every check</h2>
     <div class="scroll"><table>
       <thead><tr><th>Check</th><th>Result</th><th class="num">Seconds</th><th>Detail</th></tr></thead>
-      <tbody><tr><td>installed: llama-cpp-python and the repository&#x27;s setup check</td><td><span class="pill pass">Pass</span></td><td class="num">0.26</td><td class="detail">llama-cpp-python 0.3.36; es:
+      <tbody><tr><td>installed: llama-cpp-python and the repository&#x27;s setup check</td><td><span class="pill pass">Pass</span></td><td class="num">0.23</td><td class="detail">llama-cpp-python 0.3.36; es:
 ✅ llama-cpp-python installed
 
 Models Directory:
@@ -109,20 +109,20 @@ Next steps:
 1. Read lessons/01_basic_llm_chat.md
 2. Run: python complete_example.py
 ==================================================
-</td></tr><tr><td>the repository&#x27;s tools, memory, state, JSON extraction and AoT executor</td><td><span class="pill pass">Pass</span></td><td class="num">0.13</td><td class="detail"></td></tr><tr><td>Agents Lab: the 12 lessons, the docs and the 6 diagrams</td><td><span class="pill pass">Pass</span></td><td class="num">0.08</td><td class="detail"></td></tr><tr><td>Agents Lab playground: lessons 01-10 through the repository&#x27;s Agent</td><td><span class="pill pass">Pass</span></td><td class="num">0.02</td><td class="detail"></td></tr><tr><td>Agents Lab: each lesson&#x27;s demo from complete_example.py, streamed</td><td><span class="pill pass">Pass</span></td><td class="num">0.04</td><td class="detail">Ops:     1
+</td></tr><tr><td>the repository&#x27;s tools, memory, state, JSON extraction and AoT executor</td><td><span class="pill pass">Pass</span></td><td class="num">0.12</td><td class="detail"></td></tr><tr><td>Agents Lab: the 12 lessons, the docs and the 6 diagrams</td><td><span class="pill pass">Pass</span></td><td class="num">0.07</td><td class="detail"></td></tr><tr><td>Agents Lab playground: lessons 01-10 through the repository&#x27;s Agent</td><td><span class="pill pass">Pass</span></td><td class="num">0.02</td><td class="detail"></td></tr><tr><td>Agents Lab: each lesson&#x27;s demo from complete_example.py, streamed</td><td><span class="pill pass">Pass</span></td><td class="num">0.03</td><td class="detail">Ops:     1
 ========================================
 
 Recent spans:
   [llm_call] duration=0.02ms
-  [llm_call] duration=0.03ms
+  [llm_call] duration=0.02ms
   [tool_call] duration=1.0ms
-  [llm_call] duration=0.03ms
+  [llm_call] duration=0.02ms
   [memory] duration=N/Ams
 
 Telemetry logged to: agent_telemetry.jsonl
 View with: cat agent_telemetry.jsonl | head -5
-</td></tr><tr><td>Agents Lab: golden-dataset evals and the telemetry log</td><td><span class="pill pass">Pass</span></td><td class="num">0.00</td><td class="detail">Structured Output 2/2; Tool Calls 2/2; Decisions 2/2; Memory Cycle 1/2</td></tr><tr><td>Agents Lab in a browser: lessons, a run, the playground and the diagram projector</td><td><span class="pill pass">Pass</span></td><td class="num">2.65</td><td class="detail">UI OK: lessons, lesson 06 demo, playground with prompts, AoT graph, projector (&quot;The agent&#x27;s architecture&quot; -&gt; &quot;Lesson 05: tool calling&quot;), telemetry
-</td></tr><tr><td>real model: every lesson&#x27;s demo through llama.cpp</td><td><span class="pill pass">Pass</span></td><td class="num">86.64</td><td class="detail">model qwen2.5-1.5b-instruct-q4_k_m.gguf (1117 MB); ==============
+</td></tr><tr><td>Agents Lab: golden-dataset evals and the telemetry log</td><td><span class="pill pass">Pass</span></td><td class="num">0.00</td><td class="detail">Structured Output 2/2; Tool Calls 2/2; Decisions 2/2; Memory Cycle 1/2</td></tr><tr><td>Agents Lab in a browser: lessons, a run, the playground and the diagram projector</td><td><span class="pill pass">Pass</span></td><td class="num">1.62</td><td class="detail">UI OK: lessons, lesson 06 demo, playground with prompts, AoT graph, projector (&quot;The agent&#x27;s architecture&quot; -&gt; &quot;Lesson 05: tool calling&quot;), telemetry
+</td></tr><tr><td>real model: every lesson&#x27;s demo through llama.cpp</td><td><span class="pill pass">Pass</span></td><td class="num">67.84</td><td class="detail">model qwen2.5-1.5b-instruct-q4_k_m.gguf (1117 MB); ==============
 LESSON 05: Tool Calling
 ==================================================
 Tool request: {&#x27;tool&#x27;: &#x27;calculator&#x27;, &#x27;arguments&#x27;: {&#x27;a&#x27;: 42, &#x27;b&#x27;: 7, &#x27;operation&#x27;: &#x27;multiply&#x27;}}
@@ -141,5 +141,5 @@ Tool result: 294</td></tr></tbody>
     <p class="prose muted">Run it yourself: <code>scripts/clone_all.sh agents-from-scratch</code> then <code>./run.sh agents-from-scratch --setup</code> from the repository root.</p>
   </section>
 
-  <footer>Results from the <a href="https://github.com/gendaiski/Sandbox-2/actions/runs/41929248847" target="_blank" rel="noopener">CI run</a> on gendaiski/Sandbox-2. Built by scripts/build_system_pages.py.</footer>
+  <footer>Results from the <a href="https://github.com/gendaiski/Sandbox-2/actions/runs/42080790111" target="_blank" rel="noopener">CI run</a> on gendaiski/Sandbox-2. Built by scripts/build_system_pages.py.</footer>
 </div>
