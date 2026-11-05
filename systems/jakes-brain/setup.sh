@@ -16,6 +16,14 @@ RUN="$HERE/runtime"
 NODE_BIN="$("$ROOT/scripts/node_bin.sh" 24.14)"   # node:sqlite needs Node 22.13+; its README uses 24
 mkdir -p "$RUN/data" "$RUN/files/Documents" "$RUN/videos" "$RUN/bots/feed" "$RUN/bots/zora"
 
+# ffmpeg: JakeTube's thumbnails and durations, and the sample clips below.
+if ! command -v ffmpeg >/dev/null; then
+  sudo=(); [ "$(id -u)" = 0 ] || sudo=(sudo)
+  "${sudo[@]}" apt-get install -y -q ffmpeg >/dev/null 2>&1 \
+    || { "${sudo[@]}" apt-get update -q >/dev/null 2>&1 && "${sudo[@]}" apt-get install -y -q ffmpeg >/dev/null 2>&1; } \
+    || brew install ffmpeg >/dev/null 2>&1 \
+    || echo "ffmpeg not installed: JakeTube lists videos without thumbnails, and there are no sample clips"
+fi
 if command -v ffmpeg >/dev/null && [ ! -s "$RUN/videos/sample-1.mp4" ]; then
   for n in 1 2; do  # SPEC.md's JakeTube test clips
     ffmpeg -loglevel error -y -f lavfi -i "testsrc=size=640x360:rate=30" -t 8 -pix_fmt yuv420p "$RUN/videos/sample-$n.mp4"

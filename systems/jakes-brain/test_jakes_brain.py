@@ -61,7 +61,8 @@ with h.check("installed: Node 24 and a config for this machine, none of Jake's p
     c.expect("jacob-beauchamp" not in cfg_text and "/home/jacob" not in cfg_text, "no paths from Jake's PC")
     c.expect(cfg["services"] == [], "no systemd services to watch")
     c.expect(all(str(HERE / "runtime") in r["path"] for r in cfg["fileRoots"]), "Files browses runtime/ only")
-    c.expect(len(list((HERE / "runtime" / "videos").glob("*.mp4"))) >= 2 or not cfg["tools"]["ffmpeg"].startswith("/"), "sample videos for JakeTube")
+    c.expect(cfg["tools"]["ffmpeg"].startswith("/"), "ffmpeg installed (JakeTube's thumbnails and the sample clips)")
+    c.expect(len(list((HERE / "runtime" / "videos").glob("*.mp4"))) >= 2, "two sample videos for JakeTube")
 
 with h.check("the repository's own tests (node --test server/tests)") as c:
     tests = sorted(str(p) for p in (SRC / "server" / "tests").glob("*.test.js"))
