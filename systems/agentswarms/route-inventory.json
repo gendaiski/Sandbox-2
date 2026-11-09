@@ -1,0 +1,779 @@
+[
+  {
+    "source": "src/routes/[index].tsx",
+    "routeId": "/index",
+    "urlPattern": "/index",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/account.tsx",
+    "routeId": "/_authenticated/account",
+    "urlPattern": "/account",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/admin.iam.tsx",
+    "routeId": "/_authenticated/admin/iam",
+    "urlPattern": "/admin/iam",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/admin.runtime.tsx",
+    "routeId": "/_authenticated/admin/runtime",
+    "urlPattern": "/admin/runtime",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/agents.tsx",
+    "routeId": "/_authenticated/agents",
+    "urlPattern": "/agents",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/ai-analyst.tsx",
+    "routeId": "/_authenticated/ai-analyst",
+    "urlPattern": "/ai-analyst",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/analytics.tsx",
+    "routeId": "/_authenticated/analytics",
+    "urlPattern": "/analytics",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/analytics_.observability.$runId.tsx",
+    "routeId": "/_authenticated/analytics_/observability/$runId",
+    "urlPattern": "/analytics/observability/$runId",
+    "requiresResourceId": true,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/analytics_.observability.tsx",
+    "routeId": "/_authenticated/analytics_/observability",
+    "urlPattern": "/analytics/observability",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/audit.tsx",
+    "routeId": "/_authenticated/audit",
+    "urlPattern": "/audit",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/bi.tsx",
+    "routeId": "/_authenticated/bi",
+    "urlPattern": "/bi",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/bi_.$dashboardId.tsx",
+    "routeId": "/_authenticated/bi_/$dashboardId",
+    "urlPattern": "/bi/$dashboardId",
+    "requiresResourceId": true,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/bi_.report.$reportId.tsx",
+    "routeId": "/_authenticated/bi_/report/$reportId",
+    "urlPattern": "/bi/report/$reportId",
+    "requiresResourceId": true,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/budgets.tsx",
+    "routeId": "/_authenticated/budgets",
+    "urlPattern": "/budgets",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/dashboard.tsx",
+    "routeId": "/_authenticated/dashboard",
+    "urlPattern": "/dashboard",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/data-monitors.tsx",
+    "routeId": "/_authenticated/data-monitors",
+    "urlPattern": "/data-monitors",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/data-sql.tsx",
+    "routeId": "/_authenticated/data-sql",
+    "urlPattern": "/data-sql",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/embeds.tsx",
+    "routeId": "/_authenticated/embeds",
+    "urlPattern": "/embeds",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/etl.tsx",
+    "routeId": "/_authenticated/etl",
+    "urlPattern": "/etl",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/evaluations.tsx",
+    "routeId": "/_authenticated/evaluations",
+    "urlPattern": "/evaluations",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/image-playground.tsx",
+    "routeId": "/_authenticated/image-playground",
+    "urlPattern": "/image-playground",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/integrations.tsx",
+    "routeId": "/_authenticated/integrations",
+    "urlPattern": "/integrations",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/knowledge.tsx",
+    "routeId": "/_authenticated/knowledge",
+    "urlPattern": "/knowledge",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/lakehouse.tsx",
+    "routeId": "/_authenticated/lakehouse",
+    "urlPattern": "/lakehouse",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/mcp-builder.tsx",
+    "routeId": "/_authenticated/mcp-builder",
+    "urlPattern": "/mcp-builder",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/mcp-builder_.$appId.tsx",
+    "routeId": "/_authenticated/mcp-builder_/$appId",
+    "urlPattern": "/mcp-builder/$appId",
+    "requiresResourceId": true,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/mcp.tsx",
+    "routeId": "/_authenticated/mcp",
+    "urlPattern": "/mcp",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/metrics.tsx",
+    "routeId": "/_authenticated/metrics",
+    "urlPattern": "/metrics",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/ml.tsx",
+    "routeId": "/_authenticated/ml",
+    "urlPattern": "/ml",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/ml_.$modelId.tsx",
+    "routeId": "/_authenticated/ml_/$modelId",
+    "urlPattern": "/ml/$modelId",
+    "requiresResourceId": true,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/ml_.new.tsx",
+    "routeId": "/_authenticated/ml_/new",
+    "urlPattern": "/ml/new",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/model-registry.tsx",
+    "routeId": "/_authenticated/model-registry",
+    "urlPattern": "/model-registry",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/monitoring.tsx",
+    "routeId": "/_authenticated/monitoring",
+    "urlPattern": "/monitoring",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/notebooks.py.$pyNotebookId.tsx",
+    "routeId": "/_authenticated/notebooks/py/$pyNotebookId",
+    "urlPattern": "/notebooks/py/$pyNotebookId",
+    "requiresResourceId": true,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/notebooks.sample.$sampleSlug.tsx",
+    "routeId": "/_authenticated/notebooks/sample/$sampleSlug",
+    "urlPattern": "/notebooks/sample/$sampleSlug",
+    "requiresResourceId": true,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/notebooks.tsx",
+    "routeId": "/_authenticated/notebooks",
+    "urlPattern": "/notebooks",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/playground.tsx",
+    "routeId": "/_authenticated/playground",
+    "urlPattern": "/playground",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/prompt-compare.tsx",
+    "routeId": "/_authenticated/prompt-compare",
+    "urlPattern": "/prompt-compare",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/prompts.tsx",
+    "routeId": "/_authenticated/prompts",
+    "urlPattern": "/prompts",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/secrets.tsx",
+    "routeId": "/_authenticated/secrets",
+    "urlPattern": "/secrets",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/semantics.tsx",
+    "routeId": "/_authenticated/semantics",
+    "urlPattern": "/semantics",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/settings.tsx",
+    "routeId": "/_authenticated/settings",
+    "urlPattern": "/settings",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/sheets.tsx",
+    "routeId": "/_authenticated/sheets",
+    "urlPattern": "/sheets",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/sheets_.$workbookId.tsx",
+    "routeId": "/_authenticated/sheets_/$workbookId",
+    "urlPattern": "/sheets/$workbookId",
+    "requiresResourceId": true,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/skills.tsx",
+    "routeId": "/_authenticated/skills",
+    "urlPattern": "/skills",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/sql-models.tsx",
+    "routeId": "/_authenticated/sql-models",
+    "urlPattern": "/sql-models",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/swarms.tsx",
+    "routeId": "/_authenticated/swarms",
+    "urlPattern": "/swarms",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/traces.tsx",
+    "routeId": "/_authenticated/traces",
+    "urlPattern": "/traces",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated/workflows.tsx",
+    "routeId": "/_authenticated/workflows",
+    "urlPattern": "/workflows",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/_authenticated.tsx",
+    "routeId": "/_authenticated",
+    "urlPattern": "/",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/about.tsx",
+    "routeId": "/about",
+    "urlPattern": "/about",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/architecture.tsx",
+    "routeId": "/architecture",
+    "urlPattern": "/architecture",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/contact.tsx",
+    "routeId": "/contact",
+    "urlPattern": "/contact",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.account.tsx",
+    "routeId": "/docs/account",
+    "urlPattern": "/docs/account",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.agents.tsx",
+    "routeId": "/docs/agents",
+    "urlPattern": "/docs/agents",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.ai-sql.tsx",
+    "routeId": "/docs/ai-sql",
+    "urlPattern": "/docs/ai-sql",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.analytics.tsx",
+    "routeId": "/docs/analytics",
+    "urlPattern": "/docs/analytics",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.api.tsx",
+    "routeId": "/docs/api",
+    "urlPattern": "/docs/api",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.bi.tsx",
+    "routeId": "/docs/bi",
+    "urlPattern": "/docs/bi",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.budgets.tsx",
+    "routeId": "/docs/budgets",
+    "urlPattern": "/docs/budgets",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.concepts.tsx",
+    "routeId": "/docs/concepts",
+    "urlPattern": "/docs/concepts",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.dashboard.tsx",
+    "routeId": "/docs/dashboard",
+    "urlPattern": "/docs/dashboard",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.data-monitors.tsx",
+    "routeId": "/docs/data-monitors",
+    "urlPattern": "/docs/data-monitors",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.data-prep.tsx",
+    "routeId": "/docs/data-prep",
+    "urlPattern": "/docs/data-prep",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.data.tsx",
+    "routeId": "/docs/data",
+    "urlPattern": "/docs/data",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.debugging.tsx",
+    "routeId": "/docs/debugging",
+    "urlPattern": "/docs/debugging",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.embedding.tsx",
+    "routeId": "/docs/embedding",
+    "urlPattern": "/docs/embedding",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.etl.tsx",
+    "routeId": "/docs/etl",
+    "urlPattern": "/docs/etl",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.gateway.tsx",
+    "routeId": "/docs/gateway",
+    "urlPattern": "/docs/gateway",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.guardrails.tsx",
+    "routeId": "/docs/guardrails",
+    "urlPattern": "/docs/guardrails",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.iam.tsx",
+    "routeId": "/docs/iam",
+    "urlPattern": "/docs/iam",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.index.tsx",
+    "routeId": "/docs/",
+    "urlPattern": "/docs/",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.integrations.tsx",
+    "routeId": "/docs/integrations",
+    "urlPattern": "/docs/integrations",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.knowledge.tsx",
+    "routeId": "/docs/knowledge",
+    "urlPattern": "/docs/knowledge",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.lakehouse.tsx",
+    "routeId": "/docs/lakehouse",
+    "urlPattern": "/docs/lakehouse",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.mcp.tsx",
+    "routeId": "/docs/mcp",
+    "urlPattern": "/docs/mcp",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.ml.tsx",
+    "routeId": "/docs/ml",
+    "urlPattern": "/docs/ml",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.ml_.operations.tsx",
+    "routeId": "/docs/ml_/operations",
+    "urlPattern": "/docs/ml/operations",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.ml_.predictions.tsx",
+    "routeId": "/docs/ml_/predictions",
+    "urlPattern": "/docs/ml/predictions",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.ml_.serving.tsx",
+    "routeId": "/docs/ml_/serving",
+    "urlPattern": "/docs/ml/serving",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.ml_.training.tsx",
+    "routeId": "/docs/ml_/training",
+    "urlPattern": "/docs/ml/training",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.ml_.trust.tsx",
+    "routeId": "/docs/ml_/trust",
+    "urlPattern": "/docs/ml/trust",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.models.tsx",
+    "routeId": "/docs/models",
+    "urlPattern": "/docs/models",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.notebooks.tsx",
+    "routeId": "/docs/notebooks",
+    "urlPattern": "/docs/notebooks",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.playground.tsx",
+    "routeId": "/docs/playground",
+    "urlPattern": "/docs/playground",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.quickstart.tsx",
+    "routeId": "/docs/quickstart",
+    "urlPattern": "/docs/quickstart",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.secrets.tsx",
+    "routeId": "/docs/secrets",
+    "urlPattern": "/docs/secrets",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.self-hosting.tsx",
+    "routeId": "/docs/self-hosting",
+    "urlPattern": "/docs/self-hosting",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.self-hosting_.configuration.tsx",
+    "routeId": "/docs/self-hosting_/configuration",
+    "urlPattern": "/docs/self-hosting/configuration",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.self-hosting_.kubernetes.tsx",
+    "routeId": "/docs/self-hosting_/kubernetes",
+    "urlPattern": "/docs/self-hosting/kubernetes",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.self-hosting_.operations.tsx",
+    "routeId": "/docs/self-hosting_/operations",
+    "urlPattern": "/docs/self-hosting/operations",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.semantics.tsx",
+    "routeId": "/docs/semantics",
+    "urlPattern": "/docs/semantics",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.sheets.tsx",
+    "routeId": "/docs/sheets",
+    "urlPattern": "/docs/sheets",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.skills.tsx",
+    "routeId": "/docs/skills",
+    "urlPattern": "/docs/skills",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.sql-models.tsx",
+    "routeId": "/docs/sql-models",
+    "urlPattern": "/docs/sql-models",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.swarms.tsx",
+    "routeId": "/docs/swarms",
+    "urlPattern": "/docs/swarms",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.tsx",
+    "routeId": "/docs",
+    "urlPattern": "/docs",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/docs.workflows.tsx",
+    "routeId": "/docs/workflows",
+    "urlPattern": "/docs/workflows",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/embed.agent.$key.tsx",
+    "routeId": "/embed/agent/$key",
+    "urlPattern": "/embed/agent/$key",
+    "requiresResourceId": true,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/embed.analyst.$key.tsx",
+    "routeId": "/embed/analyst/$key",
+    "urlPattern": "/embed/analyst/$key",
+    "requiresResourceId": true,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/embed.bi.$key.tsx",
+    "routeId": "/embed/bi/$key",
+    "urlPattern": "/embed/bi/$key",
+    "requiresResourceId": true,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/embed.swarm.$key.tsx",
+    "routeId": "/embed/swarm/$key",
+    "urlPattern": "/embed/swarm/$key",
+    "requiresResourceId": true,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/engine-check.tsx",
+    "routeId": "/engine-check",
+    "urlPattern": "/engine-check",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/index.tsx",
+    "routeId": "/",
+    "urlPattern": "/",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/license.tsx",
+    "routeId": "/license",
+    "urlPattern": "/license",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/login.tsx",
+    "routeId": "/login",
+    "urlPattern": "/login",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/privacy.tsx",
+    "routeId": "/privacy",
+    "urlPattern": "/privacy",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/reset-password.tsx",
+    "routeId": "/reset-password",
+    "urlPattern": "/reset-password",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/security.tsx",
+    "routeId": "/security",
+    "urlPattern": "/security",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/share.bi.$slug.tsx",
+    "routeId": "/share/bi/$slug",
+    "urlPattern": "/share/bi/$slug",
+    "requiresResourceId": true,
+    "pageSourceUnchanged": true
+  },
+  {
+    "source": "src/routes/terms.tsx",
+    "routeId": "/terms",
+    "urlPattern": "/terms",
+    "requiresResourceId": false,
+    "pageSourceUnchanged": true
+  }
+]

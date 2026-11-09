@@ -1,0 +1,17 @@
+/* Tablet presentation repair only; upstream HTML, JS and view.css remain the reference. */
+@media (min-width: 701px) {
+  .side { z-index: 11; }
+}
+@media (min-width: 701px) and (max-width: 900px) {
+  .shell { display: grid; grid-template-columns: 208px minmax(0, 1fr); min-height: 100vh; }
+  .side { position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 0 10px 44px; border-right: 1px solid var(--line); border-bottom: 0; }
+  .side-top { height: var(--top); margin: 0 -10px 6px; padding: 0 10px; border-bottom: 1px solid var(--line); gap: 6px; }
+  .side-body { display: grid; padding-top: 0; }
+  .switch-btn { display: flex; min-width: 0; padding: 6px; border: 0; background: none; font-weight: 700; }
+  .switch-btn small { display: none; }
+  .brand { width: 30px; flex: 0 0 30px; margin: 0; padding: 0; }
+  .theme-btn { width: 30px; height: 30px; }
+  .top { min-width: 0; flex-wrap: wrap; gap: 4px; padding: 4px 8px; }
+  .tabs { min-width: 0; }
+  .top-find { min-width: 0; width: 100%; max-width: none; }
+}

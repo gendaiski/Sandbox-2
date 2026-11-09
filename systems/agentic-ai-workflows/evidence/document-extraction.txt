@@ -1,0 +1,1 @@
+Both upstream PDF reports attempted with pdftotext -layout. Parser reported Bad FCHECK in flate stream and illegal characters. Output contained page separators only (commerce: 3 pages; onboarding: 6 pages), not readable report body. Report content/business claims are unverified. No document was altered.

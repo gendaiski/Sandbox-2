@@ -1,0 +1,43 @@
+{
+  "results": [
+    {
+      "algorithm": "BFS",
+      "result": [
+        "BFS complete! Visited 6 node(s)."
+      ]
+    },
+    {
+      "algorithm": "DFS",
+      "result": [
+        "DFS complete! Visited 6 node(s)."
+      ]
+    },
+    {
+      "algorithm": "Dijkstra",
+      "result": [
+        "Dijkstra complete! Shortest paths from A computed."
+      ]
+    },
+    {
+      "algorithm": "Prim's MST",
+      "result": [
+        "Prim's MST complete! 5 edges, total cost = 12."
+      ]
+    },
+    {
+      "algorithm": "Topo Sort",
+      "result": [
+        "Topo Sort complete! Order: A → B → C → D → E → F"
+      ]
+    },
+    {
+      "nodeCreation": 2
+    }
+  ],
+  "tablet": {
+    "horizontalOverflow": false,
+    "bodyWidth": 820,
+    "viewport": 820
+  },
+  "errors": []
+}

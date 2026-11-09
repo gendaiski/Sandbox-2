@@ -1,0 +1,101 @@
+{
+  "commit": "80ebec83d8b2d143a42433803e1cc9be44b02b52",
+  "workflows": [
+    {
+      "id": "commerce",
+      "nodes": 28,
+      "executableNodes": 17,
+      "annotations": 11,
+      "edges": 20,
+      "missingEndpoints": [],
+      "issues": [
+        {
+          "node": "If",
+          "detail": "Literal false predicates combined with AND are placeholders, not a business-data decision."
+        },
+        {
+          "node": "HTTP Request",
+          "detail": "HTTP endpoint URL is missing."
+        },
+        {
+          "node": " If",
+          "detail": "Literal false predicates combined with AND are placeholders, not a business-data decision."
+        },
+        {
+          "node": "Place Order",
+          "detail": "HTTP endpoint URL is missing."
+        },
+        {
+          "node": "Queue Order",
+          "detail": "HTTP endpoint URL is missing."
+        },
+        {
+          "node": "FedEx API",
+          "detail": "HTTP endpoint URL is missing."
+        },
+        {
+          "node": "Find Next Nearest Warehouse",
+          "detail": "Default Python sample adds myNewField; the named business logic is not implemented."
+        },
+        {
+          "node": "Create an order",
+          "detail": "Both payment providers are connected in parallel. A payment-method router and idempotency contract are not defined."
+        },
+        {
+          "node": "Loop | 3 Attempts",
+          "detail": "batchSize=3 batches items; it does not implement a proven three-attempt retry policy."
+        }
+      ]
+    },
+    {
+      "id": "onboarding",
+      "nodes": 36,
+      "executableNodes": 23,
+      "annotations": 13,
+      "edges": 25,
+      "missingEndpoints": [],
+      "issues": [
+        {
+          "node": "If",
+          "detail": "Literal false predicates combined with AND are placeholders, not a business-data decision."
+        },
+        {
+          "node": "Post-Provisioning Tests",
+          "detail": "Default Python sample adds myNewField; the named business logic is not implemented."
+        },
+        {
+          "node": "Laptop Order Workflow Request - HTTP",
+          "detail": "HTTP endpoint URL is missing."
+        },
+        {
+          "node": "Safeguard Code",
+          "detail": "Default Python sample adds myNewField; the named business logic is not implemented."
+        },
+        {
+          "node": "If employee exists",
+          "detail": "Not reachable from the exported main trigger graph."
+        },
+        {
+          "node": "Get all members",
+          "detail": "Not reachable from the exported main trigger graph."
+        },
+        {
+          "node": "Update employee record",
+          "detail": "Not reachable from the exported main trigger graph."
+        },
+        {
+          "node": "Create or Invite a new user",
+          "detail": "Not reachable from the exported main trigger graph."
+        },
+        {
+          "node": "Safeguard Code",
+          "detail": "Not reachable from the exported main trigger graph."
+        },
+        {
+          "node": "If employee exists",
+          "detail": "Blank literal strings compare equal; employee lookup/matching expressions are not configured."
+        }
+      ]
+    }
+  ]
+}

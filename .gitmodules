@@ -1,0 +1,15 @@
+[submodule "systems/pullboard/upstream"]
+	path = systems/pullboard/upstream
+	url = https://github.com/pullboard-dev/pullboard.git
+
+[submodule "systems/agentic-ai-workflows/upstream"]
+	path = systems/agentic-ai-workflows/upstream
+	url = https://github.com/kalpthakkar/Agentic-AI-Workflows.git
+
+[submodule "systems/graphflow/upstream"]
+	path = systems/graphflow/upstream
+	url = https://github.com/826aryan/GraphFlow.git
+
+[submodule "systems/agentswarms/upstream"]
+	path = systems/agentswarms/upstream
+	url = https://github.com/AgentSwarms-fyi/agentswarms.git

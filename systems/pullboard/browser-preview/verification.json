@@ -1,0 +1,92 @@
+[
+  {
+    "width": 1440,
+    "path": "/",
+    "sidebarWidth": 236,
+    "projectListVisible": true,
+    "horizontalOverflow": false,
+    "scheme": "dark",
+    "themeChanged": true
+  },
+  {
+    "width": 1024,
+    "path": "/",
+    "sidebarWidth": 208,
+    "projectListVisible": true,
+    "horizontalOverflow": false,
+    "scheme": "light",
+    "themeChanged": true
+  },
+  {
+    "width": 820,
+    "path": "/",
+    "sidebarWidth": 208,
+    "projectListVisible": true,
+    "horizontalOverflow": false,
+    "scheme": "dark",
+    "themeChanged": true
+  },
+  {
+    "width": 768,
+    "path": "/",
+    "sidebarWidth": 208,
+    "projectListVisible": true,
+    "horizontalOverflow": false,
+    "scheme": "light",
+    "themeChanged": true
+  },
+  {
+    "width": 390,
+    "path": "/",
+    "sidebarWidth": 390,
+    "projectListVisible": true,
+    "horizontalOverflow": false,
+    "scheme": "dark",
+    "themeChanged": true
+  },
+  {
+    "width": 1440,
+    "path": "/sample/",
+    "sidebarWidth": 236,
+    "projectListVisible": true,
+    "horizontalOverflow": false,
+    "scheme": "light",
+    "themeChanged": true
+  },
+  {
+    "width": 1024,
+    "path": "/sample/",
+    "sidebarWidth": 208,
+    "projectListVisible": true,
+    "horizontalOverflow": false,
+    "scheme": "dark",
+    "themeChanged": true
+  },
+  {
+    "width": 820,
+    "path": "/sample/",
+    "sidebarWidth": 208,
+    "projectListVisible": true,
+    "horizontalOverflow": false,
+    "scheme": "light",
+    "themeChanged": true
+  },
+  {
+    "width": 768,
+    "path": "/sample/",
+    "sidebarWidth": 208,
+    "projectListVisible": true,
+    "horizontalOverflow": false,
+    "scheme": "dark",
+    "themeChanged": true
+  },
+  {
+    "width": 390,
+    "path": "/sample/",
+    "sidebarWidth": 390,
+    "projectListVisible": true,
+    "horizontalOverflow": false,
+    "scheme": "light",
+    "themeChanged": true
+  }
+]
