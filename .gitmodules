@@ -13,3 +13,15 @@
 [submodule "systems/agentswarms/upstream"]
 	path = systems/agentswarms/upstream
 	url = https://github.com/AgentSwarms-fyi/agentswarms.git
+
+[submodule "systems/agent-swarm-studio/upstream"]
+	path = systems/agent-swarm-studio/upstream
+	url = https://github.com/travis-burmaster/agent-swarm-studio.git
+
+[submodule "systems/agent-swarm-monitor/upstream"]
+	path = systems/agent-swarm-monitor/upstream
+	url = https://github.com/AINative-Studio/agent-swarm-monitor.git
+
+[submodule "systems/multi-agent-ai-swarm/upstream"]
+	path = systems/multi-agent-ai-swarm/upstream
+	url = https://github.com/shortcut119/Multi-Agent-AI-Swarm.git

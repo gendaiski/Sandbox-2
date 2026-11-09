@@ -1,0 +1,1 @@
+import React from 'react';export default (loader:any)=>React.lazy(()=>loader().then((m:any)=>({default:m.default||m}))); 

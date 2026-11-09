@@ -1,0 +1,1 @@
+export {}; declare global {interface Window {PreviewSocket: typeof WebSocket;}}

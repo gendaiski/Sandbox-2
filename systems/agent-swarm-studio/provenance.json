@@ -1,0 +1,9 @@
+{
+  "upstream": "https://github.com/travis-burmaster/agent-swarm-studio",
+  "commit": "c5c5a5c5eb95c365beeb4698bdeaccfbfa300cc5",
+  "selected_release": "No release selected; pinned default-branch commit",
+  "mode": "frontend-only",
+  "access": "public, no sign-in",
+  "backend_installed": false,
+  "live_url": "https://swarm-apps-original.aelgendy673996.chatgpt.site/studio/"
+}
