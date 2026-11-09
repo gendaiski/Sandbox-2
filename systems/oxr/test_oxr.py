@@ -176,7 +176,10 @@ with h.check("upstream unit tests (vendor/oxr/tests/unit)") as c:
     proc = subprocess.run(
         [sys.executable, "-m", "pytest", "-q", "-rf", "tests/unit", "-p", "no:cacheprovider"],
         cwd=VENDOR / "oxr", capture_output=True, text=True, timeout=900,
-        env={k: v for k, v in os.environ.items() if not k.startswith("OXR__")},
+        # Typer forces a colour terminal when GITHUB_ACTIONS, FORCE_COLOR or PY_COLORS is set,
+        # which breaks the upstream CLI tests' plain-text matching: run them as in a shell.
+        env={k: v for k, v in os.environ.items()
+             if not k.startswith("OXR__") and k not in {"GITHUB_ACTIONS", "FORCE_COLOR", "PY_COLORS"}},
     )
     lines = (proc.stdout or proc.stderr).strip().splitlines()
     c.note(lines[-1] if lines else "(no output)")

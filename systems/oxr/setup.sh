@@ -8,5 +8,6 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$HERE/../.."
 [ -d "$ROOT/vendor/oxr" ] || "$ROOT/scripts/clone_all.sh" oxr
 [ -d "$HERE/.venv" ] || uv venv -q --python 3.12 "$HERE/.venv"
-uv pip install -q --python "$HERE/.venv/bin/python" -e "$ROOT/vendor/oxr" pytest pytest-asyncio
+# FastAPI 0.147-0.161 dropped Form defaults for missing fields (keep_header_footer), fixed in 0.162.
+uv pip install -q --python "$HERE/.venv/bin/python" -e "$ROOT/vendor/oxr" "fastapi>=0.162" pytest pytest-asyncio
 echo "oxr ready: $HERE/.venv"
