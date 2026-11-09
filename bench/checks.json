@@ -12,7 +12,7 @@
   "system": "ChunkNorris",
   "check": "html: parse + chunk service_agreement.html",
   "status": "Pass",
-  "seconds": 0.05,
+  "seconds": 0.03,
   "detail": "8 chunks, word counts [40, 82, 110, 46, 52, 57, 81, 42]; '# Master Services Agreement\\n\\nThis Master Services Agreement (\"Agreement\") is entered into '"
  },
  {
@@ -44,7 +44,7 @@
   "system": "ChunkNorris",
   "check": "markdown: token cap with tiktoken",
   "status": "Pass",
-  "seconds": 0.46,
+  "seconds": 0.25,
   "detail": "token counts with cap 120: [57, 114, 81, 73, 27, 69, 67, 75, 115, 55]"
  },
  {
@@ -85,7 +85,7 @@
   "check": "fixed_size: chunk the sample agreement",
   "status": "Pass",
   "seconds": 0.0,
-  "detail": "10 chunks, chars min/max 142/400, 0.1 ms"
+  "detail": "10 chunks, chars min/max 142/400, 0.3 ms"
  },
  {
   "id": "chunckerflow-full:recursive: chunk the sample agreement",
@@ -156,7 +156,7 @@
   "system": "ChunckerFlow (with semantic chunker)",
   "check": "FastAPI app: /health, /strategies, /chunk",
   "status": "Pass",
-  "seconds": 0.78,
+  "seconds": 0.6,
   "detail": "/chunk -> 10 chunks"
  },
  {
@@ -164,7 +164,7 @@
   "system": "ChunckerFlow (with semantic chunker)",
   "check": "semantic chunker (sentence-transformers)",
   "status": "Pass",
-  "seconds": 4.38,
+  "seconds": 3.62,
   "detail": "5 semantic chunks"
  },
  {
@@ -180,7 +180,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "base-tier extractors are available",
   "status": "Pass",
-  "seconds": 12.65,
+  "seconds": 9.17,
   "detail": "available: ['pymupdf4llm', 'markitdown'];   marker: Unavailable"
  },
  {
@@ -188,7 +188,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "pymupdf4llm: PDF -> markdown",
   "status": "Pass",
-  "seconds": 0.58,
+  "seconds": 0.41,
   "detail": "3342 chars, 33 '#' heading marks"
  },
  {
@@ -196,7 +196,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "markitdown: PDF -> markdown",
   "status": "Pass",
-  "seconds": 0.17,
+  "seconds": 0.1,
   "detail": "3179 chars, 0 '#' heading marks"
  },
  {
@@ -204,7 +204,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "pymupdf4llm: text and json output formats",
   "status": "Pass",
-  "seconds": 0.78,
+  "seconds": 0.52,
   "detail": ""
  },
  {
@@ -220,7 +220,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "chunker token {'chunk_size': 256, 'chunk_overlap': 20}",
   "status": "Pass",
-  "seconds": 1.25,
+  "seconds": 1.23,
   "detail": "15 chunks, 3622 tokens, largest 256"
  },
  {
@@ -244,7 +244,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "convert_chunk one-step pipeline",
   "status": "Pass",
-  "seconds": 0.14,
+  "seconds": 0.08,
   "detail": ""
  },
  {
@@ -252,7 +252,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "batch_convert over a directory",
   "status": "Pass",
-  "seconds": 0.27,
+  "seconds": 0.16,
   "detail": ""
  },
  {
@@ -260,7 +260,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "CLI: pdfstract convert",
   "status": "Pass",
-  "seconds": 6.02,
+  "seconds": 5.06,
   "detail": "exit 0, files: ['out.md']"
  },
  {
@@ -268,7 +268,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "web backend: /health, /libraries, /convert, /chunk",
   "status": "Pass",
-  "seconds": 0.7,
+  "seconds": 0.36,
   "detail": ""
  },
  {
@@ -276,7 +276,7 @@
   "system": "PDFStract (with embedding models)",
   "check": "semantic chunker + sentence-transformers embeddings (downloads model)",
   "status": "Pass",
-  "seconds": 8.9,
+  "seconds": 6.87,
   "detail": "10 semantic chunks, embedding dim 384"
  },
  {
@@ -284,15 +284,15 @@
   "system": "OXR",
   "check": "offline E2E: /v1/parse/sync with fake models",
   "status": "Pass",
-  "seconds": 0.47,
-  "detail": "output keys: ['json', 'markdown']; metadata: {'page_num': 2, 'file_type': '.pdf', 'processing_time_ms': 459}; fake service calls: {'layout_pages': 2, 'chat': 8, 'reading_order': 2}"
+  "seconds": 0.39,
+  "detail": "output keys: ['json', 'markdown']; metadata: {'page_num': 2, 'file_type': '.pdf', 'processing_time_ms': 376}; fake service calls: {'layout_pages': 2, 'chat': 8, 'reading_order': 2}"
  },
  {
   "id": "oxr:offline E2E: JSON output carries typed blocks with bboxes",
   "system": "OXR",
   "check": "offline E2E: JSON output carries typed blocks with bboxes",
   "status": "Pass",
-  "seconds": 0.24,
+  "seconds": 0.2,
   "detail": ""
  },
  {
@@ -300,7 +300,7 @@
   "system": "OXR",
   "check": "offline E2E: /v1/parse/async + /v1/parse/async_check",
   "status": "Pass",
-  "seconds": 0.24,
+  "seconds": 0.2,
   "detail": ""
  },
  {
@@ -316,16 +316,16 @@
   "system": "OXR",
   "check": "layout service failure surfaces as an API error",
   "status": "Pass",
-  "seconds": 0.65,
+  "seconds": 0.63,
   "detail": "code 1137: Unable to process this document. Please try again later."
  },
  {
   "id": "oxr:upstream unit tests (vendor/oxr/tests/unit)",
   "system": "OXR",
   "check": "upstream unit tests (vendor/oxr/tests/unit)",
-  "status": "Fail",
-  "seconds": 6.05,
-  "detail": "CheckFailed: upstream tests failing (see FAILED lines)"
+  "status": "Pass",
+  "seconds": 5.58,
+  "detail": "622 passed in 4.71s"
  },
  {
   "id": "oxr:live: parse the sample PDF on OXR_BASE_URL",
@@ -340,7 +340,7 @@
   "system": "RAG-Anything",
   "check": "offline E2E: insert_content_list with fake LLM + embeddings",
   "status": "Pass",
-  "seconds": 0.54,
+  "seconds": 0.55,
   "detail": "content list: 27 items (1 table, 1 equation); storage files: ['graph_chunk_entity_relation.graphml', 'kv_store_doc_status.json', 'kv_store_entity_chunks.json', 'kv_store_full_docs.json', 'kv_store_full_entities.json', 'kv_store_full_relations.json', 'kv_store_llm_response_cache.json', 'kv_store_relation_chunks.json', 'kv_store_text_chunks.json', 'vdb_chunks.json', 'vdb_entities.json', 'vdb_relationships.json']"
  },
  {
@@ -372,7 +372,7 @@
   "system": "RAG-Anything",
   "check": "hybrid query returns an answer through the LLM",
   "status": "Pass",
-  "seconds": 0.0,
+  "seconds": 0.01,
   "detail": ""
  },
  {
@@ -388,8 +388,8 @@
   "system": "RAG-Anything",
   "check": "upstream unit tests (vendor/rag-anything/tests)",
   "status": "Pass",
-  "seconds": 12.68,
-  "detail": "1115 passed, 2 skipped, 1 xfailed in 11.11s"
+  "seconds": 12.02,
+  "detail": "1115 passed, 2 skipped, 1 xfailed in 10.81s"
  },
  {
   "id": "rag-anything:live: OpenAI models answer from the ingested agreement",
@@ -412,7 +412,7 @@
   "system": "RAG-Anything (with MinerU parser)",
   "check": "offline E2E: insert_content_list with fake LLM + embeddings",
   "status": "Pass",
-  "seconds": 0.75,
+  "seconds": 0.51,
   "detail": "content list: 27 items (1 table, 1 equation); storage files: ['graph_chunk_entity_relation.graphml', 'kv_store_doc_status.json', 'kv_store_entity_chunks.json', 'kv_store_full_docs.json', 'kv_store_full_entities.json', 'kv_store_full_relations.json', 'kv_store_llm_response_cache.json', 'kv_store_relation_chunks.json', 'kv_store_text_chunks.json', 'vdb_chunks.json', 'vdb_entities.json', 'vdb_relationships.json']"
  },
  {
@@ -444,7 +444,7 @@
   "system": "RAG-Anything (with MinerU parser)",
   "check": "hybrid query returns an answer through the LLM",
   "status": "Pass",
-  "seconds": 0.01,
+  "seconds": 0.0,
   "detail": ""
  },
  {
@@ -460,8 +460,8 @@
   "system": "RAG-Anything (with MinerU parser)",
   "check": "upstream unit tests (vendor/rag-anything/tests)",
   "status": "Pass",
-  "seconds": 14.47,
-  "detail": "1115 passed, 2 skipped, 1 xfailed in 12.45s"
+  "seconds": 13.41,
+  "detail": "1115 passed, 2 skipped, 1 xfailed in 11.98s"
  },
  {
   "id": "rag-anything-full:live: OpenAI models answer from the ingested agreement",
@@ -476,7 +476,7 @@
   "system": "RAG-Anything (with MinerU parser)",
   "check": "parser: MinerU parses the sample PDF (setup.sh --full)",
   "status": "Pass",
-  "seconds": 66.22,
+  "seconds": 51.29,
   "detail": "4 json files from MinerU"
  },
  {
@@ -524,7 +524,7 @@
   "system": "OpenFlow (with orchestration E2E)",
   "check": "upstream engine unit tests (cargo test -p engine)",
   "status": "Pass",
-  "seconds": 24.71,
+  "seconds": 26.08,
   "detail": "2 test binaries, 221 tests passed"
  },
  {
@@ -532,7 +532,7 @@
   "system": "OpenFlow (with orchestration E2E)",
   "check": "orchestration headless E2E (workflow_e2e, MockAiStack)",
   "status": "Pass",
-  "seconds": 77.71,
+  "seconds": 86.43,
   "detail": "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.78s"
  },
  {
@@ -556,7 +556,7 @@
   "system": "Prism UI",
   "check": "component tests (vitest + Testing Library)",
   "status": "Pass",
-  "seconds": 2.76,
+  "seconds": 3.16,
   "detail": "14 passed (14)"
  },
  {
@@ -564,7 +564,7 @@
   "system": "Prism UI",
   "check": "production build (vite build)",
   "status": "Pass",
-  "seconds": 0.84,
+  "seconds": 0.83,
   "detail": "css bundle 105 KB"
  },
  {
@@ -572,15 +572,15 @@
   "system": "Langfuse (self-hosted)",
   "check": "health endpoint http://localhost:3000/api/public/health",
   "status": "Pass",
-  "seconds": 0.65,
-  "detail": "{'status': 'OK', 'version': '4.75.0'}"
+  "seconds": 0.22,
+  "detail": "{'status': 'OK', 'version': '4.76.0'}"
  },
  {
   "id": "langfuse:auth_check with project keys",
   "system": "Langfuse (self-hosted)",
   "check": "auth_check with project keys",
   "status": "Pass",
-  "seconds": 0.07,
+  "seconds": 0.08,
   "detail": ""
  },
  {
@@ -588,15 +588,15 @@
   "system": "Langfuse (self-hosted)",
   "check": "ingest a nested RAG trace (span > retriever + generation)",
   "status": "Pass",
-  "seconds": 0.06,
-  "detail": "trace 4903fac2e6bc61c0929362fb09a96692"
+  "seconds": 0.04,
+  "detail": "trace 743acc66c6d7ceb0191d0b1fd6a5089a"
  },
  {
   "id": "langfuse:trace is queryable with its three observations",
   "system": "Langfuse (self-hosted)",
   "check": "trace is queryable with its three observations",
   "status": "Pass",
-  "seconds": 2.13,
+  "seconds": 2.09,
   "detail": "observations: [('answer', 'GENERATION'), ('contract-qa', 'SPAN'), ('retrieve-clauses', 'RETRIEVER')]"
  },
  {
@@ -604,7 +604,7 @@
   "system": "Langfuse (self-hosted)",
   "check": "scores attach to the trace",
   "status": "Pass",
-  "seconds": 6.14,
+  "seconds": 2.06,
   "detail": "scores: [('correct', True), ('faithfulness', 0.9)]"
  },
  {
@@ -612,7 +612,7 @@
   "system": "Langfuse (self-hosted)",
   "check": "prompt management: versions, labels, compile",
   "status": "Pass",
-  "seconds": 0.11,
+  "seconds": 0.06,
   "detail": ""
  },
  {
@@ -620,7 +620,7 @@
   "system": "Langfuse (self-hosted)",
   "check": "datasets: create, add items, read back",
   "status": "Pass",
-  "seconds": 0.11,
+  "seconds": 0.05,
   "detail": ""
  },
  {
@@ -628,7 +628,7 @@
   "system": "Langfuse (self-hosted)",
   "check": "experiment run over the dataset with an evaluator",
   "status": "Pass",
-  "seconds": 0.06,
+  "seconds": 0.04,
   "detail": "2 items, exact_match [1.0, 1.0]"
  },
  {
@@ -636,7 +636,7 @@
   "system": "Langfuse (self-hosted)",
   "check": "bad keys are rejected",
   "status": "Pass",
-  "seconds": 0.05,
+  "seconds": 0.03,
   "detail": "raised UnauthorizedError"
  },
  {
@@ -692,7 +692,7 @@
   "system": "Chunking Methods for RAG",
   "check": "page-based: one chunk per PDF page",
   "status": "Pass",
-  "seconds": 0.72,
+  "seconds": 0.45,
   "detail": "2 pages"
  },
  {
@@ -748,7 +748,7 @@
   "system": "Chunking Methods for RAG",
   "check": "semantic: accepts real embeddings",
   "status": "Pass",
-  "seconds": 0.04,
+  "seconds": 0.02,
   "detail": ""
  },
  {
@@ -844,7 +844,7 @@
   "system": "Chunky",
   "check": "backend starts and reports health",
   "status": "Pass",
-  "seconds": 4.01,
+  "seconds": 2.01,
   "detail": "Chunky 0.7.1"
  },
  {
@@ -860,7 +860,7 @@
   "system": "Chunky",
   "check": "upload the sample PDF",
   "status": "Pass",
-  "seconds": 0.01,
+  "seconds": 0.0,
   "detail": ""
  },
  {
@@ -868,7 +868,7 @@
   "system": "Chunky",
   "check": "convert PDF to Markdown with PyMuPDF (SSE stream)",
   "status": "Pass",
-  "seconds": 2.55,
+  "seconds": 1.61,
   "detail": "service_agreement_pymupdf4llm.md: 3342 chars"
  },
  {
@@ -876,7 +876,7 @@
   "system": "Chunky",
   "check": "Docling converter",
   "status": "Pass",
-  "seconds": 29.93,
+  "seconds": 20.39,
   "detail": ""
  },
  {
@@ -884,7 +884,7 @@
   "system": "Chunky",
   "check": "chunk with langchain recursive",
   "status": "Pass",
-  "seconds": 0.53,
+  "seconds": 0.29,
   "detail": "11 chunks, sizes 225-365"
  },
  {
@@ -892,7 +892,7 @@
   "system": "Chunky",
   "check": "chunk with langchain markdown",
   "status": "Pass",
-  "seconds": 0.51,
+  "seconds": 0.3,
   "detail": "11 chunks, sizes 225-365"
  },
  {
@@ -900,7 +900,7 @@
   "system": "Chunky",
   "check": "chunk with chonkie sentence",
   "status": "Pass",
-  "seconds": 1.58,
+  "seconds": 0.93,
   "detail": "10 chunks, sizes 111-396"
  },
  {
@@ -908,7 +908,7 @@
   "system": "Chunky",
   "check": "chunk with chonkie recursive",
   "status": "Pass",
-  "seconds": 1.13,
+  "seconds": 0.68,
   "detail": "11 chunks, sizes 218-384"
  },
  {
@@ -932,7 +932,7 @@
   "system": "Chunky",
   "check": "edit the Markdown variant in place",
   "status": "Pass",
-  "seconds": 0.01,
+  "seconds": 0.0,
   "detail": ""
  },
  {
@@ -948,15 +948,15 @@
   "system": "Chunky",
   "check": "upstream unit tests (pytest tests/)",
   "status": "Pass",
-  "seconds": 4.18,
-  "detail": "53 passed, 2 warnings in 1.91s"
+  "seconds": 2.6,
+  "detail": "53 passed, 2 warnings in 1.27s"
  },
  {
   "id": "pake:CLI built and reports its version",
   "system": "Pake",
   "check": "CLI built and reports its version",
   "status": "Pass",
-  "seconds": 0.3,
+  "seconds": 0.32,
   "detail": "pake-cli 3.17.7"
  },
  {
@@ -964,7 +964,7 @@
   "system": "Pake",
   "check": "--json: invalid URL exits 2 with INVALID_INPUT",
   "status": "Pass",
-  "seconds": 0.31,
+  "seconds": 0.29,
   "detail": ""
  },
  {
@@ -972,15 +972,15 @@
   "system": "Pake",
   "check": "--json: local path without index.html is rejected",
   "status": "Pass",
-  "seconds": 0.55,
-  "detail": "Local directory \"/tmp/pake-x38_e33j/empty-site\" has no index.html at its root."
+  "seconds": 0.6,
+  "detail": "Local directory \"/tmp/pake-mbyo52if/empty-site\" has no index.html at its root."
  },
  {
   "id": "pake:--config: unknown fields fail fast",
   "system": "Pake",
   "check": "--config: unknown fields fail fast",
   "status": "Pass",
-  "seconds": 0.29,
+  "seconds": 0.3,
   "detail": ""
  },
  {
@@ -988,7 +988,7 @@
   "system": "Pake",
   "check": "config schema covers the CLI's options",
   "status": "Pass",
-  "seconds": 0.3,
+  "seconds": 0.31,
   "detail": "54 schema properties, 52 CLI flags"
  },
  {
@@ -996,7 +996,7 @@
   "system": "Pake",
   "check": "upstream unit tests (vitest tests/unit)",
   "status": "Pass",
-  "seconds": 8.14,
+  "seconds": 7.64,
   "detail": "Test Files  63 passed (63) | Tests  722 passed | 1 skipped (723)"
  },
  {
@@ -1004,7 +1004,7 @@
   "system": "Pake",
   "check": "real build: package a local page as a Linux .deb",
   "status": "Pass",
-  "seconds": 224.13,
+  "seconds": 232.19,
   "detail": "contractviewer.deb: 4.8 MB"
  },
  {
@@ -1012,7 +1012,7 @@
   "system": "Flowise",
   "check": "server is up (http://localhost:3100)",
   "status": "Pass",
-  "seconds": 0.08,
+  "seconds": 0.02,
   "detail": "Flowise 3.1.2"
  },
  {
@@ -1020,7 +1020,7 @@
   "system": "Flowise",
   "check": "owner sign-up and login (session cookie)",
   "status": "Pass",
-  "seconds": 0.36,
+  "seconds": 0.31,
   "detail": "register: HTTP 201"
  },
  {
@@ -1028,7 +1028,7 @@
   "system": "Flowise",
   "check": "API key with chosen permissions",
   "status": "Pass",
-  "seconds": 0.12,
+  "seconds": 0.07,
   "detail": ""
  },
  {
@@ -1036,7 +1036,7 @@
   "system": "Flowise",
   "check": "node catalogue covers models, loaders, splitters, stores, agents",
   "status": "Pass",
-  "seconds": 0.11,
+  "seconds": 0.07,
   "detail": "297 nodes in 24 categories"
  },
  {
@@ -1044,7 +1044,7 @@
   "system": "Flowise",
   "check": "marketplace templates",
   "status": "Pass",
-  "seconds": 0.09,
+  "seconds": 0.07,
   "detail": "AgentflowV2, Chatflow, Tool"
  },
  {
@@ -1052,7 +1052,7 @@
   "system": "Flowise",
   "check": "chatflow CRUD with the API key",
   "status": "Pass",
-  "seconds": 0.28,
+  "seconds": 0.23,
   "detail": ""
  },
  {
@@ -1060,7 +1060,7 @@
   "system": "Flowise",
   "check": "prediction through a flow (Custom JS Function as ending node)",
   "status": "Pass",
-  "seconds": 0.18,
+  "seconds": 0.16,
   "detail": "Clause search for \"liability cap\" (2 words); chat history: HTTP 200, 2 messages"
  },
  {
@@ -1068,7 +1068,7 @@
   "system": "Flowise",
   "check": "document store: chunk preview with the recursive splitter",
   "status": "Pass",
-  "seconds": 0.1,
+  "seconds": 0.09,
   "detail": "10 chunks, first: '# Master Services Agreement\\n\\nThis Master Services Agreement '"
  },
  {
@@ -1076,7 +1076,7 @@
   "system": "Flowise",
   "check": "variables and custom tools",
   "status": "Pass",
-  "seconds": 0.25,
+  "seconds": 0.22,
   "detail": ""
  },
  {
@@ -1086,749 +1086,5 @@
   "status": "Skip",
   "seconds": 0.0,
   "detail": "ANTHROPIC_API_KEY not set"
- },
- {
-  "id": "lobehub:stack: every service up",
-  "system": "LobeHub (self-hosted stack)",
-  "check": "stack: every service up",
-  "status": "Pass",
-  "seconds": 0.09,
-  "detail": "gateway=running, lobe=running, postgresql=running/healthy, redis=running/healthy, rustfs=running/healthy, rustfs-init=exited, searxng=running"
- },
- {
-  "id": "lobehub:sign-in page renders",
-  "system": "LobeHub (self-hosted stack)",
-  "check": "sign-in page renders",
-  "status": "Pass",
-  "seconds": 7.5,
-  "detail": "signin: 'Sign In' (HTTP 200)"
- },
- {
-  "id": "lobehub:sign up, onboarding and home screen in the browser",
-  "system": "LobeHub (self-hosted stack)",
-  "check": "sign up, onboarding and home screen in the browser",
-  "status": "Pass",
-  "seconds": 22.96,
-  "detail": "gnup http://localhost:3210/signup\nonboarding http://localhost:3210/onboarding\n  onboarding: Which\u00a0language\u00a0should\u00a0we\u00a0use\u00a0to\u00a0communicate?\n  onboarding: By\u00a0the\u00a0way,\u00a0what\u00a0should\u00a0I\u00a0call\u00a0you?\n  onboarding: What\u00a0areas\u00a0you're\u00a0interested\u00a0in?\n  onboarding: Let's\u00a0add\u00a0a\u00a0few\u00a0agents\u00a0to\u00a0your\u00a0library\nworkspace http://localhost:3210/\n{\"ok\":true,\"email\":\"harness+1793902231258@example.com\",\"title\":\"Home \u00b7 LobeHub\"}"
- },
- {
-  "id": "autogpt:container healthy with every service running",
-  "system": "AutoGPT (single container)",
-  "check": "container healthy with every service running",
-  "status": "Pass",
-  "seconds": 70.51,
-  "detail": "fatal-exit=RUNNING, runtime:batch-executor=RUNNING, runtime:bootstrap=EXITED, runtime:copilot-bot=RUNNING, runtime:copilot-executor=RUNNING, runtime:database-manager=RUNNING, runtime:executor=RUNNING, runtime:next=RUNNING, runtime:nginx=RUNNING, runtime:notification=RUNNING, runtime:platform-linking-manager=RUNNING, runtime:rest=RUNNING, runtime:scheduler=RUNNING, runtime:watchdog=RUNNING, runtime:websocket=RUNNING, state:falkordb=RUNNING, state:postgres=RUNNING, state:rabbitmq=RUNNING, state:valkey-0=RUNNING, state:valkey-1=RUNNING, state:valkey-2=RUNNING"
- },
- {
-  "id": "autogpt:login page renders",
-  "system": "AutoGPT (single container)",
-  "check": "login page renders",
-  "status": "Pass",
-  "seconds": 7.14,
-  "detail": "login: 'AutoGPT Platform' (HTTP 200)"
- },
- {
-  "id": "autogpt:sign up, onboarding, builder, marketplace and library in the browser",
-  "system": "AutoGPT (single container)",
-  "check": "sign up, onboarding, builder, marketplace and library in the browser",
-  "status": "Pass",
-  "seconds": 68.68,
-  "detail": "onboarding: ?step=role \n  onboarding: ?step=painPoints Talk to me about your work\n  onboarding: ?step=hire Based on your role, here's who I'd hire first\n  onboarding: ?step=connect Already paying for an AI subscription?\n  onboarding: ?step=preparing \nhome http://localhost:3006/home\nbuilder http://localhost:3006/build\nmarketplace http://localhost:3006/marketplace\nlibrary http://localhost:3006/library?sort=updatedAt\n{\"ok\":true,\"email\":\"harness+1793903237034@example.com\",\"title\":\"AutoGPT Platform\"}"
- },
- {
-  "id": "continue:packaged extension: manifest, views and bundled GUI",
-  "system": "Continue (extension in code-server)",
-  "check": "packaged extension: manifest, views and bundled GUI",
-  "status": "Pass",
-  "seconds": 0.0,
-  "detail": "continue-1.3.40.vsix: 397 files, 79 MB"
- },
- {
-  "id": "continue:installed in VS Code (code-server)",
-  "system": "Continue (extension in code-server)",
-  "check": "installed in VS Code (code-server)",
-  "status": "Pass",
-  "seconds": 0.48,
-  "detail": "continue.continue@1.3.40"
- },
- {
-  "id": "continue:cn CLI",
-  "system": "Continue (extension in code-server)",
-  "check": "cn CLI",
-  "status": "Pass",
-  "seconds": 1.43,
-  "detail": "0.0.0-dev"
- },
- {
-  "id": "continue:upstream core unit tests (vitest)",
-  "system": "Continue (extension in code-server)",
-  "check": "upstream core unit tests (vitest)",
-  "status": "Pass",
-  "seconds": 107.27,
-  "detail": "dbox-2/vendor/continue/core/config/ProfileLifecycleManager.ts:56:17)\\n    at ConfigHandler.reloadConfig (/home/runner/work/Sandbox-2/Sandbox-2/vendor/continue/core/config/ConfigHandler.ts:264:35)\\n    at ConfigHandler.cascadeInit (/home/runner/work/Sandbox-2/Sandbox-2/vendor/continue/core/config/ConfigHandler.ts:127:18)\\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\"}}; failed: 0"
- },
- {
-  "id": "continue:Continue view opens in the VS Code workbench",
-  "system": "Continue (extension in code-server)",
-  "check": "Continue view opens in the VS Code workbench",
-  "status": "Pass",
-  "seconds": 16.29,
-  "detail": "{\"trusted\": false, \"activityBar\": [\"Explorer (Ctrl+Shift+E)\", \"Search (Ctrl+Shift+F)\", \"Source Control (Ctrl+Shift+G)\", \"Run and Debug (Ctrl+Shift+D)\", \"Extensions (Ctrl+Shift+X) - 1 requires update\", \"Extensions (Ctrl+Shift+X) - 1 requires update\", \"Continue\", \"Accounts\", \"Manage\"], \"continueTab\": true, \"webviews\": 1, \"paletteItems\": [], \"installed\": [], \"title\": \"Welcome - manual-testing-sandbox - code-server\", \"consoleErrors\": [\"Failed to load resource: the server responded with a status of 404 (Not Found)\", \"Failed to load resource: the server responded with a status of 404 (Not Found)\", \"%c  ERR color: #f33 [Extension Host] Failed to register Continue config.yaml schema, most likely, YAML extension is not installed CodeExpectedError: Unable to write to User Settings because yaml.schem\", \"%c[Extension Host] %cFailed to register Continue config.yaml schema, most likely, YAML extension is not installed color: blue color:  CodeExpectedError: Unable to write to User Settings because yaml.s\"]}; opened from the activity bar"
- },
- {
-  "id": "camel:upstream app tests (apps/agents/test)",
-  "system": "CAMEL",
-  "check": "upstream app tests (apps/agents/test)",
-  "status": "Pass",
-  "seconds": 7.85,
-  "detail": "advanced/events/).\n          \n    return self.router.on_event(event_type)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n4 passed, 1 deselected, 7 warnings in 5.59s\nIMPORTANT: You are using gradio version 3.50.2, however version 4.44.1 is available, please upgrade.\n--------"
- },
- {
-  "id": "camel:RolePlaying session with the stub model",
-  "system": "CAMEL",
-  "check": "RolePlaying session with the stub model",
-  "status": "Pass",
-  "seconds": 2.55,
-  "detail": "Paralegal | Lawyer | Lorem Ipsum | Lorem Ipsum\n/home/runner/work/Sandbox-2/Sandbox-2/systems/camel/.venv/lib/python3.12/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (2.7.0) or chardet (7.4.3)/charset_normalizer (3.4.9) doesn't match a supported version!\n  warnings.warn("
- },
- {
-  "id": "camel:Agents app: both societies' roles load",
-  "system": "CAMEL",
-  "check": "Agents app: both societies' roles load",
-  "status": "Pass",
-  "seconds": 16.09,
-  "detail": "agents-app: 'Gradio' (HTTP 200); 50 Accountant, Actor, Administrator, Analyst, Artist"
- },
- {
-  "id": "metagpt:metagpt CLI",
-  "system": "MetaGPT",
-  "check": "metagpt CLI",
-  "status": "Pass",
-  "seconds": 0.19,
-  "detail": "                                 for debugging the      \u2502\n\u2502                                                       workflow.              \u2502\n\u2502                                                       [default: 0]           \u2502\n\u2502 --recover-path                               TEXT     recover the project    \u2502\n\u2502                                                       from existing          \u2502\n\u2502                                                       serialized storage     \u2502\n\u2502                                                       [default: None]        \u2502\n\u2502 --init-config            --no-init-config             Initialize the         \u2502\n\u2502                                                       configuration file for \u2502\n\u2502                                                       MetaGPT.               \u2502\n\u2502                                                       [default:              \u2502\n\u2502                                                       no-init-config]        \u2502\n\u2502 --help                                                Show this message and  \u2502\n\u2502                                                       exit.                  \u2502\n\u2570\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256f\n\n2026-11-05 18:10:05.557 | INFO     | metagpt.const:get_metagpt_package_root:15 - Package root set to /home/runner/work/Sandbox-2/Sandbox-2/vendor/metagpt\n2026-11-05 18:10:05.557 | INFO     | metagpt.const:get_metagpt_package_root:15 - Package root set to /home/runner/work/Sandbox-2/Sandbox-2/vendor/metagpt"
- },
- {
-  "id": "metagpt:upstream test selection on recorded LLM responses",
-  "system": "MetaGPT",
-  "check": "upstream test selection on recorded LLM responses",
-  "status": "Pass",
-  "seconds": 77.73,
-  "detail": "'\\d'\n/home/runner/work/Sandbox-2/Sandbox-2/vendor/metagpt/metagpt/utils/repair_llm_raw_output.py:361: DeprecationWarning: invalid escape sequence '\\d'\n  \"\"\"\n<unknown>:361: DeprecationWarning: invalid escape sequence '\\d'\n<unknown>:361: DeprecationWarning: invalid escape sequence '\\d'\n<unknown>:361: DeprecationWarning: invalid escape sequence '\\d'\n/home/runner/work/Sandbox-2/Sandbox-2/vendor/metagpt/metagpt/utils/repair_llm_raw_output.py:361: DeprecationWarning: invalid escape sequence '\\d'\n  \"\"\"; {'failed': 1, 'passed': 147}"
- },
- {
-  "id": "metagpt:JupyterLab on examples/",
-  "system": "MetaGPT",
-  "check": "JupyterLab on examples/",
-  "status": "Pass",
-  "seconds": 8.67,
-  "detail": "examples: 'JupyterLab' (HTTP 200)"
- },
- {
-  "id": "dspy:upstream test suite (pytest tests -n auto)",
-  "system": "DSPy",
-  "check": "upstream test suite (pytest tests -n auto)",
-  "status": "Pass",
-  "seconds": 99.15,
-  "detail": "o_default_fixture_loop_scope\" is unset.\nThe event loop scope for asynchronous fixtures will default to the \"fixture\" caching scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to \"function\" scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: \"function\", \"class\", \"module\", \"package\", \"session\"\n\n  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET)); 2803 passed"
- },
- {
-  "id": "dspy:a DSPy program in the dspy Jupyter kernel",
-  "system": "DSPy",
-  "check": "a DSPy program in the dspy Jupyter kernel",
-  "status": "Pass",
-  "seconds": 4.5,
-  "detail": "[\"\", \"12 months of fees\\n\", \"1 LM call(s); signature: contract_clause, question -> answer\\n\"]\nok: DSPy ran in the dspy kernel\n[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption."
- },
- {
-  "id": "dspy:JupyterLab on upstream's tutorials",
-  "system": "DSPy",
-  "check": "JupyterLab on upstream's tutorials",
-  "status": "Pass",
-  "seconds": 10.82,
-  "detail": "tutorial: 'index.ipynb - JupyterLab' (HTTP 200)"
- },
- {
-  "id": "izwi:CLI and model catalog",
-  "system": "Izwi (Kokoro and Parakeet on CPU)",
-  "check": "CLI and model catalog",
-  "status": "Pass",
-  "seconds": 0.01,
-  "detail": "izwi 0.1.0; -----------------+----------------+------------|\n| Qwen3.8-27B-FP8                     | not_downloaded |  28.77 GiB |\n|-------------------------------------+----------------+------------|\n| Qwen3-ForcedAligner-0.6B            | not_downloaded |   1.71 GiB |\n|-------------------------------------+----------------+------------|\n| Qwen3-TTS-Tokenizer-12Hz            | not_downloaded | 650.69 MiB |\n|-------------------------------------+----------------+------------|\n| Voxtral-Mini-4B-Realtime-2602       | not_downloaded |   8.26 GiB |\n|-------------------------------------+----------------+------------|\n| LFM2.5-Audio-1.5B-GGUF              | not_downloaded |   1.00 GiB |\n+-------------------------------------+----------------+------------+\n\nTip: Use izwi pull <model> to download more models"
- },
- {
-  "id": "izwi:server: OpenAPI document and model list",
-  "system": "Izwi (Kokoro and Parakeet on CPU)",
-  "check": "server: OpenAPI document and model list",
-  "status": "Pass",
-  "seconds": 0.0,
-  "detail": "110 API paths, e.g. /v1/admin/models, /v1/admin/models/{variant}, /v1/admin/models/{variant}/download, /v1/admin/models/{variant}/download/cancel, /v1/admin/models/{variant}/download/progress, /v1/admin/models/{variant}/load, /v1/admin/models/{variant}/pin, /v1/admin/models/{variant}/unload, /v1/admin/models/{variant}/"
- },
- {
-  "id": "izwi:web UI in the browser",
-  "system": "Izwi (Kokoro and Parakeet on CPU)",
-  "check": "web UI in the browser",
-  "status": "Pass",
-  "seconds": 6.92,
-  "detail": "web-ui: 'Voice \u00b7 Izwi' (HTTP 200)"
- },
- {
-  "id": "izwi:speech round trip: Kokoro speaks, Parakeet transcribes",
-  "system": "Izwi (Kokoro and Parakeet on CPU)",
-  "check": "speech round trip: Kokoro speaks, Parakeet transcribes",
-  "status": "Pass",
-  "seconds": 110.51,
-  "detail": "oading model files...\n[3/3] Finalizing...\n\u2713 Model 'Kokoro-82M' downloaded successfully!\n\nNext steps:\n  - Load the model: izwi models load Kokoro-82M\n  - Generate speech: izwi tts 'Hello' -m Kokoro-82M; [1/2] Generating speech with 'Kokoro-82M'...\n\u2713 Audio saved to: /home/runner/work/Sandbox-2/Sandbox-2/systems/izwi/reports/hello.wav\n[2/2] Done in 3.50s"
- },
- {
-  "id": "skills-manager:CLI: install the repo's manage-skills skill into the library",
-  "system": "Skills Manager",
-  "check": "CLI: install the repo's manage-skills skill into the library",
-  "status": "Pass",
-  "seconds": 0.02,
-  "detail": "manage-skills"
- },
- {
-  "id": "skills-manager:CLI: agents detected, skill shown",
-  "system": "Skills Manager",
-  "check": "CLI: agents detected, skill shown",
-  "status": "Pass",
-  "seconds": 0.01,
-  "detail": "56 agents known; claude_code installed=True"
- },
- {
-  "id": "skills-manager:upstream UI tests (npm test)",
-  "system": "Skills Manager",
-  "check": "upstream UI tests (npm test)",
-  "status": "Pass",
-  "seconds": 1.19,
-  "detail": "run\n\n\n RUN  v4.1.11 /home/runner/work/Sandbox-2/Sandbox-2/vendor/skills-manager\n\n \u2713 src/components/PresetBar.test.tsx (8 tests) 71ms\n\n Test Files  1 passed (1)\n      Tests  8 passed (8)\n   Start at  18:16:42\n   Duration  845ms (transform 109ms, setup 0ms, import 277ms, tests 71ms, environment 355ms)"
- },
- {
-  "id": "skills-manager:desktop app starts and loads the library",
-  "system": "Skills Manager",
-  "check": "desktop app starts and loads the library",
-  "status": "Pass",
-  "seconds": 33.23,
-  "detail": "screenshot: /home/runner/work/Sandbox-2/Sandbox-2/systems/skills-manager/reports/shots/app.png"
- },
- {
-  "id": "loopcut:built app reports its version",
-  "system": "Loopcut (built from source)",
-  "check": "built app reports its version",
-  "status": "Pass",
-  "seconds": 0.11,
-  "detail": "verflow -Wimplicit-fallthrough=5 -Wundef -Wmissing-declarations  -march=x86-64-v2 -pipe -fPIC -funsigned-char -fno-strict-aliasing -ffp-contract=off  \n\tbuild link flags:  -latomic\n\tbuild system: CMake"
- },
- {
-  "id": "loopcut:add-on unit tests (python3 -m unittest discover -s loopcut/tests)",
-  "system": "Loopcut (built from source)",
-  "check": "add-on unit tests (python3 -m unittest discover -s loopcut/tests)",
-  "status": "Pass",
-  "seconds": 165.73,
-  "detail": "...............................................................................s.....................................................................................................s..\n----------------------------------------------------------------------\nRan 4196 tests in 163.147s\n\nOK (skipped=227)"
- },
- {
-  "id": "loopcut:headless harness: evals/selfcheck.py",
-  "system": "Loopcut (built from source)",
-  "check": "headless harness: evals/selfcheck.py",
-  "status": "Skip",
-  "seconds": 0.0,
-  "detail": "evals/selfcheck.py not in this checkout"
- },
- {
-  "id": "loopcut:headless harness: camera_check.py",
-  "system": "Loopcut (built from source)",
-  "check": "headless harness: camera_check.py",
-  "status": "Pass",
-  "seconds": 4.11,
-  "detail": "RA region right 60% ortho shift (0.0, 0.1): x 0.6302..0.7698, margins B 0.0500 T 0.0500\nCAMERA region top-left, wide: x 0.0500..0.5500 y 0.7007..0.7993\nCAMERA aim at the foot: the top margin binds, margins {'left': 0.07812502980232239, 'right': 0.07812505960464478, 'bottom': 0.5000001788139343, 'top': -2.384185791015625e-07}\nCAMERA OK\nBlender 5.2.2 LTS (hash 43c0e8fa0e7b built 2026-11-05 18:16:52)"
- },
- {
-  "id": "loopcut:headless harness: contact_check.py",
-  "system": "Loopcut (built from source)",
-  "check": "headless harness: contact_check.py",
-  "status": "Pass",
-  "seconds": 3.34,
-  "detail": "rrel_2 clear_of Strap_Flipped: 10.0 mm into Strap_Flipped. Fix: move Lens_Barrel_2 by (-0.012, 0, 0) m.\nCONTACT   (4 pairs in 0.008 s)\nCONTACT pass: Broken rests_on Floor: 1 support touching.\nCONTACT FAIL: Broken touches Neighbour: gap 500.0 mm. Fix: move Broken by (0.5, 0, 0) m.\nCONTACT   (2 pairs in 0.001 s)\nCONTACT OK\nBlender 5.2.2 LTS (hash 43c0e8fa0e7b built 2026-11-05 18:16:52)\n\nBlender quit"
- },
- {
-  "id": "loopcut:headless harness: glb_check.py",
-  "system": "Loopcut (built from source)",
-  "check": "headless harness: glb_check.py",
-  "status": "Pass",
-  "seconds": 1.31,
-  "detail": "for byte, and nothing else behind\n19:58:08 | INFO: Starting glTF 2.0 export\n19:58:08 | INFO: Extracting primitive: Cylinder\n19:58:08 | INFO: Primitives created: 1\n19:58:08 | INFO: Finished glTF 2.0 export in 0.0016446113586425781 s\n\nok   a good one replaces it, only what was named\nGLB 7/7 in 0.5s; tmp /tmp/lc_glb_check_mdxmq4cz\nGLB OK\nBlender 5.2.2 LTS (hash 43c0e8fa0e7b built 2026-11-05 18:16:52)"
- },
- {
-  "id": "loopcut:headless harness: acceptance_check.py",
-  "system": "Loopcut (built from source)",
-  "check": "headless harness: acceptance_check.py",
-  "status": "Pass",
-  "seconds": 1.53,
-  "detail": " clear by 1.28 m\nACCEPT fail        c1 no_overlap SideTable, Book_1: FAIL, 1 of 1 pairs overlap: SideTable 10.0 mm into Book_1. Fix: move SideTable by (0, 0, -0.012) m\nACCEPT fail        c1 contact Book_1 clear_of SideTable: FAIL, 10.0 mm into SideTable. Fix: move Book_1 by (0, 0, 0.012) m\nACCEPT OK: 53 kind/status pairs over 24 kinds\nBlender 5.2.2 LTS (hash 43c0e8fa0e7b built 2026-11-05 18:16:52)"
- },
- {
-  "id": "loopcut:headless harness: merge_check.py",
-  "system": "Loopcut (built from source)",
-  "check": "headless harness: merge_check.py",
-  "status": "Fail",
-  "seconds": 13.9,
-  "detail": "CheckFailed: merge_check.py exited 1"
- },
- {
-  "id": "loopcut:headless harness: m4_e2e_check.py",
-  "system": "Loopcut (built from source)",
-  "check": "headless harness: m4_e2e_check.py",
-  "status": "Fail",
-  "seconds": 172.2,
-  "detail": "CheckFailed: m4_e2e_check.py exited 1"
- },
- {
-  "id": "loopcut:app starts with the Loopcut panel on an X display",
-  "system": "Loopcut (built from source)",
-  "check": "app starts with the Loopcut panel on an X display",
-  "status": "Pass",
-  "seconds": 42.53,
-  "detail": "screenshot: /home/runner/work/Sandbox-2/Sandbox-2/systems/loopcut/reports/shots/app.png"
- },
- {
-  "id": "fabricjs:upstream unit tests (pnpm run test:vitest)",
-  "system": "fabric.js",
-  "check": "upstream unit tests (pnpm run test:vitest)",
-  "status": "Pass",
-  "seconds": 36.06,
-  "detail": "ment-resource-loader.js:53:33)\n    at Object.check (/home/runner/work/Sandbox-2/Sandbox-2/vendor/fabricjs/node_modules/.pnpm/jsdom@26.1.0_canvas@3.2.3/node_modules/jsdom/lib/jsdom/browser/resources/resource-queue.js:76:23)\n    at /home/runner/work/Sandbox-2/Sandbox-2/vendor/fabricjs/node_modules/.pnpm/jsdom@26.1.0_canvas@3.2.3/node_modules/jsdom/lib/jsdom/browser/resources/resource-queue.js:119:14"
- },
- {
-  "id": "fabricjs:home page: the live canvas",
-  "system": "fabric.js",
-  "check": "home page: the live canvas",
-  "status": "Pass",
-  "seconds": 6.6,
-  "detail": "home: 'Fabric.js Javascript Library' (HTTP 200)"
- },
- {
-  "id": "fabricjs:demos and API reference",
-  "system": "fabric.js",
-  "check": "demos and API reference",
-  "status": "Pass",
-  "seconds": 6.04,
-  "detail": "demos: 'Fabric.js Demos' (HTTP 200); api: 'fabric | Docs and Guides' (HTTP 200)"
- },
- {
-  "id": "fabricjs-site:Kitchensink: fabric canvas with objects",
-  "system": "fabricjs.com",
-  "check": "Kitchensink: fabric canvas with objects",
-  "status": "Pass",
-  "seconds": 7.71,
-  "detail": "kitchensink: 'Kitchensink | Fabric.js Demos' (HTTP 200); objects on the canvas: 2"
- },
- {
-  "id": "fabricjs-site:demos and tutorial",
-  "system": "fabricjs.com",
-  "check": "demos and tutorial",
-  "status": "Pass",
-  "seconds": 5.22,
-  "detail": "demos: 'Demos \u2014 Fabric.js Javascript Canvas Library' (HTTP 200); articles: 'Tutorial \u2014 Fabric.js Javascript Canvas Library' (HTTP 200)"
- },
- {
-  "id": "gods-eye-view:setup doctor",
-  "system": "God's Eye View",
-  "check": "setup doctor",
-  "status": "Pass",
-  "seconds": 0.23,
-  "detail": "ed, or a Codex ChatGPT sign-in is selected in Provider Settings (experimental)\nVessels: off until an AISStream key is added\nFires:   off until a FIRMS key is added\nTraffic: built-in traffic simulation\nMissions: Launch Library 2 public access\n\nConfigured providers:\n  [--] Google Maps\n  [--] Google Places / Street View server\n  [--] Cesium ion\n  [--] OpenAI voice\n  [--] AISStream vessels\n  [--] NASA FIRMS fires\n  [--] TomTom traffic\n  [--] OpenSky client ID\n  [--] OpenSky client secret\n  [--] Launch Library 2\n  [--] Mapillary street level\n\nReady. Run npm run dev, then open http://localhost:4173."
- },
- {
-  "id": "gods-eye-view:upstream unit tests (npm test)",
-  "system": "God's Eye View",
-  "check": "upstream unit tests (npm test)",
-  "status": "Pass",
-  "seconds": 276.25,
-  "detail": "es stay in budget with the air-quality station cohort live (1889.388387ms)\n\u2714 steady moving-source frames stay in budget with the Dense detection lane active over 5,000 observations (11554.744872ms)\n\u2139 tests 14\n\u2139 suites 0\n\u2139 pass 14\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 83019.228108"
- },
- {
-  "id": "gods-eye-view:app loads in the browser",
-  "system": "God's Eye View",
-  "check": "app loads in the browser",
-  "status": "Pass",
-  "seconds": 33.97,
-  "detail": "globe: \"God's Eye View\" (HTTP 200)"
- },
- {
-  "id": "claude-code-best-practice:the .claude project: agents, commands, skills, hooks",
-  "system": "Claude Code Best Practice",
-  "check": "the .claude project: agents, commands, skills, hooks",
-  "status": "Pass",
-  "seconds": 0.06,
-  "detail": ",\n  \"SubagentStart\",\n  \"SubagentStop\",\n  \"TaskCompleted\",\n  \"TaskCreated\",\n  \"TeammateIdle\",\n  \"UserPromptExpansion\",\n  \"UserPromptSubmit\",\n  \"WorktreeCreate\",\n  \"WorktreeRemove\"\n ],\n \"problems\": []\n}; 11 agents, 10 commands, 10 skill keys, hooks on 30 events"
- },
- {
-  "id": "claude-code-best-practice:slide deck in the browser",
-  "system": "Claude Code Best Practice",
-  "check": "slide deck in the browser",
-  "status": "Pass",
-  "seconds": 3.6,
-  "detail": "deck: 'Claude Code Best Practice' (HTTP 200)"
- },
- {
-  "id": "claude-code-best-practice:Claude Code runs /time-command in the project (live)",
-  "system": "Claude Code Best Practice",
-  "check": "Claude Code runs /time-command in the project (live)",
-  "status": "Skip",
-  "seconds": 0.0,
-  "detail": "ANTHROPIC_API_KEY not set"
- },
- {
-  "id": "opus-videos:collection data: every video has a prompt page",
-  "system": "Awesome Opus 5.5 Videos",
-  "check": "collection data: every video has a prompt page",
-  "status": "Pass",
-  "seconds": 0.01,
-  "detail": "703 videos, 418 with Skillry remakes, 703 prompt pages"
- },
- {
-  "id": "opus-videos:site build: README and every prompt page",
-  "system": "Awesome Opus 5.5 Videos",
-  "check": "site build: README and every prompt page",
-  "status": "Pass",
-  "seconds": 0.99,
-  "detail": "/home/runner/work/Sandbox-2/Sandbox-2/systems/opus-videos/.site: index + 703 pages"
- },
- {
-  "id": "opus-videos:collection and a prompt page in the browser",
-  "system": "Awesome Opus 5.5 Videos",
-  "check": "collection and a prompt page in the browser",
-  "status": "Pass",
-  "seconds": 6.37,
-  "detail": "index: 'Awesome Opus 5.5 Videos' (HTTP 200); prompt: 'ror-fly-880547' (HTTP 200)"
- },
- {
-  "id": "opus-videos:remake a video with Claude Opus 5.5 (live)",
-  "system": "Awesome Opus 5.5 Videos",
-  "check": "remake a video with Claude Opus 5.5 (live)",
-  "status": "Skip",
-  "seconds": 0.0,
-  "detail": "ANTHROPIC_API_KEY not set"
- },
- {
-  "id": "appwrite:API up: health and version",
-  "system": "Appwrite (its own installer)",
-  "check": "API up: health and version",
-  "status": "Pass",
-  "seconds": 5.01,
-  "detail": "Appwrite 2.6.2"
- },
- {
-  "id": "appwrite:console account and session",
-  "system": "Appwrite (its own installer)",
-  "check": "console account and session",
-  "status": "Pass",
-  "seconds": 0.36,
-  "detail": ""
- },
- {
-  "id": "appwrite:organization and project",
-  "system": "Appwrite (its own installer)",
-  "check": "organization and project",
-  "status": "Pass",
-  "seconds": 0.88,
-  "detail": "project 6aecc6cb43128cf8bf3a"
- },
- {
-  "id": "appwrite:server API key for the project",
-  "system": "Appwrite (its own installer)",
-  "check": "server API key for the project",
-  "status": "Pass",
-  "seconds": 0.03,
-  "detail": ""
- },
- {
-  "id": "appwrite:TablesDB: database, table, column and rows",
-  "system": "Appwrite (its own installer)",
-  "check": "TablesDB: database, table, column and rows",
-  "status": "Pass",
-  "seconds": 2.43,
-  "detail": "2 rows: ['Master Services Agreement', 'Order Form']"
- },
- {
-  "id": "appwrite:Console in the browser",
-  "system": "Appwrite (its own installer)",
-  "check": "Console in the browser",
-  "status": "Pass",
-  "seconds": 19.14,
-  "detail": "{\"ok\": true, \"url\": \"http://localhost:8096/projects/6aecc6cb43128cf8bf3a/overview\", \"sawProject\": true, \"opened\": true, \"title\": \"Dashboard \\u00b7 contracts-1d323c \\u00b7 Appwrite\"}"
- },
- {
-  "id": "pocketbase:superuser auth",
-  "system": "PocketBase",
-  "check": "superuser auth",
-  "status": "Pass",
-  "seconds": 0.13,
-  "detail": ""
- },
- {
-  "id": "pocketbase:collection with fields and access rules",
-  "system": "PocketBase",
-  "check": "collection with fields and access rules",
-  "status": "Pass",
-  "seconds": 0.01,
-  "detail": "id, title, counterparty, value, status"
- },
- {
-  "id": "pocketbase:records: create, filter, sort",
-  "system": "PocketBase",
-  "check": "records: create, filter, sort",
-  "status": "Pass",
-  "seconds": 0.01,
-  "detail": "anonymous filtered list: ['Master Services Agreement', 'Order Form']"
- },
- {
-  "id": "pocketbase:realtime stream connects",
-  "system": "PocketBase",
-  "check": "realtime stream connects",
-  "status": "Pass",
-  "seconds": 3.01,
-  "detail": "id:ObJhbYZtbS3INS7VIdB3JmRDpQSbntgFhWCbhdql"
- },
- {
-  "id": "pocketbase:superuser dashboard in the browser",
-  "system": "PocketBase",
-  "check": "superuser dashboard in the browser",
-  "status": "Pass",
-  "seconds": 4.98,
-  "detail": "{\"ok\": true, \"rows\": 4, \"url\": \"http://127.0.0.1:8095/_/#/collections?collection=contracts\"}"
- },
- {
-  "id": "pocketbase:upstream Go tests (go test ./...)",
-  "system": "PocketBase",
-  "check": "upstream Go tests (go test ./...)",
-  "status": "Pass",
-  "seconds": 55.87,
-  "detail": "\t0.081s\nok  \tgithub.com/pocketbase/pocketbase/tools/store\t0.018s\nok  \tgithub.com/pocketbase/pocketbase/tools/subscriptions\t0.028s\nok  \tgithub.com/pocketbase/pocketbase/tools/template\t0.011s\nok  \tgithub.com/pocketbase/pocketbase/tools/tokenizer\t0.009s\nok  \tgithub.com/pocketbase/pocketbase/tools/types\t0.007s\n?   \tgithub.com/pocketbase/pocketbase/ui\t[no test files]\ngo: downloading github.com/pocketbase/tygoja v0.1.0\ngo: downloading golang.org/x/tools v0.52.0\ngo: downloading golang.org/x/mod v0.42.0"
- },
- {
-  "id": "agents-from-scratch:installed: llama-cpp-python and the repository's setup check",
-  "system": "AI Agents from Scratch (with Agents Lab)",
-  "check": "installed: llama-cpp-python and the repository's setup check",
-  "status": "Pass",
-  "seconds": 0.23,
-  "detail": "llama-cpp-python 0.3.36; es:\n\u2705 llama-cpp-python installed\n\nModels Directory:\n\u2705 models/ directory exists\n\u2705 Found 1 GGUF model(s):\n   - qwen2.5-1.5b-instruct-q4_k_m.gguf (1065.6 MB)\n\nRepository Structure:\n\u2705 shared/ directory exists\n\u2705 agent/ directory exists\n\u2705 lessons/ directory exists\n\n==================================================\n\u2705 All checks passed! You're ready to start learning.\n\nNext steps:\n1. Read lessons/01_basic_llm_chat.md\n2. Run: python complete_example.py\n==================================================\n"
- },
- {
-  "id": "agents-from-scratch:the repository's tools, memory, state, JSON extraction and AoT executor",
-  "system": "AI Agents from Scratch (with Agents Lab)",
-  "check": "the repository's tools, memory, state, JSON extraction and AoT executor",
-  "status": "Pass",
-  "seconds": 0.12,
-  "detail": ""
- },
- {
-  "id": "agents-from-scratch:Agents Lab: the 12 lessons, the docs and the 6 diagrams",
-  "system": "AI Agents from Scratch (with Agents Lab)",
-  "check": "Agents Lab: the 12 lessons, the docs and the 6 diagrams",
-  "status": "Pass",
-  "seconds": 0.07,
-  "detail": ""
- },
- {
-  "id": "agents-from-scratch:Agents Lab playground: lessons 01-10 through the repository's Agent",
-  "system": "AI Agents from Scratch (with Agents Lab)",
-  "check": "Agents Lab playground: lessons 01-10 through the repository's Agent",
-  "status": "Pass",
-  "seconds": 0.02,
-  "detail": ""
- },
- {
-  "id": "agents-from-scratch:Agents Lab: each lesson's demo from complete_example.py, streamed",
-  "system": "AI Agents from Scratch (with Agents Lab)",
-  "check": "Agents Lab: each lesson's demo from complete_example.py, streamed",
-  "status": "Pass",
-  "seconds": 0.03,
-  "detail": "Ops:     1\n========================================\n\nRecent spans:\n  [llm_call] duration=0.02ms\n  [llm_call] duration=0.02ms\n  [tool_call] duration=1.0ms\n  [llm_call] duration=0.02ms\n  [memory] duration=N/Ams\n\nTelemetry logged to: agent_telemetry.jsonl\nView with: cat agent_telemetry.jsonl | head -5\n"
- },
- {
-  "id": "agents-from-scratch:Agents Lab: golden-dataset evals and the telemetry log",
-  "system": "AI Agents from Scratch (with Agents Lab)",
-  "check": "Agents Lab: golden-dataset evals and the telemetry log",
-  "status": "Pass",
-  "seconds": 0.0,
-  "detail": "Structured Output 2/2; Tool Calls 2/2; Decisions 2/2; Memory Cycle 1/2"
- },
- {
-  "id": "agents-from-scratch:Agents Lab in a browser: lessons, a run, the playground and the diagram projector",
-  "system": "AI Agents from Scratch (with Agents Lab)",
-  "check": "Agents Lab in a browser: lessons, a run, the playground and the diagram projector",
-  "status": "Pass",
-  "seconds": 1.62,
-  "detail": "UI OK: lessons, lesson 06 demo, playground with prompts, AoT graph, projector (\"The agent's architecture\" -> \"Lesson 05: tool calling\"), telemetry\n"
- },
- {
-  "id": "agents-from-scratch:real model: every lesson's demo through llama.cpp",
-  "system": "AI Agents from Scratch (with Agents Lab)",
-  "check": "real model: every lesson's demo through llama.cpp",
-  "status": "Pass",
-  "seconds": 67.84,
-  "detail": "model qwen2.5-1.5b-instruct-q4_k_m.gguf (1117 MB); ==============\nLESSON 05: Tool Calling\n==================================================\nTool request: {'tool': 'calculator', 'arguments': {'a': 42, 'b': 7, 'operation': 'multiply'}}\nTool result: 294"
- },
- {
-  "id": "jakes-brain:installed: Node 24 and a config for this machine, none of Jake's paths",
-  "system": "Jake's Brain",
-  "check": "installed: Node 24 and a config for this machine, none of Jake's paths",
-  "status": "Pass",
-  "seconds": 0.05,
-  "detail": "v24.22.2"
- },
- {
-  "id": "jakes-brain:the repository's own tests (node --test server/tests)",
-  "system": "Jake's Brain",
-  "check": "the repository's own tests (node --test server/tests)",
-  "status": "Pass",
-  "seconds": 1.46,
-  "detail": "\u2139 tests 18\n\u2139 suites 0\n\u2139 pass 18\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 1389.384035"
- },
- {
-  "id": "jakes-brain:the server: every module loads and the home screen matches web/apps.json",
-  "system": "Jake's Brain",
-  "check": "the server: every module loads and the home screen matches web/apps.json",
-  "status": "Pass",
-  "seconds": 0.0,
-  "detail": "23 server modules; 24 web apps"
- },
- {
-  "id": "jakes-brain:the apps' APIs end to end: tasks, notes, groceries, food, habits, calendar",
-  "system": "Jake's Brain",
-  "check": "the apps' APIs end to end: tasks, notes, groceries, food, habits, calendar",
-  "status": "Pass",
-  "seconds": 0.01,
-  "detail": "food today {'calories': 738, 'protein': 65, 'carbs': 17, 'fat': 42}; habit 'Walk 10k steps' checked on 2026-11-05"
- },
- {
-  "id": "jakes-brain:JakeTube over the sample videos, and the Graph linking everything",
-  "system": "Jake's Brain",
-  "check": "JakeTube over the sample videos, and the Graph linking everything",
-  "status": "Pass",
-  "seconds": 0.03,
-  "detail": "graph: 8 nodes, 9 edges, kinds ['day', 'event', 'habit', 'note', 'tag', 'task', 'video']"
- },
- {
-  "id": "jakes-brain:the real UI in a browser: home screen tiles, a task typed in, the apps open",
-  "system": "Jake's Brain",
-  "check": "the real UI in a browser: home screen tiles, a task typed in, the apps open",
-  "status": "Pass",
-  "seconds": 9.11,
-  "detail": "UI OK: light: 20/20 tiles, task added via UI, 2 JakeTube videos; dark home ok\n"
- },
- {
-  "id": "jakes-brain:JakeGPT on a local model (needs Ollama)",
-  "system": "Jake's Brain",
-  "check": "JakeGPT on a local model (needs Ollama)",
-  "status": "Skip",
-  "seconds": 0.0,
-  "detail": "no Ollama running: install it and pull a model to use JakeGPT"
- },
- {
-  "id": "post-studio:installed: yt-dlp, gallery-dl and the app import",
-  "system": "Post Studio (built in Sandbox-2)",
-  "check": "installed: yt-dlp, gallery-dl and the app import",
-  "status": "Pass",
-  "seconds": 0.62,
-  "detail": "yt-dlp, gallery-dl: 2026.10.26 1.32.19"
- },
- {
-  "id": "post-studio:links are routed to the right platform",
-  "system": "Post Studio (built in Sandbox-2)",
-  "check": "links are routed to the right platform",
-  "status": "Pass",
-  "seconds": 0.2,
-  "detail": ""
- },
- {
-  "id": "post-studio:Threads: caption, carousel images and video from the page's own JSON",
-  "system": "Post Studio (built in Sandbox-2)",
-  "check": "Threads: caption, carousel images and video from the page's own JSON",
-  "status": "Pass",
-  "seconds": 0.1,
-  "detail": ""
- },
- {
-  "id": "post-studio:Instagram and Facebook: gallery-dl output and the page's Open Graph tags",
-  "system": "Post Studio (built in Sandbox-2)",
-  "check": "Instagram and Facebook: gallery-dl output and the page's Open Graph tags",
-  "status": "Pass",
-  "seconds": 0.1,
-  "detail": ""
- },
- {
-  "id": "post-studio:the rewrite prompt: my voice from my samples, the format, the credit, no copying",
-  "system": "Post Studio (built in Sandbox-2)",
-  "check": "the rewrite prompt: my voice from my samples, the format, the credit, no copying",
-  "status": "Pass",
-  "seconds": 0.09,
-  "detail": ""
- },
- {
-  "id": "post-studio:grab an X post: text, author, image and video saved apart",
-  "system": "Post Studio (built in Sandbox-2)",
-  "check": "grab an X post: text, author, image and video saved apart",
-  "status": "Pass",
-  "seconds": 0.04,
-  "detail": "saved as x/plainlaw-1890000000000000001: ['images/01.png', 'videos/01.mp4']"
- },
- {
-  "id": "post-studio:download the images alone, the videos alone, or everything",
-  "system": "Post Studio (built in Sandbox-2)",
-  "check": "download the images alone, the videos alone, or everything",
-  "status": "Pass",
-  "seconds": 0.01,
-  "detail": ""
- },
- {
-  "id": "post-studio:a post that cannot be read says why",
-  "system": "Post Studio (built in Sandbox-2)",
-  "check": "a post that cannot be read says why",
-  "status": "Pass",
-  "seconds": 0.86,
-  "detail": "Nothing could be read from this post. FxTwitter: NOT_FOUND; yt-dlp: ERROR: [twitter] 42: Suspended"
- },
- {
-  "id": "post-studio:regenerate in my voice with the local model, streamed and saved",
-  "system": "Post Studio (built in Sandbox-2)",
-  "check": "regenerate in my voice with the local model, streamed and saved",
-  "status": "Pass",
-  "seconds": 0.03,
-  "detail": ""
- },
- {
-  "id": "post-studio:my voice: save a cloned voice with consent, then narrate with it",
-  "system": "Post Studio (built in Sandbox-2)",
-  "check": "my voice: save a cloned voice with consent, then narrate with it",
-  "status": "Pass",
-  "seconds": 0.08,
-  "detail": ""
- },
- {
-  "id": "post-studio:the UI in a browser: grab, see the media, regenerate, narrate",
-  "system": "Post Studio (built in Sandbox-2)",
-  "check": "the UI in a browser: grab, see the media, regenerate, narrate",
-  "status": "Pass",
-  "seconds": 1.8,
-  "detail": "UI OK: grabbed, showed image and video, regenerated, narrated, listed in the library\n"
- },
- {
-  "id": "post-studio:live: read a real public X post (FxTwitter)",
-  "system": "Post Studio (built in Sandbox-2)",
-  "check": "live: read a real public X post (FxTwitter)",
-  "status": "Pass",
-  "seconds": 0.49,
-  "detail": "@0xMovez: 'Opus 5.5 is insane for motion design...\\n\\nthis 18-page pdf blueprint on prompting Opus 5.5 will turn Claude from photo ge'; 1 media via ['fxtwitter']"
- },
- {
-  "id": "post-studio:live: Claude writes the post in another voice",
-  "system": "Post Studio (built in Sandbox-2)",
-  "check": "live: Claude writes the post in another voice",
-  "status": "Skip",
-  "seconds": 0.0,
-  "detail": "set ANTHROPIC_API_KEY to run this check"
  }
 ]
