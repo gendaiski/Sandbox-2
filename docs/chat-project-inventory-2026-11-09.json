@@ -1,0 +1,727 @@
+{
+  "schema_version": 1,
+  "snapshot_date": "2026-11-09",
+  "scope": "Projects and repositories discussed in this Codex chat; published links and saved installation records, not live uptime monitoring.",
+  "source_records": [
+    "/workspace/sites/chat-project-dashboard/catalog.json",
+    "/workspace/sites/coding-agent-frontends/REVISION_VERIFICATION.md",
+    "/workspace/sites/ancient-lab/INSTALLATION_TRACKER.md",
+    "/workspace/repository-installs-2026-10-25/INSTALLATION_TRACKER.md",
+    "/workspace/openbot-official-release/START_HERE.md"
+  ],
+  "caveats": [
+    "Sandbox-2 is public. This inventory contains links and status facts only; it does not mirror private source trees, datasets, model weights, credentials or browser-local work.",
+    "A frontend preview does not prove the original backend or agent is installed.",
+    "Local installations refer to the managed Codex task workspace, not the owner’s computer.",
+    "The six appended repositories remain queued. The earlier original 19-item queue cannot be reconstructed reliably from the saved records.",
+    "Some source URLs point to older handoffs, not the current deployed source."
+  ],
+  "projects": [
+    {
+      "id": "ancient-synthesis",
+      "project": "Ancient Coin Synthesis",
+      "category": "ancient",
+      "installation_status": "PARTIAL",
+      "preview_url": "https://ahmed-ancient-lab.aelgendy673996.chatgpt.site/#media",
+      "github_urls": [
+        "https://github.com/rymshasaeed/ancient-coins-synthesis",
+        "https://github.com/gendaiski/Project-Atlas/tree/codex/ancient-lab-handoff/handoffs/ancient-lab"
+      ],
+      "source_record_status": "partial",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "ancient-pyramids",
+      "project": "Ancient Egypt Map",
+      "category": "ancient",
+      "installation_status": "COMPLETE — source map/data scope",
+      "preview_url": "https://ahmed-ancient-lab.aelgendy673996.chatgpt.site/#atlas/pyramids",
+      "github_urls": [
+        "https://github.com/LSIND/map-of-Ancient-Egypt",
+        "https://github.com/gendaiski/Project-Atlas/tree/codex/ancient-lab-handoff/handoffs/ancient-lab"
+      ],
+      "source_record_status": "ready",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "ancient",
+      "project": "Ancient Lab",
+      "category": "ancient",
+      "installation_status": "PARTIAL — public research app; seven sources have mixed scope",
+      "preview_url": "https://ahmed-ancient-lab.aelgendy673996.chatgpt.site/",
+      "github_urls": [
+        "https://github.com/gendaiski/Project-Atlas/tree/codex/ancient-lab-handoff/handoffs/ancient-lab"
+      ],
+      "source_record_status": "partial",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "ancient-cartouchify",
+      "project": "Cartouchify Companion",
+      "category": "ancient",
+      "installation_status": "PARTIAL",
+      "preview_url": "https://ahmed-ancient-lab.aelgendy673996.chatgpt.site/#references/dictionary",
+      "github_urls": [
+        "https://github.com/MohamedZaahran/Cartouchify",
+        "https://github.com/gendaiski/Project-Atlas/tree/codex/ancient-lab-handoff/handoffs/ancient-lab"
+      ],
+      "source_record_status": "partial",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "ancient-dpla",
+      "project": "DPLA Ancient Egypt Explorer",
+      "category": "ancient",
+      "installation_status": "PARTIAL",
+      "preview_url": "https://ahmed-ancient-lab.aelgendy673996.chatgpt.site/#dpla",
+      "github_urls": [
+        "https://github.com/watrall/dpla-explorer-ancient-egypt",
+        "https://github.com/gendaiski/Project-Atlas/tree/codex/ancient-lab-handoff/handoffs/ancient-lab"
+      ],
+      "source_record_status": "partial",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "ancient-gupta",
+      "project": "Gupta Coin Dataset Browser",
+      "category": "ancient",
+      "installation_status": "COMPLETE — supplied dataset browsing scope",
+      "preview_url": "https://ahmed-ancient-lab.aelgendy673996.chatgpt.site/#datasets",
+      "github_urls": [
+        "https://github.com/Dataset-of-Ancient-Coins/Dataset-of-Gupta-Archer-Type-Coins-with-Annotations",
+        "https://github.com/gendaiski/Project-Atlas/tree/codex/ancient-lab-handoff/handoffs/ancient-lab"
+      ],
+      "source_record_status": "ready",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "ancient-mints",
+      "project": "Mints of Empire",
+      "category": "ancient",
+      "installation_status": "COMPLETE — requested mint map/data scope",
+      "preview_url": "https://ahmed-ancient-lab.aelgendy673996.chatgpt.site/#atlas/mints",
+      "github_urls": [
+        "https://github.com/islamicempireatwork/islamicempire",
+        "https://github.com/gendaiski/Project-Atlas/tree/codex/ancient-lab-handoff/handoffs/ancient-lab"
+      ],
+      "source_record_status": "ready",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "ancient-rrc",
+      "project": "RRC-60 Research Viewer",
+      "category": "ancient",
+      "installation_status": "PARTIAL",
+      "preview_url": "https://ahmed-ancient-lab.aelgendy673996.chatgpt.site/#references/rrc",
+      "github_urls": [
+        "https://github.com/sinemaslanx/RRC-60",
+        "https://github.com/gendaiski/Project-Atlas/tree/codex/ancient-lab-handoff/handoffs/ancient-lab"
+      ],
+      "source_record_status": "partial",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "agentic-ai-documentation-copy",
+      "project": "Agentic AI Knowledge Base · Complete Copy",
+      "category": "archives",
+      "installation_status": "READY FOR RECORDED SCOPE",
+      "preview_url": "https://agentic-ai-complete-copy.aelgendy673996.chatgpt.site",
+      "github_urls": [
+        "https://github.com/gendaiski/Cloning-Lab/tree/codex/agentic-ai-knowledge-base-clone/sites/agentic-ai-clone",
+        "https://github.com/gendaiski/Cloning-Lab/blob/codex/agentic-ai-knowledge-base-clone/sites/agentic-ai-clone/HANDOFF.md",
+        "https://github.com/gendaiski/Cloning-Lab/pull/4"
+      ],
+      "source_record_status": "ready",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "bahrain-aquaculture-investor-research",
+      "project": "Bahrain Aquaculture & Pet-Food · Investor Research",
+      "category": "archives",
+      "installation_status": "RECORDED; INSTALLATION NOT RECHECKED",
+      "preview_url": null,
+      "github_urls": [],
+      "source_record_status": "recorded",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "kanakku-design-library",
+      "project": "Kanakku · Figma Asset Library",
+      "category": "archives",
+      "installation_status": "PARTIAL — gallery; nine component exports missing",
+      "preview_url": "https://ahmed-kanakku-design-library.aelgendy673996.chatgpt.site",
+      "github_urls": [],
+      "source_record_status": "partial",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "website-twin",
+      "project": "Website-Twin",
+      "category": "archives",
+      "installation_status": "PARTIAL — saved-page review",
+      "preview_url": "https://ahmed-skills-library.aelgendy673996.chatgpt.site/website-twin/index.html",
+      "github_urls": [
+        "https://github.com/gendaiski/Website-Twin"
+      ],
+      "source_record_status": "partial",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "blueprint",
+      "project": "Blueprint Studio",
+      "category": "blueprint",
+      "installation_status": "PARTIAL — private app; AI and some exports unfinished",
+      "preview_url": "https://ahmed-blueprint-studio.aelgendy673996.chatgpt.site",
+      "github_urls": [],
+      "source_record_status": "partial",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "coding-agent-frontends",
+      "project": "Coding Agent Frontends",
+      "category": "coding",
+      "installation_status": "PUBLISHED FRONTEND COLLECTION — no shared agent backend",
+      "preview_url": "https://ahmed-coding-agent-frontends.aelgendy673996.chatgpt.site/",
+      "github_urls": [
+        "https://github.com/gendaiski/Agentic-Coding-Space/tree/codex/coding-agent-frontends-2026-11-09/projects/coding-agent-frontends"
+      ],
+      "source_record_status": "published frontend only",
+      "source_record_date": "2026-11-09"
+    },
+    {
+      "id": "openbot-official-release",
+      "project": "OpenBot",
+      "category": "coding",
+      "installation_status": "PARTIAL — official Linux release local; account workflow blocked; UI review separate",
+      "preview_url": "https://ahmed-coding-agent-frontends.aelgendy673996.chatgpt.site/experiences/openbot.html",
+      "github_urls": [
+        "https://github.com/nightly-labs/openbot"
+      ],
+      "source_record_status": "partial",
+      "source_record_date": "2026-11-09"
+    },
+    {
+      "id": "queue-6",
+      "project": "djpapzin/LangChain-VectorDB-Learning",
+      "category": "queue",
+      "installation_status": "QUEUED — investigation/install not started in this batch",
+      "preview_url": null,
+      "github_urls": [
+        "https://github.com/djpapzin/LangChain-VectorDB-Learning"
+      ],
+      "source_record_status": "queued",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "queue-3",
+      "project": "Enterprise-AI-Atlas/awesome-vector-databases",
+      "category": "queue",
+      "installation_status": "QUEUED — investigation/install not started in this batch",
+      "preview_url": null,
+      "github_urls": [
+        "https://github.com/Enterprise-AI-Atlas/awesome-vector-databases"
+      ],
+      "source_record_status": "queued",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "queue-2",
+      "project": "FiveTechSoft/githubdb",
+      "category": "queue",
+      "installation_status": "QUEUED — investigation/install not started in this batch",
+      "preview_url": null,
+      "github_urls": [
+        "https://github.com/FiveTechSoft/githubdb"
+      ],
+      "source_record_status": "queued",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "queue-4",
+      "project": "KomalSrinivasan/ai-universe",
+      "category": "queue",
+      "installation_status": "QUEUED — investigation/install not started in this batch",
+      "preview_url": null,
+      "github_urls": [
+        "https://github.com/KomalSrinivasan/ai-universe"
+      ],
+      "source_record_status": "queued",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "queue-1",
+      "project": "nocodb/nocodb",
+      "category": "queue",
+      "installation_status": "QUEUED — investigation/install not started in this batch",
+      "preview_url": null,
+      "github_urls": [
+        "https://github.com/nocodb/nocodb"
+      ],
+      "source_record_status": "queued",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "queue-5",
+      "project": "oceanbase/seekdb",
+      "category": "queue",
+      "installation_status": "QUEUED — investigation/install not started in this batch",
+      "preview_url": null,
+      "github_urls": [
+        "https://github.com/oceanbase/seekdb"
+      ],
+      "source_record_status": "queued",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "repo-queue",
+      "project": "Repository setup queue",
+      "category": "queue",
+      "installation_status": "QUEUED",
+      "preview_url": null,
+      "github_urls": [],
+      "source_record_status": "queued",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "agent-graph",
+      "project": "Agent Graph Maker",
+      "category": "skills",
+      "installation_status": "RECORDED; INSTALLATION NOT RECHECKED",
+      "preview_url": "https://ahmed-skills-library.aelgendy673996.chatgpt.site/tools/agent-graph-maker.html",
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/master/playground/agent-graph-maker.html"
+      ],
+      "source_record_status": "recorded",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "agent-office",
+      "project": "Agent Office",
+      "category": "skills",
+      "installation_status": "RECORDED — real-key operation unverified",
+      "preview_url": null,
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/master/apps/agent-office"
+      ],
+      "source_record_status": "recorded",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "agent-zero-install",
+      "project": "Agent Zero · Setup Prepared",
+      "category": "skills",
+      "installation_status": "PARTIAL — setup prepared; original server not running",
+      "preview_url": "https://ahmed-coding-agent-frontends.aelgendy673996.chatgpt.site/experiences/agent-zero.html",
+      "github_urls": [
+        "https://github.com/agent0ai/agent-zero",
+        "https://github.com/agent0ai/agent-zero/releases/tag/v2.14",
+        "https://github.com/agent0ai/agent-zero/archive/refs/tags/v2.14.zip"
+      ],
+      "source_record_status": "partial",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "anatomy",
+      "project": "Anatomy Test Bench",
+      "category": "skills",
+      "installation_status": "RECORDED; INSTALLATION NOT RECHECKED",
+      "preview_url": "https://ahmed-skills-library.aelgendy673996.chatgpt.site/tools/anatomy-bench.html",
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/master/playground/anatomy-bench.html"
+      ],
+      "source_record_status": "recorded",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "architecture-advisor-install",
+      "project": "Architecture Advisor",
+      "category": "skills",
+      "installation_status": "PARTIAL — local drafting; no live model provider",
+      "preview_url": "https://ahmed-skills-library.aelgendy673996.chatgpt.site/tools/architecture-advisor/",
+      "github_urls": [
+        "https://github.com/Pixeler5diti/system-architecture-generator"
+      ],
+      "source_record_status": "partial",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "atsmatrix",
+      "project": "ATSMATRIX Visualizer",
+      "category": "skills",
+      "installation_status": "RECORDED; INSTALLATION NOT RECHECKED",
+      "preview_url": "https://ahmed-skills-library.aelgendy673996.chatgpt.site/tools/atsmatrix-visualizer.html",
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/master/playground/atsmatrix-visualizer.html"
+      ],
+      "source_record_status": "recorded",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "book-hosted",
+      "project": "Book to Skill · hosted",
+      "category": "skills",
+      "installation_status": "RECORDED; INSTALLATION NOT RECHECKED",
+      "preview_url": "https://ahmed-skills-library.aelgendy673996.chatgpt.site/tools/book-to-skill.html",
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/master/playground/book-to-skill.html"
+      ],
+      "source_record_status": "recorded",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "book-local",
+      "project": "Book to Skill · local",
+      "category": "skills",
+      "installation_status": "CODE PRESENT — current server not verified",
+      "preview_url": null,
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/master/apps/book-to-skill"
+      ],
+      "source_record_status": "recorded",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "corner-court",
+      "project": "Corner Court",
+      "category": "skills",
+      "installation_status": "RECORDED; INSTALLATION NOT RECHECKED",
+      "preview_url": "https://claude.ai/artifact/Puqdvyy8d9WW3GT9eRGP6g",
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/master/games/corner-court/index.html"
+      ],
+      "source_record_status": "recorded",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "dashmotion-skill",
+      "project": "DashMotion · Installed Codex Skill",
+      "category": "skills",
+      "installation_status": "READY FOR RECORDED SCOPE",
+      "preview_url": null,
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/master/bundles/dashmotion",
+        "https://github.com/gendaiski/Skills/blob/master/notes/dashmotion-install-2026-10-24.md",
+        "https://github.com/gendaiski/Skills/tree/master/notes/dashmotion-samples",
+        "https://github.com/csthink/dashmotion"
+      ],
+      "source_record_status": "ready",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "design-gallery",
+      "project": "Design Style Gallery",
+      "category": "skills",
+      "installation_status": "RECORDED; INSTALLATION NOT RECHECKED",
+      "preview_url": "https://ahmed-skills-library.aelgendy673996.chatgpt.site/tools/design-styles.html",
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/master/playground/design-styles.html"
+      ],
+      "source_record_status": "recorded",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "directus-install",
+      "project": "Directus · Data Studio",
+      "category": "skills",
+      "installation_status": "PARTIAL — original app local; no public backend deployment",
+      "preview_url": null,
+      "github_urls": [
+        "https://github.com/directus/directus"
+      ],
+      "source_record_status": "partial",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "native-suite-directus",
+      "project": "Directus · Portable Suite",
+      "category": "skills",
+      "installation_status": "LOCAL INSTALL RECORDED — current process not rechecked",
+      "preview_url": null,
+      "github_urls": [
+        "https://github.com/gendaiski/Cloning-Lab/tree/codex/native-platform-suite-2026-10-25/systems/native-platform-suite",
+        "https://github.com/gendaiski/Cloning-Lab/tree/codex/native-platform-suite-2026-10-25/systems/native-platform-suite/sources/directus",
+        "https://github.com/gendaiski/Cloning-Lab/tree/codex/native-platform-suite-2026-10-25/systems/native-platform-suite/reports"
+      ],
+      "source_record_status": "ready",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "native-suite-grapesjs",
+      "project": "GrapesJS · Portable Suite",
+      "category": "skills",
+      "installation_status": "LOCAL INSTALL RECORDED — current process not rechecked",
+      "preview_url": null,
+      "github_urls": [
+        "https://github.com/gendaiski/Cloning-Lab/tree/codex/native-platform-suite-2026-10-25/systems/native-platform-suite",
+        "https://github.com/gendaiski/Cloning-Lab/tree/codex/native-platform-suite-2026-10-25/systems/native-platform-suite/sources/grapesjs",
+        "https://github.com/gendaiski/Cloning-Lab/tree/codex/native-platform-suite-2026-10-25/systems/native-platform-suite/reports"
+      ],
+      "source_record_status": "ready",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "logo-finder",
+      "project": "Logo Style Finder",
+      "category": "skills",
+      "installation_status": "RECORDED; INSTALLATION NOT RECHECKED",
+      "preview_url": "https://ahmed-skills-library.aelgendy673996.chatgpt.site/tools/logo-style-finder.html",
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/master/playground/logo-style-finder.html"
+      ],
+      "source_record_status": "recorded",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "motion2mixamo",
+      "project": "Motion2MixamoRig Studio",
+      "category": "skills",
+      "installation_status": "CODE PRESENT — current server not verified",
+      "preview_url": null,
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/master/apps/motion2mixamorig"
+      ],
+      "source_record_status": "recorded",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "native-suite-nocobase",
+      "project": "NocoBase · Portable Suite",
+      "category": "skills",
+      "installation_status": "LOCAL INSTALL RECORDED — current process not rechecked",
+      "preview_url": null,
+      "github_urls": [
+        "https://github.com/gendaiski/Cloning-Lab/tree/codex/native-platform-suite-2026-10-25/systems/native-platform-suite",
+        "https://github.com/gendaiski/Cloning-Lab/tree/codex/native-platform-suite-2026-10-25/systems/native-platform-suite/sources/nocobase",
+        "https://github.com/gendaiski/Cloning-Lab/tree/codex/native-platform-suite-2026-10-25/systems/native-platform-suite/reports"
+      ],
+      "source_record_status": "ready",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "plexe-install",
+      "project": "Plexe · Original ML Dashboard",
+      "category": "skills",
+      "installation_status": "PARTIAL — SDK/original dashboard local; no live LLM workflow",
+      "preview_url": "https://ahmed-skills-library.aelgendy673996.chatgpt.site/tools/plexe/",
+      "github_urls": [
+        "https://github.com/plexe-ai/plexe"
+      ],
+      "source_record_status": "partial",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "post-reader",
+      "project": "Post Reader",
+      "category": "skills",
+      "installation_status": "RECORDED; INSTALLATION NOT RECHECKED",
+      "preview_url": "https://ahmed-skills-library.aelgendy673996.chatgpt.site/tools/post-reader.html",
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/master/playground/post-reader.html"
+      ],
+      "source_record_status": "recorded",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "rea-reverse-engineer-anything",
+      "project": "REA · Reverse Engineer Anything",
+      "category": "skills",
+      "installation_status": "PARTIAL — CLI/MCP local; web workbench separate",
+      "preview_url": "https://ahmed-rea-web-workbench.vercel.app/",
+      "github_urls": [
+        "https://github.com/gendaiski/Cloning-Lab/tree/claude/multi-repo-ui-clone-oaio3c/systems/rea-web-workbench",
+        "https://github.com/morluto/rea",
+        "https://github.com/morluto/rea/blob/main/docs/installation.md"
+      ],
+      "source_record_status": "partial",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "skills",
+      "project": "Skills Library",
+      "category": "skills",
+      "installation_status": "PUBLISHED — library; automatic cross-chat harvesting absent",
+      "preview_url": "https://ahmed-skills-library.aelgendy673996.chatgpt.site",
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/codex/skills-library-studio-2026-10-25/apps/skills-library-studio",
+        "https://github.com/gendaiski/Skills/blob/codex/skills-library-studio-2026-10-25/apps/skills-library-studio/SESSION_HANDOFF.md",
+        "https://github.com/gendaiski/Skills"
+      ],
+      "source_record_status": "ready",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "skills-code-handoff",
+      "project": "Skills Library · GitHub Continuation",
+      "category": "skills",
+      "installation_status": "READY FOR RECORDED SCOPE",
+      "preview_url": null,
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/codex/skills-library-studio-2026-10-25/apps/skills-library-studio",
+        "https://github.com/gendaiski/Skills/blob/codex/skills-library-studio-2026-10-25/apps/skills-library-studio/SESSION_HANDOFF.md",
+        "https://github.com/gendaiski/Skills/blob/codex/skills-library-studio-2026-10-25/apps/skills-library-studio/HANDOFF_VERIFICATION.json"
+      ],
+      "source_record_status": "ready",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "session-dashboard",
+      "project": "Skills Session Dashboard",
+      "category": "skills",
+      "installation_status": "RECORDED; INSTALLATION NOT RECHECKED",
+      "preview_url": "https://claude.ai/artifact/P5Sm8dRMMM5WDUBuAFBhTS",
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/master/notes/session-dashboard/"
+      ],
+      "source_record_status": "recorded",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "skills-studio",
+      "project": "Skills Studio",
+      "category": "skills",
+      "installation_status": "RECORDED; INSTALLATION NOT RECHECKED",
+      "preview_url": "https://ahmed-skills-library.aelgendy673996.chatgpt.site/tools/skills-studio.html",
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/master/playground/index.html"
+      ],
+      "source_record_status": "recorded",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "skills-manager",
+      "project": "skills-manager Test Record",
+      "category": "skills",
+      "installation_status": "RECORDED; INSTALLATION NOT RECHECKED",
+      "preview_url": null,
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/master/notes/skills-manager-test",
+        "https://github.com/gendaiski/Skills/tree/builds/skills-manager-1.43.0",
+        "https://github.com/xingkongliang/skills-manager"
+      ],
+      "source_record_status": "recorded",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "ui-cloner",
+      "project": "UI Cloner",
+      "category": "skills",
+      "installation_status": "RECORDED; INSTALLATION NOT RECHECKED",
+      "preview_url": "https://ahmed-skills-library.aelgendy673996.chatgpt.site/tools/ui-cloner.html",
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/master/playground/ui-cloner.html"
+      ],
+      "source_record_status": "recorded",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "vibex",
+      "project": "vibeX Architecture Tools",
+      "category": "skills",
+      "installation_status": "COMPLETE — CLI/skill/viewer scope",
+      "preview_url": "https://ahmed-skills-library.aelgendy673996.chatgpt.site/tools/vibex/dashboard.html",
+      "github_urls": [
+        "https://github.com/Raja0sama/vibex"
+      ],
+      "source_record_status": "ready",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "native-suite-yao",
+      "project": "Yao · Portable Suite",
+      "category": "skills",
+      "installation_status": "LOCAL INSTALL RECORDED — current process not rechecked",
+      "preview_url": null,
+      "github_urls": [
+        "https://github.com/gendaiski/Cloning-Lab/tree/codex/native-platform-suite-2026-10-25/systems/native-platform-suite",
+        "https://github.com/gendaiski/Cloning-Lab/tree/codex/native-platform-suite-2026-10-25/systems/native-platform-suite/sources/yao",
+        "https://github.com/gendaiski/Cloning-Lab/tree/codex/native-platform-suite-2026-10-25/systems/native-platform-suite/reports"
+      ],
+      "source_record_status": "ready",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "artwork-3d",
+      "project": "3D Visualizer Studio",
+      "category": "video",
+      "installation_status": "PARTIAL",
+      "preview_url": "https://ahmed-video-clone-studio.aelgendy673996.chatgpt.site/visualizer.html",
+      "github_urls": [],
+      "source_record_status": "partial",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "anatomy-with-claude",
+      "project": "Anatomy with Claude",
+      "category": "video",
+      "installation_status": "QUEUED — no application installed",
+      "preview_url": "https://ahmed-video-clone-studio.aelgendy673996.chatgpt.site/CREATING_SYSTEMS.md",
+      "github_urls": [],
+      "source_record_status": "queued",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "dashmotion",
+      "project": "Dashmotion",
+      "category": "video",
+      "installation_status": "READY FOR RECORDED SCOPE",
+      "preview_url": "https://ahmed-video-clone-studio.aelgendy673996.chatgpt.site/dashmotion/studio.html",
+      "github_urls": [],
+      "source_record_status": "ready",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "motion-library",
+      "project": "Motion Reference Library",
+      "category": "video",
+      "installation_status": "PARTIAL",
+      "preview_url": "https://ahmed-video-clone-studio.aelgendy673996.chatgpt.site/library.html",
+      "github_urls": [],
+      "source_record_status": "partial",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "orbit",
+      "project": "Orbit Studio",
+      "category": "video",
+      "installation_status": "READY FOR RECORDED SCOPE",
+      "preview_url": "https://ahmed-video-clone-studio.aelgendy673996.chatgpt.site/editor.html?preset=orbit&workspace=orbit",
+      "github_urls": [],
+      "source_record_status": "ready",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "river",
+      "project": "Riverbend System",
+      "category": "video",
+      "installation_status": "PARTIAL",
+      "preview_url": "https://ahmed-video-clone-studio.aelgendy673996.chatgpt.site/river-system.html",
+      "github_urls": [],
+      "source_record_status": "partial",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "tripo",
+      "project": "Tripo SDK Integration",
+      "category": "video",
+      "installation_status": "PARTIAL",
+      "preview_url": null,
+      "github_urls": [
+        "https://github.com/Tripo-Developer/tripo-js-sdk"
+      ],
+      "source_record_status": "partial",
+      "source_record_date": "2026-10-27"
+    },
+    {
+      "id": "video",
+      "project": "Video Clone Studio",
+      "category": "video",
+      "installation_status": "PARTIAL — public editor; reference fidelity incomplete",
+      "preview_url": "https://ahmed-video-clone-studio.aelgendy673996.chatgpt.site/",
+      "github_urls": [
+        "https://github.com/gendaiski/Skills/tree/master/apps/video-clone-studio"
+      ],
+      "source_record_status": "partial",
+      "source_record_date": "2026-10-27"
+    }
+  ]
+}
