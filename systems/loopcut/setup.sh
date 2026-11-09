@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Loopcut (Samffprice/loopcut), the AI agent built into a fork of Blender 5.2.2.
 # There is no Linux release, so this builds it from source as its developer
-# guide does: Blender's Linux build dependencies, `make update` (Blender's
+# guide does: Blender's Linux build dependencies, `make update`'s libraries (Blender's
 # precompiled libraries from projects.blender.org), then the full build with
 # Ninja into systems/loopcut/.build. Takes 1-2 hours and ~25 GB on 4 cores.
 #   setup.sh --lite   Blender's lite configuration (no Cycles etc.): much faster
@@ -15,7 +15,11 @@ command -v git-lfs >/dev/null || "${sudo[@]}" apt-get install -y -q git-lfs
 "${sudo[@]}" python3 "$SRC/build_files/build_environment/install_linux_packages.py"
 cd "$SRC"
 git lfs install --local >/dev/null
-make update
+# `make update` would also `git pull --rebase` the source onto upstream's branch, which moves it
+# off the pin in scripts/upstream.lock (and conflicts once upstream rewrites that branch). Fetch
+# only the precompiled libraries, then the source's own LFS files, as make update does after its pull.
+python3 build_files/utils/make_update.py --no-blender
+git lfs pull
 # Blender 5.2 needs GCC 14 or newer; Ubuntu 24.04's default is 13, but gcc-14 is packaged.
 if [ "$(gcc -dumpversion | cut -d. -f1)" -lt 14 ]; then
   command -v gcc-14 >/dev/null || "${sudo[@]}" apt-get install -y -q gcc-14 g++-14
