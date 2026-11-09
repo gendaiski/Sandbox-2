@@ -31,7 +31,7 @@ env:
 jobs:
   test:
     name: ${{ matrix.label }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # ubuntu-latest is 26.04 now; Playwright 1.56 has no Chromium build for it
     timeout-minutes: ${{ matrix.timeout || 75 }}
     strategy:
       fail-fast: false
