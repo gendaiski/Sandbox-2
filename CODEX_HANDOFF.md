@@ -3,7 +3,7 @@
 **Repository:** https://github.com/gendaiski/Sandbox-2
 **Branch:** [`claude/loving-cannon-2y609d`](https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d)
 **This file:** https://github.com/gendaiski/Sandbox-2/blob/claude/loving-cannon-2y609d/CODEX_HANDOFF.md
-**State as of:** 2026-11-05, CI [run 49](https://github.com/gendaiski/Sandbox-2/actions/runs/42080790111) on commit `d74bec8`: **30 of 32 CI jobs green** (OXR and Loopcut are the two red).
+**State as of:** 2026-11-09, CI [run 52](https://github.com/gendaiski/Sandbox-2/actions/runs/42652253398) on commit `da237d3`: **31 of 32 CI jobs green** (Loopcut builds and runs; 2 of its checks fail upstream).
 
 Paste the message below into Codex, or point Codex at this file.
 
@@ -47,7 +47,7 @@ Each system's interactive page lives in two places:
 | ChunkNorris (`chunknorris`) | wikit-ai/chunknorris | ChunkNorris, 8501 | pass 9/9 | [open](https://claude.ai/artifact/6XRARdeV8tCAixZ5qWL7Yh) | `bench/interactive/chunknorris.html` |
 | ChunckerFlow (`chunckerflow`) | guybass/chunckerflow | ChunckerFlow Studio, 8001 | pass 12, skip 1 | [open](https://claude.ai/artifact/QU5PVDDtBQAZyXqcyyjh6W) | `bench/interactive/chunckerflow.html` |
 | PDFStract (`pdfstract`) | AKSarav/pdfstract | PDFStract, 8000 | pass 13/13 | [open](https://claude.ai/artifact/BNiwxdJJfaukyEgb25i9J8) | `bench/interactive/pdfstract.html` |
-| OXR (`oxr`) | SoMarkAI/OXR | SoMark's hosted demo (needs an NVIDIA GPU locally) | **fail**: 5 pass, 1 fail, 1 skip | [open](https://claude.ai/artifact/9i4VRYmrPevEjb1vmfELFr) | `bench/interactive/oxr.html` |
+| OXR (`oxr`) | SoMarkAI/OXR | SoMark's hosted demo (needs an NVIDIA GPU locally) | pass 6, skip 1 (all 622 upstream unit tests) | [open](https://claude.ai/artifact/9i4VRYmrPevEjb1vmfELFr) | `bench/interactive/oxr.html` |
 | RAG-Anything (`rag-anything`, plus the MinerU job) | HKUDS/RAG-Anything | Workbench, 9621 | pass 7, skip 2; MinerU job: pass 8, skip 1 | [open](https://claude.ai/artifact/Ujih4A2gT331orR8AHE3rE) | `bench/interactive/rag-anything.html` |
 | OpenFlow (`openflow`) | philbotar/OpenFlow | desktop app on noVNC, 6080 | pass 7/7 | [open](https://claude.ai/artifact/25X4xsc8uFt32a953BxgUQ) | `bench/interactive/openflow.html` |
 | Prism UI (`prism-ui`) | @nanisoft/prism-ui | Prism UI console, 4173 | pass 4/4 | [open](https://claude.ai/artifact/97wRF4yKGb5v7s7tEhb4fg), plus a [demo](https://claude.ai/artifact/R23JKwzoct7jFaKdRVNqot) | `bench/interactive/prism-ui.html` |
@@ -73,7 +73,7 @@ Each system's interactive page lives in two places:
 | Appwrite (`appwrite`) | appwrite/appwrite | Console, 8096 | pass 6/6 | [open](https://claude.ai/artifact/PpLCxdUGBNtuXDuMRXS5k6) | `bench/interactive/appwrite.html` |
 | PocketBase (`pocketbase`) | pocketbase/pocketbase | dashboard `/_/`, 8095 | pass 6/6 | [open](https://claude.ai/artifact/SZHXWLXxw3ZC55aNj7rqL3) | `bench/interactive/pocketbase.html` |
 | AI Agents from Scratch (`agents-from-scratch`) | pguso/agents-from-scratch | **Agents Lab** (built here), 8098 | pass 8/8 | [open](https://claude.ai/artifact/L2EHvQEjZ9HgMMSswegxsM) | `bench/interactive/agents-from-scratch.html` |
-| Jake's Brain (`jakes-brain`) | jake17007/jakes-brain | home screen of 24 apps, 4800 | pass 6, skip 1 (CI run 49) | — (no licence upstream, so its UI isn't republished) | `systems/jakes-brain/` |
+| Jake's Brain (`jakes-brain`) | jake17007/jakes-brain | home screen of 24 apps, 4800 | pass 6, skip 1 (CI run 52) | — (no licence upstream, so its UI isn't republished) | `systems/jakes-brain/` |
 | Post Studio (`post-studio`) | built here, on yt-dlp, gallery-dl and FxTwitter | Post Studio, 8097 | pass 12, skip 1 | — (it reads live social sites, which a claude.ai page can't) | `systems/post-studio/` |
 
 ## 3. Systems built here, not upstream
@@ -101,7 +101,9 @@ Each system's interactive page lives in two places:
    - `m4_e2e_check.py` reads the contact sheet as a PNG, but Loopcut writes a JPEG, so it reads a nonsense size of 65536×4292935692. It passed 26 of 27.
 
    The owner hasn't decided between a narrowly named allowlist for exactly those two assertions, with the reason beside it, and an upstream fix to the harness. Ask before doing either.
-2. **OXR: 1 red check.** 2 of its 622 upstream unit tests fail (the demo's `keep_header_footer` default). This is upstream's to fix. Leave it red, or open an issue or PR upstream.
+
+   `setup.sh` fetches Blender's libraries with `make_update.py --no-blender` plus `git lfs pull`, not `make update`: `make update` also rebases the source onto upstream's branch, which upstream has since rewritten, so it would leave the pin and conflict.
+2. **CI environment.** The test jobs are pinned to `ubuntu-24.04`, because `ubuntu-latest` is now 26.04, where Playwright 1.56.1 has no Chromium. Moving to 26.04 means upgrading Playwright first.
 3. **God's Eye View on a phone.** It needs a public address. In a Codespace, open port 4174 from the Ports tab; `serve.sh` already allows the forwarded host. A public sandbox host was tried, but Vercel's team access was never approved.
 4. **Post Studio, live.** Add `POST_STUDIO_LIVE_URLS` with real Instagram, Facebook and Threads links to the CI job, and fix the extractors against what real pages return. Threads is the least certain, because its extractor reads the page's embedded JSON.
 5. **Movez courses.** Once movez.substack.com is reachable, read the three articles and install whichever tools the owner wants.
