@@ -3,7 +3,7 @@
 **Repository:** https://github.com/gendaiski/Sandbox-2
 **Branch:** [`claude/loving-cannon-2y609d`](https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d)
 **This file:** https://github.com/gendaiski/Sandbox-2/blob/claude/loving-cannon-2y609d/CODEX_HANDOFF.md
-**State as of:** 2026-11-05, CI [run 47](https://github.com/gendaiski/Sandbox-2/actions/runs/41929248847) on commit `de524c4`: **29 of 31 CI jobs green**.
+**State as of:** 2026-11-05, CI [run 49](https://github.com/gendaiski/Sandbox-2/actions/runs/42080790111) on commit `d74bec8`: **30 of 32 CI jobs green** (OXR and Loopcut are the two red).
 
 Paste the message below into Codex, or point Codex at this file.
 
@@ -73,7 +73,7 @@ Each system's interactive page lives in two places:
 | Appwrite (`appwrite`) | appwrite/appwrite | Console, 8096 | pass 6/6 | [open](https://claude.ai/artifact/PpLCxdUGBNtuXDuMRXS5k6) | `bench/interactive/appwrite.html` |
 | PocketBase (`pocketbase`) | pocketbase/pocketbase | dashboard `/_/`, 8095 | pass 6/6 | [open](https://claude.ai/artifact/SZHXWLXxw3ZC55aNj7rqL3) | `bench/interactive/pocketbase.html` |
 | AI Agents from Scratch (`agents-from-scratch`) | pguso/agents-from-scratch | **Agents Lab** (built here), 8098 | pass 8/8 | [open](https://claude.ai/artifact/L2EHvQEjZ9HgMMSswegxsM) | `bench/interactive/agents-from-scratch.html` |
-| Jake's Brain (`jakes-brain`) | jake17007/jakes-brain | home screen of 24 apps, 4800 | pass 6, skip 1 (local run) | — (no licence upstream, so its UI isn't republished) | `systems/jakes-brain/` |
+| Jake's Brain (`jakes-brain`) | jake17007/jakes-brain | home screen of 24 apps, 4800 | pass 6, skip 1 (CI run 49) | — (no licence upstream, so its UI isn't republished) | `systems/jakes-brain/` |
 | Post Studio (`post-studio`) | built here, on yt-dlp, gallery-dl and FxTwitter | Post Studio, 8097 | pass 12, skip 1 | — (it reads live social sites, which a claude.ai page can't) | `systems/post-studio/` |
 
 ## 3. Systems built here, not upstream
