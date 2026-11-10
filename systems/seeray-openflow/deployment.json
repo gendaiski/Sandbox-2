@@ -1,0 +1,10 @@
+{
+  "project_id": "appgprj_6af315cd7e1c81918a42aaf0119e6a4f",
+  "version_id": "appgprj_6af315cd7e1c81918a42aaf0119e6a4f~appgver_6d699bf39c78819199b8ddee5c78b12d",
+  "deployment_id": "appgdep_6af3178aa438819197b45e7b7c661bcc",
+  "status": "succeeded",
+  "url": "https://seeray-openflow-original.aelgendy673996.chatgpt.site",
+  "commit_sha": "2806f5e955e31074fe8ea227ef7207afeff80912",
+  "archive_content_hash": "sha256:727c1730fc240c17649e1de78ff34e83aa311176bd44ab3620a5cf41223542ad",
+  "verification": "Native Sites deployment succeeded; browser QA used local production static server, not an independent public-host browser check."
+}

@@ -1,0 +1,11 @@
+{
+  "repository": "lawyerbuilder/contract_playbook_builder_v2",
+  "url": "https://github.com/lawyerbuilder/contract_playbook_builder_v2",
+  "commit": "1fc8318cc473a2f574a00ab80e09cdd1ff4cc56d",
+  "package_version": "1.0.0",
+  "release": "No published GitHub release found; pinned main commit",
+  "mode": "original frontend with browser-local draft adapter",
+  "url_preview": "https://contract-playbook-original.aelgendy673996.chatgpt.site",
+  "backend_installed": false,
+  "license_note": "README says proprietary/all rights reserved; package.json says MIT. Preserve both; no unambiguous LICENSE file found."
+}

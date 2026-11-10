@@ -26,3 +26,8 @@ For a checkout of this branch: `git submodule update --init --recursive`. Each p
 [Import manifest](agentic-flow-import-manifest.json) records each original blob SHA and its destination. All 95 source files were matched against the source repository's Git object hashes before copying. Four READMEs have clone/setup paths adjusted for Sandbox-2's `systems/` layout; application code, original assets and evidence retain their source content. `.gitmodules` points at the new paths.
 
 The original repositories and deployed demos remain in place. No browser-local user drafts, secrets, credentials, dependency caches or runtime databases were copied. These additions are not yet registered with Sandbox-2's existing `run.sh`, portal or CI matrix; their saved test reports describe the prior verification explicitly rather than implying fresh CI results.
+
+
+## Additional original frontend previews — 10 November 2026
+
+[Contract Playbook Builder, xyOps and SeeRay11/OpenFlow](frontend-previews-2026-11-10.md) have separate pinned source packages, preview adapters, build instructions, technical reports and verification evidence. These imports come directly from their named upstream repositories; they are not part of the older Agentic-Coding-Space copy described above. SeeRay11/OpenFlow is saved as `systems/seeray-openflow`; existing `systems/openflow` is preserved. Backend-dependent execution is not installed.

@@ -25,3 +25,15 @@
 [submodule "systems/multi-agent-ai-swarm/upstream"]
 	path = systems/multi-agent-ai-swarm/upstream
 	url = https://github.com/shortcut119/Multi-Agent-AI-Swarm.git
+
+[submodule "systems/contract-playbook-builder/upstream"]
+	path = systems/contract-playbook-builder/upstream
+	url = https://github.com/lawyerbuilder/contract_playbook_builder_v2.git
+
+[submodule "systems/xyops/upstream"]
+	path = systems/xyops/upstream
+	url = https://github.com/pixlcore/xyops.git
+
+[submodule "systems/seeray-openflow/upstream"]
+	path = systems/seeray-openflow/upstream
+	url = https://github.com/SeeRay11/OpenFlow.git

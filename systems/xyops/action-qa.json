@@ -1,0 +1,93 @@
+{
+  "storedEvent": {
+    "id": "draft_fb4wo238",
+    "title": "QA local workflow",
+    "enabled": false,
+    "targets": [],
+    "params": {},
+    "fields": [],
+    "triggers": [
+      {
+        "enabled": true,
+        "type": "manual",
+        "id": "nm1lnp4c"
+      }
+    ],
+    "limits": [
+      {
+        "type": "job",
+        "enabled": true,
+        "amount": 1
+      },
+      {
+        "type": "queue",
+        "enabled": true,
+        "amount": 0
+      },
+      {
+        "type": "retry",
+        "enabled": true,
+        "amount": 0,
+        "duration": 0
+      }
+    ],
+    "actions": [],
+    "notes": "",
+    "workflow": {
+      "nodes": [
+        {
+          "id": "nm1lnp4c",
+          "type": "trigger",
+          "x": 100,
+          "y": 340
+        },
+        {
+          "id": "nod1s0pe",
+          "type": "job",
+          "data": {
+            "params": {
+              "script": "#!/bin/sh\n\n# Enter your shell script code here",
+              "annotate": false
+            },
+            "targets": [
+              "main"
+            ],
+            "algo": "random",
+            "label": "",
+            "category": "general",
+            "plugin": "shellplug",
+            "icon": ""
+          },
+          "x": 320,
+          "y": 300
+        }
+      ],
+      "connections": [
+        {
+          "id": "ctmuypk3",
+          "source": "nm1lnp4c",
+          "dest": "nod1s0pe"
+        }
+      ]
+    },
+    "bubble": "leaf",
+    "category": "general",
+    "type": "workflow",
+    "icon": "",
+    "tags": [],
+    "opts": [],
+    "modified": 1794316184,
+    "created": 1794316184,
+    "username": "local-preview",
+    "plugin": "_workflow"
+  },
+  "persisted": true,
+  "listed": true,
+  "ipad": {
+    "viewport": 810,
+    "width": 810,
+    "workflowEditor": 1,
+    "sidebarToggle": 1
+  },
+  "errors": []
+}
