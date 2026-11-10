@@ -1,0 +1,45 @@
+{
+  "system": "whitepaperbuilder",
+  "timestamp": "2026-11-10T15:20:52+0000",
+  "counts": {
+    "PASS": 4,
+    "FAIL": 0,
+    "SKIP": 0
+  },
+  "checks": [
+    {
+      "name": "complete upstream source and licences preserved",
+      "status": "PASS",
+      "seconds": 0.004639677994418889,
+      "notes": [
+        "49 original files; commit d4b5aad749f355eadc6ed1f593524ac007a41a62"
+      ],
+      "error": null
+    },
+    {
+      "name": "reproducible self-contained HTML build",
+      "status": "PASS",
+      "seconds": 0.0468998509895755,
+      "notes": [],
+      "error": null
+    },
+    {
+      "name": "all upstream functional checks",
+      "status": "PASS",
+      "seconds": 0.05357323899806943,
+      "notes": [
+        "All 52 checks passed."
+      ],
+      "error": null
+    },
+    {
+      "name": "original UI, project roundtrip, citations, visuals, offline and PDF in Chromium",
+      "status": "PASS",
+      "seconds": 7.302759008001885,
+      "notes": [
+        "33 browser checks; 98544 byte PDF"
+      ],
+      "error": null
+    }
+  ]
+}

@@ -80,3 +80,18 @@ is the Prism UI demo, live. Both pages are private until shared.
   plain install leaves MinerU without torch. `setup.sh --full` pins
   `mineru[core]>=3.4.1,<4`.
 - **Langfuse:** 9/9 checks pass against a real self-hosted Langfuse (4.68.0) in CI.
+
+## White Paper Builder (Codex, 2026-11-10)
+
+The original, complete browser application is installed separately under
+[`systems/whitepaperbuilder`](systems/whitepaperbuilder). Its pinned upstream source,
+fonts, pagination engine, notices and tests are included unchanged.
+
+```bash
+./run.sh whitepaperbuilder --setup
+./start.sh whitepaperbuilder    # original UI: http://localhost:8101
+```
+
+No API keys or backend are needed. Open `systems/whitepaperbuilder/upstream/index.html`
+directly for offline use. See the system README for browser testing, project saving,
+PDF printing and known upstream limitations.

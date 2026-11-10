@@ -22,6 +22,10 @@ RUN = ROOT / ".run"
 PORT = int(os.environ.get("PORTAL_PORT", "8080"))
 
 SYSTEMS = [
+    {"id": "whitepaperbuilder", "name": "White Paper Builder", "port": 8101, "health": "/",
+     "what": "Original white-paper editor: paginated preview, charts, tables, citations, footnotes, appendices and PDF printing.",
+     "note": "Runs entirely in your browser. Save project downloads a portable JSON; no account or API key required.",
+     "upstream": "https://github.com/GMichaelRapp/WhitePaperBuilder"},
     {"id": "langfuse", "name": "Langfuse", "port": 3000, "health": "/api/public/health",
      "what": "LLM observability: traces, sessions, scores, prompt management, datasets and experiments.",
      "login": "harness@example.com / harness-password-123",
