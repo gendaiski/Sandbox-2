@@ -15,4 +15,15 @@ def fetch(item):
 with concurrent.futures.ThreadPoolExecutor(max_workers=3)as pool:list(pool.map(fetch,manifest['files']))
 for name in ['PYODIDE-LICENSE','PYTHON-LICENSE']:(runtime/name).write_bytes((root/name).read_bytes())
 (runtime/'PROVENANCE.json').write_text(json.dumps(manifest,indent=2))
+
+# CodeMirror is served locally, with its MIT license and pinned asset hashes.
+editor_manifest=json.loads((root/'editor-provenance.json').read_text())
+editor=out/'editor';editor.mkdir(exist_ok=True)
+for item in editor_manifest['files']:
+ path=editor/item['file'];path.parent.mkdir(parents=True,exist_ok=True)
+ if path.exists() and hashlib.sha256(path.read_bytes()).hexdigest()==item['sha256']:continue
+ data=urllib.request.urlopen(editor_manifest['source']+item['file'],timeout=90).read()
+ if hashlib.sha256(data).hexdigest()!=item['sha256']:raise RuntimeError('Unexpected editor hash: '+item['file'])
+ path.write_bytes(data)
+
 print('Built '+str(out))

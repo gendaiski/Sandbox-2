@@ -1,0 +1,21 @@
+{
+  "realEntranceBeforeApp": true,
+  "codeMirrorEditor": true,
+  "nextInputPreservesQuotes": true,
+  "keyboardNameEditChangesAgreement": true,
+  "documentFieldClickSelectsPythonInput": true,
+  "documentFieldHighlights": true,
+  "changedFieldAnimation": true,
+  "inlineErrorExplainsOldPreview": true,
+  "fullSourceTextRestored": true,
+  "freePanWorksAtFit": true,
+  "twoNewWireDesigns": true,
+  "animatedVisualVectors": true,
+  "noEvidenceDropdowns": true,
+  "sourceStyledAndVisible": true,
+  "playbookTopicPages": 14,
+  "playbookDecisionSaved": true,
+  "whitepaperUsesDecision": true,
+  "ipad": true,
+  "errors": []
+}

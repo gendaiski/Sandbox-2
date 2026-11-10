@@ -40,3 +40,18 @@ Visual contract is a six-chapter interactive reading aid for the sample agreemen
 Playbook has editable preferred positions, linked source review questions, manual exception/escalation decisions and rationale. White paper assembles a working brief from current matter terms, review domains and saved playbook decisions, with an editable executive overview and text export. These are authored local tools, not AI legal conclusions or external research. Source documents and issues remain available.
 
 Acceptance evidence: test-ui-revision.cjs / ui-revision-qa.json and test-gestures-visual.cjs / gestures-visual-qa.json verify chart toggles, inspector notes/icons, wheel/pinch, hand panning, marked Python inputs, page wireframes/navigation, visual chapters/source links/frozen editions, decisions, operating briefs, reload and iPad width. CDP touch events were used for pinch; physical iPad hardware was not tested.
+
+
+## Revision 3 — complete text, real editor and visual reading
+
+Use https://altaflow-workflow-studio.aelgendy673996.chatgpt.site/legal-studio.html?entrance=1 to always start at the new pre-application entrance. No sign-in is used. Entry is remembered only in sessionStorage; clicking the Accord logo returns to the entrance. Existing agreements and browser-local work are retained.
+
+The inspector now shows complete styled source text (including the entire agreement at the root), metadata, instructions, source records and notes, with jump buttons. Text is no longer inside a second clipped scrolling area.
+
+Python studio now uses locally served CodeMirror 5.65.17, MIT licensed, with Python mode, line numbers, active line, matching/closing brackets, indentation, folding and search. Literal inputs remain marked. Next input selects only the contents of a string, preserving its quotes. Running reads the actual editor buffer; errors are shown inline beside the old preview instead of silently leaving an apparently current document. Party-source labels in the starter are immutable BASE_CUSTOMER/BASE_SUPPLIER constants provided by the Python harness, reducing duplicate name literals in learner code. Saved user scripts are not replaced.
+
+Document-side values are highlighted and clickable. Parties, fee, term, payment period, data flag and due-diligence inputs link back to Python. Clicking selects the corresponding input; values changed in a successful run briefly animate. Derived milestone amounts link to annual_fee. The source agreement remains literal Python output; no external parser changes it after execution.
+
+Wireframe uses free translation, so the hand works even when all nodes fit within the viewport. Two new node designs, Folio and Contract, are selectable beside layout. Visual contracts use inline animated SVG scenes, improved cards/text, visible evidence instead of dropdowns, a motion toggle and reduced-motion support. The playbook has fourteen topic pages plus its overview, preserving earlier saved policy records. White paper remains available for the user's existing document later.
+
+Latest acceptance tests are test-v3.cjs and test-v3-touch.cjs; v3-qa.json / v3-touch-qa.json record keyboard name edits, quote-safe input selection, document-to-Python binding, full source restoration, both designs, fit-level free panning, touch pinch/pan, visible book evidence, animated vectors, playbook decisions, brief integration and iPad width. Earlier test scripts/reports represent previous UI revisions and are retained as history. Physical iPad hardware has not been tested.
