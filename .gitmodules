@@ -37,3 +37,11 @@
 [submodule "systems/seeray-openflow/upstream"]
 	path = systems/seeray-openflow/upstream
 	url = https://github.com/SeeRay11/OpenFlow.git
+
+[submodule "systems/free-blueprints/upstream"]
+	path = systems/free-blueprints/upstream
+	url = https://github.com/agent-blueprint/free-blueprints.git
+
+[submodule "systems/yfiles-demos/upstream"]
+	path = systems/yfiles-demos/upstream
+	url = https://github.com/yWorks/yfiles-for-html-demos.git

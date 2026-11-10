@@ -1,8 +1,8 @@
 {
-  "id": "appgdep_6af317627cbc81919dfca8bb731ff37a",
+  "id": "appgdep_6af31ec161448191bbb153ff9b0fbaa5",
   "project_id": "appgprj_6af314c8265081918c3a0bcdc2a42451",
   "title": "Contract AI Playbook Builder — Original UI",
-  "version_id": "appgprj_6af314c8265081918c3a0bcdc2a42451~appgver_09f61714d1e88191bbc05a82f17674f8",
+  "version_id": "appgprj_6af314c8265081918c3a0bcdc2a42451~appgver_998e34965ec8819197d0ec66ae0767fc",
   "type": "publish",
   "status": "succeeded",
   "url": "https://contract-playbook-original.aelgendy673996.chatgpt.site",
@@ -11,7 +11,7 @@
   "provider_deployment_id": "site---6af314c8265081918c3a0bcdc2a42451",
   "failure_message": null,
   "env_set_revision": 0,
-  "updated_at": "2026-11-10T13:09:10.723751+00:00",
-  "commit_sha": "cdd1e476bf25f3ff8dac0cd04b880514dca77187",
+  "updated_at": "2026-11-10T13:40:31.431416+00:00",
+  "commit_sha": "f363882325ad5a75b702cc36dad1f1418a2afecb",
   "access_mode": "public"
 }

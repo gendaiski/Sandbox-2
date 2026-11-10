@@ -7,5 +7,7 @@
   "runtime_installed": false,
   "project_id": "appgprj_6af315cd7e1c81918a42aaf0119e6a4f",
   "url": "https://seeray-openflow-original.aelgendy673996.chatgpt.site",
-  "source_site_commit": "2806f5e955e31074fe8ea227ef7207afeff80912"
+  "source_site_commit": "99f6255ead190f1223de654cb3a73f1f14a723eb",
+  "site_version": 2,
+  "revision": "Original full-height CSS/layout restored; original UI and actual user flows audited"
 }

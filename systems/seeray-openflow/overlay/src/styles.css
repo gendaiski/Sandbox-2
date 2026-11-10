@@ -3017,5 +3017,3 @@ main {
   border-radius: 2px;
   background: var(--v2-alpha-light-6);
 }
-
-#preview-disclosure{height:30px;padding:6px 12px;box-sizing:border-box;background:#3b2c14;color:#ffe2a5;font:12px system-ui;overflow:auto;white-space:nowrap}#preview-disclosure a{color:#fff;text-decoration:underline}#root{height:calc(100dvh - 30px)!important}

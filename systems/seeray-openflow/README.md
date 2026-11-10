@@ -9,3 +9,5 @@ Build with `python setup.py`, then `python -m http.server 8180 --bind 127.0.0.1 
 The upstream submodule remains pinned and unchanged. Overlay files contain the browser transport adapter and isolated frontend build configuration. Existing Sandbox-2 launcher/CI is unchanged.
 
 QA verified a three-node/two-edge original template, JSON export preserving the same graph, user-authored local skill save, and blocked Run with no synthetic history. No JavaScript page errors remained after correcting offline status metadata to the original URL contract.
+
+Original-interface revision restores exact upstream CSS/full-height layout and removes the extra disclosure bar. See REVISION.md, source-fidelity.json and fidelity-qa.json for the concrete repair and actual user-flow evidence.

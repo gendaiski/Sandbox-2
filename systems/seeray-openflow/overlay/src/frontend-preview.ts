@@ -34,7 +34,7 @@ window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
   const kind = parts[0], name = parts[1]
   if (kind === "pipelines" && name) {
     if (parts[2] === "agents") {
-      if (method !== "POST") return unavailable()
+      if (method !== "POST" || url.searchParams.get("merge") === "1") return unavailable()
       data.generated[name] = body
       persist(data)
       return response({path:"browser-local generated config (not installed)",merged:false})

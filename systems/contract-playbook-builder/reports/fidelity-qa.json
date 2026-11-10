@@ -1,0 +1,24 @@
+{
+  "errors": [],
+  "landingRestored": true,
+  "topNoticeRemoved": true,
+  "features": {
+    "url": "http://127.0.0.1:8190/",
+    "scrollY": 1900
+  },
+  "folderCreate": true,
+  "templatePreview": true,
+  "templateDetail": true,
+  "liveMarker": true,
+  "exports": {
+    "Claude Skill": "NDA (Non-Disclosure Agreement) - Draft-claude_skill.txt",
+    "ChatGPT Custom GPT": "NDA (Non-Disclosure Agreement) - Draft-chatgpt_skill.txt",
+    "Prompt Text": "NDA (Non-Disclosure Agreement) - Draft-prompt_text.txt"
+  },
+  "oneDriveExplicitlyUnavailable": true,
+  "ipad": {
+    "width": 810,
+    "viewport": 810
+  },
+  "persistedFolder": true
+}

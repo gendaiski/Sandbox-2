@@ -1,10 +1,11 @@
 {
   "project_id": "appgprj_6af315cd7e1c81918a42aaf0119e6a4f",
-  "version_id": "appgprj_6af315cd7e1c81918a42aaf0119e6a4f~appgver_6d699bf39c78819199b8ddee5c78b12d",
-  "deployment_id": "appgdep_6af3178aa438819197b45e7b7c661bcc",
+  "version_id": "appgprj_6af315cd7e1c81918a42aaf0119e6a4f~appgver_9679d26d130481918ea6406b18096c33",
+  "deployment_id": "appgdep_6af31de90a8c8191bd7c05b2fa070432",
   "status": "succeeded",
   "url": "https://seeray-openflow-original.aelgendy673996.chatgpt.site",
-  "commit_sha": "2806f5e955e31074fe8ea227ef7207afeff80912",
-  "archive_content_hash": "sha256:727c1730fc240c17649e1de78ff34e83aa311176bd44ab3620a5cf41223542ad",
-  "verification": "Native Sites deployment succeeded; browser QA used local production static server, not an independent public-host browser check."
+  "commit_sha": "99f6255ead190f1223de654cb3a73f1f14a723eb",
+  "archive_content_hash": "sha256:90fd6f3f79da287606feb2de4045293c5cf7dee77bb4fa0699ae44887111e849",
+  "verification": "Native Sites deployment succeeded; current revision UI/user-flow QA is fidelity-qa.json, source audit is source-fidelity.json; browser QA used local production static server. qa.json and workflows-qa.json retain initial version test evidence.",
+  "rollback_version_id": "appgprj_6af315cd7e1c81918a42aaf0119e6a4f~appgver_6d699bf39c78819199b8ddee5c78b12d"
 }

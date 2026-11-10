@@ -1,0 +1,39 @@
+{
+  "release": "v1.1.15",
+  "commit": "020e06431e4dbe9e2b0e00a859bfad6bce759219",
+  "concrete_repairs": [
+    "Remove fixed notice that covered original footer; disclose via small original-footer link",
+    "Preserve native event/workflow Enabled state instead of resetting it",
+    "Restore native preferences/profile save and reload using browser-local storage",
+    "Restore native ticket create\u2192detail\u2192list\u2192reopen using local storage"
+  ],
+  "remaining_differences": [
+    "No backend identity/authentication; Local Preview identity only",
+    "Real scheduler, workers, monitoring and external integrations remain offline",
+    "Live dashboard/system statistics display Offline",
+    "Marketplace catalogue is offline; no remote plugins installed",
+    "Native secret/password operations and notifications require separately configured services"
+  ],
+  "source_assets_unchanged": {
+    "js/pages": {
+      "files": 40,
+      "different": []
+    },
+    "css": {
+      "files": 18,
+      "different": []
+    },
+    "images": {
+      "files": 14,
+      "different": []
+    },
+    "fonts": {
+      "files": 4,
+      "different": []
+    },
+    "codemirror": {
+      "files": 338,
+      "different": []
+    }
+  }
+}

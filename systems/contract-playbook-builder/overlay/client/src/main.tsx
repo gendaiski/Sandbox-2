@@ -6,6 +6,7 @@ import { createRoot } from "react-dom/client";
 import { observable } from "@trpc/server/observable";
 import { localCall } from "./preview/local";
 import App from "./App";
+import { toast } from "sonner";
 import { getLoginUrl } from "./const";
 import "./index.css";
 
@@ -42,7 +43,7 @@ const trpcClient = trpc.createClient({
   links: [
     () => ({ op }) => observable(observer => {
       try { const data=localCall(op.path,op.input);observer.next({result:{data}});observer.complete(); }
-      catch(error:any){observer.error(TRPCClientError.from(new Error(error.message)));}
+      catch(error:any){toast.error(error.message);observer.error(TRPCClientError.from(new Error(error.message)));}
       return ()=>{};
     }),
   ],

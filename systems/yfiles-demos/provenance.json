@@ -1,0 +1,15 @@
+{
+  "upstream": "https://github.com/yWorks/yfiles-for-html-demos",
+  "tag": "v3.1.0.4",
+  "commit": "a2309bd452f0d4b0e1cb5f9f9072e81e2b17757d",
+  "package_version": "31.0.4",
+  "license": "Proprietary yFiles corresponding-license terms; redistribution prohibited absent permission",
+  "runtime_installed": false,
+  "runtime_published": false,
+  "site_created": false,
+  "official_gallery": "https://yfiles.com/demos/",
+  "official_playground": "https://yfiles.com/play",
+  "local_source_checkout": "/workspace/yfiles-demos-work",
+  "source_content_redistributed": false,
+  "selected_release_published": "2026-10-19"
+}

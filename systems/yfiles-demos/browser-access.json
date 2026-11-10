@@ -1,0 +1,18 @@
+{
+  "viewport": {
+    "width": 810,
+    "height": 1080
+  },
+  "results": [
+    {
+      "url": "https://yfiles.com/demos/",
+      "error": "page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://yfiles.com/demos/",
+      "verified": false
+    },
+    {
+      "url": "https://yfiles.com/play",
+      "error": "page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://yfiles.com/play",
+      "verified": false
+    }
+  ]
+}

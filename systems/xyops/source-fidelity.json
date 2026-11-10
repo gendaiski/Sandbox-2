@@ -1,0 +1,29 @@
+{
+  "selected_release": "v1.1.15",
+  "commit": "020e06431e4dbe9e2b0e00a859bfad6bce759219",
+  "comparison": "original source assets versus served assets",
+  "groups": {
+    "js/pages": {
+      "files": 40,
+      "different": []
+    },
+    "css": {
+      "files": 18,
+      "different": []
+    },
+    "images": {
+      "files": 14,
+      "different": []
+    },
+    "fonts": {
+      "files": 4,
+      "different": []
+    },
+    "codemirror": {
+      "files": 338,
+      "different": []
+    }
+  },
+  "original_html_restored_by_only_bootstrap_and_csp_removal": true,
+  "ui_page_code_and_css_modified": false
+}

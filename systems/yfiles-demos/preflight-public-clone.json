@@ -1,0 +1,26 @@
+{
+  "status": "blocked",
+  "checks": {
+    "root_package_json": true,
+    "demos_package_json": true,
+    "license_file_exists_not_read": false,
+    "complete_distribution_start_script": false,
+    "expected_version": true,
+    "runtime_package_present": false
+  },
+  "metadata": {
+    "package_version": "31.0.4",
+    "engines": {
+      "node": ">= 24",
+      "npm": ">= 11.8"
+    },
+    "start_script_present": false
+  },
+  "license_validated": false,
+  "note": "A file existing does not establish license validity or redistribution rights. Use the official distribution instructions after reviewing its license. This preflight never executes npm/start.",
+  "original_links": {
+    "gallery": "https://yfiles.com/demos/",
+    "playground": "https://yfiles.com/play",
+    "evaluation": "https://www.yworks.com/products/yfiles-for-html/evaluate"
+  }
+}

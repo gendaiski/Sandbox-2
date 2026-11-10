@@ -14,7 +14,7 @@ Original package manager is pnpm 10.4.1. The environment's default pnpm 11 rejec
 
 | Original route | Interface and flow | Preview behavior |
 |---|---|---|
-| / | Marketing page; authenticated users redirect to dashboard | Original logged-in flow opens dashboard using hash navigation |
+| / | Marketing page; authenticated users redirect to dashboard | Original public landing screen is restored; original Get Started enters dashboard without a backend sign-in |
 | /dashboard | Playbook counts/cards, welcome modal/product tour, search, folders and bulk selection | Browser-local drafts, not historical sample cases |
 | /create | Manual name/description/category/content/tags form | Creates a user-authored local draft |
 | /create-ai | Clause/intake conversation, party position and generation | Original form; explicit backend-required error instead of generated content |
@@ -33,7 +33,7 @@ Source issues: seed-data/clause-library.json is empty; clause-library-fixed.json
 
 ## Exact preview changes
 
-Original page components, visual styles, forms and assets are retained. A tablet-only CSS repair wraps the dashboard header controls and allows content to shrink, retaining all original controls. A visible status banner discloses frontend limitations and links to the existing manual-draft page. Wouter uses its hash-location hook so refresh/deep links work on static hosting. Login-URL and hard-navigation boundaries point at local hash routes. An in-process tRPC link supplies a Local Preview identity (not an authenticated backend account), reads bundled source reference content, and saves only user-created drafts/folders/export records/preferences in browser storage. Unsupported actions return descriptive errors; no synthetic AI responses are produced. Date fields are hydrated for original formatting. Manus runtime/debug collection and unconfigured analytics are omitted from the static build. The original source checkout remains unchanged; overlay documents each change.
+Original page components, visual styles, forms and assets are retained. A tablet-only CSS repair wraps the dashboard header controls and allows content to shrink, retaining all original controls. An unobtrusive expandable disclosure identifies offline AI without changing page layout; the original public landing screen, welcome dialog and section-anchor navigation are restored. Wouter uses its hash-location hook so refresh/deep links work on static hosting. Login-URL and hard-navigation boundaries point at local hash routes. An in-process tRPC link supplies a Local Preview identity (not an authenticated backend account), reads bundled source reference content, and saves only user-created drafts/folders/export records/preferences in browser storage. Unsupported actions return descriptive errors; no synthetic AI responses are produced. Date fields are hydrated for original formatting. Manus runtime/debug collection and unconfigured analytics are omitted from the static build. The original source checkout remains unchanged; overlay documents each change.
 
 ## Verification and limitations
 
@@ -43,7 +43,7 @@ Original page components, visual styles, forms and assets are retained. A tablet
 | Manual create/save/reopen | Working and tested | Browser storage only, not a database |
 | Template use and clause search | Working and tested | Original source reference material |
 | Plain-text export/download | Working and tested | Formatting in original component; no remote upload |
-| Claude/GPT formatting | Installed but not tested | Exports prompts; does not create external projects/GPTs |
+| Claude/GPT formatting | Working and tested | Original formatting and downloads tested; does not create external projects/GPTs |
 | AI intake/generation/coaching | Requires external credentials/service | Original backend and supported model configuration needed; core AI experience unavailable |
 | OneDrive | Requires external credentials/service | Requires Microsoft OAuth and backend storage/connection; not enabled |
 | Reference uploads/processing | Requires user configuration | Backend/storage needed; not represented as working |
@@ -51,10 +51,17 @@ Original page components, visual styles, forms and assets are retained. A tablet
 | Authentication/multiuser/cloud sync | Not included in preview | Static Local Preview identity is not Manus OAuth |
 | Plugins, community integrations, host access | Optional and intentionally not enabled | Not installed for this task |
 
-No fake playbooks or successful model runs are preloaded. Test drafts exist only in isolated QA browser storage and evidence files. The original welcome/tour UI and text may advertise full backend functions; the persistent preview banner takes precedence for this build. This is not a claim of a fully installed original backend.
+No fake playbooks or successful model runs are preloaded. Test drafts exist only in isolated QA browser storage and evidence files. The original welcome/tour UI and text may advertise full backend functions; the expandable preview disclosure clarifies the backend limitations. This is not a claim of a fully installed original backend.
 
 ## Full runtime, backup, updates and rollback
 
 Upstream instructions are pnpm install, configure MySQL/TiDB and required environment bindings, pnpm db:push, then pnpm dev. Before enabling a real backend, review OAuth, provider billing, storage credentials and the migrations against a backed-up database. Do not use the public static preview for confidential documents or credentials. Container filesystem access is not part of this frontend; no host directories are mounted.
 
 For this preview export localStorage `contract-playbook-local-v1` before clearing data/changing origins, and keep source pin/overlay/lockfile. Rebuild updates in a separate directory; review source/schema changes before migrations. Roll back to this source pin and overlay or the prior Site version. Server backups would additionally require database, uploaded files and secure credential/config backups; none exist in this frontend-only deployment.
+
+
+## Original interface/user-flow revision
+
+Revision restores the original public Home branch (the initial local identity had skipped it) and repairs its Features/How It Works scrolling within hash routing. Get Started enters the original dashboard and original welcome modal. The large custom top notice/manual-create shortcut is removed; an expandable offline disclosure is positioned out of document flow. All original screens, navigation controls and visual components remain; the welcome modal has one factual copy correction because this build does not pre-create sample playbooks. Export format changes clear the previous result to prevent a stale successful export/download from appearing for an unavailable OneDrive action. Unsupported actions now report visible errors even when an upstream component omits onError. Folder badges receive genuine local playbook counts; live markers are scoped to their version family. Source-fidelity.json lists every changed source file; 85 original client files remain byte-identical. Backend-only AI flows remain unavailable, not simulated.
+
+Expanded verification follows the original entry/welcome/folder/template-preview/detail/export flows through actual controls, checks each local export format and its download, tests a clear OneDrive failure, and rechecks iPad width and saved folders. See fidelity-qa.json and test-contract-fidelity.cjs.

@@ -5,7 +5,7 @@ Selected commit: 53b0470592ab7f1cefdc8bacb293cb0a0a97b1ab
 
 This is the original SolidJS frontend, shipped with a browser-only persistence adapter. It is a preview of the editing experience, not a full opencode agent runtime installation. It is distinct from philbotar/OpenFlow.
 
-Original functionality available to inspect: blank canvas, built-in role palette and templates, node selection/dragging/wiring, node inspector and tool permissions, workflow modes and settings, generated agent configuration drafting, workflow JSON export/import, skill authoring, MCP configuration drafts, provider/session/engine panels, notifications/gauntlet/verification controls. A visible banner and the original engine status report the disconnected runtime.
+Original functionality available to inspect: blank canvas, built-in role palette and templates, node selection/dragging/wiring, node inspector and tool permissions, workflow modes and settings, generated agent configuration drafting, workflow JSON export/import, skill authoring, MCP configuration drafts, provider/session/engine panels, notifications/gauntlet/verification controls. The original engine status and error notices report the disconnected runtime. No custom banner or replacement navigation is added.
 
 Working and tested: original production frontend opens, nodes can be added, workflow can be renamed/saved/reopened after refresh, original panels open, desktop and 810px-wide iPad viewport render without document overflow. No backend or external service requests were emitted in these tests. Built-in templates are upstream configuration presets, not fabricated run histories.
 
@@ -16,3 +16,5 @@ Backend-required features: agent/model execution, real provider catalog/credenti
 Official full runtime requires Bun 1.3+, Git, the complete source workspace and opencode serve (engine port 4096, canvas port 5174). Read the selected README before enabling it; real agents can edit real project files and permissions default to auto. No host services, containers, credentials or full runtime were installed for this frontend task.
 
 Attribution: MIT License; copyright 2025 opencode upstream and 2026 OpenFlow contributors. This independent fork is not affiliated with OpenCode. Original LICENSE is included.
+
+Revision 2: the first preview added a 30px disclosure bar and shrank the application height. That visual difference is removed; the original index structure and exact upstream CSS now fill the viewport. The transport returns explicit engine-unavailable errors, and Merge Agents cannot imply it modified a host. Existing local drafts use the same storage key and are preserved. Actual port wiring, node movement, save/reload, export/import and pipeline/swarm/orchestration settings were tested. Physical iPad Safari remains untested; the original desktop side panels leave a 270px-wide canvas at an 810px viewport rather than a redesigned mobile interface.

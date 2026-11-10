@@ -50,7 +50,7 @@ function App() {
       >
         <TooltipProvider>
           <Toaster />
-          <div role="status" style={{padding:"9px 18px",background:"#fff4d6",color:"#5c420d",fontSize:12}}>Original UI · Frontend preview · Drafts stay in this browser. AI coaching, generation and OneDrive need the backend. Built-in clauses/templates are upstream reference content. <a href="#/create" style={{textDecoration:"underline"}}>Manual draft</a></div><HashRouter hook={useHashLocation}><Router /></HashRouter>
+          <details className="preview-disclosure"><summary>Frontend preview · AI offline</summary><p>Original application screens. Your drafts stay in this browser. AI generation, coaching, reference processing and OneDrive require the original backend. No sign-in or API keys are needed here.</p></details><HashRouter hook={useHashLocation}><Router /></HashRouter>
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

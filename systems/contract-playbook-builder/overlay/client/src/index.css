@@ -236,3 +236,6 @@ h4 {
 .contract-dashboard .flex-1.container{min-width:0}
 .contract-dashboard .flex.items-center.justify-between.mb-8{flex-wrap:wrap;gap:16px}
 }
+
+.preview-disclosure{position:fixed;bottom:8px;right:8px;z-index:9999;max-width:min(340px,calc(100vw - 16px));background:var(--background);color:var(--foreground);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:11px;box-shadow:0 2px 8px #0001}
+.preview-disclosure summary{cursor:pointer;list-style:none}.preview-disclosure p{padding:8px 0;line-height:1.5}

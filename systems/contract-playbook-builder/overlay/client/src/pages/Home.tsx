@@ -26,10 +26,7 @@ export default function Home() {
     );
   }
 
-  if (isAuthenticated) {
-    window.location.hash = "/dashboard";
-    return null;
-  }
+  // Keep the original public landing screen accessible in the no-sign-in preview.
 
   return (
     <div className="min-h-screen bg-background">
@@ -42,10 +39,10 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-4">
             <Button variant="ghost" asChild>
-              <Link href="#features">Features</Link>
+              <a href="#features" onClick={event => {event.preventDefault();document.getElementById("features")?.scrollIntoView({behavior:"smooth"});}}>Features</a>
             </Button>
             <Button variant="ghost" asChild>
-              <Link href="#how-it-works">How It Works</Link>
+              <a href="#how-it-works" onClick={event => {event.preventDefault();document.getElementById("how-it-works")?.scrollIntoView({behavior:"smooth"});}}>How It Works</a>
             </Button>
             <Button asChild>
               <a href={getLoginUrl()}>Get Started</a>
@@ -88,7 +85,7 @@ export default function Home() {
                   </a>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
-                  <Link href="#how-it-works">Learn More</Link>
+                  <a href="#how-it-works" onClick={event => {event.preventDefault();document.getElementById("how-it-works")?.scrollIntoView({behavior:"smooth"});}}>Learn More</a>
                 </Button>
               </div>
               
