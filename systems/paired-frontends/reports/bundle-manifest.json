@@ -1,13 +1,13 @@
 {
   "file": "xyops-and-altaflow.html",
-  "bytes": 12458970,
-  "sha256": "18826b95b571a14dfcfd57357368744a5423dd097f3d61df4332f60a11e07424",
+  "bytes": 12470386,
+  "sha256": "c906265bf641023985740e4792d3c68a373deaba1738a08344f6c315fc4568f8",
   "asset_count": {
     "xyops": 1444,
-    "altaflow": 9
+    "altaflow": 10
   },
-  "gzip_bytes": 9331189,
+  "gzip_bytes": 9338604,
   "standalone": true,
   "source_xyops_version": "1.1.15",
-  "source_altaflow": "independent recreation 0.1.0"
+  "source_altaflow": "independent recreation 0.2.0"
 }

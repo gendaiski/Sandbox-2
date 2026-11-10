@@ -20,5 +20,7 @@ for x in setup['storage']:
   if key not in ['users','api_keys','secrets','events']:lists.setdefault(key,[]).append(x[2])
 (d/'preview-defaults.json').write_text(json.dumps(lists))
 shutil.copytree(r/'docs',d/'docs',dirs_exist_ok=True);shutil.copy(r/'LICENSE.md',d/'LICENSE.md')
-html=(d/'index.html').read_text();html=html.replace('<script src="/api/app/config"></script>','<script src="/preview.js"></script>');html=html.replace('<head>','<head><meta http-equiv="Content-Security-Policy" content="connect-src \'self\' blob: data:; form-action \'self\';">');(d/'index.html').write_text(html)
-shutil.copy(r/'preview.js',d/'preview.js');print('Built original UI static preview')
+html=(d/'index.html').read_text();html=html.replace('<script src="/api/app/config"></script>','<script src="/preview.js"></script>');html=html.replace('<head>','<head><meta http-equiv="Content-Security-Policy" content="script-src \'self\' blob: \'unsafe-inline\' \'unsafe-eval\'; worker-src \'self\' blob:; connect-src \'self\' blob:; form-action \'self\';">');(d/'index.html').write_text(html)
+shutil.copy(r/'preview.js',d/'preview.js');
+if (r/'BROWSER_RUNTIME.md').exists():shutil.copy(r/'BROWSER_RUNTIME.md',d/'STATUS.md')
+print('Built original UI static preview')

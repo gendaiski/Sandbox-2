@@ -1,12 +1,12 @@
 # Document Workflow Studio — independent system design
 
-Version 0.1.0 · Research baseline 2026-11-10 · Proposed architecture, not Altaflow internal implementation.
+Version 0.2.0 · Research baseline 2026-11-10 · Proposed architecture, not Altaflow internal implementation.
 
 ## Outcome and boundaries
 
 Altaflow's public material describes a hosted document automation service. Public repository discovery did not find an installable copy of that service. This design therefore defines an independently implementable system around the documented domain, with a working browser-only reference implementation. See SOURCES.md for primary references, repository findings and inspection limitations.
 
-The browser implementation starts empty. It supports real user-created document templates and fields, graph-like recipient dependencies, execution conditions, local approval/decline actions, two deterministic local bots, generated plain-text document previews, immutable run definitions, version snapshots, package/workspace JSON exports, restoration, and actual local action records. It does not claim production eSignature, authentication, external delivery, CRM connectivity, server scheduling, AI or compliance controls. Its interface is independently authored. No original private SaaS screen or backend was copied.
+The browser implementation starts empty. It supports real user-created document templates and fields, a movable node canvas with visible editable directed connections, zoom controls and recipient dependencies, execution conditions, local approval/decline actions, two deterministic local bots, generated plain-text document previews, immutable run definitions, version snapshots, package/workspace JSON exports, restoration, and actual local action records. It does not claim production eSignature, authentication, external delivery, CRM connectivity, server scheduling, AI or compliance controls. Its interface is independently authored. No original private SaaS screen or backend was copied.
 
 ## Product domain and information architecture
 
@@ -109,3 +109,10 @@ Roll out in slices: identity/tenant foundation; versioned definitions and asset 
 ## Local setup, data and rollback
 
 Serve dist with Python 3 or any static server, for example `python -m http.server 8195 --bind 127.0.0.1 --directory dist`. Open its URL; stop with Ctrl+C. Node 22+ runs the bounded engine tests using `npm test`; no dependencies need downloading. Browser storage key: document-flow-studio-v1. Use Export workspace before clearing site data or changing origin; no cross-device synchronization exists. Restore asks before replacing data. Keep the exported JSON, source files and prior Site version. No existing application was repaired or overwritten; no backend, external account, installer script, database migration, paid API or public host service was enabled by this build.
+
+
+## Browser canvas implementation (0.2.0)
+
+The workflow designer now renders a two-dimensional SVG/HTML graph. Drag each node by its grip (touch Pointer Events supported), or focus its grip and use arrow keys. Select Output on a source and Input on a destination to create a dependency. Select a wire to remove it. Connections reject self-links, duplicates and cycles. Existing automatic sequential connections can be removed to create parallel roots and explicit joins. All predecessor IDs drive the real engine; the diagram is not decorative. Coordinates are stored on each step and retained in saved versions and pinned run definitions. Zoom and scroll navigate larger graphs.
+
+Run views show the same graph colored by actual pending, ready, completed, skipped and declined engine states, alongside task actions, generated text and event history. The browser test in tests/canvas.cjs creates two nodes through the UI, disconnects and reconnects them, drags one, reloads, completes sequential approvals and reloads the final graph. canvas-qa.json records the passing checks, including an 810px viewport. Engine tests cover conditions, branches/joins, cycle rejection, decline and literal document interpolation. There is no external sending, server process execution or vendor backend in this implementation.

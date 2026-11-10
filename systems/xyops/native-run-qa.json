@@ -1,0 +1,13 @@
+{
+  "nativeSave": true,
+  "nativeCanvasSelect": true,
+  "nativeTestButton": true,
+  "nativeConfirm": true,
+  "jobId": "browser_9879575d34344edcb41aa076e30759b7",
+  "actualOutput": {
+    "value": 23
+  },
+  "reopened": true,
+  "resultPage": "   Browser workflow executed locally; 2 nodes completed\nJOB SUMMARY: TEST\nJOB ID\nbrowser_9879575d34344edcb41aa076e30759b7\nCATEGORY\nGeneral\nTARGETS\n(None)\nJOB STATE\n Complete\nEVENT\nQA native Run Test\nPLUGIN\n(None)\nSERVER\n(None)\nJOB STARTED\n Today at 4:01:55 PM\nPARENT WORKFLOW\n(None)\nLINKED JOB\n(None)\nAVG CPU\n Not measured (browser)\nJOB COMPLETED\n Today at 4:01:55 PM\nSOURCE\nLocal Preview\nATTEMPT\n(Initial)\nAVG MEM\n Not measured (browser)\nELAPSED TIME\n 0.06 seconds\n WORKFLOW RUN\n Edit...\n100%\nOn-Demand\nManual Run\nBrowser JavaScript (local)\nCATEGORY\nGeneral\nPLUGIN\nBrowser JavaScript (local)\nTARGETS\nMain Group\nTAGS\n(None)\nPlugin Parameters:\n JAVASCRIPT FUNCTION BODY\n // input contains the previous node output. return input;\nInherited Actions:\nON ANY ERROR\n Take Snapshot\nWORKFLOW JOBS\n1 JOB\n \nPAGE 1 OF 1\nJob/Node ID\nEvent/Plugin\nCategory\nServer\nState\nElapsed\nProgress/Result\nActions\nbrowser_eec211e5d4db4db8a21ce944bb7b551c\nBrowser JavaScript (local)\nGeneral\n(None)\n Complete\n 0.04 seconds\nSuccess\nView Details...\nINPUT DATA\n{\n\t\"value\": 23\n}\nOUTPUT DATA\n{\n\t\"value\": 23\n}\nWORKFLOW JOB OUTPUTS\n Download...\nWORKFLOW LOG\n Download...\nDate/Time\nServer\nNode ID\nType\nMessage\n Today at 4:01:55 PM\nbrowser-local\n-\n-\nBrowser-local workflow started\n Today at 4:01:55 PM\nbrowser-local\n#n2ypybqh\n Trigger\nEx",
+  "errors": []
+}

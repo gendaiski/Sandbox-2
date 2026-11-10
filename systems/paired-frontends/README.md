@@ -4,9 +4,9 @@ Hosted owner-only entry: https://altaflow-workflow-studio.aelgendy673996.chatgpt
 
 Generated standalone artifact: xyops-and-altaflow.html, approximately 12.5MB. The hosted entry's Save HTML control downloads an equivalent self-contained file. No application backend or application sign-in is involved. Hosting retains the existing site's private audience; it was not made public.
 
-The HTML opens immediately into the original xyOps v1.1.15 client with its real sidebar, pages, forms, workflow canvas and native controls. It embeds 1,444 source frontend assets and the existing local-draft transport adapter. The second tab opens the independent Altaflow research recreation, not the private vendor interface. The original Altaflow source/UI could not be verified; that distinction is prominent in the tab and About dialog.
+The HTML opens immediately into the original xyOps v1.1.15 client with its real sidebar, pages, forms, workflow canvas and native controls. It embeds 1,444 source frontend assets and a browser-local execution and draft transport adapter. The second tab opens the independent Altaflow research recreation, not the private vendor interface. The original Altaflow source/UI could not be verified; that distinction is prominent in the tab and About dialog.
 
-The 48px presentation tab bar can be hidden using Full screen to provide the original full app viewport. Switching keeps both application states alive. Backup/Restore operates only on xyops-local-drafts-v1 and document-flow-studio-v1. Save HTML does not export the user's draft values; it downloads only the application bundle. Browser-local data persists when origin storage is allowed; a memory fallback supports session-only use otherwise. Back up before closing when storage is blocked. Data from the separate public xyOps origin is not silently copied or deleted.
+The 48px presentation tab bar can be hidden using Full screen to provide the original full app viewport. Switching keeps both application states alive. Backup/Restore operates on xyops-local-drafts-v1, document-flow-studio-v1 and xyops-browser-runs-v1. Save HTML does not export the user's draft values; it downloads only the application bundle. Browser-local data persists when origin storage is allowed; a memory fallback supports session-only use otherwise. Back up before closing when storage is blocked. Data from the separate public xyOps origin is not silently copied or deleted.
 
 ## Rebuild
 
@@ -27,3 +27,12 @@ Chromium loaded both interfaces from in-memory HTML with all HTTP requests block
 Direct file:// navigation was blocked by the managed browser's enterprise policy (ERR_BLOCKED_BY_ADMINISTRATOR). Standalone content was therefore tested in memory and as a static document; physical iPad Files/Quick Look behavior was not tested. Current Safari/Chrome/Edge with DecompressionStream support is required. This is a native web experience rather than a compiled Swift/iOS application.
 
 The original xyOps license and third-party notices remain in the embedded assets. Existing standalone Sites, user origin storage, other repository systems and root CI/launcher are preserved.
+
+
+## Functional canvas revision
+
+The document-workflow designer now has movable nodes, SVG wires, Input/Output connection controls, edge removal, zoom, persisted coordinates and execution-state colors on the run graph. Its actual dependency engine supports conditions, parallel branches/joins, approvals, decline and deterministic bots. See verify-canvas.cjs and reports/combined-canvas-qa.json for a browser-created two-node route, rewiring, drag persistence and sequential execution checks at desktop/iPad width. No seeded sample is substituted for user interaction.
+
+xyOps retains its original native workflow canvas. Its browser-local execution extension is distinct from the production scheduler/worker runtime. Use only the explicitly supported local plugin for browser execution; server plugins require a real backend installation. This package is not a full server installation of either product.
+
+Native Run/Test stays in the embedded xyOps frame instead of opening an unusable blank popup. A bounded native delayed-fade callback is guarded after page exit; original frontend assets remain embedded unchanged apart from the documented index CSP and preview adapter. Combined verification records native Run/Test producing actual output 23, reload and backup of execution history.

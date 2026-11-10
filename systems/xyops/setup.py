@@ -10,7 +10,7 @@ actual=subprocess.check_output(['git','rev-parse','HEAD'],cwd=work,text=True).st
 if actual!=meta['commit']:raise SystemExit('Source pin differs. Preserve existing work and inspect before rebuilding.')
 subprocess.run(['npm','ci','--ignore-scripts','--no-audit','--no-fund'],cwd=work,check=True)
 subprocess.run(['node','bin/build.js','dev'],cwd=work,check=True)
-for name in ['build-preview.py','preview.js']:shutil.copy(root/name,work/name)
+for name in ['build-preview.py','preview.js','BROWSER_RUNTIME.md']:shutil.copy(root/name,work/name)
 # Portable output: replace only the preview builder's configured output directory.
 p=work/'build-preview.py';t=p.read_text().replace("Path('/workspace/sites/xyops-original')",'Path(__file__).parent.parent');p.write_text(t)
 subprocess.run(['python3','build-preview.py'],cwd=work,check=True)
