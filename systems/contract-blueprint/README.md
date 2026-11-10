@@ -25,3 +25,18 @@ The versioned source is template.html, data.json and python-templates.json. The 
 ## Unified workspace
 
 All views share the current matter. Successful Python output updates the agreement source reader, clause language in the document map, the main workflow and its dependencies. Due-diligence Python categories update the map and review owners. Review progress survives moving between views; generated workflows have a separate review state from the original illustrative blueprint. Imported text is available as a third matter and as the BASE_MSA source in its Python template. The first trusted starter auto-runs to populate a fresh workspace; saved user code never auto-runs on reload. Browser-local data stays per device/origin. The new test-unified.cjs verifies these cross-view contracts.
+
+
+## UI and visual-document revision
+
+The main entry now opens the workspace entrance page. Document Map, Workflow and Wireframe each retain their own current/hierarchy layout setting, toggled beside search. Hierarchy uses organization-chart lanes; current views retain the prior left-to-right routing. Workflow cards use the Langflow component pattern (icon/header, inputs, outputs and ports); these are original Accord components, not an embedded Langflow runtime or a claim of pixel-identical vendor UI. Reference inspected: https://github.com/langflow-ai/langflow/tree/main/src/frontend/src/CustomNodes/GenericNode .
+
+Mouse wheel/trackpad scroll zooms around the pointer. Touch pinch zooms. The hand button disables zoom and uses drag/scroll for panning; Space temporarily pans. The inspector now has vector icons, owner/dependency fields, risk labels, source evidence and a styled decision area. Python has syntax coloring and precisely highlighted literal input values, synchronized with its editable textarea and a Next input selector.
+
+Wireframe is a low-fidelity site architecture with eight actual system-page thumbnails. Selecting a page shows a larger schematic and can navigate to that real view. It supports both chart layouts, search and the shared canvas tools.
+
+Visual contract is a six-chapter interactive reading aid for the sample agreement: overview, parties/preamble, payments, obligations, protections and exit. Source details remain expandable. Fees, payment periods, parties and customized milestones follow generated Python variables. A frozen edition captures source and variables; later changes show a warning until rebuilding. It is a local source snapshot, not proof of legal finality or signature.
+
+Playbook has editable preferred positions, linked source review questions, manual exception/escalation decisions and rationale. White paper assembles a working brief from current matter terms, review domains and saved playbook decisions, with an editable executive overview and text export. These are authored local tools, not AI legal conclusions or external research. Source documents and issues remain available.
+
+Acceptance evidence: test-ui-revision.cjs / ui-revision-qa.json and test-gestures-visual.cjs / gestures-visual-qa.json verify chart toggles, inspector notes/icons, wheel/pinch, hand panning, marked Python inputs, page wireframes/navigation, visual chapters/source links/frozen editions, decisions, operating briefs, reload and iPad width. CDP touch events were used for pinch; physical iPad hardware was not tested.
