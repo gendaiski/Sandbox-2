@@ -6,7 +6,7 @@ The **complete original interface and implementation** are in `upstream/`, inclu
 
 ## Open it
 
-- **Browser preview:** https://white-paper-builder.aelgendy673996.chatgpt.site/ (private preview; public access requires owner approval).
+- **Hosted preview:** not deployed. A separate hosted preview requires owner approval; the original HTML is fully usable locally.
 - **Windows:** run `Open-Windows.cmd`, or open `upstream/index.html` in Chrome/Edge.
 - **macOS:** open `upstream/index.html` in Chrome/Edge, or run `Open-macOS.command`.
 - **Sandbox 2 portal:** run `./start.sh whitepaperbuilder` at the repository root. The original UI is at http://localhost:8101 and appears in the portal at http://localhost:8080.
