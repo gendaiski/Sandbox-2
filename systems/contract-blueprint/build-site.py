@@ -4,7 +4,7 @@ import hashlib,json,urllib.request,concurrent.futures,argparse
 root=Path(__file__).resolve().parent
 args=argparse.ArgumentParser();args.add_argument('--output',default='dist');options=args.parse_args();out=Path(options.output).resolve();out.mkdir(parents=True,exist_ok=True)
 html=(root/'template.html').read_text().replace('__DATA__',(root/'data.json').read_text()).replace('__PY_DATA__',(root/'python-templates.json').read_text())
-for name in ['contract-blueprint.html','contract-python.html','index.html']:(out/name).write_text(html)
+for name in ['contract-blueprint.html','contract-python.html','legal-studio.html','index.html']:(out/name).write_text(html)
 manifest=json.loads((root/'runtime-provenance.json').read_text());runtime=out/'python-runtime';runtime.mkdir(exist_ok=True)
 def fetch(item):
  path=runtime/item['file']

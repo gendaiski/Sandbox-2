@@ -1,6 +1,8 @@
 # Accord — legal blueprint and Python learning studio
 
-Public, no-sign-in previews:
+One public, no-sign-in system: https://altaflow-workflow-studio.aelgendy673996.chatgpt.site/legal-studio.html
+
+Legacy entry links (same workspace and browser storage):
 
 - Document hierarchy / workflow: https://altaflow-workflow-studio.aelgendy673996.chatgpt.site/contract-blueprint.html
 - Half-screen Python + document preview: https://altaflow-workflow-studio.aelgendy673996.chatgpt.site/contract-python.html
@@ -18,3 +20,8 @@ Edits, outputs, notes and review state are local to the browser/origin under acc
 Run `python build-site.py --output dist`, then `python -m http.server 8199 --bind 127.0.0.1 --directory dist`. The build downloads only pinned runtime assets and verifies their SHA-256 hashes against runtime-provenance.json. The third-party binary runtime is not vendored into this package; the published Site serves it locally so the visitor does not depend on a third-party CDN. Keep the included Pyodide and Python licenses with distributions.
 
 The versioned source is template.html, data.json and python-templates.json. The HTML is buildless and uses no framework. Files test.cjs and test-python.cjs contain Chromium/Playwright acceptance tests (local test dependency). QA JSON records source evidence inspection, gated parallel review, reload persistence, imported text, actual Python execution, changed variables/documents/workflows, error preservation and an 810px iPad viewport. Physical iPad hardware was not tested.
+
+
+## Unified workspace
+
+All views share the current matter. Successful Python output updates the agreement source reader, clause language in the document map, the main workflow and its dependencies. Due-diligence Python categories update the map and review owners. Review progress survives moving between views; generated workflows have a separate review state from the original illustrative blueprint. Imported text is available as a third matter and as the BASE_MSA source in its Python template. The first trusted starter auto-runs to populate a fresh workspace; saved user code never auto-runs on reload. Browser-local data stays per device/origin. The new test-unified.cjs verifies these cross-view contracts.
