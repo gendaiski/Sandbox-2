@@ -1,0 +1,12 @@
+{
+  "realPython": true,
+  "defaultAgreement400000": true,
+  "variableChangesDocument150000": true,
+  "conditionChangesWorkflow6to4": true,
+  "fullBlueprintUsesPythonOutput": true,
+  "dueDiligenceFiveParallelStreams": true,
+  "pythonErrorPreservesOutput": true,
+  "reloadSavedCodeAndPreview": true,
+  "ipad": true,
+  "errors": []
+}
