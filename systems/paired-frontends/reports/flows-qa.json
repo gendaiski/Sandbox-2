@@ -1,0 +1,18 @@
+{
+  "altaflowLocalRun": true,
+  "xyopsPreservedOnSwitch": true,
+  "xyopsPersisted": true,
+  "altaflowPersisted": true,
+  "backupContainsBoth": true,
+  "savedHTMLHasAssets": true,
+  "savedHTMLHasNoDraftValues": true,
+  "ipad": {
+    "width": 810,
+    "viewport": 810,
+    "altaflowWidth": 810,
+    "xyopsWidth": 810
+  },
+  "fullScreen": true,
+  "errors": [],
+  "externalRequests": []
+}
