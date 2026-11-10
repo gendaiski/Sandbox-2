@@ -1,0 +1,15 @@
+✔ numeric conditions reject blank and non-numeric inputs (1.319871ms)
+✔ approval gates local bots; definitions are pinned (10.641235ms)
+✔ false condition skips recipient then continues (0.261505ms)
+✔ parallel tasks are independently ready (0.410113ms)
+✔ decline ends a run without executing downstream bot (0.34496ms)
+✔ cycles, missing dependencies and duplicate fields fail validation (0.678794ms)
+✔ interpolation is literal and never evaluates code (0.292338ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 133.893829
