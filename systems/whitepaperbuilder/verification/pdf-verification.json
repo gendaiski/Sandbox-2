@@ -1,0 +1,10 @@
+{
+  "pages": 10,
+  "page_size_points": [
+    612,
+    792
+  ],
+  "text_searchable": true,
+  "fonts_include": "IBM Plex",
+  "bytes": 98544
+}

@@ -45,3 +45,7 @@ systems/appwrite/.install/
 systems/post-studio/library/
 systems/agents-from-scratch/runtime/
 systems/jakes-brain/runtime/
+
+# WhitePaperBuilder ships its original browser dependencies and fonts offline.
+!systems/whitepaperbuilder/upstream/src/vendor/
+!systems/whitepaperbuilder/upstream/src/vendor/**

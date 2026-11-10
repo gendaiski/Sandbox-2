@@ -1,0 +1,37 @@
+name: WhitePaperBuilder
+on:
+  push:
+    branches: ["codex/whitepaperbuilder-install"]
+    paths: ["systems/whitepaperbuilder/**", ".github/workflows/whitepaperbuilder.yml", "shared/harness.py"]
+  pull_request:
+    paths: ["systems/whitepaperbuilder/**", ".github/workflows/whitepaperbuilder.yml", "shared/harness.py"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  whitepaperbuilder:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install isolated browser test tools
+        run: |
+          python -m venv systems/whitepaperbuilder/.venv
+          systems/whitepaperbuilder/.venv/bin/pip install -r systems/whitepaperbuilder/requirements-test.txt
+          systems/whitepaperbuilder/.venv/bin/python -m playwright install --with-deps chromium
+      - name: Verify original application and full browser workflows
+        env:
+          RUN_BROWSER_TESTS: '1'
+        run: ./run.sh whitepaperbuilder --setup
+      - name: Retain results, screenshots, saved project and PDF
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: whitepaperbuilder-verification
+          path: systems/whitepaperbuilder/reports/

@@ -11,7 +11,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 RUN="$ROOT/.run"
 DEFAULT=(langfuse rag-anything pdfstract chunckerflow chunknorris prism-ui openflow)
 SERVED=("${DEFAULT[@]}" lobehub autogpt continue camel dspy metagpt izwi skills-manager loopcut
-        fabricjs fabricjs-site gods-eye-view claude-code-best-practice opus-videos appwrite pocketbase post-studio agents-from-scratch jakes-brain)
+        fabricjs fabricjs-site gods-eye-view claude-code-best-practice opus-videos appwrite pocketbase post-studio agents-from-scratch jakes-brain whitepaperbuilder)
 mkdir -p "$RUN/logs"
 
 running() { [ -f "$RUN/$1.pid" ] && kill -0 "$(cat "$RUN/$1.pid")" 2>/dev/null; }
@@ -27,6 +27,7 @@ stop_one() {
 # What has to exist before serve.sh can run, and the setup.sh flags that make it.
 ready() {
   case "$1" in
+    whitepaperbuilder) [ -f "$ROOT/systems/whitepaperbuilder/upstream/index.html" ] ;;
     prism-ui) [ -d "$ROOT/systems/prism-ui/node_modules" ] ;;
     openflow) [ -x "$ROOT/vendor/openflow/target/release/desktop" ] ;;
     langfuse | lobehub | autogpt | appwrite) true ;;   # serve.sh runs setup.sh itself: it starts the Docker stack
