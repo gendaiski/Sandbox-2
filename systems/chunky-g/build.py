@@ -52,7 +52,7 @@ SHELL = r"""
   });
   let last = null;
   function show() {
-    const h = location.hash.slice(1), atHome = !h || h === 'home' || h === 'front';
+    const h = location.hash.slice(1), atHome = !h || h === 'home' || h === 'front' || h === 'specs';
     host.hidden = !atHome; app.hidden = atHome; document.body.classList.toggle('cg-home', atHome);
     if (last !== null && last !== atHome) window.scrollTo(0, 0);
     last = atHome;

@@ -42,7 +42,7 @@ const step = async (name, fn) => { const t = Date.now(); try { const note = awai
       await q.close();
     });
 
-    await step('the entrance opens first; its two doors lead to the Front End and the Studio', async () => {
+    await step('the entrance opens first; its two doors lead to the Front End and the Studio; Specs Document from the header', async () => {
       await p.goto(url); await p.getByText('See where your documents').first().waitFor();
       if (await p.locator('#app').isVisible()) throw new Error('Studio showing on the entrance');
       const fold = await p.evaluate(() => { const r = CGShell.root.querySelector('.doors').getBoundingClientRect(); return r.bottom <= innerHeight; });
@@ -58,7 +58,15 @@ const step = async (name, fn) => { const t = Date.now(); try { const note = awai
       await p.getByRole('tab', { name: /Graph/ }).click();
       await p.getByRole('link', { name: 'Open this screen' }).click();
       await p.locator('.tabs a[data-view=graph].on').waitFor({ timeout: 20000 });
-      return 'entrance -> Studio -> entrance -> Front End -> Graph';
+      // The Specs Document, from the Studio's header and from the entrance's.
+      await p.getByRole('link', { name: 'Specs Document' }).first().click();
+      await p.getByText('Every step of Chunky G, and the repo it comes from.').waitFor();
+      const sp = await p.evaluate(() => { const r = CGShell.root; return { rows: r.querySelectorAll('#sp-mx tbody tr:not(.grp)').length, specs: r.querySelectorAll('.spec').length, repos: r.querySelectorAll('.repo a.nm').length, links: [...r.querySelectorAll('.relrow .who a')].every((a) => a.href.startsWith('https://github.com/')) }; });
+      if (sp.rows !== 13 || sp.specs !== 13 || sp.repos !== 11 || !sp.links) throw new Error('specs document incomplete: ' + JSON.stringify(sp));
+      await shot('specs');
+      await p.getByRole('link', { name: /Open Ask in the Studio/ }).click();
+      await p.locator('.tabs a[data-view=ask].on').waitFor({ timeout: 20000 });
+      return `entrance -> Studio -> entrance -> Front End -> Graph -> Specs (${sp.rows} rows, ${sp.repos} repos) -> Ask`;
     });
     await step('Library loads with the sample documents', async () => {
       await go('library'); await ui.getByText('Urban Beekeeping Field Guide.md').first().waitFor();

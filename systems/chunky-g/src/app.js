@@ -108,6 +108,7 @@
         h('div', { class: 'top' },
           h('div', { class: 'bar' },
             h('a', { class: 'brand', href: '#home', title: 'Back to the entrance page' }, h('b', null, 'Chunky ', h('i', null, 'G')), h('span', null, 'Studio')),
+            h('a', { class: 'btn small', href: '#specs', title: 'What each step does and which repo it relates to' }, 'Specs Document'),
             projSel, this.pill,
             h('button', { class: 'btn small', onclick: () => this.settings() }, 'Settings')),
           h('nav', { class: 'tabs', 'aria-label': 'Screens' }, this.VIEWS.map(([id, label], i) => h('a', { href: '#' + id, 'data-view': id }, h('span', { class: 'n' }, String(i + 1).padStart(2, '0')), label)))),

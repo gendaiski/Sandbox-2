@@ -185,6 +185,69 @@ footer.site { padding-top: 32px; border-top: 1px solid var(--line); color: var(-
   .top nav { display: none; }
   .caption { grid-template-columns: minmax(0, 1fr); }
 }
+/* specs document */
+.specs .sp-head { padding-block: 56px 40px; display: grid; gap: 18px; }
+.specs h1 { font-size: clamp(36px, 5.2vw, 64px); line-height: 1; font-weight: 800; letter-spacing: -0.035em; max-width: 16ch; }
+.specs .lede { font-size: 18px; color: var(--muted); max-width: 46em; margin: 0; }
+.sp-facts { display: flex; gap: 10px; flex-wrap: wrap; }
+.sp-facts span { font: 12px var(--mono); color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 4px 11px; background: var(--panel); }
+.mxwrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+table.mx { border-collapse: collapse; width: 100%; min-width: 900px; font-size: 13px; }
+table.mx th, table.mx td { padding: 9px 8px; border-bottom: 1px solid var(--line); text-align: center; }
+table.mx thead th { font: 500 11px var(--mono); letter-spacing: .04em; color: var(--muted); vertical-align: bottom; line-height: 1.3; }
+table.mx thead th:first-child { text-align: left; }
+table.mx thead a { color: var(--muted); text-decoration: none; }
+table.mx thead a:hover { color: var(--accent); text-decoration: underline; }
+table.mx th[scope=row] { text-align: left; font: 600 14px var(--sans); white-space: nowrap; }
+table.mx th[scope=row] a { color: var(--fg); text-decoration: none; }
+table.mx th[scope=row] a:hover { color: var(--accent); }
+table.mx th[scope=row] small { font: 11px var(--mono); color: var(--faint); margin-right: 8px; }
+table.mx tr.grp th { text-align: left; font: 500 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--faint); background: var(--panel-2); }
+table.mx tbody tr:last-child > * { border-bottom: 0; }
+.dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: middle; }
+.dot.p { background: var(--accent); }
+.dot.s { border: 2px solid var(--accent); width: 10px; height: 10px; opacity: .75; }
+.mxkey { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 12px; font-size: 13px; color: var(--muted); align-items: center; }
+.mxkey span { display: inline-flex; gap: 6px; align-items: center; }
+.spec { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 32px; padding-block: 32px; border-top: 1px solid var(--line); scroll-margin-top: 80px; }
+.spec:first-child { border-top: 0; padding-top: 0; }
+.spec .n { font: 500 13px var(--mono); color: var(--accent); }
+.spec h3 { font-size: 30px; line-height: 1.05; margin: 4px 0 10px; }
+.spec .does { color: var(--muted); margin: 0 0 14px; font-size: 15px; }
+.spec .io { font: 12.5px/1.6 var(--mono); color: var(--fg); background: var(--panel-2); border-radius: 8px; padding: 8px 10px; margin-bottom: 14px; }
+.spec .lbl { font: 500 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--faint); margin: 14px 0 6px; }
+.files { display: flex; flex-wrap: wrap; gap: 6px; }
+.files a, .pchip { font: 12px var(--mono); border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; background: var(--panel); color: var(--fg); text-decoration: none; }
+.files a:hover { border-color: var(--accent); color: var(--accent); }
+.spec .open { display: inline-block; margin-top: 16px; }
+.rel { display: grid; gap: 10px; }
+.relrow { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 14px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.relrow.p { border-left: 3px solid var(--accent); }
+.relrow .who a { font-family: var(--display); font-weight: 700; font-size: 17px; color: var(--fg); text-decoration: none; }
+.relrow .who a:hover { color: var(--accent); }
+.relrow .who div { font: 11.5px var(--mono); color: var(--faint); margin-top: 2px; }
+.relrow .what { font-size: 14.5px; color: var(--muted); }
+.kd { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+.kd ul { margin: 0; padding-left: 18px; font-size: 14px; color: var(--muted); }
+.kd li { margin-bottom: 5px; }
+.prompts { display: flex; flex-wrap: wrap; gap: 6px; }
+.repo { background: var(--panel); padding: 18px; min-width: 0; display: grid; gap: 6px; align-content: start; }
+.repo a.nm { font-family: var(--display); font-weight: 700; font-size: 18px; color: var(--fg); text-decoration: none; }
+.repo a.nm:hover { color: var(--accent); }
+.repo .slug { font: 12px var(--mono); color: var(--faint); }
+.repo p { font-size: 14px; color: var(--muted); margin: 0; }
+.repo .feeds { font: 12px var(--mono); color: var(--accent); }
+.repo .meta { font: 11.5px var(--mono); color: var(--faint); }
+.show-s { display: none; }
+.sp-note { font-size: 14px; color: var(--muted); max-width: 52em; }
+@media (max-width: 900px) {
+  .spec, .relrow, .kd { grid-template-columns: minmax(0, 1fr); }
+  .spec { gap: 14px; }
+  .top .wrap { gap: 8px; }
+  .top .btn.small { padding: 6px 10px; font-size: 13px; }
+  .hide-s { display: none; }
+  .show-s { display: inline; }
+}
 @media (prefers-reduced-motion: reduce) { .text mark, .fcol, .door { transition: none; } }
 </style>
 
@@ -192,7 +255,7 @@ footer.site { padding-top: 32px; border-top: 1px solid var(--line); color: var(-
   <div class="field" aria-hidden="true"><div class="cols" id="field"></div></div>
   <header class="etop"><div class="wrap">
     <a class="mark" href="#home">Chunky <b>G</b></a>
-    <nav aria-label="Entrance"><a href="#front">Front End</a><a href="#library">Studio</a></nav>
+    <nav aria-label="Entrance"><a href="#front">Front End</a><a href="#specs">Specs Document</a><a href="#library">Studio</a></nav>
   </div></header>
   <div class="ehero wrap">
     <div class="eyebrow">RAG &amp; graph-RAG studio &#xb7; runs in your browser</div>
@@ -210,7 +273,8 @@ footer.site { padding-top: 32px; border-top: 1px solid var(--line); color: var(-
 <header class="top"><div class="wrap">
   <a class="mark" href="#home">Chunky <b>G</b></a>
   <nav aria-label="Sections"><a href="#try">Try it</a><a href="#how">How it works</a><a href="#screens">Screens</a><a href="#sources">Built from</a><a href="#claude">Claude</a><a href="#run">Run it</a></nav>
-  <a class="btn go small" href="#library">Chunky G Studio</a>
+  <a class="btn small" href="#specs">Specs Document</a>
+  <a class="btn go small" href="#library"><span class="hide-s">Chunky G Studio</span><span class="show-s">Studio</span></a>
 </div></header>
 
 <main class="wrap" id="top">
@@ -341,6 +405,45 @@ python3 systems/chunky-g/test_chunky_g.py -v</pre>
 </main>
 </div>
 
+<div id="pg-specs" hidden>
+<header class="top"><div class="wrap">
+  <a class="mark" href="#home">Chunky <b>G</b></a>
+  <nav aria-label="Specs sections"><a href="#sp-matrix">At a glance</a><a href="#sp-steps">The ten steps</a><a href="#sp-shared">Shared engine</a><a href="#sp-repos">The repos</a></nav>
+  <a class="btn small" href="#front">Front End</a>
+  <a class="btn go small" href="#library"><span class="hide-s">Chunky G Studio</span><span class="show-s">Studio</span></a>
+</div></header>
+<main class="wrap specs">
+  <div class="sp-head">
+    <div class="eyebrow">Specs document &#xb7; recoded, not copied</div>
+    <h1>Every step of Chunky G, and the repo it comes from.</h1>
+    <p class="lede">Chunky G is written from scratch as one browser page. Eleven open-source repositories were read as references for features and behaviour; none of their code was copied. For each step below: what it does, where it is recoded in our code, which repo it relates to and which part of that repo, what we kept, and what we did differently.</p>
+    <div class="sp-facts"><span>10 steps</span><span>11 reference repos</span><span>25 chunkers</span><span>12 metrics</span><span>6 query modes</span><span>22 versioned Claude prompts</span></div>
+  </div>
+
+  <section id="sp-matrix">
+    <div class="sec-head"><h2>At a glance.</h2><p>Each step against the repo it relates to. A filled dot is the main source of the step; a ring is a repo it also takes something from. Click a step to read its spec.</p></div>
+    <div class="mxwrap"><table class="mx" id="sp-mx"></table></div>
+    <div class="mxkey"><span><i class="dot p"></i> main source</span><span><i class="dot s"></i> also draws on</span></div>
+  </section>
+
+  <section id="sp-steps">
+    <div class="sec-head"><h2>The ten steps.</h2><p>In the order of the Studio's tabs. The step numbers match the numbers on the tabs.</p></div>
+    <div id="sp-steplist"></div>
+  </section>
+
+  <section id="sp-shared">
+    <div class="sec-head"><h2>The shared engine.</h2><p>Pieces every step uses: retrieval, the Claude connector, tracing and the project store.</p></div>
+    <div id="sp-sharedlist"></div>
+  </section>
+
+  <section id="sp-repos">
+    <div class="sec-head"><h2>The eleven repos.</h2><p>What each one is, its licence, where it is installed in Sandbox-2, and which Chunky G steps relate to it.</p></div>
+    <div class="projects" id="sp-repolist"></div>
+    <p class="sp-note" style="margin-top:18px">Some chunkers also name LangChain, Chonkie and Docling strategies; those came to us through Chunky, ChunckerFlow and PDFStract, which wrap them. Browser libraries, pinned: pdf.js 3.11.174, mammoth 1.6.0, SheetJS 0.18.5, marked 9.1.6, and the Anthropic TypeScript SDK 1.3.0 for API-key use.</p>
+  </section>
+</main>
+</div>
+
 <script>
 (function () {
   const IMG = (id) => (window.CG_IMG && window.CG_IMG[id]) || `img/${id}.jpg`;
@@ -388,10 +491,14 @@ Leave the colony at least 18 kg of stores. Do not open the hive below 10 \u00b0C
   render('header');
 
   // ---- the entrance: front page or entrance by hash, and the field of re-cut text ----
-  const ent = document.getElementById('pg-entrance'), front = document.getElementById('pg-front');
+  const ent = document.getElementById('pg-entrance');
+  const PAGES = { front: document.getElementById('pg-front'), specs: document.getElementById('pg-specs') };
+  let cur = null;
   function page() {
-    const f = location.hash.slice(1) === 'front', changed = front.hidden === f;
-    ent.hidden = f; front.hidden = !f; if (changed) window.scrollTo(0, 0);
+    const h = location.hash.slice(1), next = PAGES[h] ? h : 'home';
+    ent.hidden = next !== 'home'; Object.entries(PAGES).forEach(([k, el]) => { el.hidden = k !== next; });
+    if (cur && cur !== next) window.scrollTo(0, 0);
+    cur = next;
   }
   window.addEventListener('hashchange', page); page();
   const KINDS = ['header', 'sentence', 'topic', 'fixed'], LABEL = { fixed: 'fixed size', sentence: 'sentences', header: 'header-aware', topic: 'by topic' };
@@ -481,6 +588,183 @@ Leave the colony at least 18 kg of stores. Do not open the hive below 10 \u00b0C
   });
 
   // ---- copy commands ----
+  // ---- the specs document: one data set renders the matrix, the step specs and the repo cards ----
+  const GH = 'https://github.com/';
+  const SRC = 'https://github.com/gendaiski/Sandbox-2/blob/claude/loving-cannon-2y609d/systems/chunky-g/src/';
+  const R = {
+    rag: { name: 'RAG-Anything', slug: 'HKUDS/RAG-Anything', ref: 'rag-anything-lightrag.md', lic: 'MIT', at: 'systems/rag-anything', is: 'All-in-one multimodal RAG built on LightRAG: parses documents with MinerU, Docling or PaddleOCR into a content list, and has processors that turn images, tables and equations into graph entities.' },
+    light: { name: 'LightRAG', slug: 'HKUDS/LightRAG', ref: 'rag-anything-lightrag.md', lic: 'MIT', at: 'installed with systems/rag-anything (1.4.16, with its WebUI)', is: 'Graph-based RAG: text chunks become a knowledge graph of entities and relationships plus vector stores; questions are answered by combining graph and vector retrieval in six modes.' },
+    lf: { name: 'Langfuse', slug: 'langfuse/langfuse', ref: 'langfuse.md', lic: 'MIT (except ee/)', at: 'systems/langfuse (Docker Compose)', is: 'Open-source LLM engineering platform: traces of typed observations, sessions, scores, prompt management, datasets and dashboards.' },
+    of: { name: 'OpenFlow', slug: 'philbotar/OpenFlow', ref: 'openflow.md', lic: 'MIT', at: 'systems/openflow (desktop app on noVNC)', is: 'Desktop agent harness (Rust core, Tauri, React) for designing multi-agent workflows as a graph, with handoffs, parallel layers, approvals, run history and review.' },
+    cm: { name: 'Chunking Methods for RAG', slug: 'itsual/Chunking-Methods-for-RAG', ref: 'chunking-methods.md', lic: 'MIT', at: 'systems/chunking-methods', is: 'A guide, not a library: 20 chunking methods in six families and a decision tree for picking one.' },
+    chunky: { name: 'Chunky', slug: 'GiovanniPasq/chunky', ref: 'chunky.md', lic: 'MIT', at: 'systems/chunky', is: 'Local workspace for preparing documents for RAG: PDF to Markdown, cleanup, source / Markdown / chunks side by side, strategy comparison and LLM enrichment.' },
+    cf: { name: 'ChunckerFlow', slug: 'guybass/chunckerflow', ref: 'chunckerflow.md', lic: 'MIT', at: 'systems/chunckerflow', is: 'Async Python framework to chunk text and measure the result: strategies, pluggable embeddings, 12 evaluation metrics, a strategy comparator and an API.' },
+    cn: { name: 'ChunkNorris', slug: 'wikit-ai/chunknorris', ref: 'chunknorris.md', lic: 'see its LICENSE', at: 'systems/chunknorris', is: 'Python package for header-aware chunking: parsers turn every format into Markdown, then a chunker splits on headers and balances sizes.' },
+    oxr: { name: 'OXR', slug: 'SoMarkAI/OXR', ref: 'oxr.md', lic: 'OXR Open Source License (Apache-2.0 with extra terms)', at: 'systems/oxr (fake model services; the real models need a 24-48 GB GPU)', is: 'A 1.3B document-parsing model and pipeline that turns PDFs and images into Markdown or JSON with typed layout blocks, coordinates and reading order.' },
+    ps: { name: 'PDFStract', slug: 'AKSarav/pdfstract', ref: 'pdfstract.md', lic: 'Apache-2.0', at: 'systems/pdfstract', is: 'Unified data preparation for RAG: extract, chunk and embed through one API, CLI and UI, with a compare mode that runs several extractors on one PDF.' },
+    dspy: { name: 'DSPy', slug: 'stanfordnlp/dspy', ref: 'dspy.md', lic: 'MIT', at: 'systems/dspy', is: 'Programming, not prompting: typed signatures, composable modules, metrics, and optimizers that compile better instructions and few-shot examples.' },
+  };
+  const ORDER = ['rag', 'light', 'lf', 'of', 'cm', 'chunky', 'cf', 'cn', 'oxr', 'ps', 'dspy'];
+  // rel: [repo, main source?, which part of that repo it relates to]
+  const STEPS = [
+    { id: 'library', n: '01', name: 'Library', does: 'Brings documents into a project and runs the whole pipeline on all of them with one button.',
+      io: 'PDF, DOCX, HTML, Markdown, TXT, CSV, XLSX, IPYNB or pasted text \u2192 Markdown with <!-- page N --> markers',
+      files: ['views_ingest.js', 'extract.js', 'app.js', 'samples.js'],
+      rel: [['cn', 1, 'Its parser layer: every input is normalised to Markdown first (MarkdownParser, HTMLParser, PdfParser, DocxParser, JupyterNotebookParser, CSV and Excel parsers).'],
+            ['chunky', 1, 'The project workspace and batch operations over every document, with cancel.'],
+            ['rag', 0, 'The range of formats it accepts, and the idea of one pipeline from parse to query.']],
+      kept: ['Markdown as the one format every later step reads', 'Batch "run pipeline on all" with progress and cancel', 'Export and import of a whole project as one JSON file'],
+      diff: ['Parsing runs in the browser (pdf.js, mammoth, SheetJS, marked) instead of Python, MinerU or LibreOffice', 'Projects are saved in the browser (IndexedDB), not on a server'],
+      prompts: [] },
+    { id: 'extract', n: '02', name: 'Extract', does: 'Runs several extractors on the same document and compares their Markdown side by side, then cleans it.',
+      io: 'a document \u2192 one Markdown version per extractor, with time, characters, words, headings and tables, and a line diff',
+      files: ['extract.js', 'views_ingest.js'],
+      rel: [['ps', 1, 'Its compare mode (several extractors on one PDF, side by side with stats), page ranges and preprocessing (headers and footers, whitespace, regex).'],
+            ['chunky', 1, 'Its converters, including a vision-LLM converter, deterministic Markdown cleanup and LLM correction guided by a document summary.']],
+      kept: ['Side-by-side compare with per-extractor stats and a diff', 'Recent comparisons saved in the project', 'Cleanup first by rules, then optionally by the model'],
+      diff: ['Extractors are pdf.js text, pdf.js layout to Markdown (headings from font size, tables from column gaps), Claude vision, mammoth for DOCX, and HTML to Markdown, instead of PyMuPDF, Marker, Docling and the like', 'Vision extraction uses Claude rather than a local vision model'],
+      prompts: ['doc_summary', 'md_cleanup', 'vision_page_markdown'] },
+    { id: 'layout', n: '03', name: 'Layout', does: 'Finds the typed blocks on each page, in reading order, and links each block to its lines of Markdown.',
+      io: 'PDF pages \u2192 blocks {page, idx, type, bbox, content, start_line, end_line} drawn as coloured boxes',
+      files: ['layout.js', 'views_ingest.js'],
+      rel: [['oxr', 1, 'Its typed layout blocks with boxes and reading order, its 14-label set (Title, Text, List, Table, Picture, Caption, Formula, Code Block, Footnote, Page-header, Page-footer, Stamp, two chemistry labels), line ranges back to the Markdown, and its pluggable layout engine.'],
+            ['rag', 0, 'Its content list for multimodal RAG: tables, figures and equations as separate items the graph can use.']],
+      kept: ['The same block JSON shape, exportable', 'Click a box to see its Markdown lines, and back', 'A toggle that hides page headers and footers'],
+      diff: ['Two engines of our own: a heuristic one (font size, position, repeated lines for headers and footers, column gaps for tables, indents for lists) and a Claude-vision one', 'No OXR model or D-FINE detector: those need a 24-48 GB GPU'],
+      prompts: ['vision_layout'] },
+    { id: 'chunk', n: '04', name: 'Chunk Lab', does: 'Cuts the Markdown with up to four strategies side by side, shows the cuts over the text, saves versions and enriches chunks.',
+      io: 'Markdown (+ layout blocks) \u2192 chunk sets {text, start, end, page, headers, enrich}, keyed by SHA-256 of the source',
+      files: ['chunkers.js', 'views_chunk.js'],
+      rel: [['cm', 1, 'Its catalogue of methods in six families (Basic, Context-preserving, Semantic & AI, Structured, Task-specific, Hybrid) and its decision tree, which became the "Which method?" wizard.'],
+            ['chunky', 1, 'The lanes compared side by side with highlights, saved chunk versions keyed by SHA-256 of the source, and enrichment with title, context, summary, keywords, questions and cleaned text.'],
+            ['cn', 0, 'The header-aware, size-balanced chunker with its parameters (header depth, soft and hard word caps, minimum words, parent-header breadcrumb).'],
+            ['cf', 0, 'Semantic chunking (percentile breakpoint with a sentence buffer) and late chunking.'],
+            ['ps', 0, 'The double-pass merge (sdpm) and LLM-guided (slumber) chunkers.'],
+            ['oxr', 0, 'Layout-aware chunking that never splits a table, formula or code block and keeps captions with them.']],
+      kept: ['25 strategies with their parameters and the source each comes from on its card', 'A size histogram, stats and a balance score per lane', 'Saved versions marked stale when the source text changes'],
+      diff: ['Semantic, late and topic strategies use hashed TF-IDF vectors that work offline, not a neural embedding model', 'Agentic chunking and enrichment ask Claude; offline stand-ins keep them working without it'],
+      prompts: ['chunk_enrich', 'agentic_chunking'] },
+    { id: 'evaluate', n: '05', name: 'Evaluate', does: 'Scores every strategy on your text and your question set, and ranks them on a leaderboard.',
+      io: 'chunk sets + a question set \u2192 12 metrics per strategy, as a heatmap leaderboard',
+      files: ['evaluate.js', 'views_chunk.js'],
+      rel: [['cf', 1, 'Its 12 metrics: semantic coherence, boundary quality, stickiness and topic diversity; NDCG@k, Recall@k, Precision@k and MRR; context relevance, faithfulness, context precision and context recall; and its StrategyComparator leaderboard.'],
+            ['lf', 0, 'Datasets: the same question sets (question, expected answer, expected chunks) are shared with Traces and the DSPy Lab.']],
+      kept: ['All 12 metrics, grouped as ChunckerFlow groups them', 'A ranked leaderboard across strategies'],
+      diff: ['Claude writes the question sets and judges the four RAG-quality metrics', 'Embedding-based metrics use the in-browser hashed vectors'],
+      prompts: ['qa_synthesis', 'judge_context_relevance', 'judge_faithfulness', 'judge_context_recall'] },
+    { id: 'graph', n: '06', name: 'Graph', does: 'Extracts entities and relationships from every chunk and merges them into one knowledge graph you can explore and edit.',
+      io: 'chunks \u2192 graph {nodes: name, type, description, sources; edges: keywords, description, weight, sources}',
+      files: ['graph.js', 'views_rag.js'],
+      rel: [['light', 1, 'Its entity and relationship extraction: the schema and entity types, gleaning (a second pass for missed entities), merging duplicates and summarising their descriptions.'],
+            ['rag', 1, 'Its multimodal processors: tables, figures and equations become entities with belongs_to edges to their section, described from the text around them.']],
+      kept: ['LightRAG\u2019s extraction schema and merge rules', 'Search, label filter, expand neighbours, an inspector and editing', 'JSON and GraphML export'],
+      diff: ['The graph is drawn and stored in the page instead of NetworkX, Neo4j or a graph database', 'Offline, entities come from capitalised names and sentence co-occurrence'],
+      prompts: ['entity_extraction', 'entity_gleaning', 'description_summary', 'multimodal_describe'] },
+    { id: 'ask', n: '07', name: 'Ask', does: 'Answers questions over the index and the graph in six modes, with references back to chunk and page.',
+      io: 'question + settings \u2192 keywords, retrieved entities, relations and chunks \u2192 answer with numbered references',
+      files: ['rag.js', 'embed.js', 'views_rag.js'],
+      rel: [['light', 1, 'Its QueryParam: modes naive, local, global, hybrid, mix and bypass; high- and low-level keywords; top_k, chunk_top_k, token budgets, response type, only-context, only-prompt, rerank, references and conversation history.'],
+            ['rag', 0, 'Multimodal queries: attach a table or a formula to the question.'],
+            ['lf', 0, 'Sessions and feedback scores: each question is a trace (AGENT > RETRIEVER > GENERATION) grouped by conversation.']],
+      kept: ['All six modes and the QueryParam controls', 'The full retrieved context and the final prompt are viewable'],
+      diff: ['Retrieval is our own: BM25 plus hashed TF-IDF vectors fused with reciprocal rank fusion, plus entity and relation vectors for the graph modes', 'Reranking asks Claude instead of a reranker model'],
+      prompts: ['keywords_extraction', 'rerank', 'rag_answer'] },
+    { id: 'flow', n: '08', name: 'Flow', does: 'Wires the steps into a pipeline of nodes and edges and runs it, layer by layer.',
+      io: 'nodes (Source, Extract, Clean, Layout, Chunk, Enrich, Index, Graph, Evaluate, Retrieve, Generate, Judge, Claude agent) + edges \u2192 a run with per-node output',
+      files: ['flow.js', 'views_tools.js'],
+      rel: [['of', 1, 'Its canvas of nodes and edges, validation before a run (cycles, missing inputs, dangling edges), parallel execution by dependency layer, typed handoffs between nodes, run history, retry, build-with-AI and post-run review.']],
+      kept: ['Layers shown on the nodes; nodes in a layer run at the same time', 'Retry a failed node; a history of runs', 'Templates: Classic RAG, Graph RAG and others'],
+      diff: ['The nodes are Chunky G\u2019s own stages, not agents on different providers', 'It runs in the page, not in a Rust and Tauri core'],
+      prompts: ['flow_build', 'flow_review', 'flow_agent'] },
+    { id: 'dspy', n: '09', name: 'DSPy Lab', does: 'Declares what a step should do, measures it, and lets an optimizer compile better instructions and examples.',
+      io: 'signature + module + dataset + metric \u2192 a compiled program {instructions, demos} with before and after scores',
+      files: ['dspy.js', 'views_tools.js'],
+      rel: [['dspy', 1, 'Signatures (inline or as a form), modules Predict, ChainOfThought, ReAct, BestOfN and a RAG program, metrics, the adapter prompt, and the optimizers LabeledFewShot, BootstrapFewShot, BootstrapFewShotWithRandomSearch, COPRO and a MIPRO-lite.']],
+      kept: ['The signature syntax "context, question -> answer"', 'An adapter preview of the exact prompt', 'Save and load of the compiled program as JSON'],
+      diff: ['Claude is the only language model; the optimizers are compact re-implementations that run in the page', 'ReAct\u2019s tool is a search over Chunky G\u2019s own index'],
+      prompts: ['dspy_predict', 'dspy_propose'] },
+    { id: 'traces', n: '10', name: 'Traces', does: 'Records every call as a trace you can inspect, score and compare, and versions every prompt.',
+      io: 'every step \u2192 traces of typed observations, scores, prompt versions, datasets and a dashboard',
+      files: ['trace.js', 'llm.js', 'views_tools.js'],
+      rel: [['lf', 1, 'Traces with nested typed observations (SPAN, GENERATION, RETRIEVER, EMBEDDING, CHAIN, AGENT, TOOL, EVALUATOR, EVENT), sessions, scores from people, code or a model, prompt management with versions, labels, diffs and a playground, datasets with runs, and the dashboard.']],
+      kept: ['The observation types and the waterfall view', 'Prompt labels production and latest, version diffs and a playground', 'A trace export shaped like Langfuse\u2019s'],
+      diff: ['Everything is stored in the browser; there is no ClickHouse, Postgres or worker', 'Token counts are estimated (about 4 characters per token) when no API usage is reported'],
+      prompts: [] },
+  ];
+  const SHARED = [
+    { id: 'engine', n: 'A', name: 'Retrieval engine', does: 'Indexes chunks for lexical, vector and graph search.',
+      io: 'chunks \u2192 BM25 index + 512-dimension hashed TF-IDF vectors (sublinear tf, L2) + entity and relation vectors',
+      files: ['embed.js', 'rag.js'],
+      rel: [['light', 1, 'Vector and graph retrieval combined: entity vectors for local mode, relation vectors for global, both for hybrid and mix.'],
+            ['cf', 0, 'Its pluggable embedding providers; here the provider is the hashed TF-IDF vectorizer, and late chunking blends chunk, section and document vectors.'],
+            ['ps', 0, 'Its Embed stage after Extract and Chunk.']],
+      kept: ['A pluggable vector backend, so a real embedding model can replace the hashed one'], diff: ['No download and no server: vectors are computed in the page'], prompts: [] },
+    { id: 'claude', n: 'B', name: 'Claude connector', does: 'Every judgement call goes through one connector with versioned prompts and JSON schemas.',
+      io: 'prompt name + variables (+ schema, images) \u2192 text or validated JSON, traced',
+      files: ['llm.js', 'offline.js'],
+      rel: [['lf', 1, 'Prompt management: the 22 prompts are versioned, labelled and editable in Traces.']],
+      kept: ['One place that calls the model, so every call is traced and every prompt is versioned'],
+      diff: ['On claude.ai it uses the viewer\u2019s own account; with an API key it uses the official Anthropic TypeScript SDK with structured output; without either, labelled offline stand-ins answer'], prompts: [] },
+    { id: 'store', n: 'C', name: 'Project store', does: 'Keeps documents, extractions, layouts, chunk sets, graph, datasets, traces and prompts in one project.',
+      io: 'project \u2192 IndexedDB, or one exported JSON file',
+      files: ['app.js', 'core.js'],
+      rel: [['chunky', 1, 'Saved versions keyed by a hash of the source text, and one project holding every document.']],
+      kept: ['Versions marked stale when their source changes'], diff: ['Saved in the browser; nothing leaves the page unless you export it or call Claude'], prompts: [] },
+  ];
+  const repoLink = (k, cls) => Object.assign(document.createElement('a'), { href: GH + R[k].slug, target: '_blank', rel: 'noopener', textContent: R[k].name, className: cls || '' });
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+
+  // matrix
+  const mx = document.getElementById('sp-mx');
+  const thead = el('thead'), hr = el('tr'); hr.append(el('th', null, 'Step'));
+  ORDER.forEach((k) => { const th = el('th'); th.scope = 'col'; th.append(repoLink(k)); hr.append(th); });
+  thead.append(hr); mx.append(thead);
+  const tbody = el('tbody');
+  [['The ten steps', STEPS], ['Shared engine', SHARED]].forEach(([g, list]) => {
+    const gr = el('tr', 'grp'), gh = el('th', null, g); gh.colSpan = ORDER.length + 1; gr.append(gh); tbody.append(gr);
+    list.forEach((st) => {
+      const tr = el('tr'), th = el('th'); th.scope = 'row';
+      const a = el('a'); a.href = '#sp-' + st.id; a.append(el('small', null, st.n), st.name); th.append(a); tr.append(th);
+      ORDER.forEach((k) => { const r = st.rel.find((x) => x[0] === k), td = el('td'); if (r) { const d = el('i', 'dot ' + (r[1] ? 'p' : 's')); d.title = `${st.name} \u2190 ${R[k].name}: ${r[1] ? 'main source' : 'also draws on'}`; td.append(d); } tr.append(td); });
+      tbody.append(tr);
+    });
+  });
+  mx.append(tbody);
+
+  // step specs
+  function spec(st, isStep) {
+    const a = el('article', 'spec'); a.id = 'sp-' + st.id;
+    const left = el('div'); left.append(el('div', 'n', isStep ? 'Step ' + st.n : 'Engine ' + st.n), el('h3', null, st.name), el('p', 'does', st.does), el('div', 'io', st.io));
+    left.append(el('div', 'lbl', 'Recoded in'));
+    const files = el('div', 'files'); st.files.forEach((f) => files.append(Object.assign(document.createElement('a'), { href: SRC + f, target: '_blank', rel: 'noopener', textContent: 'src/' + f }))); left.append(files);
+    if (st.prompts.length) { left.append(el('div', 'lbl', 'Claude prompts')); const ps = el('div', 'prompts'); st.prompts.forEach((x) => ps.append(el('span', 'pchip', x))); left.append(ps); }
+    if (isStep) { const o = el('a', 'btn small open', 'Open ' + st.name + ' in the Studio \u2192'); o.href = '#' + st.id; left.append(o); }
+    const right = el('div'); right.append(el('div', 'lbl', 'Relates to'));
+    const rel = el('div', 'rel');
+    st.rel.forEach(([k, main, what]) => {
+      const row = el('div', 'relrow' + (main ? ' p' : '')), who = el('div', 'who');
+      who.append(repoLink(k), el('div', null, R[k].slug + (main ? ' \u00b7 main source' : '')));
+      row.append(who, el('div', 'what', what)); rel.append(row);
+    });
+    right.append(rel);
+    const kd = el('div', 'kd');
+    [['What we kept', st.kept], ['What we did differently', st.diff]].forEach(([t, list]) => { const d = el('div'); d.append(el('div', 'lbl', t)); const ul = el('ul'); list.forEach((x) => ul.append(el('li', null, x))); d.append(ul); kd.append(d); });
+    right.append(kd);
+    a.append(left, right); return a;
+  }
+  document.getElementById('sp-steplist').append(...STEPS.map((st) => spec(st, true)));
+  document.getElementById('sp-sharedlist').append(...SHARED.map((st) => spec(st, false)));
+
+  // repo cards
+  const rl = document.getElementById('sp-repolist');
+  ORDER.forEach((k) => {
+    const r = R[k], d = el('div', 'repo');
+    const feeds = [...STEPS, ...SHARED].filter((st) => st.rel.some((x) => x[0] === k)).map((st) => st.name);
+    const refA = Object.assign(document.createElement('a'), { href: REF + r.ref, target: '_blank', rel: 'noopener', textContent: 'Our reference notes' });
+    d.append(repoLink(k, 'nm'), el('div', 'slug', r.slug), el('p', null, r.is), el('div', 'feeds', '\u2192 ' + feeds.join(', ')), el('div', 'meta', 'Licence: ' + r.lic + ' \u00b7 in Sandbox-2: ' + r.at), refA);
+    rl.append(d);
+  });
+
   document.getElementById('copy').addEventListener('click', async (e) => {
     const text = document.getElementById('cmds').innerText;
     try { await navigator.clipboard.writeText(text); e.target.textContent = 'Copied'; }
