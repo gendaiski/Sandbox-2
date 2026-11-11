@@ -135,7 +135,45 @@ pre .c { opacity: .55; }
 .links a { font-weight: 500; }
 footer.site { padding-top: 32px; border-top: 1px solid var(--line); color: var(--faint); font-size: 13px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
 
+/* the entrance: one screen, the header and the hero, over a field of text being cut into chunks */
+[hidden] { display: none !important; }
+#pg-entrance { position: relative; min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; overflow: hidden; isolation: isolate;
+  margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding-inline: max(16px, env(safe-area-inset-left, 0px)); }
+#pg-front { padding-bottom: 48px; }
+.field { position: absolute; inset: 0 0 64px 0; z-index: -1; overflow: hidden; pointer-events: none;
+  -webkit-mask-image: linear-gradient(100deg, transparent 34%, rgba(0,0,0,.14) 50%, rgba(0,0,0,.9) 78%);
+  mask-image: linear-gradient(100deg, transparent 34%, rgba(0,0,0,.14) 50%, rgba(0,0,0,.9) 78%); }
+.field .cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; width: max(1180px, 100%); height: 100%; padding: 92px 28px 0; margin-left: auto; }
+.fcol { min-width: 0; font: 13px/1.95 var(--mono); color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; transition: opacity .45s ease; }
+.fcol.swap { opacity: .15; }
+.fcol mark { color: inherit; border-radius: 3px; }
+.fcol .tag { display: inline-block; font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--fg); border: 1px solid var(--line); background: var(--panel); border-radius: 99px; padding: 3px 10px; margin-bottom: 14px; }
+.etop .wrap { display: flex; align-items: center; gap: 22px; padding-block: 18px; flex-wrap: wrap; }
+.etop nav { display: flex; gap: 22px; font-size: 15px; }
+.etop nav a { color: var(--muted); text-decoration: none; }
+.etop nav a:hover { color: var(--fg); }
+.ehero { flex: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; padding-block: clamp(20px, 4vh, 40px) clamp(28px, 6vh, 56px); }
+.giant { font-size: clamp(46px, min(6.8vw, 11vh), 120px); line-height: .92; font-weight: 800; letter-spacing: -0.045em; max-width: 12.5ch; }
+.giant span { color: var(--accent); }
+.elede { font-size: clamp(17px, 1.5vw, 20px); color: var(--muted); max-width: 36em; margin: clamp(18px, 3vh, 28px) 0 clamp(22px, 4vh, 36px); }
+.doors { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; max-width: 780px; }
+.door { display: grid; gap: 4px; padding: 16px 20px 18px; align-content: start; border-radius: 16px; border: 1px solid var(--line); background: color-mix(in srgb, var(--panel) 88%, transparent); backdrop-filter: blur(6px); color: var(--fg); text-decoration: none; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; min-width: 0; }
+.door small { font: 500 12px var(--mono); color: var(--faint); letter-spacing: .08em; }
+.door b { font-family: var(--display); font-size: clamp(22px, 2.2vw, 28px); line-height: 1.1; letter-spacing: -0.02em; }
+.door span { font-size: 14px; color: var(--muted); }
+.door:hover { transform: translateY(-3px); border-color: var(--faint); box-shadow: var(--shadow); }
+.door.go { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+.door.go small, .door.go span { color: color-mix(in srgb, var(--accent-fg) 78%, transparent); }
+.estats { width: 100%; display: flex; gap: 28px; flex-wrap: wrap; padding-block: 16px 22px; border-top: 1px solid var(--line); font: 13px var(--mono); color: var(--muted); }
+.estats b { color: var(--fg); font-weight: 500; font-size: 15px; margin-right: 4px; }
+#try { border-top: 0; padding-top: 48px; }
+#try .demo { max-width: 860px; }
+
 @media (max-width: 900px) {
+  .field { -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,.14), transparent 60%); mask-image: linear-gradient(180deg, rgba(0,0,0,.14), transparent 60%); }
+  .field .cols { grid-template-columns: minmax(0, 1fr); width: 100%; padding-inline: 16px; }
+  .fcol:not(:first-child) { display: none; }
+  .doors { grid-template-columns: minmax(0, 1fr); }
   .hero, .sec-head, .tour, .proof, .run, .pair { grid-template-columns: minmax(0, 1fr); }
   .hero { padding-block: 40px; gap: 32px; }
   .rail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -147,26 +185,39 @@ footer.site { padding-top: 32px; border-top: 1px solid var(--line); color: var(-
   .top nav { display: none; }
   .caption { grid-template-columns: minmax(0, 1fr); }
 }
-@media (prefers-reduced-motion: reduce) { .text mark { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .text mark, .fcol, .door { transition: none; } }
 </style>
 
+<div id="pg-entrance">
+  <div class="field" aria-hidden="true"><div class="cols" id="field"></div></div>
+  <header class="etop"><div class="wrap">
+    <a class="mark" href="#home">Chunky <b>G</b></a>
+    <nav aria-label="Entrance"><a href="#front">Front End</a><a href="#library">Studio</a></nav>
+  </div></header>
+  <div class="ehero wrap">
+    <div class="eyebrow">RAG &amp; graph-RAG studio &#xb7; runs in your browser</div>
+    <h1 class="giant">See where your documents <span>get cut</span>, then ask them.</h1>
+    <p class="elede">Extraction, layout, chunking, evaluation, a knowledge graph and answers with references. Every step on its own screen, every step traced.</p>
+    <div class="doors">
+      <a class="door" href="#front"><small>01</small><b>Front End</b><span>How it works, the ten screens, the sources</span></a>
+      <a class="door go" href="#library"><small>02</small><b>Go to Chunky G Studio &#x2192;</b><span>Open the workbench, sample documents loaded</span></a>
+    </div>
+  </div>
+  <div class="estats wrap"><span><b>25</b>chunkers</span><span><b>6</b>query modes</span><span><b>12</b>quality metrics</span><span><b>10</b>projects in one studio</span></div>
+</div>
+
+<div id="pg-front" hidden>
 <header class="top"><div class="wrap">
-  <a class="mark" href="#top">Chunky <b>G</b></a>
-  <nav aria-label="Sections"><a href="#how">How it works</a><a href="#screens">Screens</a><a href="#sources">Built from</a><a href="#claude">Claude</a><a href="#run">Run it</a></nav>
-  <a class="btn go small" href="#library">Open Chunky G</a>
+  <a class="mark" href="#home">Chunky <b>G</b></a>
+  <nav aria-label="Sections"><a href="#try">Try it</a><a href="#how">How it works</a><a href="#screens">Screens</a><a href="#sources">Built from</a><a href="#claude">Claude</a><a href="#run">Run it</a></nav>
+  <a class="btn go small" href="#library">Chunky G Studio</a>
 </div></header>
 
 <main class="wrap" id="top">
-  <div class="hero">
-    <div>
-      <div class="eyebrow">RAG &amp; graph-RAG workbench</div>
-      <h1>See where your documents <span>get cut</span>, then ask them.</h1>
-      <p class="lede">Chunky G takes a PDF, a Word file or a page of Markdown through every step of retrieval: extraction, layout, chunking, scoring, a knowledge graph and answers with references. Each step is a screen you can see and change, and every step is traced.</p>
-      <div class="cta">
-        <a class="btn go" href="#library">Open Chunky G &#x2192;</a>
-        <a class="btn" href="#screens">Tour the ten screens</a>
-        <span class="note">Runs in your browser. Nothing to install.</span>
-      </div>
+  <section id="try">
+    <div class="sec-head">
+      <h2>Same passage, four different cuts.</h2>
+      <p>How a document is cut decides what retrieval can find. Switch the strategy and watch the chunks move; the Studio runs 25 of them on your own files.</p>
     </div>
     <div class="demo" aria-label="Live chunking demo">
       <header><b>Try a strategy</b><small>same passage, different cuts</small></header>
@@ -179,7 +230,7 @@ footer.site { padding-top: 32px; border-top: 1px solid var(--line); color: var(-
       <div class="text" id="demo-text"></div>
       <footer><span><b id="d-count">&#x2013;</b> chunks</span><span>mean <b id="d-mean">&#x2013;</b> tokens</span><span id="d-note"></span></footer>
     </div>
-  </div>
+  </section>
 
   <section id="how">
     <div class="sec-head">
@@ -277,7 +328,7 @@ python3 systems/chunky-g/test_chunky_g.py -v</pre>
       </div>
       <div class="links">
         <h3 style="font-size:20px">Where everything is</h3>
-        <a href="#library">Open the app</a>
+        <a href="#library">Open Chunky G Studio</a>
         <a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/chunky-g" target="_blank" rel="noopener">Source code: systems/chunky-g</a>
         <a href="https://github.com/gendaiski/Sandbox-2/blob/claude/loving-cannon-2y609d/docs/chunky-g/DESIGN.md" target="_blank" rel="noopener">Design: every feature mapped to a screen</a>
         <a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/docs/chunky-g/reference" target="_blank" rel="noopener">Reference notes on the ten projects</a>
@@ -288,6 +339,7 @@ python3 systems/chunky-g/test_chunky_g.py -v</pre>
 
   <footer class="site"><span>Chunky G &#xb7; built in Sandbox-2</span><span>Libraries: pdf.js 3.11.174 &#xb7; mammoth 1.6.0 &#xb7; SheetJS 0.18.5 &#xb7; marked 9.1.6</span></footer>
 </main>
+</div>
 
 <script>
 (function () {
@@ -334,6 +386,42 @@ Leave the colony at least 18 kg of stores. Do not open the hive below 10 \u00b0C
   }
   document.querySelectorAll('.chip').forEach((c) => c.addEventListener('click', () => render(c.dataset.s)));
   render('header');
+
+  // ---- the entrance: front page or entrance by hash, and the field of re-cut text ----
+  const ent = document.getElementById('pg-entrance'), front = document.getElementById('pg-front');
+  function page() {
+    const f = location.hash.slice(1) === 'front', changed = front.hidden === f;
+    ent.hidden = f; front.hidden = !f; if (changed) window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', page); page();
+  const KINDS = ['header', 'sentence', 'topic', 'fixed'], LABEL = { fixed: 'fixed size', sentence: 'sentences', header: 'header-aware', topic: 'by topic' };
+  const field = document.getElementById('field');
+  const cols = [0, 1, 2].map(() => field.appendChild(Object.assign(document.createElement('div'), { className: 'fcol' })));
+  function paint(col, kind) {
+    const sp = spans[kind]().filter(([a, b]) => b > a), frag = document.createDocumentFragment();
+    const tag = Object.assign(document.createElement('div'), { className: 'tag', textContent: `${LABEL[kind]} \u00b7 ${sp.length} chunks` });
+    frag.append(tag, document.createElement('br'));
+    for (let rep = 0; rep < 3; rep++) {
+      let at = 0;
+      sp.forEach(([a, b], i) => {
+        if (a > at) frag.append(TEXT.slice(at, a));
+        const mk = document.createElement('mark'); mk.textContent = TEXT.slice(a, b);
+        mk.style.backgroundColor = `color-mix(in srgb, var(${COLORS[(i + rep * 2) % COLORS.length]}) var(--hl), transparent)`;
+        frag.append(mk); at = b;
+      });
+      frag.append(TEXT.slice(at) + '\n\n');
+    }
+    col.replaceChildren(frag);
+  }
+  let step = 0;
+  cols.forEach((c, k) => paint(c, KINDS[k]));
+  const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!still) setInterval(() => {
+    if (ent.offsetParent === null || document.hidden) return; // not on screen
+    step++; const k = step % 3, col = cols[k];
+    col.classList.add('swap');
+    setTimeout(() => { paint(col, KINDS[(k + step) % KINDS.length]); col.classList.remove('swap'); }, 450);
+  }, 1800);
 
   // ---- screen tour ----
   const SCREENS = [

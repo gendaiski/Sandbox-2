@@ -67,7 +67,7 @@ with h.check("engines in Node: chunkers, layout, index, graph, 6 query modes, me
 
 with Served("chunky-g", URL, env={"CHUNKY_G_PORT": str(PORT)}, timeout=60):
     with h.check("the one page serves the entrance and the app") as c:
-        for path, needle in [("", "Tour the ten screens"), ("", "Loading Chunky G")]:
+        for path, needle in [("", "Go to Chunky G Studio"), ("", "Same passage, four different cuts"), ("", "Loading Chunky G")]:
             with urllib.request.urlopen(URL + path, timeout=20) as r:
                 body = r.read().decode()
             c.expect(r.status == 200 and needle in body, f"/{path}: HTTP {r.status}")

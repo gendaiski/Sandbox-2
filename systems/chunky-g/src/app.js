@@ -107,7 +107,7 @@
       root.append(
         h('div', { class: 'top' },
           h('div', { class: 'bar' },
-            h('a', { class: 'brand', href: '#home', title: 'Back to the entrance page' }, h('b', null, 'Chunky ', h('i', null, 'G')), h('span', null, 'RAG & graph-RAG workbench')),
+            h('a', { class: 'brand', href: '#home', title: 'Back to the entrance page' }, h('b', null, 'Chunky ', h('i', null, 'G')), h('span', null, 'Studio')),
             projSel, this.pill,
             h('button', { class: 'btn small', onclick: () => this.settings() }, 'Settings')),
           h('nav', { class: 'tabs', 'aria-label': 'Screens' }, this.VIEWS.map(([id, label], i) => h('a', { href: '#' + id, 'data-view': id }, h('span', { class: 'n' }, String(i + 1).padStart(2, '0')), label)))),

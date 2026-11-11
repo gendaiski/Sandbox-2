@@ -30,7 +30,7 @@ VENDOR = [
 ]
 HEAD = ('<!doctype html>\n<html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
-        '<link rel="icon" href="data:,">\n</head><body>\n')
+        '<link rel="icon" href="data:,"><style>body{margin:0}</style>\n</head><body>\n')  # as the artifact skeleton
 FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;'
          '12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">')
@@ -52,8 +52,8 @@ SHELL = r"""
   });
   let last = null;
   function show() {
-    const h = location.hash.slice(1), atHome = !h || h === 'home';
-    host.hidden = !atHome; app.hidden = atHome;
+    const h = location.hash.slice(1), atHome = !h || h === 'home' || h === 'front';
+    host.hidden = !atHome; app.hidden = atHome; document.body.classList.toggle('cg-home', atHome);
     if (last !== null && last !== atHome) window.scrollTo(0, 0);
     last = atHome;
     if (!atHome && window.CG && CG.start) CG.start();
@@ -89,7 +89,7 @@ def home_parts():
         assert a in css, a
         css = css.replace(a, b)
     css, n = re.subn(r"^body \{[^\n]*\}$", ":host { display: block; background: var(--bg); color: var(--fg); "
-                     "font: 16px/1.6 var(--sans); padding-block: 0 48px; }", css, flags=re.M)
+                     "font: 16px/1.6 var(--sans); }", css, flags=re.M)
     assert n == 1, "entrance body rule"
     css, n = re.subn(r"^body::before \{[^\n]*\}\n", "", css, flags=re.M)
     assert n == 1, "entrance body::before rule"

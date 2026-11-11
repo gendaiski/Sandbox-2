@@ -42,17 +42,23 @@ const step = async (name, fn) => { const t = Date.now(); try { const note = awai
       await q.close();
     });
 
-    await step('the entrance page opens first and leads into the app and back', async () => {
+    await step('the entrance opens first; its two doors lead to the Front End and the Studio', async () => {
       await p.goto(url); await p.getByText('See where your documents').first().waitFor();
-      if (await p.locator('#app').isVisible()) throw new Error('app showing on the entrance');
-      await p.getByRole('link', { name: /Open Chunky G/ }).first().click();
+      if (await p.locator('#app').isVisible()) throw new Error('Studio showing on the entrance');
+      const fold = await p.evaluate(() => { const r = CGShell.root.querySelector('.doors').getBoundingClientRect(); return r.bottom <= innerHeight; });
+      if (!fold) throw new Error('the two doors are below the first screen');
+      await shot('entrance');
+      await p.getByRole('link', { name: /Go to Chunky G Studio/ }).click();
       await p.locator('.tabs a[data-view=library].on').waitFor({ timeout: 20000 });
-      if (await p.locator('#home').isVisible()) throw new Error('entrance still showing in the app');
+      if (await p.locator('#home').isVisible()) throw new Error('entrance still showing in the Studio');
       await p.locator('a.brand').click(); await p.getByText('See where your documents').first().waitFor();
+      await p.getByRole('link', { name: /^01 Front End/ }).click();
+      await p.getByText('Same passage, four different cuts').waitFor();
+      if (await p.getByText('See where your documents').first().isVisible()) throw new Error('entrance hero still showing on the Front End');
       await p.getByRole('tab', { name: /Graph/ }).click();
       await p.getByRole('link', { name: 'Open this screen' }).click();
       await p.locator('.tabs a[data-view=graph].on').waitFor({ timeout: 20000 });
-      return 'entrance → Library → entrance → Graph';
+      return 'entrance -> Studio -> entrance -> Front End -> Graph';
     });
     await step('Library loads with the sample documents', async () => {
       await go('library'); await ui.getByText('Urban Beekeeping Field Guide.md').first().waitFor();
