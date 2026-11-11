@@ -1,0 +1,41 @@
+{
+  "server": "Python plain static file server; no SPA route fallback",
+  "entries": [
+    {
+      "entry": "/",
+      "http": 200,
+      "url": "http://127.0.0.1:8470/#/dashboard"
+    },
+    {
+      "entry": "/dashboard",
+      "http": 200,
+      "url": "http://127.0.0.1:8470/#/dashboard"
+    },
+    {
+      "entry": "/#/dashboard",
+      "http": "same-document",
+      "url": "http://127.0.0.1:8470/#/dashboard"
+    },
+    {
+      "entry": "/agents",
+      "http": 200,
+      "url": "http://127.0.0.1:8470/#/agents"
+    },
+    {
+      "entry": "/#/agents",
+      "http": "same-document",
+      "url": "http://127.0.0.1:8470/#/agents"
+    },
+    {
+      "entry": "/swarms?template=earnings-analyst",
+      "http": 200,
+      "url": "http://127.0.0.1:8470/#/swarms?template=earnings-analyst"
+    }
+  ],
+  "agentDraftSurvivesReload": true,
+  "workbookResourceURL": "http://127.0.0.1:8470/#/sheets/fb8644bb-0808-4905-92ab-2c15be92339d",
+  "workbookReload": true,
+  "officialSwarmTemplateNodes": 9,
+  "scriptErrors": [],
+  "missingRequests": []
+}

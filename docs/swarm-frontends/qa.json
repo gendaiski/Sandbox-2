@@ -1,0 +1,116 @@
+[
+  {
+    "path": "/",
+    "status": 200,
+    "text": "Swarm apps\n\nOpen the original browser interfaces. These are frontend previews, with no sign-in. Local drafts stay in this browser. AI execution, model responses and live infrastructure need each product’s backend; no runs or results are fab",
+    "errors": []
+  },
+  {
+    "path": "/studio/",
+    "status": 200,
+    "text": "Original UI · Frontend preview · Tasks are local drafts only; agents, chat, analysis and logs require the backend. All apps\n🤖\nAgent Swarm Studio\n\nVisual AI orchestration platform\n\n0 agents online\n0 tasks pending\nView Summary\n↻ Refresh\nASK ",
+    "errors": []
+  },
+  {
+    "path": "/agentswarms/",
+    "status": 200,
+    "text": "AgentSwarms\nUNIFIED AGENTIC AI AND DATA PLATFORM\nOVERVIEW\nDashboard\nDocumentation\nBUILD\n5\nDATA & BI\n13\nLIBRARY\n2\nEXPERIMENT\n3\nINTEGRATIONS\n5\nOBSERVABILITY\n6\nADMIN\n2\nfrontend-preview@local.invalid\nSign Out\nSearch\nCtrl K\nF\nWelcome back, Local",
+    "errors": []
+  },
+  {
+    "path": "/multi/",
+    "status": 200,
+    "text": "Original browser UI · Backend disconnected · No model runs or fabricated messages. All apps\nAgent Swarm Dashboard\n● Disconnected\n🤖 Active Agents\n0\n📋 Tasks\n0\nSend\n📝 Master Plan\n↻\n\n                \n\nNo master plan yet. The Architect will c",
+    "errors": []
+  },
+  {
+    "path": "/multi/client.html",
+    "status": 200,
+    "text": "Original browser UI · Backend disconnected · No model runs or fabricated messages. All apps\nJoin the Chatroom\n\nEnter your name to chat with AI agents\n\n Enter Chatroom\nMulti-Agent Chatroom\n\nChat with AI agents powered by Z.ai\n\nDisconnected\nS",
+    "errors": []
+  },
+  {
+    "path": "/monitor/",
+    "status": 200,
+    "text": "Original UI · Frontend preview · Create your own local drafts. Agent execution, telemetry and integrations need the backend. All apps\nAINative Studio\nHome\nTemplates\nAgents\nAgent Swarms\nIntegrations\nChannels\nAudit Log\nMonitoring\nRecursive In",
+    "errors": []
+  },
+  {
+    "path": "/monitor/#/integrations",
+    "status": 200,
+    "text": "Original UI · Frontend preview · Create your own local drafts. Agent execution, telemetry and integrations need the backend. All apps\nAINative Studio\nHome\nTemplates\nAgents\nAgent Swarms\nIntegrations\nChannels\nAudit Log\nMonitoring\nRecursive In",
+    "errors": []
+  },
+  {
+    "path": "/monitor/#/audit-log",
+    "status": 200,
+    "text": "Original UI · Frontend preview · Create your own local drafts. Agent execution, telemetry and integrations need the backend. All apps\nAINative Studio\nHome\nTemplates\nAgents\nAgent Swarms\nIntegrations\nChannels\nAudit Log\nMonitoring\nRecursive In",
+    "errors": []
+  },
+  {
+    "path": "/monitor/#/tasks",
+    "status": 200,
+    "text": "Original UI · Frontend preview · Create your own local drafts. Agent execution, telemetry and integrations need the backend. All apps\nAINative Studio\nHome\nTemplates\nAgents\nAgent Swarms\nIntegrations\nChannels\nAudit Log\nMonitoring\nRecursive In",
+    "errors": []
+  },
+  {
+    "path": "/monitor/#/agent-tasks",
+    "status": 200,
+    "text": "Original UI · Frontend preview · Create your own local drafts. Agent execution, telemetry and integrations need the backend. All apps\nAINative Studio\nHome\nTemplates\nAgents\nAgent Swarms\nIntegrations\nChannels\nAudit Log\nMonitoring\nRecursive In",
+    "errors": []
+  },
+  {
+    "path": "/monitor/#/agents",
+    "status": 200,
+    "text": "Original UI · Frontend preview · Create your own local drafts. Agent execution, telemetry and integrations need the backend. All apps\nAINative Studio\nHome\nTemplates\nAgents\nAgent Swarms\nIntegrations\nChannels\nAudit Log\nMonitoring\nRecursive In",
+    "errors": []
+  },
+  {
+    "path": "/monitor/#/swarms",
+    "status": 200,
+    "text": "Original UI · Frontend preview · Create your own local drafts. Agent execution, telemetry and integrations need the backend. All apps\nAINative Studio\nHome\nTemplates\nAgents\nAgent Swarms\nIntegrations\nChannels\nAudit Log\nMonitoring\nRecursive In",
+    "errors": []
+  },
+  {
+    "path": "/monitor/#/templates",
+    "status": 200,
+    "text": "Original UI · Frontend preview · Create your own local drafts. Agent execution, telemetry and integrations need the backend. All apps\nAINative Studio\nHome\nTemplates\nAgents\nAgent Swarms\nIntegrations\nChannels\nAudit Log\nMonitoring\nRecursive In",
+    "errors": []
+  },
+  {
+    "path": "/monitor/#/channels",
+    "status": 200,
+    "text": "Original UI · Frontend preview · Create your own local drafts. Agent execution, telemetry and integrations need the backend. All apps\nAINative Studio\nHome\nTemplates\nAgents\nAgent Swarms\nIntegrations\nChannels\nAudit Log\nMonitoring\nRecursive In",
+    "errors": []
+  },
+  {
+    "path": "/monitor/#/monitoring",
+    "status": 200,
+    "text": "Original UI · Frontend preview · Create your own local drafts. Agent execution, telemetry and integrations need the backend. All apps\nAINative Studio\nHome\nTemplates\nAgents\nAgent Swarms\nIntegrations\nChannels\nAudit Log\nMonitoring\nRecursive In",
+    "errors": []
+  },
+  {
+    "path": "/monitor/#/settings",
+    "status": 200,
+    "text": "Original UI · Frontend preview · Create your own local drafts. Agent execution, telemetry and integrations need the backend. All apps\nAINative Studio\nHome\nTemplates\nAgents\nAgent Swarms\nIntegrations\nChannels\nAudit Log\nMonitoring\nRecursive In",
+    "errors": []
+  },
+  {
+    "path": "/monitor/#/team",
+    "status": 200,
+    "text": "Original UI · Frontend preview · Create your own local drafts. Agent execution, telemetry and integrations need the backend. All apps\nAINative Studio\nHome\nTemplates\nAgents\nAgent Swarms\nIntegrations\nChannels\nAudit Log\nMonitoring\nRecursive In",
+    "errors": []
+  },
+  {
+    "path": "/monitor/#/network",
+    "status": 200,
+    "text": "Original UI · Frontend preview · Create your own local drafts. Agent execution, telemetry and integrations need the backend. All apps\nAINative Studio\nHome\nTemplates\nAgents\nAgent Swarms\nIntegrations\nChannels\nAudit Log\nMonitoring\nRecursive In",
+    "errors": []
+  },
+  {
+    "path": "/monitor/#/recursive-intelligence",
+    "status": 200,
+    "text": "Original UI · Frontend preview · Create your own local drafts. Agent execution, telemetry and integrations need the backend. All apps\nAINative Studio\nHome\nTemplates\nAgents\nAgent Swarms\nIntegrations\nChannels\nAudit Log\nMonitoring\nRecursive In",
+    "errors": []
+  }
+]

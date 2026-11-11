@@ -1,0 +1,21 @@
+{
+  "entrance": true,
+  "mapLayoutToggle": true,
+  "workflowLayoutToggle": true,
+  "styledInspectorVectorIcons": true,
+  "wheelZoom": true,
+  "handDisablesZoomAndPans": true,
+  "langflowStyleComponentNodes": true,
+  "pythonExactInputHighlights": true,
+  "nextInputSelection": true,
+  "siteWireframePages": 8,
+  "wireframeOpensActualView": true,
+  "visualContractChapters": 6,
+  "sourceEvidence": true,
+  "frozenEdition": true,
+  "playbookSavedDecision": true,
+  "whitepaperUsesSavedDecisions": true,
+  "reloadPersistence": true,
+  "ipad": true,
+  "errors": []
+}

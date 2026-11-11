@@ -1,0 +1,26 @@
+{
+  "initial": {
+    "overlay": 0,
+    "footerStatus": 1
+  },
+  "preferencePersisted": true,
+  "profilePersisted": true,
+  "ticketCreated": true,
+  "ticketReopened": true,
+  "ticketListed": true,
+  "enabledPreserved": true,
+  "originalEditorReopens": true,
+  "ipad": {
+    "width": 810,
+    "viewport": 810,
+    "footerNotice": 1,
+    "editor": 1,
+    "overlay": 0
+  },
+  "mobile": {
+    "viewport": 600,
+    "toggleVisible": true,
+    "sidebarClass": "chrome admin sidebar"
+  },
+  "errors": []
+}

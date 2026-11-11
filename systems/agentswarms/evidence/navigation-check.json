@@ -1,0 +1,518 @@
+[
+  {
+    "name": "Dashboard",
+    "url": "/dashboard",
+    "bytes": 1850,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Welcome back, Local",
+      "Get your first answer out of it",
+      "Keyboard shortcuts",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Documentation",
+    "url": "/docs",
+    "bytes": 6976,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Documentation",
+      "Start here#",
+      "Find it by what you're doing#",
+      "Three things worth knowing up front#",
+      "When the docs do not have it#"
+    ]
+  },
+  {
+    "name": "Agent Builder",
+    "url": "/agents",
+    "bytes": 849,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Agent Builder",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Knowledge Base",
+    "url": "/knowledge",
+    "bytes": 1181,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Knowledge Bases",
+      "Knowledge bases",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Agent Chat",
+    "url": "/playground",
+    "bytes": 1823,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Chat with Sample · SQL Reviewer",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Agent Swarms",
+    "url": "/swarms",
+    "bytes": 2702,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      " Swarms",
+      " My Swarms0",
+      " Templates13",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "MCP Builder",
+    "url": "/mcp-builder",
+    "bytes": 1241,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "MCP Builder",
+      "Build your first MCP server",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Data Catalog",
+    "url": "/data-sql",
+    "bytes": 1164,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Data Catalog",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "ETL Pipelines",
+    "url": "/etl",
+    "bytes": 1361,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      " ETL Pipelines",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Lakehouse",
+    "url": "/lakehouse",
+    "bytes": 1058,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      " Lakehouse",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "SQL Models",
+    "url": "/sql-models",
+    "bytes": 1554,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      " SQL Models",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Semantic Layer",
+    "url": "/semantics",
+    "bytes": 1268,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      " Semantic Layer",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Metrics",
+    "url": "/metrics",
+    "bytes": 1112,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      " Metrics",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Sheets",
+    "url": "/sheets",
+    "bytes": 1678,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Sheets",
+      "Start",
+      "Your workbooks",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "AI Analyst",
+    "url": "/ai-analyst",
+    "bytes": 1194,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "BI Workspace",
+    "url": "/bi",
+    "bytes": 1237,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      " BI Workspace",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "ML Models",
+    "url": "/ml",
+    "bytes": 1402,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "ML Models",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Workflows",
+    "url": "/workflows",
+    "bytes": 1312,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      " Workflows",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Data monitors",
+    "url": "/data-monitors",
+    "bytes": 1316,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Data monitors",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Developer workspace",
+    "url": "/notebooks",
+    "bytes": 2319,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Developer workspace",
+      "Developer workspace",
+      "Learn by example",
+      "My notebooks",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Prompt Library",
+    "url": "/prompts",
+    "bytes": 26081,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Prompt Library",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Skill Library",
+    "url": "/skills",
+    "bytes": 1274,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Skill Library",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Prompt Compare",
+    "url": "/prompt-compare",
+    "bytes": 2328,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Prompt Comparison Lab",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Evaluations",
+    "url": "/evaluations",
+    "bytes": 1222,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      " Evaluations",
+      "Datasets",
+      "Runs",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Image Playground",
+    "url": "/image-playground",
+    "bytes": 1570,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Image Playground",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Integrations",
+    "url": "/integrations",
+    "bytes": 3319,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Integration Hub",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "MCP Servers",
+    "url": "/mcp",
+    "bytes": 1284,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "MCP Integrations",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Model Registry",
+    "url": "/model-registry",
+    "bytes": 1288,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      " Model Registry",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Secrets",
+    "url": "/secrets",
+    "bytes": 1462,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      " Secrets",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Web Embedding",
+    "url": "/embeds",
+    "bytes": 2176,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      " Web Embedding",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Analytics",
+    "url": "/analytics",
+    "bytes": 1236,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Analytics",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Traces & Logs",
+    "url": "/traces",
+    "bytes": 1199,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Traces & Logs",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Swarm Traces",
+    "url": "/analytics/observability",
+    "bytes": 1571,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Swarm Observability",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "AI Budgets",
+    "url": "/budgets",
+    "bytes": 1253,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Audit Log",
+    "url": "/audit",
+    "bytes": 1524,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Audit Log",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Monitoring",
+    "url": "/monitoring",
+    "bytes": 1902,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      " Monitoring",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "IAM",
+    "url": "/admin/iam",
+    "bytes": 1008,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Developer runtime",
+    "url": "/admin/runtime",
+    "bytes": 1685,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      " Developer runtime",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Settings",
+    "url": "/settings",
+    "bytes": 1673,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      " Settings",
+      "Account",
+      " Welcome to AgentSwarms"
+    ]
+  },
+  {
+    "name": "Website",
+    "url": "/",
+    "bytes": 13927,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "Run agents, swarms & BI on your own infrastructure",
+      "Design agent teams on a visual canvas.",
+      "A full AI-native BI suite, self-hosted.",
+      "Load it, store it, govern it — without leaving the app.",
+      "Numbers an agent can be trusted with.",
+      "Live before your coffee cools.",
+      "Everything a platform needs, batteries included",
+      "Agents, swarms and BI — deploy it all as your own"
+    ]
+  },
+  {
+    "name": "About",
+    "url": "/about",
+    "bytes": 5326,
+    "errorPage": false,
+    "loginRedirect": false,
+    "scriptErrors": [],
+    "headings": [
+      "One open platform for agents, swarms & BI.",
+      "Why we built it",
+      "What makes AgentSwarms different",
+      "How we fit alongside other tools",
+      "Everything ships in one place",
+      "Built in the open."
+    ]
+  }
+]

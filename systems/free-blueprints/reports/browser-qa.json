@@ -1,0 +1,36 @@
+{
+  "filesChecked": [
+    "rfx-procurement/SKILL.md",
+    "rfx-procurement/GETTING-STARTED.md",
+    "rfx-procurement/AGENTS.md",
+    "rfx-procurement/implementation-state.yaml",
+    "rfx-procurement/references/agent-specifications.md",
+    "rfx-procurement/references/architecture-decisions.md",
+    "rfx-procurement/references/guardrails-and-governance.md",
+    "rfx-procurement/references/evaluation-criteria.md",
+    "rfx-procurement/references/platform-connectivity.md",
+    "rfx-procurement/references/business-context.md",
+    "employee-onboarding/SKILL.md",
+    "employee-onboarding/GETTING-STARTED.md",
+    "employee-onboarding/AGENTS.md",
+    "employee-onboarding/implementation-state.yaml",
+    "employee-onboarding/references/agent-specifications.md",
+    "employee-onboarding/references/architecture-decisions.md",
+    "employee-onboarding/references/guardrails-and-governance.md",
+    "employee-onboarding/references/evaluation-criteria.md",
+    "employee-onboarding/references/platform-connectivity.md",
+    "employee-onboarding/references/business-context.md"
+  ],
+  "checks": {
+    "noOriginalUiClaim": true,
+    "deepLinkRefresh": true,
+    "manifestMatchesSource": true,
+    "search": true,
+    "zipDownload": "employee-onboarding.zip"
+  },
+  "ipad": {
+    "viewport": 810,
+    "width": 810
+  },
+  "errors": []
+}

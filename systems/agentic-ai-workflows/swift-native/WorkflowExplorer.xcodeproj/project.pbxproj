@@ -1,0 +1,33 @@
+// !$*UTF8*$!
+{archiveVersion=1; classes={}; objectVersion=56; objects={
+25511E5165A8124EE670110F={isa=PBXFileReference; lastKnownFileType=sourcecode.swift; path=WorkflowApp.swift; sourceTree="<group>";};
+C0131C8CED34662B5C9F6F10={isa=PBXBuildFile; fileRef=25511E5165A8124EE670110F;};
+FB3A397CAA58D8161802C4B4={isa=PBXFileReference; lastKnownFileType=sourcecode.swift; path=CatalogStore.swift; sourceTree="<group>";};
+79C716893549F8093E463B83={isa=PBXBuildFile; fileRef=FB3A397CAA58D8161802C4B4;};
+5D7F05CC38FDBBA02A03F66E={isa=PBXFileReference; lastKnownFileType=sourcecode.swift; path=WorkspaceView.swift; sourceTree="<group>";};
+AAE2523C6CC650F1AC3B6F69={isa=PBXBuildFile; fileRef=5D7F05CC38FDBBA02A03F66E;};
+649DB608EE0A188494A609CA={isa=PBXFileReference; lastKnownFileType=sourcecode.swift; path=WorkflowGraph.swift; sourceTree="<group>";};
+71E18D481A1AFA653AF89265={isa=PBXBuildFile; fileRef=649DB608EE0A188494A609CA;};
+013E80563BBDC42C7FBE45F0={isa=PBXFileReference; lastKnownFileType=text.json; path=catalog.json; sourceTree="<group>";};
+6BFD0752DF24831CF2A243A4={isa=PBXBuildFile; fileRef=013E80563BBDC42C7FBE45F0;};
+D189AC3A4B3EF9DE0A7144C5={isa=PBXFileReference; lastKnownFileType=text; path=DEPENDENCIES.txt; sourceTree="<group>";};
+488D1ECFAD9F757E493E8691={isa=PBXBuildFile; fileRef=D189AC3A4B3EF9DE0A7144C5;};
+E9B72964489E86EBB730C7AF={isa=PBXFileReference; lastKnownFileType=folder; path=Documentation; sourceTree="<group>";};
+5FE0AD22A5C4646EB7BE92EB={isa=PBXBuildFile; fileRef=E9B72964489E86EBB730C7AF;};
+38A007151ABE87CC01A5B6E9={isa=PBXFileReference; explicitFileType=wrapper.application; includeInIndex=0; path=WorkflowExplorer.app; sourceTree=BUILT_PRODUCTS_DIR;};
+0189424A5A60FED329FA868E={isa=PBXGroup; path=Resources; sourceTree="<group>"; children=(013E80563BBDC42C7FBE45F0,D189AC3A4B3EF9DE0A7144C5,E9B72964489E86EBB730C7AF);};
+BCE16DD0260827ECF338C787={isa=PBXGroup; path=WorkflowExplorer; sourceTree="<group>"; children=(25511E5165A8124EE670110F,FB3A397CAA58D8161802C4B4,5D7F05CC38FDBBA02A03F66E,649DB608EE0A188494A609CA,0189424A5A60FED329FA868E);};
+FBDC4F23F93125BBEEAE800C={isa=PBXGroup; name=Products; sourceTree="<group>"; children=(38A007151ABE87CC01A5B6E9);};
+B28B7AF69320201D1CF206EB={isa=PBXGroup; sourceTree="<group>"; children=(BCE16DD0260827ECF338C787,FBDC4F23F93125BBEEAE800C);};
+E8C5E5BE4D4926E3ACC74ED8={isa=PBXSourcesBuildPhase; buildActionMask=2147483647; files=(C0131C8CED34662B5C9F6F10,79C716893549F8093E463B83,AAE2523C6CC650F1AC3B6F69,71E18D481A1AFA653AF89265); runOnlyForDeploymentPostprocessing=0;};
+5EEC8E1CABA298AF9CB3BA60={isa=PBXResourcesBuildPhase; buildActionMask=2147483647; files=(6BFD0752DF24831CF2A243A4,488D1ECFAD9F757E493E8691,5FE0AD22A5C4646EB7BE92EB); runOnlyForDeploymentPostprocessing=0;};
+1E3F4FD42CD5353AD63D7170={isa=PBXFrameworksBuildPhase; buildActionMask=2147483647; files=(); runOnlyForDeploymentPostprocessing=0;};
+9A3C1EE301EC9F46B8FCBBBB={isa=XCBuildConfiguration; name=Debug; buildSettings={SDKROOT=iphoneos; IPHONEOS_DEPLOYMENT_TARGET=17.0; SWIFT_VERSION=5.0; CLANG_ENABLE_MODULES=YES;};};
+A8288EAD101D3680C2AC7BC8={isa=XCBuildConfiguration; name=Debug; buildSettings={PRODUCT_BUNDLE_IDENTIFIER=org.agenticcoding.workflows.native; PRODUCT_NAME="$(TARGET_NAME)"; GENERATE_INFOPLIST_FILE=YES; INFOPLIST_KEY_UIApplicationSceneManifest_Generation=YES; INFOPLIST_KEY_UILaunchScreen_Generation=YES; INFOPLIST_KEY_UISupportedInterfaceOrientations="UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"; TARGETED_DEVICE_FAMILY="1,2"; CODE_SIGN_STYLE=Automatic; CURRENT_PROJECT_VERSION=1; MARKETING_VERSION=0.1.0; SWIFT_VERSION=5.0; SUPPORTED_PLATFORMS="iphoneos iphonesimulator"; };};
+5D4AE94DA0B27833AE568E9C={isa=XCBuildConfiguration; name=Release; buildSettings={SDKROOT=iphoneos; IPHONEOS_DEPLOYMENT_TARGET=17.0; SWIFT_VERSION=5.0; CLANG_ENABLE_MODULES=YES;};};
+8EB64F55E62F34DE5618DACF={isa=XCBuildConfiguration; name=Release; buildSettings={PRODUCT_BUNDLE_IDENTIFIER=org.agenticcoding.workflows.native; PRODUCT_NAME="$(TARGET_NAME)"; GENERATE_INFOPLIST_FILE=YES; INFOPLIST_KEY_UIApplicationSceneManifest_Generation=YES; INFOPLIST_KEY_UILaunchScreen_Generation=YES; INFOPLIST_KEY_UISupportedInterfaceOrientations="UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"; TARGETED_DEVICE_FAMILY="1,2"; CODE_SIGN_STYLE=Automatic; CURRENT_PROJECT_VERSION=1; MARKETING_VERSION=0.1.0; SWIFT_VERSION=5.0; SUPPORTED_PLATFORMS="iphoneos iphonesimulator"; };};
+01DF1D3A7F02866ECA6BB742={isa=XCConfigurationList; buildConfigurations=(9A3C1EE301EC9F46B8FCBBBB,5D4AE94DA0B27833AE568E9C); defaultConfigurationIsVisible=0; defaultConfigurationName=Release;};
+8D8B67C81BE4F695571BC034={isa=XCConfigurationList; buildConfigurations=(A8288EAD101D3680C2AC7BC8,8EB64F55E62F34DE5618DACF); defaultConfigurationIsVisible=0; defaultConfigurationName=Release;};
+0E8A3AD980EC179856012B7E={isa=PBXNativeTarget; name=WorkflowExplorer; productName=WorkflowExplorer; productReference=38A007151ABE87CC01A5B6E9; productType="com.apple.product-type.application"; buildConfigurationList=8D8B67C81BE4F695571BC034; buildPhases=(E8C5E5BE4D4926E3ACC74ED8,1E3F4FD42CD5353AD63D7170,5EEC8E1CABA298AF9CB3BA60); buildRules=(); dependencies=();};
+98F54143AB4E86B28C3AFEE0={isa=PBXProject; attributes={LastUpgradeCheck=1600;}; buildConfigurationList=01DF1D3A7F02866ECA6BB742; compatibilityVersion="Xcode 14.0"; developmentRegion=en; knownRegions=(en,Base); mainGroup=B28B7AF69320201D1CF206EB; productRefGroup=FBDC4F23F93125BBEEAE800C; projectDirPath=""; projectRoot=""; targets=(0E8A3AD980EC179856012B7E);};
+}; rootObject=98F54143AB4E86B28C3AFEE0;}

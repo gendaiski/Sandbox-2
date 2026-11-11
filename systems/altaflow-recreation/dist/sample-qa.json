@@ -1,0 +1,12 @@
+{
+  "sampleNodes": 6,
+  "connections": 6,
+  "defaultInputs": true,
+  "parallelApprovals": true,
+  "joinWaitsForBoth": true,
+  "acknowledgement": true,
+  "botsChangeDocument": true,
+  "conditionSkipsFinance": true,
+  "reopenWithoutDuplicate": true,
+  "errors": []
+}

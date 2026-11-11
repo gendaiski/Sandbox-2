@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "result": {
+    "columns": [
+      "answer"
+    ],
+    "rows": [
+      {
+        "answer": 5
+      }
+    ]
+  }
+}

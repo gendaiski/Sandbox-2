@@ -1,0 +1,11 @@
+{
+  "upstream": "https://github.com/pixlcore/xyops",
+  "tag": "v1.1.15",
+  "commit": "020e06431e4dbe9e2b0e00a859bfad6bce759219",
+  "mode": "frontend-only original UI preview",
+  "live_url": "https://xyops-original.aelgendy673996.chatgpt.site",
+  "backend_installed": false,
+  "license": "BSD-3-Clause",
+  "site_id": "appgprj_6af315b454b88191ba5a24802c8b6347",
+  "interface_revision": "2026-11-10 original flow fidelity repair"
+}

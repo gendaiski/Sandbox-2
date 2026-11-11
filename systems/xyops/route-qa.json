@@ -1,0 +1,200 @@
+[
+  {
+    "route": "Dashboard",
+    "errors": [],
+    "text": "Welcome to xyOps!\n\nxyOps is a job scheduler, workflow automation engine, and server monitoring platform. It lets you run jobs on your servers, orchestrate them visually with workflows, collect metrics, trigger runs on schedules or intervals, and react with actions and limits. Everything is available",
+    "formInputs": 3
+  },
+  {
+    "route": "Events",
+    "errors": [],
+    "text": " \n \nStatus:\nAny Status\n \nCategory:\n Any Category\n \nTarget:\nAny Target\n \nPlugin:\nAny Plugin\n \nTags:\n(Any Tags)\n \nTrigger:\nAny Trigger\n \nAction:\nAny Action\n \nAuthor:\nAny User\n Options Search\nEVENT LIST\n0 EVENTS, SORTED BY CATEGORY \n \nPAGE 1 OF 1\nEvent Title\nCategory \nTags\nTriggers\nStatus\nActions\nNo ev",
+    "formInputs": 9
+  },
+  {
+    "route": "Events?sub=new",
+    "errors": [],
+    "text": "NEW EVENT\n« Back to Event List\nEvent Title:\nEnter the title of the event, for display purposes.\nStatus:\nEvent Enabled\nOnly enabled events can run jobs, including scheduled and immediate runs.\nCustom Icon:\n(None)\nOptionally choose an icon for the event.\nCategory:\n General\nSelect a category for the ev",
+    "formInputs": 16
+  },
+  {
+    "route": "Workflows?sub=new",
+    "errors": [],
+    "text": "NEW WORKFLOW\n« Back to Event List\nWorkflow Title:\nEnter the title of the workflow, for display purposes.\nStatus:\nWorkflow Enabled\nOnly enabled workflows can execute, including scheduled and manual runs.\nCustom Icon:\n(None)\nOptionally choose a custom icon for the workflow.\nCategory:\n General\nSelect a",
+    "formInputs": 11
+  },
+  {
+    "route": "Categories",
+    "errors": [],
+    "text": "EVENT CATEGORIES\n1 CATEGORY\n \nPAGE 1 OF 1\nCategory Title\nCategory ID\nEvents\nAuthor\nCreated\nActions\nGeneral\ngeneral\n0\nadmin\n June 12, 2015\nEdit | Delete\n Import File... Sort Items... Revision History... New Category...\n WHAT'S HERE?\n Hide\n\nCategories are user‑defined groupings for events and workflow",
+    "formInputs": 0
+  },
+  {
+    "route": "Buckets",
+    "errors": [],
+    "text": "STORAGE BUCKETS\n0 BUCKETS\n \nPAGE 1 OF 1\nBucket Title\nBucket ID\nAuthor\nCreated\nActions\nNo buckets found.\n Import File... Revision History... New Bucket...\n WHAT'S HERE?\n Hide\n\nStorage Buckets are durable stores for JSON data and files that jobs and workflows can share. They are useful for cross‑job h",
+    "formInputs": 0
+  },
+  {
+    "route": "Tags",
+    "errors": [],
+    "text": "ALL TAGS\n2 TAGS\n \nPAGE 1 OF 1\nTag\nID\nAuthor\nCreated\nModified\nActions\nFlag\nflag\nadmin\n January 20, 2021\n January 20, 2021\nEdit | Delete\nImportant\nimportant\nadmin\n January 20, 2021\n January 20, 2021\nEdit | Delete\n Import File... Revision History... New Tag...\n WHAT'S HERE?\n Hide\n\nTags are reusable lab",
+    "formInputs": 0
+  },
+  {
+    "route": "Alerts",
+    "errors": [],
+    "text": " \nAlert Type:\nAny Alert\n \nServer:\nAny Server\n \nGroup:\nAny Group\n \nDate Range:\nAll Dates\n \nSort Results:\n Newest\n Search\nALL ALERTS\n0 ALERTS FOUND\n \nPAGE 1 OF 1\nAlert ID\nTitle\nMessage\nServer\nStatus\nStarted\nDuration\nNo alerts found.\n WHAT'S HERE?\n Hide\n\nAlerts continuously evaluate live server data an",
+    "formInputs": 5
+  },
+  {
+    "route": "Servers",
+    "errors": [],
+    "text": " \n All Servers\nACTIVE SERVERS\n0 SERVERS, SORTED BY LABEL \n \nPAGE 1 OF 1\nLabel \nIP Address\nGroups\n# CPUs\nRAM\nArch\nOS\n# Jobs\n# Alerts\nNo servers found.\n Server History... Add Server...\n WHAT'S HERE?\n Hide\n\nServers are worker nodes that execute jobs and collect metrics. Each runs the xySat agent, maint",
+    "formInputs": 2
+  },
+  {
+    "route": "Groups",
+    "errors": [],
+    "text": "SERVER GROUPS\n1 GROUP\n \nPAGE 1 OF 1\nGroup Title\nServers\nHostname Pattern\nAuthor\nCreated\nActions\nMain Group\n0\n/.+/\nadmin\n June 12, 2015\nEdit | Delete\n Import File... Sort Items... Revision History... New Group...\n WHAT'S HERE?\n Hide\n\nServer Groups organize servers into logical sets used for targeting",
+    "formInputs": 0
+  },
+  {
+    "route": "Snapshots",
+    "errors": [],
+    "text": " \nSnapshot Source:\nAny Source\n \nServer:\nAny Server\n \nGroup:\nAny Group\n \nDate Range:\nAll Dates\n \nSort Results:\n Newest\n Search\nALL SNAPSHOTS\n0 SNAPSHOTS FOUND\n \nPAGE 1 OF 1\nSnapshot ID\nSource\nTarget\nUptime\nLoad Avg\nMem Avail\nDate/Time\nNo snapshots found.\n WHAT'S HERE?\n Hide\n\nSnapshots capture a point",
+    "formInputs": 5
+  },
+  {
+    "route": "MyAccount",
+    "errors": [],
+    "text": "MY ACCOUNT\nUsername:\nYour username cannot be changed.\nDisplay Name:\nYour first and last names (or a nickname), used for display purposes only.\nEmail Address:\nThis is used only to recover your account, and never for marketing.\nCurrent Password:\nEnter your current account password if you want to chang",
+    "formInputs": 6
+  },
+  {
+    "route": "MySettings",
+    "errors": [],
+    "text": "LOCALIZATION SETTINGS\n Reset to Defaults\nLanguage:\nAuto-Detect (English)\nSelect your desired language for localizing dates and times.\nRegion:\nAuto-Detect (United States)\nSelect your desired region for localizing dates and times.\nTimezone:\nAuto-Detect (UTC)\nSelect your desired timezone for date and t",
+    "formInputs": 33
+  },
+  {
+    "route": "MySecurity",
+    "errors": [],
+    "text": "RECENT USER ACTIVITY\n0 EVENTS FOUND\n \nPAGE 1 OF 1\nDate/Time\nType\nDescription\nUser Agent\nIP Address\nActions\nNo events found.\n Logout All Sessions...",
+    "formInputs": 0
+  },
+  {
+    "route": "ActivityLog",
+    "errors": [],
+    "text": " \n \nActivity Type:\nAny Type\n \nUser:\nAny User\n \nDate Range:\nAll Dates\n \nSort Results:\n Newest on Top\n Options Search\nALL ACTIVITY\n0 ITEMS FOUND\n \nPAGE 1 OF 1\nDate/Time\nType\nDescription\nUser\nIP / Host\nActions\nNo items found.\n WHAT'S HERE?\n Hide\n\nThe system activity log records creates, updates, delete",
+    "formInputs": 5
+  },
+  {
+    "route": "AlertSetup",
+    "errors": [],
+    "text": "ALERT DEFINITIONS\n5 ALERTS\n \nPAGE 1 OF 1\nAlert Title\nAlert ID\nGroups\nAuthor\nCreated\nActions\nDisk Full\ndisk_usage_root_high\n(All)\nadmin\n June 12, 2015\nEdit | Delete\nHigh Active Jobs\nactive_jobs_high\n(All)\nadmin\n June 12, 2015\nEdit | Delete\nHigh CPU Load\nload_avg_high\n(All)\nadmin\n June 12, 2015\nEdit |",
+    "formInputs": 5
+  },
+  {
+    "route": "APIKeys",
+    "errors": [],
+    "text": "API KEYS\n0 KEYS\n \nPAGE 1 OF 1\nApp Title\nPartial Key\nStatus\nAuthor\nCreated\nLast Used\nActions\nNo keys found.\n Import File... Revision History... New API Key...\n WHAT'S HERE?\n Hide\n\nAPI Keys are access tokens for programmatic use of the REST API. They are like special user accounts for applications, wi",
+    "formInputs": 0
+  },
+  {
+    "route": "Channels",
+    "errors": [],
+    "text": "NOTIFICATION CHANNELS\n1 CHANNEL\n \nPAGE 1 OF 1\nChannel Title\nChannel ID\nAuthor\nCreated\nActions\nSeverity 1\nsev1\nadmin\n June 12, 2015\nEdit | Delete\n Import File... Revision History... New Channel...\n WHAT'S HERE?\n Hide\n\nNotification Channels bundle multiple actions such as emailing users, firing a web ",
+    "formInputs": 1
+  },
+  {
+    "route": "Conductors",
+    "errors": [],
+    "text": "ALL CONDUCTORS\n0 CONDUCTORS\n \nPAGE 1 OF 1\nHost ID\nStatus\nxyOps\nLoad Avg\nPing\nUptime\nActions\nNo conductors found.\n WHAT'S HERE?\n Hide\n\nConductors are the main xyOps scheduler servers that coordinate job launches, data ingestion, storage, and the UI. A cluster can run multiple conductors for redundanc",
+    "formInputs": 0
+  },
+  {
+    "route": "Config",
+    "errors": [],
+    "text": "ALL CONFIGURATION SETTINGS\n \nUse this form to customize your xyOps configuration. Learn More\nGlobal Settings\nBase App URL\nThis string is the base URL of your xyOps instance (default: http://localhost:5522), and is used to build fully-qualified links in emails, alerts, tickets, and web hooks (e.g., j",
+    "formInputs": 154
+  },
+  {
+    "route": "LogViewer",
+    "errors": [],
+    "text": " \n \nLog File:\n xyOps\n \nColumns:\n  Timestamp\n  Category\n  Code\n  Message\n  Data\n \nMax Rows:\n100\n \nDate:\n Today\n \nSort Rows:\n Oldest on Top\n Options Reset Search",
+    "formInputs": 6
+  },
+  {
+    "route": "Marketplace",
+    "errors": [],
+    "text": " \n \nProduct Type:\nAny Type\n \nTags:\nAny Tags\n \nRequirements:\nAny Requirements\n \nAuthor:\nAny Author\n \nStatus:\nAny Status\n Options Search\nALL PRODUCTS\n0 PRODUCTS, SORTED BY TITLE \n \nPAGE 1 OF 1\nTitle \nAuthor\nLicense\nType\nModified\nStatus\nNo products found.\n WHAT'S HERE?\n Hide\n\nThe xyOps Marketplace allo",
+    "formInputs": 6
+  },
+  {
+    "route": "Monitors",
+    "errors": [],
+    "text": "MONITORS\n15 MONITORS\n \nPAGE 1 OF 1\nMonitor Title\nMonitor ID\nGroups\nAuthor\nCreated\nActions\nCPU Load Average\nload_avg\n(All)\nadmin\n June 12, 2015\nEdit | Delete\nCPU Usage %\ncpu_usage\n(All)\nadmin\n June 12, 2015\nEdit | Delete\nMemory in Use\nmem_used\n(All)\nadmin\n June 12, 2015\nEdit | Delete\nAvailable Memory",
+    "formInputs": 0
+  },
+  {
+    "route": "Plugins",
+    "errors": [],
+    "text": " \nPLUGINS\n6 PLUGINS, SORTED BY PLUGIN TITLE \n \nPAGE 1 OF 1\nPlugin Title \nPlugin ID\nType\nSource\nCreated\nActions\nCount Open Files\nopen_files\nMonitor Plugin\nadmin\n June 12, 2015\nEdit | Delete\nDocker Run\ndockerplug\nEvent Plugin\nxyOps Default\n June 12, 2015\nEdit | Delete\nFire Web Hook\nhookplug\nEvent Plug",
+    "formInputs": 1
+  },
+  {
+    "route": "Secrets",
+    "errors": [],
+    "text": " \nSECRET VAULTS\n0 VAULTS, SORTED BY VAULT TITLE \n \nPAGE 1 OF 1\nVault Title \nVault ID\nVariable Names\nAuthor\nCreated\nActions\nNo vaults found.\n Revision History... New Vault...\n WHAT'S HERE?\n Hide\n\nSecrets are encrypted vaults of key/value variables such as tokens and passwords. They are delivered secu",
+    "formInputs": 1
+  },
+  {
+    "route": "System",
+    "errors": [],
+    "text": "Offline\nPROCESS CPU\nOffline\nPROCESS MEMORY\nOffline\nDB MEMORY\nOffline\nCACHE MEMORY\nOffline\nCACHE OBJECTS\nOffline\nCACHE UTILIZATION\nOffline\nDB DISK SIZE\nOffline\nJOB DB ROWS\nOffline\nSERVER DB ROWS\nOffline\nSNAPSHOT DB ROWS\nOffline\nALERT DB ROWS\nOffline\nACTIVITY DB ROWS\nINTERNAL SYSTEM JOBS\n0 JOBS\n \nPAGE",
+    "formInputs": 0
+  },
+  {
+    "route": "Users",
+    "errors": [],
+    "text": "USER ACCOUNTS\n \n1 USER FOUND\n \nPAGE 1 OF 1\nDisplay Name\nUsername\nEmail Address\nStatus\nType\nCreated\nActions\nLocal Preview\nlocal-preview\n Active\n Admin\n November 10, 2026\nEdit | Delete\n Revision History... New User...\n WHAT'S HERE?\n Hide\n\nUsers are individual accounts that log in to the UI and API. Pe",
+    "formInputs": 1
+  },
+  {
+    "route": "Roles",
+    "errors": [],
+    "text": "USER ROLES\n0 ROLES\n \nPAGE 1 OF 1\nRole Title\nRole ID\nUsers\nAuthor\nCreated\nActions\nNo roles found.\n Import File... Revision History... New Role...\n WHAT'S HERE?\n Hide\n\nUser Roles bundle privileges and optional resource restrictions so you can grant capabilities consistently. Assign roles to users to a",
+    "formInputs": 0
+  },
+  {
+    "route": "WebHooks",
+    "errors": [],
+    "text": "WEB HOOKS\n1 WEB HOOK\n \nPAGE 1 OF 1\nHook Title\nHook ID\nURL\nAuthor\nCreated\nActions\nExample Hook\nexample_hook\nhttps://httpbin.org/post\nadmin\n June 12, 2015\nEdit | Delete\n Import File... Revision History... New Web Hook...\n WHAT'S HERE?\n Hide\n\nWeb Hooks are outbound HTTP requests that integrate jobs and",
+    "formInputs": 1
+  },
+  {
+    "route": "Tickets",
+    "errors": [],
+    "text": " \n \nType:\nAny Type\n \nAssigned To:\nAny User\n \nAuthor:\nAny User\n \nStatus:\nAny Status\n \nCategory:\nAny Category\n \nServer:\nAny Server\n \nTags:\nAny Tag\n \nDate Range:\nAll Dates\n \nSort Results:\n Newest on Top\n Options Save Preset... Search\nALL TICKETS\n0 TICKETS FOUND\n \nPAGE 1 OF 1\n#\nSubject\nType\nStatus\nAssig",
+    "formInputs": 10
+  },
+  {
+    "route": "Tickets?sub=new",
+    "errors": [],
+    "text": "NEW TICKET\nSubject:\nEnter a subject line for the ticket (i.e. title, summary, etc.).\nBody:\n​\nEnter the ticket body text using GitHub Flavored Markdown syntax.\nType:\n Change\nSelect a type for the new ticket.\nStatus:\n Open\nSelect a status for the new ticket.\nCategory:\n(None)\nOptionally assign the tick",
+    "formInputs": 11
+  },
+  {
+    "route": "Search",
+    "errors": [],
+    "text": " \n \nResult:\nAny Result\n \nEvent:\nAny Event\n \nCategory:\n Any Category\n \nTags:\nAny Tag\n \nSource:\nAny Source\n \nPlugin:\nAny Plugin\n \nServer:\nAny Server\n \nGroup:\nAny Group\n \nDate Range:\nAll Dates\n \nSort Results:\n Newest on Top\n Options Save Preset... Search\nALL COMPLETED JOBS\n0 JOBS FOUND\n \nPAGE 1 OF 1\nJo",
+    "formInputs": 11
+  },
+  {
+    "route": "Docs",
+    "errors": [],
+    "text": "DOCUMENTATION INDEX\n \nOverview\n\nWelcome to the xyOps documentation. xyOps is a job scheduler, workflow engine, and server monitoring platform with a built-in web UI and REST API. This index organizes the docs into logical sections with short summaries to help you find what you need quickly. If you a",
+    "formInputs": 1
+  }
+]

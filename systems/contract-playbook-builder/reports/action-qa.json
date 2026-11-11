@@ -1,0 +1,19 @@
+{
+  "errors": [],
+  "created": {
+    "url": "http://127.0.0.1:8190/#/playbook/1",
+    "text": "Playbook created successfully!\nOriginal UI · Frontend preview · Drafts stay in this browser. AI coaching, generation and OneDrive need the backend. Built-in clauses/templates are upstream reference content. Manual draft\nBack\nVersion History\nManage different versions of this playbook\nVersion 1\nCurrent\ndraft\n\nCreated less than a minute ago\n\nNon-confidential browser workflow check\n\nMark as Live\nArchive\nQA Contract Draft\ndraft\nNon-confidential browser workflow check\nVersion 1\nAI Instructions\nExport\nPlaybook Content\nYour contract review playbook with AI-refined guidance\nAI Coach\nRefine your playbook with conversational guidance\nStart a conversation\n\nAsk questions, request refinements, or get suggestions to improve your playbook"
+  },
+  "persisted": true,
+  "exported": "Playbook exported successfully!\nOriginal UI · Frontend preview · Drafts stay in this browser. AI coaching, generation and OneDrive need the backend. Built-in clauses/templates are upstream reference content. Manual draft\nBack\nExport Playbook\nSelect Export Format\nChoose how you want to use your playbook\nClaude Skill\n\nFormatted for Claude Projects with custom instructions\n\nChatGPT Custom GPT\n\nReady for ChatGPT Custom GPT integration\n\nOneDrive Document\n\nSave as formatted document to OneDrive\n\nPrompt Text\n\nPlain text ready to paste into any LLM\n\nExport Playbook\nPlaybook Details\n\nName\n\nQA Contract Draft\n\nCategory\n\ngeneral\n\nVersion\n\nv1\n\nStatus\n\nDraft\n\nExport Result\nYour playbook is ready\nSuccessfully exported!\nCopy\nDownload",
+  "download": "QA Contract Draft-prompt_text.txt",
+  "template": {
+    "url": "http://127.0.0.1:8190/#/playbook/2",
+    "text": "Playbook exported successfully!\nOriginal UI · Frontend preview · Drafts stay in this browser. AI coaching, generation and OneDrive need the backend. Built-in clauses/templates are upstream reference content. Manual draft\nBack\nVersion History\nManage different versions of this playbook\nVersion 1\nCurrent\ndraft\n\nCreated less than a minute ago\n\nComprehensive playbook for reviewing non-disclosure agreements, covering confidentiality obligations, permitted disclosures, and term provisions.\n\nMark as Live\nArchive\nNDA (Non-Disclosure Agreement) - Draft\ndraft\nComprehensive playbook for reviewing non-disclosure agreements, covering confidentiality obligations, permitted disclosures, and term provisions."
+  },
+  "clauseSearch": "tion and OneDrive need the backend. Built-in clauses/templates are upstream reference content. Manual draft\nClause Library\n\nPractical Law-style guidance for contract clauses\n\nBack to Dashboard\nAll Categories\nCommercial\nIP & Technology\nEmployment\nReal Estate\nGeneral\nIndemnification\nCommercial\nOne party agrees to compensate the other for specified losses, damages, or liabilities. Essential for allocating risk of third-party claims (IP infringement, personal injury, regulatory violations).\n3 versions available\nWarranties & Representations\nCommercial\nPromises about the quality, performance, or legal status of goods/services. Breach can trigger indemnification or termination.\n3 versions available",
+  "ipad": {
+    "viewport": 810,
+    "width": 810
+  }
+}

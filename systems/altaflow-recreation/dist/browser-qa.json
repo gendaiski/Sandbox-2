@@ -1,0 +1,53 @@
+{
+  "empty": true,
+  "completed": true,
+  "rendered": true,
+  "exported": {
+    "status": "completed",
+    "tags": [
+      "reviewed"
+    ],
+    "version": 2
+  },
+  "persisted": true,
+  "routes": [
+    {
+      "route": "dashboard",
+      "text": "Your document workspace"
+    },
+    {
+      "route": "workflows",
+      "text": "Workflows"
+    },
+    {
+      "route": "templates",
+      "text": "Templates"
+    },
+    {
+      "route": "documents",
+      "text": "Documents"
+    },
+    {
+      "route": "inbox",
+      "text": "Inbox"
+    },
+    {
+      "route": "bots",
+      "text": "Bots & integrations"
+    },
+    {
+      "route": "audit",
+      "text": "Audit trail"
+    },
+    {
+      "route": "settings",
+      "text": "Workspace settings"
+    }
+  ],
+  "ipad": {
+    "width": 810,
+    "viewport": 810
+  },
+  "mobileMenu": true,
+  "errors": []
+}

@@ -1,0 +1,9 @@
+{
+  "upstream": "https://github.com/AINative-Studio/agent-swarm-monitor",
+  "commit": "389ea2fdc2f35a70dfcd63938c38eaef9f492d60",
+  "selected_release": "No release selected; pinned default-branch commit",
+  "mode": "frontend-only",
+  "access": "public, no sign-in",
+  "backend_installed": false,
+  "live_url": "https://swarm-apps-original.aelgendy673996.chatgpt.site/monitor/"
+}

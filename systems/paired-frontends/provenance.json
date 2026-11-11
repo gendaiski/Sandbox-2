@@ -1,0 +1,19 @@
+{
+  "implementation": "Two-app self-contained HTML presentation; no backend",
+  "xyops": {
+    "upstream": "https://github.com/pixlcore/xyops",
+    "tag": "v1.1.15",
+    "commit": "020e06431e4dbe9e2b0e00a859bfad6bce759219",
+    "interface": "Original source client and assets with local frontend adapter"
+  },
+  "altaflow": {
+    "interface": "Independent documented-flow recreation, not original vendor UI",
+    "package": "systems/altaflow-recreation"
+  },
+  "assets_embedded": 1453,
+  "standalone_html_bytes": 12458970,
+  "standalone_sha256": "18826b95b571a14dfcfd57357368744a5423dd097f3d61df4332f60a11e07424",
+  "hosted_url": "https://altaflow-workflow-studio.aelgendy673996.chatgpt.site/both.html",
+  "audience": "Existing owner-only audience preserved",
+  "external_application_requests_during_verification": 0
+}

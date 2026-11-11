@@ -1,0 +1,66 @@
+pullboard tour: a coordinator and two scripted agents run real commands on a throwaway repo. No model runs.
+
+1  The person approved one spec row. The coordinator files it as work.
+   G1: greet(name) returns "Hello, <name>!"; a blank name greets the world: "Hello, world!"
+   coordinator (unknown) $ pullboard add app Greeting --specs G1 --criterion "greet() meets G1"
+       #1
+
+2  A builder agent gets its own worktree in the app lane and claims the next item. Its criterion freezes.
+   coordinator (unknown) $ pullboard worktree app --model Scripted
+       made greeter-app-1 on branch app/1, joined as app-1 (Scripted) in the app lane
+   app-1 (Scripted) $ pullboard next
+       claimed #1: Greeting
+       criterion: greet() meets G1
+
+3  It writes greet(), tests the happy path and submits. Its own gate is green.
+   app-1 (Scripted) $ git commit -q -m "feat(app): greet by name [G1]"
+   app-1 (Scripted) $ pullboard submit 1
+       submitted #1 at 20d0102b488f; no item check; full gate: affected-test selection is not enabled for this project; gate green in 0s; timing (node): wall 0.28s, slot wait 0.00s; per-test timing unavailable: output was not TAP or JUnit (one or more phases); timing profile: greeter/.git/worktrees/greeter-app-1/pullboard-submit.log.profile.json
+
+4  A second agent checks out exactly that commit and tries the edge the builder skipped.
+   coordinator (unknown) $ pullboard worktree review --model Scripted
+       made greeter-review-1 on branch review/1, joined as review-1 (Scripted) in the review lane
+   review-1 (Scripted) $ git switch -q --detach 20d0102b488f
+   review-1 (Scripted) $ pullboard next --verify 1
+       next to verify: #1 Greeting, built by app-1 (Scripted) at 20d0102b488f
+   review-1 (Scripted) $ node -e "greet('')"
+       Hello, !
+   review-1 (Scripted) $ pullboard verify 1 reject --reason BEHAVIOR_MISMATCH --note "greet('') returns \"Hello, !\"; G1 says a blank name greets the world"
+       rejected #1: BEHAVIOR_MISMATCH; it is open again for rework
+
+5  The builder's next session starts from the board, not from memory.
+   app-1 (Scripted) $ pullboard resume
+       sent back: #1 BEHAVIOR_MISMATCH by review-1 (Scripted): greet('') returns "Hello, !"; G1 says a blank name greets the world
+       next: pullboard next; pullboard claim 1, fix what the verifier found, and submit again
+
+6  It fixes the edge, adds a test that pins it, and submits a new commit.
+   app-1 (Scripted) $ pullboard claim 1
+       claimed #1 until 2026-11-04T01:15:11.526Z; criterion frozen as 20f9ae56e6c9
+   app-1 (Scripted) $ git commit -q -am "fix(app): a blank name greets the world [G1]"
+   app-1 (Scripted) $ pullboard submit 1 --infra "pins the blank-name edge the verifier found"
+       submitted #1 at 3b1b8b07ec24; no item check; full gate: affected-test selection is not enabled for this project; gate green in 0s; timing (node): wall 0.24s, slot wait 0.00s; per-test timing unavailable: output was not TAP or JUnit (one or more phases); timing profile: greeter/.git/worktrees/greeter-app-1/pullboard-submit.log.profile.json
+
+7  The verifier breaks the fix on purpose, to prove the new test can fail, then restores it and accepts.
+   review-1 (Scripted) $ git switch -q --detach 3b1b8b07ec24
+   review-1 (Scripted) $ pullboard next --verify 1
+       next to verify: #1 Greeting, built by app-1 (Scripted) at 3b1b8b07ec24
+   review-1 (Scripted) $ node --test   # with the fix removed
+       # pass 1
+       # fail 1
+   review-1 (Scripted) $ git checkout -- src/greet.mjs
+   review-1 (Scripted) $ pullboard verify 1 accept --note "removed the blank-name fix: its new test failed; restored, both pass"
+       verified #1: CRITERION_MET; no frozen check ran; verified against agent-approved G1
+
+8  The coordinator merges it. The ledger is the receipt.
+   coordinator (unknown) $ git merge -q --ff-only app/1
+   coordinator (unknown) $ pullboard merged 1 3b1b8b07ec24
+       #1 merged as 3b1b8b07ec24
+       code map refreshed for main 3b1b8b07ec24
+   coordinator (unknown) $ pullboard ledger
+       1 verified by a second agent · 0 awaiting verification · 1 rejection along the way
+       | # | Lane | Item | Spec | Built by | Verified by | Check | Commit | Merged |
+       | 1 | app | Greeting | G1 | app-1 (Scripted) | review-1 (Scripted) | unchecked | 3b1b8b07ec24 | 3b1b8b07ec24 |
+
+Nothing shipped until a second agent verified it.
+Look around: cd /tmp/pullboard-tour-QxlO0H/greeter && pullboard log
+see it: pullboard view

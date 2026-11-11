@@ -1,0 +1,11 @@
+{
+  "nodes": true,
+  "disconnect": true,
+  "connect": true,
+  "dragPersist": true,
+  "execution": true,
+  "sequentialGate": true,
+  "restartPersistence": true,
+  "ipad": true,
+  "errors": []
+}

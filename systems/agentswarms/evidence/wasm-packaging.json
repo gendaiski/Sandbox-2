@@ -1,0 +1,16 @@
+{
+  "mvp": {
+    "originalSHA256": "ee5560145a3d3e0ffa6dce697be802c08842f139a594698eecc7c754f7ad5f05",
+    "gzipSHA256": "961ea20192026d50bd6681f4397f9df841edf5a507488ba0c00ca2a617c44fbc",
+    "uncompressedBytes": 41325187,
+    "compressedBytes": 9177051,
+    "decompressedBytesIdentical": true
+  },
+  "eh": {
+    "originalSHA256": "3abdec74989dcc54d2f2ea5621f611f3c45db1e7dff2f408476014d82beb2029",
+    "gzipSHA256": "34c086fa523925ddaf80ff44ce409e02b11b99c9d90f7800e9adafd4a993fd3d",
+    "uncompressedBytes": 35913747,
+    "compressedBytes": 8054501,
+    "decompressedBytesIdentical": true
+  }
+}
