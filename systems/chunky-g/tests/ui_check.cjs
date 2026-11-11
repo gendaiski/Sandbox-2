@@ -12,7 +12,12 @@ const step = async (name, fn) => { const t = Date.now(); try { const note = awai
   const ctx = await b.newContext({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 1, acceptDownloads: true, colorScheme: 'light' });
   const p = await ctx.newPage();
   const errors = []; p.on('pageerror', (e) => errors.push(e.message));
-  const shot = (n) => p.screenshot({ path: path.join(shots, `chunky-g-${n}.png`), fullPage: false });
+  // Screenshots hide the toast stack so they show the screen itself.
+  const shot = async (n) => {
+    const tag = await p.addStyleTag({ content: '.toasts{display:none!important}' }); await p.waitForTimeout(150);
+    await p.screenshot({ path: path.join(shots, `chunky-g-${n}.png`), fullPage: false });
+    await tag.evaluate((el) => el.remove()); // later steps wait for toasts
+  };
   const go = async (view) => { await p.goto(url + '#' + view); await p.waitForTimeout(400); };
   const btn = (name, opts = {}) => p.getByRole('button', { name, exact: opts.exact ?? false }).first();
   const viewText = () => p.locator('#view').innerText();

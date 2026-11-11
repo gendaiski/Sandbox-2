@@ -1,0 +1,403 @@
+<title>Chunky G</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Chunky G: one browser workbench for RAG and graph RAG.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: editorial left-aligned column (max 1180px); hero splits into a thesis and a live chunker;
+   one bold move only: the live chunk highlights. Everything else stays quiet, in the product's own palette. */
+:root {
+  --bg: #f5f3ee; --panel: #fffefb; --panel-2: #ece8e0; --line: #dad4c8; --fg: #1c1a16; --muted: #625c52; --faint: #948d80;
+  --accent: #c2410c; --accent-fg: #ffffff; --accent-soft: #fbe5d6;
+  --c0: #e8590c; --c1: #1c7ed6; --c2: #2b8a3e; --c3: #ae3ec9; --c4: #f08c00; --c5: #0c8599;
+  --hl: 18%; --shadow: 0 1px 2px rgba(40, 30, 10, .06), 0 10px 30px rgba(40, 30, 10, .07);
+  --display: "Bricolage Grotesque", "IBM Plex Sans", system-ui, sans-serif;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #141311; --panel: #1c1b18; --panel-2: #26241f; --line: #37342d; --fg: #ede9e1; --muted: #a8a297; --faint: #78736a;
+  --accent: #f07a3e; --accent-fg: #1a0f08; --accent-soft: #3a2316; --hl: 30%; --shadow: 0 1px 2px rgba(0,0,0,.35), 0 10px 30px rgba(0,0,0,.3); color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #141311; --panel: #1c1b18; --panel-2: #26241f; --line: #37342d; --fg: #ede9e1; --muted: #a8a297; --faint: #78736a;
+  --accent: #f07a3e; --accent-fg: #1a0f08; --accent-soft: #3a2316; --hl: 30%; --shadow: 0 1px 2px rgba(0,0,0,.35), 0 10px 30px rgba(0,0,0,.3); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 16px/1.6 var(--sans); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 48px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { max-width: 1180px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-spacing: -0.02em; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.mono, code { font-family: var(--mono); font-size: .86em; }
+
+/* top bar */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding-inline: max(16px, env(safe-area-inset-left, 0px)); }
+.top .wrap { display: flex; align-items: center; gap: 18px; padding-block: 12px; flex-wrap: wrap; }
+.mark { font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: -0.03em; text-decoration: none; color: var(--fg); margin-right: auto; }
+.mark b { color: var(--accent); }
+.top nav { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; }
+.top nav a { color: var(--muted); text-decoration: none; }
+.top nav a:hover { color: var(--fg); }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 9px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); font: 600 15px var(--sans); text-decoration: none; cursor: pointer; white-space: nowrap; }
+.btn:hover { border-color: var(--faint); }
+.btn.go { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+.btn.go:hover { filter: brightness(1.06); }
+.btn.small { padding: 7px 13px; font-size: 14px; }
+
+/* hero */
+.hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 48px; align-items: center; padding-block: 64px 56px; }
+.eyebrow { font: 500 12px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; }
+.hero h1 { font-size: clamp(40px, 6vw, 72px); line-height: .98; font-weight: 800; }
+.hero h1 span { color: var(--accent); }
+.hero p.lede { font-size: 19px; color: var(--muted); max-width: 34em; margin: 22px 0 28px; }
+.cta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.cta .note { font-size: 13px; color: var(--faint); }
+
+/* live chunker */
+.demo { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); padding: 18px; min-width: 0; }
+.demo header { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.demo header b { font-family: var(--display); font-size: 17px; margin-right: auto; }
+.demo header small { color: var(--faint); font-size: 12px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.chip { border: 1px solid var(--line); background: var(--panel); color: var(--muted); border-radius: 99px; padding: 5px 12px; font: 500 13px var(--sans); cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.text { font: 13px/1.75 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; background: var(--bg); border-radius: 10px; padding: 14px; min-height: 290px; }
+.text mark { color: inherit; border-radius: 3px; padding: 1px 0; transition: background-color .35s ease; }
+.text .gap { color: var(--faint); }
+.text .hdr { color: var(--faint); }
+.demo footer { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 12px; font: 12px var(--mono); color: var(--muted); }
+.demo footer b { color: var(--fg); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+/* sections */
+section { padding-block: 56px; border-top: 1px solid var(--line); }
+.sec-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 32px; align-items: end; margin-bottom: 32px; }
+.sec-head h2 { font-size: clamp(30px, 4vw, 44px); line-height: 1.04; font-weight: 700; }
+.sec-head p { color: var(--muted); margin: 0; max-width: 40em; }
+
+/* pipeline */
+.rail { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--panel); }
+.stage { padding: 18px 16px 20px; border-right: 1px solid var(--line); min-width: 0; position: relative; }
+.stage:last-child { border-right: 0; }
+.stage .n { font: 500 12px var(--mono); color: var(--accent); }
+.stage h3 { font-size: 20px; margin: 6px 0 6px; }
+.stage p { font-size: 14px; color: var(--muted); margin: 0; }
+.around { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+.around div { border: 1px dashed var(--line); border-radius: 12px; padding: 14px 16px; font-size: 14px; color: var(--muted); }
+.around b { color: var(--fg); font-family: var(--display); font-size: 17px; display: block; margin-bottom: 2px; }
+
+/* tour */
+.tour { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 28px; align-items: start; }
+.tabs { display: flex; flex-direction: column; gap: 2px; }
+.tab { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 6px; text-align: left; background: none; border: 0; border-left: 2px solid transparent; padding: 9px 10px; cursor: pointer; color: var(--muted); font: 500 15px var(--sans); border-radius: 0 8px 8px 0; }
+.tab .n { font: 12px var(--mono); color: var(--faint); padding-top: 3px; }
+.tab:hover { background: var(--panel-2); color: var(--fg); }
+.tab[aria-selected="true"] { border-left-color: var(--accent); background: var(--panel); color: var(--fg); }
+.view { min-width: 0; }
+.shot { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); background: var(--panel); aspect-ratio: 1200 / 750; max-width: 100%; }
+.shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.caption { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 20px; margin-top: 18px; align-items: start; }
+.caption h3 { font-size: 26px; }
+.caption p { margin: 6px 0 0; color: var(--muted); max-width: 46em; }
+.caption .from { font-size: 13px; color: var(--faint); margin-top: 8px; }
+
+/* projects */
+.projects { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.proj { background: var(--panel); padding: 18px; min-width: 0; }
+.proj a { font-family: var(--display); font-weight: 700; font-size: 18px; color: var(--fg); text-decoration: none; }
+.proj a:hover { color: var(--accent); }
+.proj p { font-size: 14px; color: var(--muted); margin: 6px 0 0; }
+.proj .to { font: 12px var(--mono); color: var(--accent); margin-top: 10px; }
+
+/* claude + proof */
+.three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px; min-width: 0; }
+.card h3 { font-size: 20px; margin-bottom: 6px; }
+.card p { font-size: 15px; color: var(--muted); margin: 0; }
+.card .k { font: 12px var(--mono); color: var(--faint); margin-top: 12px; }
+.proof { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+.nums { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.num { border-top: 2px solid var(--fg); padding-top: 10px; }
+.num b { font-family: var(--display); font-size: 40px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.num span { display: block; font-size: 14px; color: var(--muted); margin-top: 6px; }
+.limits { font-size: 15px; color: var(--muted); }
+.limits li { margin-bottom: 8px; }
+.pair { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 14px; margin-top: 18px; }
+.pair img { border-radius: 12px; border: 1px solid var(--line); display: block; width: 100%; height: auto; }
+
+/* run it */
+.run { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+pre { margin: 0; background: var(--fg); color: var(--bg); border-radius: 12px; padding: 18px; overflow-x: auto; font: 13.5px/1.7 var(--mono); }
+pre .c { opacity: .55; }
+.copy { margin-top: 10px; }
+.links { display: flex; flex-direction: column; gap: 10px; }
+.links a { font-weight: 500; }
+footer.site { padding-top: 32px; border-top: 1px solid var(--line); color: var(--faint); font-size: 13px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
+
+@media (max-width: 900px) {
+  .hero, .sec-head, .tour, .proof, .run, .pair { grid-template-columns: minmax(0, 1fr); }
+  .hero { padding-block: 40px; gap: 32px; }
+  .rail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stage:nth-child(2n) { border-right: 0; } .stage { border-bottom: 1px solid var(--line); }
+  .around, .three { grid-template-columns: minmax(0, 1fr); }
+  .tabs { flex-direction: row; overflow-x: auto; gap: 4px; padding-bottom: 4px; }
+  .tab { grid-template-columns: auto auto; border-left: 0; border-bottom: 2px solid transparent; border-radius: 8px 8px 0 0; white-space: nowrap; }
+  .tab[aria-selected="true"] { border-bottom-color: var(--accent); }
+  .top nav { display: none; }
+  .caption { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { .text mark { transition: none; } }
+</style>
+
+<header class="top"><div class="wrap">
+  <a class="mark" href="#top">Chunky <b>G</b></a>
+  <nav aria-label="Sections"><a href="#how">How it works</a><a href="#screens">Screens</a><a href="#sources">Built from</a><a href="#claude">Claude</a><a href="#run">Run it</a></nav>
+  <a class="btn go small" href="https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE" target="_blank" rel="noopener">Open Chunky G</a>
+</div></header>
+
+<main class="wrap" id="top">
+  <div class="hero">
+    <div>
+      <div class="eyebrow">RAG &amp; graph-RAG workbench</div>
+      <h1>See where your documents <span>get cut</span>, then ask them.</h1>
+      <p class="lede">Chunky G takes a PDF, a Word file or a page of Markdown through every step of retrieval: extraction, layout, chunking, scoring, a knowledge graph and answers with references. Each step is a screen you can see and change, and every step is traced.</p>
+      <div class="cta">
+        <a class="btn go" href="https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE" target="_blank" rel="noopener">Open Chunky G &#x2192;</a>
+        <a class="btn" href="#screens">Tour the ten screens</a>
+        <span class="note">Runs in your browser. Nothing to install.</span>
+      </div>
+    </div>
+    <div class="demo" aria-label="Live chunking demo">
+      <header><b>Try a strategy</b><small>same passage, different cuts</small></header>
+      <div class="chips" role="group" aria-label="Chunking strategy">
+        <button class="chip" data-s="fixed" aria-pressed="false">Fixed size</button>
+        <button class="chip" data-s="sentence" aria-pressed="false">Sentences</button>
+        <button class="chip" data-s="header" aria-pressed="true">Header-aware</button>
+        <button class="chip" data-s="topic" aria-pressed="false">By topic</button>
+      </div>
+      <div class="text" id="demo-text"></div>
+      <footer><span><b id="d-count">&#x2013;</b> chunks</span><span>mean <b id="d-mean">&#x2013;</b> tokens</span><span id="d-note"></span></footer>
+    </div>
+  </div>
+
+  <section id="how">
+    <div class="sec-head">
+      <h2>One project, six steps, three tools around them.</h2>
+      <p>Every screen reads and writes the same project in your browser. Run the steps one by one, or press one button in the Library to run them all on every document.</p>
+    </div>
+    <div class="rail">
+      <div class="stage"><div class="n">1</div><h3>Extract</h3><p>PDF, DOCX, HTML, sheets and notebooks become Markdown with page markers. Compare extractors side by side.</p></div>
+      <div class="stage"><div class="n">2</div><h3>Layout</h3><p>Titles, tables, lists, captions, headers and footers found on the page, in reading order.</p></div>
+      <div class="stage"><div class="n">3</div><h3>Chunk</h3><p>25 strategies in six families, four at a time, with sizes, balance and highlights.</p></div>
+      <div class="stage"><div class="n">4</div><h3>Evaluate</h3><p>Twelve metrics rank the strategies on your own text and question sets.</p></div>
+      <div class="stage"><div class="n">5</div><h3>Graph</h3><p>Entities and relationships from every chunk, merged into one graph you can explore and edit.</p></div>
+      <div class="stage"><div class="n">6</div><h3>Ask</h3><p>Six retrieval modes, token budgets and answers that cite chunk and page.</p></div>
+    </div>
+    <div class="around">
+      <div><b>Flow</b>Wire the steps into a pipeline that runs in parallel layers, with retries and run history.</div>
+      <div><b>DSPy Lab</b>Declare what a step should do and let an optimizer find better instructions and examples.</div>
+      <div><b>Traces</b>Every call, its timing, tokens and scores, plus versioned prompts and question sets.</div>
+    </div>
+  </section>
+
+  <section id="screens">
+    <div class="sec-head">
+      <h2>Ten screens, each one a real tool.</h2>
+      <p>These are screenshots of Chunky G itself, taken by its end-to-end test on a PDF the test makes and two sample documents.</p>
+    </div>
+    <div class="tour">
+      <div class="tabs" role="tablist" aria-label="Screens" id="tabs"></div>
+      <div class="view">
+        <div class="shot"><img id="shot" src="img/chunk.jpg" alt="Chunk Lab screen" width="1200" height="750"></div>
+        <div class="caption"><div><h3 id="cap-t">Chunk Lab</h3><p id="cap-p"></p><div class="from" id="cap-f"></div></div>
+          <a class="btn small" id="cap-go" href="https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE" target="_blank" rel="noopener">Open this screen</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sources">
+    <div class="sec-head">
+      <h2>Built from ten open-source projects.</h2>
+      <p>Each project was read from its own docs and code, written up as a reference note, and its features mapped to a screen. None of their code is copied; Chunky G is written from scratch.</p>
+    </div>
+    <div class="projects" id="projects"></div>
+  </section>
+
+  <section id="claude">
+    <div class="sec-head">
+      <h2>Claude does the judgement work.</h2>
+      <p>Enrichment, graph extraction, answers, judging, page reading and prompt optimisation go to Claude. Chunky G finds it one of three ways, and says which in its top bar.</p>
+    </div>
+    <div class="three">
+      <div class="card"><h3>Your claude.ai account</h3><p>On the published page, Claude answers through the account you are signed in with. The first time, the page asks your permission.</p><div class="k">no key needed</div></div>
+      <div class="card"><h3>An Anthropic API key</h3><p>In a copy you run yourself, paste a key in Settings. It uses the official SDK with Claude Opus 5.5 and stays in that browser.</p><div class="k">@anthropic-ai/sdk 1.3.0</div></div>
+      <div class="card"><h3>Offline stand-ins</h3><p>With no Claude at all, simple labelled stand-ins keep every screen working, so you can explore and test.</p><div class="k">clearly marked as stand-ins</div></div>
+    </div>
+  </section>
+
+  <section id="proof">
+    <div class="proof">
+      <div>
+        <div class="sec-head" style="grid-template-columns:minmax(0,1fr);margin-bottom:24px"><h2>Tested in a real browser.</h2></div>
+        <div class="nums">
+          <div class="num"><b>16</b><span>end-to-end browser steps: upload, extract, lay out, chunk, enrich, evaluate, graph, ask, flow, optimise, trace</span></div>
+          <div class="num"><b>12</b><span>engine tests in Node, covering all 25 chunkers and six query modes</span></div>
+          <div class="num"><b>3</b><span>views checked on every run: light, dark and phone width</span></div>
+          <div class="num"><b>0</b><span>page errors across all ten screens</span></div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size:20px;margin-bottom:10px">Good to know</h3>
+        <ul class="limits">
+          <li>The automated tests use the offline stand-ins. Real Claude answers are first exercised when you open the page in claude.ai.</li>
+          <li>The built-in layout reader handles normal digital PDFs. Scanned pages need the Claude vision option.</li>
+          <li>Search uses word-statistics vectors that need no download. They catch fewer paraphrases than a neural embedding model.</li>
+          <li>Projects are saved in your browser and can be exported as one JSON file.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pair">
+      <img src="img/chunk-dark.jpg" alt="Chunk Lab in the dark theme" width="1200" height="750" loading="lazy">
+      <img src="img/phone.jpg" alt="Ask screen at phone width" width="390" height="844" loading="lazy" style="max-height:420px;width:auto;justify-self:center">
+    </div>
+  </section>
+
+  <section id="run">
+    <div class="run">
+      <div>
+        <div class="sec-head" style="grid-template-columns:minmax(0,1fr);margin-bottom:18px"><h2>Run your own copy.</h2><p>From the Sandbox-2 repository, three commands set it up, serve it and test it. In a Codespace it opens on port 4900.</p></div>
+        <pre id="cmds"><span class="c"># pinned browser libraries + build</span>
+systems/chunky-g/setup.sh
+<span class="c"># http://localhost:4900</span>
+./start.sh chunky-g
+<span class="c"># engine tests + the whole UI in a browser</span>
+python3 systems/chunky-g/test_chunky_g.py -v</pre>
+        <button class="btn small copy" id="copy" type="button">Copy commands</button>
+      </div>
+      <div class="links">
+        <h3 style="font-size:20px">Where everything is</h3>
+        <a href="https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE" target="_blank" rel="noopener">The live app</a>
+        <a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/chunky-g" target="_blank" rel="noopener">Source code: systems/chunky-g</a>
+        <a href="https://github.com/gendaiski/Sandbox-2/blob/claude/loving-cannon-2y609d/docs/chunky-g/DESIGN.md" target="_blank" rel="noopener">Design: every feature mapped to a screen</a>
+        <a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/docs/chunky-g/reference" target="_blank" rel="noopener">Reference notes on the ten projects</a>
+        <p class="limits" style="margin:6px 0 0">The repository is private: the GitHub links open for its owner and collaborators.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site"><span>Chunky G &#xb7; built in Sandbox-2</span><span>Libraries: pdf.js 3.11.174 &#xb7; mammoth 1.6.0 &#xb7; SheetJS 0.18.5 &#xb7; marked 9.1.6</span></footer>
+</main>
+
+<script>
+(function () {
+  // ---- live chunker on a real passage from the sample guide ----
+  const TEXT = `# Choosing a hive
+The two designs most used in cities are the Langstroth hive and the top-bar hive. The Langstroth uses stacked boxes with removable frames, so inspections are quick. The top-bar hive is one long box with wooden bars.
+
+# Swarm control
+A swarm is the colony's way of reproducing: the old queen leaves with half of the workers. Swarms are harmless but alarm neighbours. Inspect every 7 to 9 days for queen cells.
+
+# Winter
+Leave the colony at least 18 kg of stores. Do not open the hive below 10 \u00b0C.`;
+  const tok = (s) => Math.ceil(s.length / 4);
+  const spans = {
+    fixed() { const out = []; for (let i = 0; i < TEXT.length; i += 150) out.push([i, Math.min(TEXT.length, i + 150)]); return out; },
+    sentence() {
+      const out = []; const re = /[^.\n]+[.]?/g; let m, buf = null, n = 0;
+      while ((m = re.exec(TEXT))) { if (!m[0].trim() || m[0].startsWith('#')) continue; const s = m.index + (m[0].length - m[0].trimStart().length), e = m.index + m[0].length;
+        if (!buf) buf = [s, e]; else buf[1] = e; if (++n % 2 === 0) { out.push(buf); buf = null; } }
+      if (buf) out.push(buf); return out;
+    },
+    header() { const out = []; const re = /^# .*$/gm; const hs = []; let m; while ((m = re.exec(TEXT))) hs.push(m.index); hs.forEach((h, i) => out.push([h, i + 1 < hs.length ? hs[i + 1] - 2 : TEXT.length])); return out; },
+    topic() { const out = []; const re = /[^\n]+(?:\n(?!\n)[^\n]*)*/g; let m; while ((m = re.exec(TEXT))) { if (m[0].startsWith('#') && !m[0].includes('\n')) continue; const body = m[0].replace(/^# .*\n/, ''); const s = m.index + (m[0].length - body.length); const half = body.indexOf('. ', body.length / 2); if (half > 0) { out.push([s, s + half + 1]); out.push([s + half + 2, s + body.length]); } else out.push([s, s + body.length]); } return out; },
+  };
+  const notes = { fixed: 'cuts mid-word', sentence: 'two sentences each', header: 'heading kept with its section', topic: 'splits where the subject shifts' };
+  const COLORS = ['--c0', '--c1', '--c2', '--c3', '--c4', '--c5'];
+  const box = document.getElementById('demo-text');
+  function render(kind) {
+    const sp = spans[kind]().filter(([a, b]) => b > a);
+    const frag = document.createDocumentFragment(); let at = 0;
+    sp.forEach(([a, b], i) => {
+      if (a > at) frag.append(Object.assign(document.createElement('span'), { className: 'gap', textContent: TEXT.slice(at, a) }));
+      const mk = document.createElement('mark'); mk.textContent = TEXT.slice(a, b); mk.title = `chunk ${i + 1} \u00b7 ${tok(TEXT.slice(a, b))} tokens`;
+      mk.style.backgroundColor = `color-mix(in srgb, var(${COLORS[i % COLORS.length]}) var(--hl), transparent)`;
+      frag.append(mk); at = b;
+    });
+    if (at < TEXT.length) frag.append(Object.assign(document.createElement('span'), { className: 'gap', textContent: TEXT.slice(at) }));
+    box.replaceChildren(frag);
+    document.getElementById('d-count').textContent = sp.length;
+    document.getElementById('d-mean').textContent = Math.round(sp.reduce((s, [a, b]) => s + tok(TEXT.slice(a, b)), 0) / sp.length);
+    document.getElementById('d-note').textContent = notes[kind];
+    document.querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.s === kind)));
+  }
+  document.querySelectorAll('.chip').forEach((c) => c.addEventListener('click', () => render(c.dataset.s)));
+  render('header');
+
+  // ---- screen tour ----
+  const APP = 'https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE';
+  const SCREENS = [
+    ['library', 'Library', 'Add files or the samples, see each document\'s extraction, layout, chunks and enrichment, and run the whole pipeline on everything with one button.', 'Chunky, ChunkNorris, RAG-Anything'],
+    ['extract', 'Extract', 'Run several extractors on the same PDF and compare them side by side with timings and counts, diff any two, then clean the result or let Claude correct it.', 'PDFStract, Chunky'],
+    ['layout', 'Layout', 'Typed boxes drawn on the page in reading order. Click a box to find its Markdown lines. Export blocks or a RAG-Anything content list.', 'OXR, RAG-Anything'],
+    ['chunk', 'Chunk Lab', 'Pick from 25 strategies, compare four at once with sizes, balance and histograms, see exactly where each cuts, save a version and enrich its chunks.', 'Chunking Methods, Chunky, ChunkNorris, ChunckerFlow, PDFStract'],
+    ['evaluate', 'Evaluate', 'Write a question set whose evidence is anchored in your text, then rank strategies on twelve metrics, with Claude as the judge when you want it.', 'ChunckerFlow, Langfuse'],
+    ['graph', 'Graph', 'Entities and relationships from every chunk, with tables, figures and formulas as entities too. Search, filter, focus on neighbours and edit.', 'LightRAG, RAG-Anything'],
+    ['ask', 'Ask', 'Ask in six modes, from plain vector search to the full graph. See the keywords, entities and chunks it used, and click a citation to read its source.', 'LightRAG, RAG-Anything, Langfuse'],
+    ['flow', 'Flow', 'Draw a pipeline of nodes and edges. Steps in the same layer run in parallel; each passes a typed result on. Keep a history, retry, or let Claude draft it.', 'OpenFlow'],
+    ['dspy', 'DSPy Lab', 'Declare a signature, pick a module, measure it on your questions, and let one of five optimizers compile better instructions and examples.', 'DSPy'],
+    ['traces', 'Traces', 'Every run as a tree of timed steps with inputs, outputs and tokens. Score them, version the prompts, manage question sets, and watch the dashboard.', 'Langfuse'],
+  ];
+  const tabs = document.getElementById('tabs');
+  const img = document.getElementById('shot');
+  function show(i) {
+    const [id, name, text, from] = SCREENS[i];
+    img.src = `img/${id}.jpg`; img.alt = `${name} screen`;
+    document.getElementById('cap-t').textContent = name;
+    document.getElementById('cap-p').textContent = text;
+    document.getElementById('cap-f').textContent = 'Brings in: ' + from;
+    document.getElementById('cap-go').href = APP;
+    tabs.querySelectorAll('.tab').forEach((t, k) => { t.setAttribute('aria-selected', String(k === i)); t.tabIndex = k === i ? 0 : -1; });
+  }
+  SCREENS.forEach(([id, name], i) => {
+    const b = document.createElement('button'); b.className = 'tab'; b.setAttribute('role', 'tab'); b.type = 'button';
+    b.innerHTML = `<span class="n">${String(i + 1).padStart(2, '0')}</span><span></span>`; b.lastChild.textContent = name;
+    b.addEventListener('click', () => show(i));
+    b.addEventListener('keydown', (e) => { if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); show((i + 1) % 10); tabs.children[(i + 1) % 10].focus(); } if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); show((i + 9) % 10); tabs.children[(i + 9) % 10].focus(); } });
+    tabs.append(b);
+  });
+  show(3);
+  SCREENS.forEach(([id]) => { const p = new Image(); p.src = `img/${id}.jpg`; });
+
+  // ---- the ten projects ----
+  const REF = 'https://github.com/gendaiski/Sandbox-2/blob/claude/loving-cannon-2y609d/docs/chunky-g/reference/';
+  const PROJECTS = [
+    ['RAG-Anything + LightRAG', 'rag-anything-lightrag.md', 'Multimodal parsing, the knowledge graph and six query modes with references.', 'Graph, Ask, Layout'],
+    ['Langfuse', 'langfuse.md', 'Traces of typed steps, scores, versioned prompts, datasets and a dashboard.', 'Traces, Ask, Evaluate'],
+    ['OpenFlow', 'openflow.md', 'Pipelines on a canvas with validation, parallel layers and run history.', 'Flow'],
+    ['Chunking Methods for RAG', 'chunking-methods.md', 'The catalogue of chunking methods in six families and a decision tree.', 'Chunk Lab'],
+    ['Chunky', 'chunky.md', 'The review workspace, cleanup, enrichment and saved chunk versions.', 'Library, Extract, Chunk Lab'],
+    ['ChunckerFlow', 'chunckerflow.md', 'Semantic and late chunking, twelve quality metrics and a leaderboard.', 'Chunk Lab, Evaluate'],
+    ['ChunkNorris', 'chunknorris.md', 'Parse to Markdown, then header-aware, size-balanced chunks.', 'Chunk Lab, Library'],
+    ['OXR', 'oxr.md', 'Typed layout blocks with boxes in reading order, linked to their text.', 'Layout'],
+    ['PDFStract', 'pdfstract.md', 'Extractor comparison and preprocessing for PDFs.', 'Extract'],
+    ['DSPy', 'dspy.md', 'Signatures, modules, metrics and optimizers that compile prompts.', 'DSPy Lab'],
+  ];
+  const pg = document.getElementById('projects');
+  PROJECTS.forEach(([name, file, what, to]) => {
+    const d = document.createElement('div'); d.className = 'proj';
+    const a = document.createElement('a'); a.href = REF + file; a.target = '_blank'; a.rel = 'noopener'; a.textContent = name;
+    const p = document.createElement('p'); p.textContent = what;
+    const t = document.createElement('div'); t.className = 'to'; t.textContent = '\u2192 ' + to;
+    d.append(a, p, t); pg.append(d);
+  });
+
+  // ---- copy commands ----
+  document.getElementById('copy').addEventListener('click', async (e) => {
+    const text = document.getElementById('cmds').innerText;
+    try { await navigator.clipboard.writeText(text); e.target.textContent = 'Copied'; }
+    catch (_) { const r = document.createRange(); r.selectNodeContents(document.getElementById('cmds')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); e.target.textContent = 'Selected: press Ctrl/\u2318+C'; }
+    setTimeout(() => (e.target.textContent = 'Copy commands'), 2500);
+  });
+})();
+</script>

@@ -19,11 +19,11 @@ The notes on each project, and the design that maps every feature to a screen, a
 
 ```bash
 systems/chunky-g/setup.sh                    # pinned browser libraries + build (dist/)
-./start.sh chunky-g                          # http://localhost:4900 (codespace: Ports → 4900)
+./start.sh chunky-g                          # http://localhost:4900 entrance page; the app is /app.html
 python3 systems/chunky-g/test_chunky_g.py -v # Node engine tests + the whole UI in a browser
 ```
 
-**Live page:** https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE. It is private until you share it from its Share menu.
+**Live pages:** the app at https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE and its entrance page at https://claude.ai/artifact/Lm9nLfXxw3DUWgGzPknH9D (source `site/index.html`). Both are private until you share them from their Share menus.
 
 **Claude:**
 - **On the published page,** Claude answers through the viewer's own claude.ai account. No key is needed.

@@ -22,8 +22,8 @@
     const m = c.meta || {};
     const prefixLen = c.text.length - c.body.length;
     return h('div', { class: 'chunk', style: { '--cc': chunkColor(i) } },
-      h('div', { class: 'meta' }, h('b', null, '#' + (i + 1)), `${c.tokens} tok`, `p.${m.page || '?'}`, m.type && m.type !== 'text' ? h('span', { class: 'badge info' }, m.type) : null, m.headers && m.headers.length ? h('span', { class: 'badge', title: m.headers.join(' > ') }, m.headers[m.headers.length - 1].replace(/^#+\s*/, '').slice(0, 30)) : null, m.keyword ? h('span', { class: 'badge' }, 'kw: ' + m.keyword) : null, m.title ? h('span', { class: 'badge acc' }, m.title.slice(0, 40)) : null, m.level ? h('span', { class: 'badge' }, m.level) : null, m.late ? h('span', { class: 'badge' }, 'late vector') : null, m.topic ? h('span', { class: 'badge' }, 'topic ' + m.topic) : null),
-      h('div', { class: 'body' }, prefixLen > 0 ? h('span', { class: 'prefix' }, c.text.slice(0, prefixLen)) : null, c.body),
+      h('div', { class: 'meta' }, h('b', null, '#' + (i + 1)), h('span', null, `${c.tokens} tok`), h('span', null, `p.${m.page || '?'}`), m.type && m.type !== 'text' ? h('span', { class: 'badge info' }, m.type) : null, m.headers && m.headers.length ? h('span', { class: 'badge', title: m.headers.join(' > ') }, m.headers[m.headers.length - 1].replace(/^#+\s*/, '').slice(0, 30)) : null, m.keyword ? h('span', { class: 'badge' }, 'kw: ' + m.keyword) : null, m.title ? h('span', { class: 'badge acc' }, m.title.slice(0, 40)) : null, m.level ? h('span', { class: 'badge' }, m.level) : null, m.late ? h('span', { class: 'badge' }, 'late vector') : null, m.topic ? h('span', { class: 'badge' }, 'topic ' + m.topic) : null),
+      h('div', { class: 'body' }, prefixLen > 0 ? h('span', { class: 'prefix' }, c.text.slice(0, prefixLen)) : null, c.body.replace(/<!--\s*page\s+\d+\s*-->\n*/g, '')),
       showEnrich && c.enrich ? h('div', { class: 'enrich' }, h('div', null, h('b', null, c.enrich.title)), h('div', { class: 'muted' }, c.enrich.context), h('div', null, c.enrich.summary), h('div', { class: 'row', style: { gap: '4px' } }, (c.enrich.keywords || []).map((k) => h('span', { class: 'badge' }, k))), h('ul', { style: { margin: '2px 0 0', paddingLeft: '16px' } }, (c.enrich.questions || []).map((q) => h('li', null, q)))) : null,
       m.note ? h('div', { class: 'note', style: { marginTop: '6px' } }, m.note) : null);
   }
@@ -79,7 +79,7 @@
         results[i] = r;
         const s = CG.Chunkers.stats(r.chunks);
         clear(box).append(
-          h('div', { class: 'row' }, h('span', { class: 'badge', style: { background: 'var(--panel-2)' } }, 'Lane ' + (i + 1)), h('b', { style: { marginRight: 'auto' } }, def(lane.strategy).name), h('button', { class: 'btn small ghost', title: 'Remove lane', onclick: () => { st.lanes.splice(i, 1); st.hl = Math.min(st.hl, st.lanes.length - 1); App.route(); } }, '✕')),
+          h('div', { class: 'row' }, h('span', { class: 'badge', style: { background: 'var(--panel-2)' } }, 'Lane ' + (i + 1)), h('b', { style: { marginRight: 'auto', minWidth: 0, flex: '1', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }, title: def(lane.strategy).name }, def(lane.strategy).name), h('button', { class: 'btn small ghost', title: 'Remove lane', onclick: () => { st.lanes.splice(i, 1); st.hl = Math.min(st.hl, st.lanes.length - 1); App.route(); } }, '✕')),
           h('div', { class: 'small faint' }, Object.entries(lane.params).map(([k, v]) => `${k}=${v}`).join(' · ') || 'defaults'),
           h('div', { class: 'stats' }, [['chunks', s.count], ['mean tok', Math.round(s.mean)], ['± sd', Math.round(s.std)], ['balance', s.balance.toFixed(2)], ['min', s.min], ['max', s.max], ['p50', Math.round(s.p50)], ['time', CG.fmtMs(r.ms)]].map(([k, v]) => h('div', null, h('b', null, v), k))),
           histogram(r.chunks.map((c) => c.tokens)),

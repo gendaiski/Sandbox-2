@@ -32,7 +32,8 @@
   const ABBR = /\b(?:e\.g|i\.e|etc|vs|mr|mrs|ms|dr|prof|fig|no|al|inc|ltd|st|jr|sr)\.$/i;
   function sentences(text, base = 0) {
     const out = [];
-    const re = /[^.!?\n]+(?:[.!?]+(?=\s|$)|\n+|$)/g;
+    // Punctuation only ends a sentence before whitespace, so "<!--", "2.5" and "e.g.," stay inside it.
+    const re = /(?:[^.!?\n]|[.!?]+(?!\s|$))+(?:[.!?]+(?=\s|$)|\n+|$)/g;
     let m, buf = '', start = -1;
     while ((m = re.exec(text))) {
       if (!m[0]) { re.lastIndex++; continue; }
