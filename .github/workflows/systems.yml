@@ -68,6 +68,7 @@ jobs:
           - { label: appwrite (self-hosted), system: appwrite, setup: "", ui: true, timeout: 90 }
           - { label: pocketbase, system: pocketbase, setup: "", ui: true }
           - { label: post-studio (post grabber), system: post-studio, setup: "", ui: true, timeout: 30 }
+          - { label: chunky-g (RAG workbench), system: chunky-g, setup: "", ui: true, timeout: 30 }
           - { label: agents-from-scratch (Agents Lab, Qwen2.5 1.5B), system: agents-from-scratch, setup: "", ui: true, timeout: 90 }
           - { label: jakes-brain, system: jakes-brain, setup: "", ui: true, timeout: 30 }
     steps:
@@ -122,7 +123,7 @@ jobs:
           libayatana-appindicator3-dev librsvg2-dev libxdo-dev libssl-dev pkg-config
 
       - name: Clone upstream
-        if: matrix.system != 'prism-ui' && matrix.system != 'post-studio'
+        if: matrix.system != 'prism-ui' && matrix.system != 'post-studio' && matrix.system != 'chunky-g'
         run: scripts/clone_all.sh ${{ matrix.system }}
 
       - name: Set up ${{ matrix.label }}

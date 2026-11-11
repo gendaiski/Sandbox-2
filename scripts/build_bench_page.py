@@ -91,6 +91,7 @@ BATCH = [
     ("pocketbase", "PocketBase", "Collections, records, API rules and filters", "the superuser dashboard", 8095),
     ("agents-from-scratch", "AI Agents from Scratch", "12 lessons, a diagram projector, and its agent's own prompts", "Agents Lab, built here", 8098),
     ("jakes-brain", "Jake's Brain", "No interactive page: no licence, so its UI isn't republished", "its home screen of 24 apps", 4800),
+    ("chunky-g", "Chunky G", "Ten RAG tools in one: extract, layout, 25 chunkers, evaluate, graph, ask, flow, DSPy, traces", "the whole workbench, with Claude", 4900),
 ]
 by_job = {s["job"].removesuffix("-full"): s for s in systems}
 batch = []

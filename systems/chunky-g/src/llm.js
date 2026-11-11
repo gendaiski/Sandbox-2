@@ -143,7 +143,7 @@ Return JSON {"blocks":[{"type","bbox":[x0,y0,x1,y1],"content":"the block's text 
 
 Request: {{request}}
 
-Return JSON {"name":"...","nodes":[{"id":"n1","kind":"...","label":"...","params":{}}],"edges":[{"from":"n1","to":"n2"}]}. Use only the listed kinds, keep it acyclic, connect every node, and give params only where the default should change.` },
+Return JSON {"name":"...","nodes":[{"id":"n1","kind":"...","label":"...","params":"{\"key\": value}"}],"edges":[{"from":"n1","to":"n2"}]}. params is a JSON object written as a string ("{}" when the defaults are fine). Use only the listed kinds, keep it acyclic and connect every node.` },
     flow_review: { effort: 'medium', kind: 'text', template: `Review this pipeline run and suggest up to 5 concrete improvements (chunk size, strategy, prompts, retrieval mode, structure), each with the evidence from the run. Be brief. This is advisory.
 
 Pipeline: {{flow}}
@@ -235,8 +235,8 @@ Return JSON {"instructions":["...", "..."]}.` },
     label() { return { 'claude.ai': 'Claude (your claude.ai account)', api: 'Claude API · ' + MODEL, offline: 'Offline stand-in (no Claude)' }[this.active]; },
 
     // Core call. images: [{mediaType, data(base64)}]
-    async call(name, vars, { schema, images, effort, parent, label, signal } = {}) {
-      const pv = Prompts.get(name);
+    async call(name, vars, { schema, images, effort, parent, label, signal, version } = {}) {
+      const pv = version ? Prompts.store[name].versions.find((x) => x.v === version) || Prompts.get(name) : Prompts.get(name);
       const prompt = CG.fill(pv.template, vars || {});
       const eff = this.settings.effortOverride || effort || pv.effort || 'medium';
       const run = async (obs) => {

@@ -204,6 +204,12 @@ SYSTEMS = {
         code="systems/jakes-brain",
         finding="Its config points at Jake's PC; setup.sh writes one for this machine, as its SPEC.md does for local runs.",
     ),
+    "report-chunky-g": dict(
+        job_name="chunky-g (RAG workbench)",
+        system="Chunky G", kind="RAG and graph-RAG workbench", upstream="docs/chunky-g (10 projects)",
+        code="systems/chunky-g", variant="built in Sandbox-2", demo="https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE",
+        finding="Ten RAG tools' features in one browser page; Claude through claude.ai or the SDK, offline stand-ins otherwise.",
+    ),
     "report-post-studio": dict(
         job_name="post-studio",
         system="Post Studio", kind="Post grabber and rewriter", upstream="yt-dlp/yt-dlp",

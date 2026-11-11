@@ -83,7 +83,7 @@
       if (!chunks.length) return 'I do not have enough information in the indexed documents to answer this. *(Offline stand-in: no Claude available.)*';
       const qt = new Set(CG.terms(v.query));
       const picks = [];
-      chunks.forEach((c, i) => CG.sentences(c.text.replace(/<!--[^>]*-->/g, '')).forEach((s) => { const sc = CG.terms(s.text).filter((w) => qt.has(w)).length; if (sc) picks.push({ s: s.text.replace(/^#+\s*/, ''), sc, n: i + 1, c }); }));
+      chunks.forEach((c, i) => CG.sentences(c.text.replace(/<!--[^>]*-->/g, '')).filter((s) => !/^\s*(\||#|```|\$\$)/.test(s.text)).forEach((s) => { const sc = CG.terms(s.text).filter((w) => qt.has(w)).length; if (sc) picks.push({ s: s.text.replace(/^#+\s*/, ''), sc, n: i + 1, c }); }));
       picks.sort((a, b) => b.sc - a.sc);
       const top = []; const seen = new Set(); for (const p of picks) { if (seen.has(p.s) || top.length >= 4) continue; seen.add(p.s); top.push(p); }
       if (!top.length) return 'I do not have enough information in the indexed documents to answer this. *(Offline stand-in.)*';
@@ -110,7 +110,7 @@
       const r = String(v.request || '').toLowerCase();
       const name = /graph|entit|relation/.test(r) ? 'Graph RAG' : /layout|table|figure|multimodal|pdf/.test(r) ? 'Multimodal RAG' : /compare|bake|strateg|metric/.test(r) ? 'Strategy bake-off' : /enrich|context/.test(r) ? 'Enriched retrieval' : 'Classic RAG';
       const f = CG.Flow.fromTemplate(name);
-      return { name: name + ' (from your request)', nodes: f.nodes.map(({ id, kind, label, params }) => ({ id, kind, label, params })), edges: f.edges.map((e) => ({ from: e.from, to: e.to })) };
+      return { name: name + ' (from your request)', nodes: f.nodes.map(({ id, kind, label, params }) => ({ id, kind, label, params: JSON.stringify(params) })), edges: f.edges.map((e) => ({ from: e.from, to: e.to })) };
     },
     flow_review: (v) => {
       const rep = String(v.report || ''); const tips = [];

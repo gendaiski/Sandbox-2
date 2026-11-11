@@ -11,7 +11,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 RUN="$ROOT/.run"
 DEFAULT=(langfuse rag-anything pdfstract chunckerflow chunknorris prism-ui openflow)
 SERVED=("${DEFAULT[@]}" lobehub autogpt continue camel dspy metagpt izwi skills-manager loopcut
-        fabricjs fabricjs-site gods-eye-view claude-code-best-practice opus-videos appwrite pocketbase post-studio agents-from-scratch jakes-brain)
+        fabricjs fabricjs-site gods-eye-view claude-code-best-practice opus-videos appwrite pocketbase post-studio agents-from-scratch jakes-brain chunky-g)
 mkdir -p "$RUN/logs"
 
 running() { [ -f "$RUN/$1.pid" ] && kill -0 "$(cat "$RUN/$1.pid")" 2>/dev/null; }
@@ -28,6 +28,7 @@ stop_one() {
 ready() {
   case "$1" in
     prism-ui) [ -d "$ROOT/systems/prism-ui/node_modules" ] ;;
+    chunky-g) [ -s "$ROOT/systems/chunky-g/dist/index.html" ] ;;
     openflow) [ -x "$ROOT/vendor/openflow/target/release/desktop" ] ;;
     langfuse | lobehub | autogpt | appwrite) true ;;   # serve.sh runs setup.sh itself: it starts the Docker stack
     continue) [ -x "$ROOT/systems/continue/.code-server/bin/code-server" ] ;;

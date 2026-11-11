@@ -3,7 +3,7 @@
 **Repository:** https://github.com/gendaiski/Sandbox-2
 **Branch:** [`claude/loving-cannon-2y609d`](https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d)
 **This file:** https://github.com/gendaiski/Sandbox-2/blob/claude/loving-cannon-2y609d/CODEX_HANDOFF.md
-**State as of:** 2026-11-09, CI [run 52](https://github.com/gendaiski/Sandbox-2/actions/runs/42652253398) on commit `da237d3`: **31 of 32 CI jobs green** (Loopcut builds and runs; 2 of its checks fail upstream).
+**State as of:** 2026-11-09, CI [run 52](https://github.com/gendaiski/Sandbox-2/actions/runs/42652253398) on commit `da237d3`: **31 of 32 CI jobs green; Chunky G added after that run** (Loopcut builds and runs; 2 of its checks fail upstream).
 
 Paste the message below into Codex, or point Codex at this file.
 
@@ -74,6 +74,7 @@ Each system's interactive page lives in two places:
 | PocketBase (`pocketbase`) | pocketbase/pocketbase | dashboard `/_/`, 8095 | pass 6/6 | [open](https://claude.ai/artifact/SZHXWLXxw3ZC55aNj7rqL3) | `bench/interactive/pocketbase.html` |
 | AI Agents from Scratch (`agents-from-scratch`) | pguso/agents-from-scratch | **Agents Lab** (built here), 8098 | pass 8/8 | [open](https://claude.ai/artifact/L2EHvQEjZ9HgMMSswegxsM) | `bench/interactive/agents-from-scratch.html` |
 | Jake's Brain (`jakes-brain`) | jake17007/jakes-brain | home screen of 24 apps, 4800 | pass 6, skip 1 (CI run 52) | — (no licence upstream, so its UI isn't republished) | `systems/jakes-brain/` |
+| Chunky G (`chunky-g`) | built in Sandbox-2 from 10 projects (docs/chunky-g) | the whole workbench, 4900 | pass 5, skip 1 (local run) | [open](https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE) | `systems/chunky-g/` |
 | Post Studio (`post-studio`) | built here, on yt-dlp, gallery-dl and FxTwitter | Post Studio, 8097 | pass 12, skip 1 | — (it reads live social sites, which a claude.ai page can't) | `systems/post-studio/` |
 
 ## 3. Systems built here, not upstream

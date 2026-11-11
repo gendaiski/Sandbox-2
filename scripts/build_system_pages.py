@@ -222,6 +222,13 @@ SYSTEMS = {
               "habits, calendar, JakeTube, graph), and the real UI at iPhone size in light and dark with a task typed in.",
         extras="",
     ),
+    "chunky-g": dict(
+        name="Chunky G", jobs=["chunky-g (RAG workbench)"],
+        what="One browser workbench with the features of RAG-Anything/LightRAG, Langfuse, OpenFlow, Chunking Methods, Chunky, ChunckerFlow, ChunkNorris, OXR, PDFStract and DSPy.",
+        tests="Node tests of every engine (25 chunkers, layout, index, graph, six query modes, 12 metrics, DSPy optimizers, flows, traces); "
+              "then the real UI in a browser on a Chromium-made PDF and two samples, through every screen, in light, dark and phone width.",
+        extras="Live page: https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE",
+    ),
     "post-studio": dict(
         name="Post Studio", jobs=["post-studio"],
         what="Paste a social post link; get its text, images and videos saved apart, then rewrite it in your voice and narrate it.",

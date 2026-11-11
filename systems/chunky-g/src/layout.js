@@ -36,22 +36,30 @@
       const twoCol = rightCol >= 6 && narrow.length > p.lines.length * 0.6;
       const colOf = (l) => (twoCol && l.x0 > mid - p.width * 0.02 && l.x1 - l.x0 < p.width * 0.55 ? 1 : 0);
 
-      // Classify lines.
+      // The body's left edge (most common start of body-size lines), to spot indented list items.
+      const lefts = new Map(); p.lines.filter((l) => Math.abs(l.size - body) < 1).forEach((l) => { const k = Math.round(l.x0 / 2) * 2; lefts.set(k, (lefts.get(k) || 0) + 1); });
+      const left = [...lefts].sort((a, b) => b[1] - a[1])[0]?.[0] ?? 0;
+      // Classify lines. Tables first: several wide gaps between items on one line are columns.
       const L = p.lines.map((l) => {
         let type = 'Text';
         const t = l.text;
         const top = l.yTop < p.height * 0.08, bottom = l.yBot > p.height * 0.92;
+        const columns = l.gaps.filter((g) => g > l.size * 0.5).length;
         if ((top || bottom) && (repeated.has(norm(t)) || /^\s*(page\s*)?\d{1,4}(\s*(of|\/)\s*\d+)?\s*$/i.test(t))) type = top ? 'Page-header' : 'Page-footer';
         else if (/^(figure|fig\.|table|tab\.)\s*\d+[.:]/i.test(t)) type = 'Caption';
+        else if (columns >= 2) type = 'Table';
         else if (l.size >= body * 1.18 && CG.words(t) <= 20) type = 'Title';
         else if (l.bold && CG.words(t) <= 12 && !/[.:;,]$/.test(t)) type = 'Title';
         else if (/^\s*([•▪◦‣\-*–]|\d{1,2}[.)]|[a-z][.)])\s+/.test(t)) type = 'List';
         else if (l.mono) type = 'Code Block';
         else if ((t.match(MATH) || []).length >= 3 && CG.words(t) <= 25 && (t.match(MATH) || []).length / t.length > 0.04) type = 'Formula';
         else if (l.size < body * 0.86 && l.yTop > p.height * 0.75) type = 'Footnote';
-        else if (l.gaps.filter((g) => g > l.size * 1.6).length >= 2) type = 'Table';
+        else if (l.x0 - left >= body * 1.5 && l.x1 - l.x0 < p.width * 0.8 && Math.abs(l.size - body) < 1) type = 'List';
         return { ...l, type, col: colOf(l) };
       });
+      // A line with a column gap whose cell starts line up with a neighbouring table row is a table row too.
+      const aligned = (a, b) => a.cols && b.cols && a.cols.length >= 2 && a.cols.filter((x) => b.cols.some((y) => Math.abs(x - y) <= 3)).length >= Math.min(a.cols.length, b.cols.length) - 0;
+      for (let pass = 0; pass < 2; pass++) L.forEach((l, i) => { if (l.type === 'Table' || /Page-|Caption/.test(l.type) || !l.gaps.some((g) => g > l.size * 0.5)) return; if ([L[i - 1], L[i + 1]].some((n) => n && n.type === 'Table' && aligned(l, n))) l.type = 'Table'; });
 
       // Merge consecutive lines of the same type and column into blocks.
       const order = [...L].sort((a, b) => a.col - b.col || a.yTop - b.yTop || a.x0 - b.x0);
@@ -59,7 +67,9 @@
       for (const l of order) {
         const B = blocks[blocks.length - 1];
         const gap = B ? l.yTop - B.y1 : 1e9;
-        const sameFlow = B && B.col === l.col && gap < Math.max(l.size, body) * 1.6 && gap > -l.size;
+        // Table rows are often padded apart, so they may sit further apart than text lines.
+        const maxGap = Math.max(l.size, body) * (B && B.type === 'Table' && l.type === 'Table' ? 3.2 : 1.6);
+        const sameFlow = B && B.col === l.col && gap < maxGap && gap > -l.size;
         const joinable = B && sameFlow && (B.type === l.type || (B.type === 'Caption' && l.type === 'Text' && B.lines.length < 3)) && !/Title|Page-/.test(l.type)
           || (B && sameFlow && B.type === 'Title' && l.type === 'Title' && Math.abs(B.size - l.size) < 0.5 && B.lines.length < 3);
         if (joinable) { B.lines.push(l); B.x0 = Math.min(B.x0, l.x0); B.x1 = Math.max(B.x1, l.x1); B.y1 = Math.max(B.y1, l.yBot); }
@@ -91,7 +101,7 @@
     const text = () => b.lines.map((l) => l.text).join('\n').replace(/([a-z])-\n([a-z])/g, '$1$2').replace(/\n/g, ' ');
     switch (b.type) {
       case 'Title': return '#'.repeat(levelOf(b.size)) + ' ' + text();
-      case 'List': return b.lines.map((l) => l.text.replace(/^\s*([•▪◦‣\-*–])\s+/, '- ')).join('\n');
+      case 'List': return b.lines.map((l) => (/^\s*([•▪◦‣\-*–])\s+/.test(l.text) ? l.text.replace(/^\s*([•▪◦‣\-*–])\s+/, '- ') : /^\s*(\d{1,2}[.)]|[a-z][.)])\s+/.test(l.text) ? l.text : '- ' + l.text)).join('\n');
       case 'Code Block': return '```\n' + b.lines.map((l) => l.text).join('\n') + '\n```';
       case 'Formula': return '$$ ' + text() + ' $$';
       case 'Table': {
@@ -101,7 +111,7 @@
       default: return text();
     }
   }
-  function splitCells(l) { return l.text.split(/\s{2,}|\t/).map((s) => s.trim()).filter(Boolean); }
+  function splitCells(l) { return l.cells && l.cells.length > 1 ? l.cells : l.text.split(/\s{2,}|\t/).map((s) => s.trim()).filter(Boolean); }
 
   // Markdown structure as layout (DOCX, HTML, Markdown): one page, typed blocks with line ranges.
   const MD_TYPE = { heading: 'Title', text: 'Text', list: 'List', table: 'Table', code: 'Code Block', formula: 'Formula', figure: 'Picture', caption: 'Caption' };

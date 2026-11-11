@@ -173,7 +173,14 @@
           L.x1 = Math.max(L.x1, it.x1); L.yTop = Math.min(L.yTop, it.yTop); L.yBot = Math.max(L.yBot, it.yBot); L.size = Math.max(L.size, it.size);
         } else lines.push({ text: it.str, x0: it.x0, x1: it.x1, yTop: it.yTop, yBot: it.yBot, size: it.size, items: [it], gaps: [] });
       }
-      lines.forEach((l) => { l.text = l.text.replace(/\s+/g, ' ').trim(); l.mono = l.items.filter((i) => i.mono).length > l.items.length / 2; l.bold = l.items.filter((i) => i.bold).length > l.items.length / 2; delete l.items; });
+      lines.forEach((l) => {
+        l.text = l.text.replace(/\s+/g, ' ').trim();
+        l.mono = l.items.filter((i) => i.mono).length > l.items.length / 2; l.bold = l.items.filter((i) => i.bold).length > l.items.length / 2;
+        // Cell starts: the x of each item that follows a column-sized gap (used to align table rows).
+        l.cols = l.items.filter((it, k) => k === 0 || l.gaps[k - 1] > it.size * 0.5).map((it) => Math.round(it.x0));
+        l.cells = l.items.reduce((cells, it, k) => { if (k === 0 || l.gaps[k - 1] > it.size * 0.5) cells.push(it.str.trim()); else cells[cells.length - 1] += (l.gaps[k - 1] > it.size * 0.15 ? ' ' : '') + it.str.trim(); return cells; }, []).filter(Boolean);
+        delete l.items;
+      });
       pages.push({ page: n, width: vp.width, height: vp.height, lines: lines.filter((l) => l.text) });
       if (onProgress) onProgress(n, pdf.numPages);
     }
