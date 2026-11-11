@@ -35,14 +35,13 @@ h = Harness("chunky-g")
 
 with h.check("built: one page with pinned libraries, and the reference docs for all ten projects") as c:
     page = (HERE / "dist" / "artifact.html").read_text()
-    local = (HERE / "dist" / "app.html").read_text()
-    entrance = (HERE / "dist" / "index.html").read_text()
+    local = (HERE / "dist" / "index.html").read_text()
     pins = re.findall(r'<script src="(https://[^"]+)"', page)
     c.note(f"artifact.html {len(page) // 1024} KB; libraries: " + ", ".join(p.split('/libs/')[1] for p in pins))
     c.expect(len(pins) == 5 and all(p.startswith("https://cdnjs.cloudflare.com/ajax/libs/") and re.search(r"/\d+\.\d+\.\d+/", p) for p in pins), "5 pinned cdnjs libraries")
     c.expect(all((HERE / "dist" / "vendor" / p.rsplit("/", 1)[1]).exists() for p in pins) and 'src="vendor/pdf.min.js"' in local, "same files served locally")
     c.expect("<title>Chunky G</title>" in page and "claude:viewport-fit-sides" in page, "title and viewport contract")
-    c.expect('href="app.html"' in entrance and all((HERE / "dist" / "img" / f"{v}.jpg").exists() for v in ["library", "chunk", "ask", "traces"]), "entrance page links the app and has its screenshots")
+    c.expect(all(x in page and x in local for x in ['<div id="home">', '<template id="home-tpl">', '<div id="app" hidden>', 'href="#library"']) and page.count("data:image/jpeg;base64,") >= 12 and "img/" not in page.split("<template id=\"home-tpl\">")[1].split("</template>")[0], "one page: the entrance (screenshots embedded) with the app inside")
     refs = sorted(p.stem for p in (ROOT / "docs" / "chunky-g" / "reference").glob("*.md"))
     c.note("reference docs: " + ", ".join(refs))
     c.expect(len(refs) == 10 and (ROOT / "docs" / "chunky-g" / "DESIGN.md").exists(), "10 reference docs + design")
@@ -67,8 +66,8 @@ with h.check("engines in Node: chunkers, layout, index, graph, 6 query modes, me
     c.expect(run.returncode == 0 and len(oks) >= 12, f"engine tests exited {run.returncode}")
 
 with Served("chunky-g", URL, env={"CHUNKY_G_PORT": str(PORT)}, timeout=60):
-    with h.check("the entrance page and the app both serve") as c:
-        for path, needle in [("", "Tour the ten screens"), ("app.html", "Loading Chunky G")]:
+    with h.check("the one page serves the entrance and the app") as c:
+        for path, needle in [("", "Tour the ten screens"), ("", "Loading Chunky G")]:
             with urllib.request.urlopen(URL + path, timeout=20) as r:
                 body = r.read().decode()
             c.expect(r.status == 200 and needle in body, f"/{path}: HTTP {r.status}")
@@ -76,17 +75,17 @@ with Served("chunky-g", URL, env={"CHUNKY_G_PORT": str(PORT)}, timeout=60):
     with h.check("the real UI end to end in a browser (offline stand-ins), light, dark, phone, reload") as c:
         shots = HERE / "reports" / "shots"
         shots.mkdir(parents=True, exist_ok=True)
-        run = node(HERE / "tests" / "ui_check.cjs", URL + "app.html", str(shots), timeout=1200)
+        run = node(HERE / "tests" / "ui_check.cjs", URL, str(shots), timeout=1200)
         steps = json.loads((shots / "ui-results.json").read_text()) if (shots / "ui-results.json").exists() else []
         for s in steps:
             c.note(("ok   " if s["ok"] else "FAIL ") + s["name"] + (": " + s.get("note", "") if s.get("note") else "") + (" - " + s.get("error", "") if not s["ok"] else ""))
         c.note((run.stdout + run.stderr)[-300:])
-        c.expect(run.returncode == 0 and len(steps) >= 16 and all(s["ok"] for s in steps), "ui_check.cjs passed")
+        c.expect(run.returncode == 0 and len(steps) >= 17 and all(s["ok"] for s in steps), "ui_check.cjs passed")
 
     with h.check("live: the same page with Claude through the SDK (needs ANTHROPIC_API_KEY)") as c:
         if not os.environ.get("ANTHROPIC_API_KEY"):
             c.skip("set ANTHROPIC_API_KEY to answer and enrich with Claude for real")
-        run = node(HERE / "tests" / "live_claude.cjs", URL + "app.html", timeout=600)
+        run = node(HERE / "tests" / "live_claude.cjs", URL, timeout=600)
         c.note((run.stdout + run.stderr)[-500:])
         c.expect(run.returncode == 0, "live_claude.cjs passed")
 

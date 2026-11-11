@@ -21,6 +21,8 @@ const step = async (name, fn) => { const t = Date.now(); try { const note = awai
   const go = async (view) => { await p.goto(url + '#' + view); await p.waitForTimeout(400); };
   const btn = (name, opts = {}) => p.getByRole('button', { name, exact: opts.exact ?? false }).first();
   const viewText = () => p.locator('#view').innerText();
+  // Everything on the page but the entrance (hidden while the app shows), so text it also uses never matches.
+  const ui = p.locator('body > :not(#home):not(template):not(script)');
   try {
     // A PDF made by Chromium from the beekeeping sample: running header + page numbers, a table and lists.
     const pdfPath = path.join(shots, 'sample-guide.pdf');
@@ -40,19 +42,31 @@ const step = async (name, fn) => { const t = Date.now(); try { const note = awai
       await q.close();
     });
 
+    await step('the entrance page opens first and leads into the app and back', async () => {
+      await p.goto(url); await p.getByText('See where your documents').first().waitFor();
+      if (await p.locator('#app').isVisible()) throw new Error('app showing on the entrance');
+      await p.getByRole('link', { name: /Open Chunky G/ }).first().click();
+      await p.locator('.tabs a[data-view=library].on').waitFor({ timeout: 20000 });
+      if (await p.locator('#home').isVisible()) throw new Error('entrance still showing in the app');
+      await p.locator('a.brand').click(); await p.getByText('See where your documents').first().waitFor();
+      await p.getByRole('tab', { name: /Graph/ }).click();
+      await p.getByRole('link', { name: 'Open this screen' }).click();
+      await p.locator('.tabs a[data-view=graph].on').waitFor({ timeout: 20000 });
+      return 'entrance → Library → entrance → Graph';
+    });
     await step('Library loads with the sample documents', async () => {
-      await go('library'); await p.getByText('Urban Beekeeping Field Guide.md').first().waitFor();
+      await go('library'); await ui.getByText('Urban Beekeeping Field Guide.md').first().waitFor();
       return (await viewText()).includes('Northwind Incident Runbook.md') ? '2 samples' : '';
     });
     await step('add the PDF through the file picker', async () => {
       await p.locator('input[type=file]').first().setInputFiles(pdfPath);
-      await p.getByText('sample-guide.pdf').first().waitFor({ timeout: 30000 });
+      await ui.getByText('sample-guide.pdf').first().waitFor({ timeout: 30000 });
       const t = await viewText(); if (!/PDF · .* · 2 pages/.test(t)) throw new Error('PDF row missing pages: ' + t.slice(0, 300));
       return '2 pages';
     });
     await step('run the pipeline on every document', async () => {
       await btn('Run pipeline on all').click();
-      await p.getByText(/Pipeline done/).waitFor({ timeout: 60000 });
+      await ui.getByText(/Pipeline done/).waitFor({ timeout: 60000 });
       const t = await viewText(); const m = t.match(/(\d+)\s*\n?\s*INDEXED CHUNKS/i);
       await shot('library');
       return m ? m[1] + ' chunks indexed' : '';
@@ -61,10 +75,10 @@ const step = async (name, fn) => { const t = Date.now(); try { const note = awai
       await go('extract');
       await p.locator('select').filter({ has: p.locator('option', { hasText: 'sample-guide.pdf' }) }).first().selectOption({ label: 'sample-guide.pdf' });
       await btn('Run comparison').click();
-      await p.getByText('pdf.js text (as is)').nth(1).waitFor({ timeout: 30000 });
+      await ui.getByText('pdf.js text (as is)').nth(1).waitFor({ timeout: 30000 });
       await p.locator('label.check', { hasText: /^A$/ }).first().locator('input').check();
       await p.locator('label.check', { hasText: /^B$/ }).nth(1).locator('input').check();
-      await p.getByText(/^Diff:/).waitFor();
+      await ui.getByText(/^Diff:/).waitFor();
       await shot('extract');
       const t = await viewText(); if (/Beekeeping Guide · Draft/.test((t.split('pdf.js layout → Markdown')[1] || '').split('Diff:')[0]) === undefined) return '';
       return 'layout vs plain diffed';
@@ -88,25 +102,25 @@ const step = async (name, fn) => { const t = Date.now(); try { const note = awai
       await btn('Add to comparison').click(); await p.locator('.lane .stats').nth(3).waitFor({ timeout: 30000 });
       await p.locator('.hltext mark').first().waitFor();
       await p.locator('.lane').nth(3).getByRole('button', { name: 'Save version' }).click();
-      await p.getByText(/Saved Hybrid/).waitFor();
+      await ui.getByText(/Saved Hybrid/).waitFor();
       await p.locator('button', { hasText: /^Enrich first/ }).first().click();
-      await p.getByText(/Enriched \d+ chunks/).waitFor({ timeout: 60000 });
+      await ui.getByText(/Enriched \d+ chunks/).waitFor({ timeout: 60000 });
       await shot('chunk');
       return (await p.locator('.lane').count()) + ' lanes';
     });
     await step('Evaluate: write a question set, then rank five strategies', async () => {
       await go('evaluate');
-      await btn('Write questions with').click(); await p.getByText(/questions written/).waitFor({ timeout: 60000 });
-      await btn('Run evaluation').click(); await p.getByText('Leaderboard').waitFor({ timeout: 120000 });
+      await btn('Write questions with').click(); await ui.getByText(/questions written/).waitFor({ timeout: 60000 });
+      await btn('Run evaluation').click(); await ui.getByText('Leaderboard').waitFor({ timeout: 120000 });
       const rows = await p.locator('table.t tbody tr').count();
       await shot('evaluate');
       return rows + ' rows';
     });
     await step('Graph: build the knowledge graph and inspect an entity', async () => {
       await go('graph'); await btn('Build graph').click();
-      await p.getByText(/Graph: \d+ entities/).waitFor({ timeout: 120000 });
-      await p.getByText('Most connected').waitFor();
-      await p.locator('.side-r > .col:last-child .btn.small').first().click(); await p.getByText(/Relationships \(\d+\)/).waitFor();
+      await ui.getByText(/Graph: \d+ entities/).waitFor({ timeout: 120000 });
+      await ui.getByText('Most connected').waitFor();
+      await p.locator('.side-r > .col:last-child .btn.small').first().click(); await ui.getByText(/Relationships \(\d+\)/).waitFor();
       await p.waitForTimeout(800); await shot('graph');
       return (await p.locator('.viewhead').first().innerText()).length ? 'ok' : '';
     });
@@ -122,27 +136,27 @@ const step = async (name, fn) => { const t = Date.now(); try { const note = awai
       return 'Priya Natarajan cited';
     });
     await step('Flow: run the Graph RAG template to completion', async () => {
-      await go('flow'); await p.getByText(/^Valid · \d+ layers/).waitFor();
-      await btn('Run', { exact: true }).click(); await p.getByText(/Run completed\./).waitFor({ timeout: 180000 });
+      await go('flow'); await ui.getByText(/^Valid · \d+ layers/).waitFor();
+      await btn('Run', { exact: true }).click(); await ui.getByText(/Run completed\./).waitFor({ timeout: 180000 });
       await p.locator('.fnode.completed').first().waitFor();
-      await p.locator('.fnode rect').last().click(); await p.getByText('Last run').waitFor();
+      await p.locator('.fnode rect').last().click(); await ui.getByText('Last run').waitFor();
       await shot('flow');
       return (await p.locator('.fnode.completed').count()) + ' nodes completed';
     });
     await step('DSPy Lab: evaluate, then compile with BootstrapFewShot', async () => {
-      await go('dspy'); await btn('Evaluate on dev').click(); await p.getByText(/Per example \(evaluation/).waitFor({ timeout: 60000 });
-      await btn('Compile (optimize)').click(); await p.getByText('Compile result').waitFor({ timeout: 120000 });
+      await go('dspy'); await btn('Evaluate on dev').click(); await ui.getByText(/Per example \(evaluation/).waitFor({ timeout: 60000 });
+      await btn('Compile (optimize)').click(); await ui.getByText('Compile result').waitFor({ timeout: 120000 });
       await shot('dspy');
       return (await p.locator('text=/best \\d\\.\\d{3}/').first().innerText());
     });
     await step('Traces: waterfall, a score, a new prompt version, dashboard', async () => {
       await go('traces'); await p.locator('table.t tbody tr').first().click();
-      await p.locator('.wf .nm').first().waitFor(); await p.locator('.wf .nm').nth(1).click(); await p.getByText('Input', { exact: true }).waitFor();
+      await p.locator('.wf .nm').first().waitFor(); await p.locator('.wf .nm').nth(1).click(); await ui.getByText('Input', { exact: true }).waitFor();
       await btn('Add score').click();
       await btn('Prompts', { exact: true }).click(); await p.locator('.strat', { hasText: 'rag_answer' }).click();
       const ta = p.locator('textarea.mono').first(); await ta.fill((await ta.inputValue()) + '\nKeep answers under 120 words.');
-      await btn('Save as new version').click(); await p.getByText(/Saved v2/).waitFor();
-      await btn('Dashboard', { exact: true }).click(); await p.getByText('Calls by prompt').waitFor();
+      await btn('Save as new version').click(); await ui.getByText(/Saved v2/).waitFor();
+      await btn('Dashboard', { exact: true }).click(); await ui.getByText('Calls by prompt').waitFor();
       await shot('traces');
       return (await p.locator('.kpi b').first().innerText()) + ' traces';
     });

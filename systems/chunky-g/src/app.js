@@ -107,7 +107,7 @@
       root.append(
         h('div', { class: 'top' },
           h('div', { class: 'bar' },
-            h('div', { class: 'brand' }, h('b', null, 'Chunky ', h('i', null, 'G')), h('span', null, 'RAG & graph-RAG workbench')),
+            h('a', { class: 'brand', href: '#home', title: 'Back to the entrance page' }, h('b', null, 'Chunky ', h('i', null, 'G')), h('span', null, 'RAG & graph-RAG workbench')),
             projSel, this.pill,
             h('button', { class: 'btn small', onclick: () => this.settings() }, 'Settings')),
           h('nav', { class: 'tabs', 'aria-label': 'Screens' }, this.VIEWS.map(([id, label], i) => h('a', { href: '#' + id, 'data-view': id }, h('span', { class: 'n' }, String(i + 1).padStart(2, '0')), label)))),
@@ -116,6 +116,7 @@
     },
     renderPill() { if (!this.pill) return; const a = CG.LLM.active; this.pill.className = 'pill ' + (a === 'offline' ? 'off' : 'on'); clear(this.pill).append(h('span', { class: 'dot' }), CG.LLM.label()); },
     route() {
+      if (!location.hash || location.hash === '#home') return; // the entrance page is showing
       const v = (location.hash || '#library').slice(1).split(/[?&]/)[0];
       this.view = this.VIEWS.some(([id]) => id === v) ? v : 'library';
       document.querySelectorAll('.tabs a').forEach((a) => a.classList.toggle('on', a.dataset.view === this.view));

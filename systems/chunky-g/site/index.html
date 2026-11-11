@@ -153,7 +153,7 @@ footer.site { padding-top: 32px; border-top: 1px solid var(--line); color: var(-
 <header class="top"><div class="wrap">
   <a class="mark" href="#top">Chunky <b>G</b></a>
   <nav aria-label="Sections"><a href="#how">How it works</a><a href="#screens">Screens</a><a href="#sources">Built from</a><a href="#claude">Claude</a><a href="#run">Run it</a></nav>
-  <a class="btn go small" href="https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE" target="_blank" rel="noopener">Open Chunky G</a>
+  <a class="btn go small" href="#library">Open Chunky G</a>
 </div></header>
 
 <main class="wrap" id="top">
@@ -163,7 +163,7 @@ footer.site { padding-top: 32px; border-top: 1px solid var(--line); color: var(-
       <h1>See where your documents <span>get cut</span>, then ask them.</h1>
       <p class="lede">Chunky G takes a PDF, a Word file or a page of Markdown through every step of retrieval: extraction, layout, chunking, scoring, a knowledge graph and answers with references. Each step is a screen you can see and change, and every step is traced.</p>
       <div class="cta">
-        <a class="btn go" href="https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE" target="_blank" rel="noopener">Open Chunky G &#x2192;</a>
+        <a class="btn go" href="#library">Open Chunky G &#x2192;</a>
         <a class="btn" href="#screens">Tour the ten screens</a>
         <span class="note">Runs in your browser. Nothing to install.</span>
       </div>
@@ -211,7 +211,7 @@ footer.site { padding-top: 32px; border-top: 1px solid var(--line); color: var(-
       <div class="view">
         <div class="shot"><img id="shot" src="img/chunk.jpg" alt="Chunk Lab screen" width="1200" height="750"></div>
         <div class="caption"><div><h3 id="cap-t">Chunk Lab</h3><p id="cap-p"></p><div class="from" id="cap-f"></div></div>
-          <a class="btn small" id="cap-go" href="https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE" target="_blank" rel="noopener">Open this screen</a></div>
+          <a class="btn small" id="cap-go" href="#chunk">Open this screen</a></div>
       </div>
     </div>
   </section>
@@ -269,7 +269,7 @@ footer.site { padding-top: 32px; border-top: 1px solid var(--line); color: var(-
         <div class="sec-head" style="grid-template-columns:minmax(0,1fr);margin-bottom:18px"><h2>Run your own copy.</h2><p>From the Sandbox-2 repository, three commands set it up, serve it and test it. In a Codespace it opens on port 4900.</p></div>
         <pre id="cmds"><span class="c"># pinned browser libraries + build</span>
 systems/chunky-g/setup.sh
-<span class="c"># http://localhost:4900</span>
+<span class="c"># http://localhost:4900 (this page; the app opens inside it)</span>
 ./start.sh chunky-g
 <span class="c"># engine tests + the whole UI in a browser</span>
 python3 systems/chunky-g/test_chunky_g.py -v</pre>
@@ -277,7 +277,7 @@ python3 systems/chunky-g/test_chunky_g.py -v</pre>
       </div>
       <div class="links">
         <h3 style="font-size:20px">Where everything is</h3>
-        <a href="https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE" target="_blank" rel="noopener">The live app</a>
+        <a href="#library">Open the app</a>
         <a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/chunky-g" target="_blank" rel="noopener">Source code: systems/chunky-g</a>
         <a href="https://github.com/gendaiski/Sandbox-2/blob/claude/loving-cannon-2y609d/docs/chunky-g/DESIGN.md" target="_blank" rel="noopener">Design: every feature mapped to a screen</a>
         <a href="https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/docs/chunky-g/reference" target="_blank" rel="noopener">Reference notes on the ten projects</a>
@@ -291,6 +291,7 @@ python3 systems/chunky-g/test_chunky_g.py -v</pre>
 
 <script>
 (function () {
+  const IMG = (id) => (window.CG_IMG && window.CG_IMG[id]) || `img/${id}.jpg`;
   // ---- live chunker on a real passage from the sample guide ----
   const TEXT = `# Choosing a hive
 The two designs most used in cities are the Langstroth hive and the top-bar hive. The Langstroth uses stacked boxes with removable frames, so inspections are quick. The top-bar hive is one long box with wooden bars.
@@ -335,7 +336,6 @@ Leave the colony at least 18 kg of stores. Do not open the hive below 10 \u00b0C
   render('header');
 
   // ---- screen tour ----
-  const APP = 'https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE';
   const SCREENS = [
     ['library', 'Library', 'Add files or the samples, see each document\'s extraction, layout, chunks and enrichment, and run the whole pipeline on everything with one button.', 'Chunky, ChunkNorris, RAG-Anything'],
     ['extract', 'Extract', 'Run several extractors on the same PDF and compare them side by side with timings and counts, diff any two, then clean the result or let Claude correct it.', 'PDFStract, Chunky'],
@@ -352,11 +352,11 @@ Leave the colony at least 18 kg of stores. Do not open the hive below 10 \u00b0C
   const img = document.getElementById('shot');
   function show(i) {
     const [id, name, text, from] = SCREENS[i];
-    img.src = `img/${id}.jpg`; img.alt = `${name} screen`;
+    img.src = IMG(id); img.alt = `${name} screen`;
     document.getElementById('cap-t').textContent = name;
     document.getElementById('cap-p').textContent = text;
     document.getElementById('cap-f').textContent = 'Brings in: ' + from;
-    document.getElementById('cap-go').href = APP;
+    document.getElementById('cap-go').href = '#' + id;
     tabs.querySelectorAll('.tab').forEach((t, k) => { t.setAttribute('aria-selected', String(k === i)); t.tabIndex = k === i ? 0 : -1; });
   }
   SCREENS.forEach(([id, name], i) => {
@@ -367,7 +367,7 @@ Leave the colony at least 18 kg of stores. Do not open the hive below 10 \u00b0C
     tabs.append(b);
   });
   show(3);
-  SCREENS.forEach(([id]) => { const p = new Image(); p.src = `img/${id}.jpg`; });
+  SCREENS.forEach(([id]) => { const p = new Image(); p.src = IMG(id); });
 
   // ---- the ten projects ----
   const REF = 'https://github.com/gendaiski/Sandbox-2/blob/claude/loving-cannon-2y609d/docs/chunky-g/reference/';
