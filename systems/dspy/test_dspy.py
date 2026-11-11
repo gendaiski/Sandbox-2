@@ -23,9 +23,14 @@ PY = str(HERE / ".venv" / "bin" / "python")
 h = Harness("dspy")
 
 with h.check("upstream test suite (pytest tests -n auto)") as c:
-    out = sh(c, [PY, "-m", "pytest", "tests", "-q", "-n", "auto", "-p", "no:cacheprovider"], cwd=SRC, timeout=2400, tail=500)
-    summary = re.findall(r"(\d+) (passed|failed|error)", out)
+    # -rfE lists every failing test; they are noted before the check fails, so CI shows which ones.
+    out = sh(c, [PY, "-m", "pytest", "tests", "-q", "-rfE", "-n", "auto", "-p", "no:cacheprovider"], cwd=SRC, timeout=2400, tail=500, ok=(0, 1))
+    summary = re.findall(r"(\d+) (passed|failed|errors?)", out)
     c.note(" ".join(f"{n} {k}" for n, k in summary))
+    for line in out.splitlines():
+        if line.startswith(("FAILED ", "ERROR ")):
+            c.note(line[:300])
+    c.expect(not re.search(r"\b\d+ (failed|errors?)\b", out), "no failing upstream tests")
 
 with h.check("a DSPy program in the dspy Jupyter kernel") as c:
     out = sh(c, [PY, str(HERE / "kernel_check.py")], timeout=300)

@@ -91,7 +91,12 @@ with Served("pocketbase", f"{URL}/api/health", timeout=60):
 with h.check("upstream Go tests (go test ./...)") as c:
     os.environ.get("POCKETBASE_GO_TESTS", "1") == "1" or c.skip("POCKETBASE_GO_TESTS=0")
     out = sh(c, ["go", "test", "./..."], cwd=ROOT / "vendor" / "pocketbase", timeout=2400, tail=500,
-             env={"GOTOOLCHAIN": "auto", "CGO_ENABLED": "0"})
+             env={"GOTOOLCHAIN": "auto", "CGO_ENABLED": "0"}, ok=(0, 1))
+    # Note each failing test and package (with the first lines of its output) before failing the check.
+    lines = out.splitlines()
+    for i, line in enumerate(lines):
+        if line.lstrip().startswith("--- FAIL") or line.startswith("FAIL\t"):
+            c.note(" | ".join(x.strip() for x in lines[i:i + 4])[:400])
     c.expect("FAIL" not in out, "no failing packages")
 
 sys.exit(h.finish())
