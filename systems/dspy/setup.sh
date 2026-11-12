@@ -10,6 +10,9 @@ SRC="$ROOT/vendor/dspy"
 [ -d "$SRC" ] || "$ROOT/scripts/clone_all.sh" dspy
 [ -d "$HERE/.venv" ] || uv venv -q --python 3.12 "$HERE/.venv"
 export VIRTUAL_ENV="$HERE/.venv"
-uv pip install -q -e "$SRC[anthropic,mcp,dev,test_extras]" jupyterlab ipykernel
+# Dependencies at the versions upstream's uv.lock tested, not the newest: litellm 1.109
+# changed response shapes that 3 of DSPy's client tests check (CI run 55).
+"$HERE/.venv/bin/python" "$HERE/lock_constraints.py" "$SRC/uv.lock" > "$HERE/.constraints.txt"
+uv pip install -q -c "$HERE/.constraints.txt" -e "$SRC[anthropic,mcp,dev,test_extras]" jupyterlab ipykernel
 "$HERE/.venv/bin/python" -m ipykernel install --sys-prefix --name dspy --display-name "DSPy (vendor/dspy)" >/dev/null
 "$HERE/.venv/bin/python" -c "import dspy; print('dspy', dspy.__version__)"
