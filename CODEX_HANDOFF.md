@@ -3,7 +3,7 @@
 **Repository:** https://github.com/gendaiski/Sandbox-2
 **Branch:** [`claude/loving-cannon-2y609d`](https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d)
 **This file:** https://github.com/gendaiski/Sandbox-2/blob/claude/loving-cannon-2y609d/CODEX_HANDOFF.md
-**State as of:** 2026-11-12, CI [run 57](https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580) on commit `314a31e`: **31 of 34 CI jobs green.** CC-Generic (new) installs and builds on the runner; its upstream suite is 110 of 114, the 4 `prettyParse` let-type cases failing upstream. PocketBase's `TestCollectionDelete` failed on a timing race (a background file delete checked after a fixed 100 ms); its `go test` now runs packages one at a time (`-p 1`), which the next run confirms. Loopcut builds and runs, with 2 of its checks failing upstream.
+**State as of:** 2026-11-12, CI [run 58](https://github.com/gendaiski/Sandbox-2/actions/runs/43285959395) on commit `478cee6`: **32 of 34 CI jobs green.** PocketBase passes again with its Go tests run one package at a time (`-p 1`; run 57's `TestCollectionDelete` was a timing race against a background file delete). The two red jobs fail on upstream tests: CC-Generic (110 of 114; 4 `prettyParse` let-type cases) and Loopcut (2 of its checks).
 
 Paste the message below into Codex, or point Codex at this file.
 
