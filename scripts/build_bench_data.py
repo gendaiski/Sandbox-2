@@ -204,6 +204,12 @@ SYSTEMS = {
         code="systems/jakes-brain",
         finding="Its config points at Jake's PC; setup.sh writes one for this machine, as its SPEC.md does for local runs.",
     ),
+    "report-cc-generic": dict(
+        job_name="cc-generic (choice calculus on GHC 8.8.4)",
+        system="CC-Generic", kind="Variation calculus library", upstream="walkie/CC-Generic",
+        code="systems/cc-generic",
+        finding="A 2012 Haskell library with no UI or cabal file; built unmodified on GHC 8.8.4, used from GHCi.",
+    ),
     "report-chunky-g": dict(
         job_name="chunky-g (RAG workbench)",
         system="Chunky G", kind="RAG and graph-RAG workbench", upstream="docs/chunky-g (10 projects)",

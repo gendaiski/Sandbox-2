@@ -1,0 +1,3 @@
+-- CC-Generic (vendor/cc-generic) and the comment-aware stand-in for language-haskell-extract.
+packages: . compat/language-haskell-extract
+with-compiler: ghc-8.8.4

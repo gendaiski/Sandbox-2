@@ -1,0 +1,13 @@
+-- A tour of CC-Generic in GHCi: run with  systems/cc-generic/repl.sh demo.ghci
+-- Expressions are trees of Ints with dimensions (dim A<a,b> in ...), choices (A<x,y>) and sharing (let $v = (..) in (..)).
+let e = parse "dim A<a,b> in 0{A<1,2>, dim B<c,d> in B<3,A<4,5>>}" :: TreeCC Int
+putStrLn ("expr:        " ++ makeBW (pretty bw e))
+putStrLn ("wellFormed:  " ++ show (wellFormed e))
+putStrLn ("boundDims:   " ++ show (boundDims e))
+putStrLn ("semantics:   " ++ show (semantics e))
+putStrLn ("select A.b:  " ++ either show (makeBW . pretty bw) (selectTag e ("A","b")))
+let s = parse "dim A<a,b> in let $v = (A<1,2>) in (0{$v,$v})" :: TreeCC Int
+putStrLn ("shared:      " ++ show (semantics s))
+let bad = parse "0{A<1,2>}" :: TreeCC Int
+putStrLn ("undeclared:  " ++ show (wellFormed bad))
+putStrLn ("semantics:   " ++ show (semantics bad))

@@ -222,6 +222,13 @@ SYSTEMS = {
               "habits, calendar, JakeTube, graph), and the real UI at iPhone size in light and dark with a task typed in.",
         extras="",
     ),
+    "cc-generic": dict(
+        name="CC-Generic", jobs=["cc-generic (choice calculus on GHC 8.8.4)"],
+        what="Eric Walkingshaw's generic choice calculus in Haskell: dimensions, choices and sharing over any tree, with a parser, static checks, selection and semantics.",
+        tests="The toolchain and an unmodified pinned checkout; the library and test suite build on GHC 8.8.4; upstream's 114 HUnit "
+              "cases and QuickCheck properties; then parse, checks, tag selection and the semantics in GHCi.",
+        extras="",
+    ),
     "chunky-g": dict(
         name="Chunky G", jobs=["chunky-g (RAG workbench)"],
         what="One browser workbench with the features of RAG-Anything/LightRAG, Langfuse, OpenFlow, Chunking Methods, Chunky, ChunckerFlow, ChunkNorris, OXR, PDFStract and DSPy.",

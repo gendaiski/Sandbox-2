@@ -71,6 +71,7 @@ jobs:
           - { label: chunky-g (RAG workbench), system: chunky-g, setup: "", ui: true, timeout: 30 }
           - { label: agents-from-scratch (Agents Lab, Qwen2.5 1.5B), system: agents-from-scratch, setup: "", ui: true, timeout: 90 }
           - { label: jakes-brain, system: jakes-brain, setup: "", ui: true, timeout: 30 }
+          - { label: cc-generic (choice calculus on GHC 8.8.4), system: cc-generic, setup: "", ui: false, timeout: 60 }
     steps:
       - uses: actions/checkout@v4
 

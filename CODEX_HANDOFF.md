@@ -75,6 +75,7 @@ Each system's interactive page lives in two places:
 | AI Agents from Scratch (`agents-from-scratch`) | pguso/agents-from-scratch | **Agents Lab** (built here), 8098 | pass 8/8 | [open](https://claude.ai/artifact/L2EHvQEjZ9HgMMSswegxsM) | `bench/interactive/agents-from-scratch.html` |
 | Jake's Brain (`jakes-brain`) | jake17007/jakes-brain | home screen of 24 apps, 4800 | pass 6, skip 1 (CI run 52) | — (no licence upstream, so its UI isn't republished) | `systems/jakes-brain/` |
 | Chunky G (`chunky-g`) | built in Sandbox-2 from 10 projects (docs/chunky-g) | the whole workbench, 4900 | pass 5, skip 1 (local run) | [open](https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE) (entrance + app, one page) | `systems/chunky-g/` (entrance source: `site/`; [HANDOFF.md](systems/chunky-g/HANDOFF.md) for building it into another system) |
+| CC-Generic (`cc-generic`) | walkie/CC-Generic (no licence; nothing copied) | none upstream: GHCi via `systems/cc-generic/repl.sh` | pass 3, fail 1 (local run): upstream suite 110 of 114, its 4 `prettyParse` let-type cases fail upstream | — | `systems/cc-generic/` |
 | Post Studio (`post-studio`) | built here, on yt-dlp, gallery-dl and FxTwitter | Post Studio, 8097 | pass 12, skip 1 | — (it reads live social sites, which a claude.ai page can't) | `systems/post-studio/` |
 
 ## 3. Systems built here, not upstream
