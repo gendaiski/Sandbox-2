@@ -25,6 +25,8 @@ python3 systems/chunky-g/test_chunky_g.py -v # Node engine tests + the whole UI 
 
 **Live page:** https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE. One page with four parts: the **entrance** (one screen: header, hero, and two doors), the **Specs Document** at `#specs` (each step, the files it is recoded in, and which of the eleven reference repos it relates to and how; linked from every header), the **Front End** at `#front` (live chunking demo, how it works, tour of the ten screens, sources, how to run it) and **Chunky G Studio**, the app, at its screen hashes (`#library`, `#chunk`, ...). The Studio's brand goes back to the entrance. The entrance's source is `site/index.html`; `build.py` puts it in a shadow root so the two never share styles, and embeds its screenshots.
 
+**Building Chunky G into another system?** Start with [HANDOFF.md](HANDOFF.md): what to port, the files in load order, and the three seams to adapt (Claude, storage, routing and styles).
+
 **Claude:**
 - **On the published page,** Claude answers through the viewer's own claude.ai account. No key is needed.
 - **In a standalone copy,** put an Anthropic API key in Settings. The page then uses the official TypeScript SDK (`@anthropic-ai/sdk@1.3.0`) with `claude-opus-5-5`. The effort level is set per task. JSON comes back through `output_config.format`, with server-side fallbacks and refusal handling. The key stays in that browser.

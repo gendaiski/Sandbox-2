@@ -4,7 +4,7 @@
   const CG = globalThis.CG;
   ['library', 'extract', 'layout', 'chunk', 'evaluate', 'graph', 'ask', 'flow', 'dspy', 'traces'].forEach((v) => { if (!CG.Views[v]) CG.Views[v] = (el) => el.append(CG.UI.h('div', { class: 'empty' }, 'This screen is not built yet.')); });
   let started = false;
-  CG.start = () => { if (started) return; started = true; CG.App.boot().catch((e) => { console.error(e); document.getElementById('app').textContent = 'Chunky G failed to start: ' + e.message; }); };
+  CG.start = () => { if (started) return; started = true; const el = document.getElementById('app'); if (el && !globalThis.CGShell) el.hidden = false; CG.App.boot().catch((e) => { console.error(e); document.getElementById('app').textContent = 'Chunky G failed to start: ' + e.message; }); };
   if (globalThis.CGShell) globalThis.CGShell.show();
   else if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', CG.start); else CG.start();
 })();

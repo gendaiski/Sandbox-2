@@ -3,7 +3,7 @@
 **Repository:** https://github.com/gendaiski/Sandbox-2
 **Branch:** [`claude/loving-cannon-2y609d`](https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d)
 **This file:** https://github.com/gendaiski/Sandbox-2/blob/claude/loving-cannon-2y609d/CODEX_HANDOFF.md
-**State as of:** 2026-11-11, CI [run 54](https://github.com/gendaiski/Sandbox-2/actions/runs/43069483198) on commit `da05737`: **30 of 33 CI jobs green, Chunky G included.** DSPy's upstream pytest and PocketBase's `go test ./...` failed on the pins that passed in run 52 (the next run's reports name the failing tests); Loopcut builds and runs, with 2 of its checks failing upstream.
+**State as of:** 2026-11-12, CI [run 55](https://github.com/gendaiski/Sandbox-2/actions/runs/43106223361) on commit `39839ee`: **31 of 33 CI jobs green, Chunky G included.** PocketBase passed again. DSPy failed 3 of its 2,803 upstream tests (`tests/clients`: logprobs and the 3.3 migration checks) because litellm 1.109 changed its response shape; `systems/dspy/setup.sh` now installs DSPy's dependencies at the versions in its own `uv.lock` (litellm 1.96.0), which passes them locally; the next run confirms it. Loopcut builds and runs, with 2 of its checks failing upstream.
 
 Paste the message below into Codex, or point Codex at this file.
 
@@ -74,7 +74,7 @@ Each system's interactive page lives in two places:
 | PocketBase (`pocketbase`) | pocketbase/pocketbase | dashboard `/_/`, 8095 | pass 6/6 | [open](https://claude.ai/artifact/SZHXWLXxw3ZC55aNj7rqL3) | `bench/interactive/pocketbase.html` |
 | AI Agents from Scratch (`agents-from-scratch`) | pguso/agents-from-scratch | **Agents Lab** (built here), 8098 | pass 8/8 | [open](https://claude.ai/artifact/L2EHvQEjZ9HgMMSswegxsM) | `bench/interactive/agents-from-scratch.html` |
 | Jake's Brain (`jakes-brain`) | jake17007/jakes-brain | home screen of 24 apps, 4800 | pass 6, skip 1 (CI run 52) | — (no licence upstream, so its UI isn't republished) | `systems/jakes-brain/` |
-| Chunky G (`chunky-g`) | built in Sandbox-2 from 10 projects (docs/chunky-g) | the whole workbench, 4900 | pass 5, skip 1 (local run) | [open](https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE) (entrance + app, one page) | `systems/chunky-g/` (entrance source: `site/`) |
+| Chunky G (`chunky-g`) | built in Sandbox-2 from 10 projects (docs/chunky-g) | the whole workbench, 4900 | pass 5, skip 1 (local run) | [open](https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE) (entrance + app, one page) | `systems/chunky-g/` (entrance source: `site/`; [HANDOFF.md](systems/chunky-g/HANDOFF.md) for building it into another system) |
 | Post Studio (`post-studio`) | built here, on yt-dlp, gallery-dl and FxTwitter | Post Studio, 8097 | pass 12, skip 1 | — (it reads live social sites, which a claude.ai page can't) | `systems/post-studio/` |
 
 ## 3. Systems built here, not upstream

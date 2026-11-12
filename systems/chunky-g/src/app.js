@@ -117,7 +117,8 @@
     },
     renderPill() { if (!this.pill) return; const a = CG.LLM.active; this.pill.className = 'pill ' + (a === 'offline' ? 'off' : 'on'); clear(this.pill).append(h('span', { class: 'dot' }), CG.LLM.label()); },
     route() {
-      if (!location.hash || location.hash === '#home') return; // the entrance page is showing
+      if (globalThis.CGShell && (!location.hash || location.hash === '#home')) return; // the entrance page is showing
+      // Without the entrance (the Studio on its own), an empty hash opens the Library.
       const v = (location.hash || '#library').slice(1).split(/[?&]/)[0];
       this.view = this.VIEWS.some(([id]) => id === v) ? v : 'library';
       document.querySelectorAll('.tabs a').forEach((a) => a.classList.toggle('on', a.dataset.view === this.view));
