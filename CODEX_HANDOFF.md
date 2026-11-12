@@ -3,7 +3,7 @@
 **Repository:** https://github.com/gendaiski/Sandbox-2
 **Branch:** [`claude/loving-cannon-2y609d`](https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d)
 **This file:** https://github.com/gendaiski/Sandbox-2/blob/claude/loving-cannon-2y609d/CODEX_HANDOFF.md
-**State as of:** 2026-11-12, CI [run 55](https://github.com/gendaiski/Sandbox-2/actions/runs/43106223361) on commit `39839ee`: **31 of 33 CI jobs green, Chunky G included.** PocketBase passed again. DSPy failed 3 of its 2,803 upstream tests (`tests/clients`: logprobs and the 3.3 migration checks) because litellm 1.109 changed its response shape; `systems/dspy/setup.sh` now installs DSPy's dependencies at the versions in its own `uv.lock` (litellm 1.96.0), which passes them locally; the next run confirms it. Loopcut builds and runs, with 2 of its checks failing upstream.
+**State as of:** 2026-11-12, CI [run 56](https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993) on commit `3ea9a6d`: **32 of 33 CI jobs green, Chunky G included.** DSPy passes again (its whole upstream suite) now that `systems/dspy/setup.sh` installs its dependencies at the versions in its own `uv.lock`; run 55's 3 failures came from litellm 1.109. Loopcut builds and runs, with 2 of its checks failing upstream.
 
 Paste the message below into Codex, or point Codex at this file.
 
