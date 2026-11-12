@@ -90,7 +90,11 @@ with Served("pocketbase", f"{URL}/api/health", timeout=60):
 
 with h.check("upstream Go tests (go test ./...)") as c:
     os.environ.get("POCKETBASE_GO_TESTS", "1") == "1" or c.skip("POCKETBASE_GO_TESTS=0")
-    out = sh(c, ["go", "test", "./..."], cwd=ROOT / "vendor" / "pocketbase", timeout=2400, tail=500,
+    # -p 1: one package at a time. Deleting a collection removes its files in a background goroutine
+    # and TestCollectionDelete checks the folder after a fixed 100 ms (upstream's tests/api.go marks these
+    # sleeps @todo); with every package running at once on a CI runner the delete sometimes isn't done yet
+    # (CI run 57). No test is skipped or changed.
+    out = sh(c, ["go", "test", "-p", "1", "./..."], cwd=ROOT / "vendor" / "pocketbase", timeout=2400, tail=500,
              env={"GOTOOLCHAIN": "auto", "CGO_ENABLED": "0"}, ok=(0, 1))
     # Note each failing test and package (with the first lines of its output) before failing the check.
     lines = out.splitlines()

@@ -3,7 +3,7 @@
 **Repository:** https://github.com/gendaiski/Sandbox-2
 **Branch:** [`claude/loving-cannon-2y609d`](https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d)
 **This file:** https://github.com/gendaiski/Sandbox-2/blob/claude/loving-cannon-2y609d/CODEX_HANDOFF.md
-**State as of:** 2026-11-12, CI [run 56](https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993) on commit `3ea9a6d`: **32 of 33 CI jobs green, Chunky G included.** DSPy passes again (its whole upstream suite) now that `systems/dspy/setup.sh` installs its dependencies at the versions in its own `uv.lock`; run 55's 3 failures came from litellm 1.109. Loopcut builds and runs, with 2 of its checks failing upstream.
+**State as of:** 2026-11-12, CI [run 57](https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580) on commit `314a31e`: **31 of 34 CI jobs green.** CC-Generic (new) installs and builds on the runner; its upstream suite is 110 of 114, the 4 `prettyParse` let-type cases failing upstream. PocketBase's `TestCollectionDelete` failed on a timing race (a background file delete checked after a fixed 100 ms); its `go test` now runs packages one at a time (`-p 1`), which the next run confirms. Loopcut builds and runs, with 2 of its checks failing upstream.
 
 Paste the message below into Codex, or point Codex at this file.
 
@@ -75,7 +75,7 @@ Each system's interactive page lives in two places:
 | AI Agents from Scratch (`agents-from-scratch`) | pguso/agents-from-scratch | **Agents Lab** (built here), 8098 | pass 8/8 | [open](https://claude.ai/artifact/L2EHvQEjZ9HgMMSswegxsM) | `bench/interactive/agents-from-scratch.html` |
 | Jake's Brain (`jakes-brain`) | jake17007/jakes-brain | home screen of 24 apps, 4800 | pass 6, skip 1 (CI run 52) | — (no licence upstream, so its UI isn't republished) | `systems/jakes-brain/` |
 | Chunky G (`chunky-g`) | built in Sandbox-2 from 10 projects (docs/chunky-g) | the whole workbench, 4900 | pass 5, skip 1 (local run) | [open](https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE) (entrance + app, one page) | `systems/chunky-g/` (entrance source: `site/`; [HANDOFF.md](systems/chunky-g/HANDOFF.md) for building it into another system) |
-| CC-Generic (`cc-generic`) | walkie/CC-Generic (no licence; nothing copied) | none upstream: GHCi via `systems/cc-generic/repl.sh` | pass 3, fail 1 (local run): upstream suite 110 of 114, its 4 `prettyParse` let-type cases fail upstream | — | `systems/cc-generic/` |
+| CC-Generic (`cc-generic`) | walkie/CC-Generic (no licence; nothing copied) | none upstream: GHCi via `systems/cc-generic/repl.sh` | pass 3, fail 1 (CI run 57): upstream suite 110 of 114, its 4 `prettyParse` let-type cases fail upstream | — | `systems/cc-generic/` |
 | Post Studio (`post-studio`) | built here, on yt-dlp, gallery-dl and FxTwitter | Post Studio, 8097 | pass 12, skip 1 | — (it reads live social sites, which a claude.ai page can't) | `systems/post-studio/` |
 
 ## 3. Systems built here, not upstream
