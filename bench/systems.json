@@ -12,11 +12,11 @@
   "code": "systems/chunknorris",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/chunknorris",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584608",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353947781",
   "demo_label": "",
   "demo_url": "",
   "finding": "Imports psutil without declaring it; setup adds it.",
-  "ran_at": "2026-11-12T00:05:30+0000"
+  "ran_at": "2026-11-12T17:14:22+0000"
  },
  {
   "job": "chunckerflow-full",
@@ -31,11 +31,11 @@
   "code": "systems/chunckerflow",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/chunckerflow",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584459",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353947775",
   "demo_label": "",
   "demo_url": "",
   "finding": "No issues found.",
-  "ran_at": "2026-11-12T00:10:01+0000"
+  "ran_at": "2026-11-12T17:16:23+0000"
  },
  {
   "job": "pdfstract",
@@ -50,11 +50,11 @@
   "code": "systems/pdfstract",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/pdfstract",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584386",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353946676",
   "demo_label": "",
   "demo_url": "",
   "finding": "pymupdf4llm 2.0 on PyPI is an empty package; setup pins <2.",
-  "ran_at": "2026-11-12T00:09:55+0000"
+  "ran_at": "2026-11-12T17:16:10+0000"
  },
  {
   "job": "oxr",
@@ -69,11 +69,11 @@
   "code": "systems/oxr",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/oxr",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584382",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353947693",
   "demo_label": "",
   "demo_url": "",
   "finding": "2 of 622 upstream unit tests fail (demo keep_header_footer default).",
-  "ran_at": "2026-11-12T00:07:41+0000"
+  "ran_at": "2026-11-12T17:14:32+0000"
  },
  {
   "job": "rag-anything",
@@ -88,11 +88,11 @@
   "code": "systems/rag-anything",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/rag-anything",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584457",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353947446",
   "demo_label": "",
   "demo_url": "",
   "finding": "Requires a parser even for pre-parsed content; test registers a stub.",
-  "ran_at": "2026-11-12T00:07:16+0000"
+  "ran_at": "2026-11-12T17:15:37+0000"
  },
  {
   "job": "rag-anything-full",
@@ -107,11 +107,11 @@
   "code": "systems/rag-anything",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/rag-anything",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584295",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353947881",
   "demo_label": "",
   "demo_url": "",
   "finding": "Asks for mineru[core], which MinerU 4 dropped; setup pins MinerU 3.",
-  "ran_at": "2026-11-12T00:07:20+0000"
+  "ran_at": "2026-11-12T17:18:53+0000"
  },
  {
   "job": "openflow",
@@ -126,11 +126,11 @@
   "code": "systems/openflow",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/openflow",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873583885",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353947478",
   "demo_label": "",
   "demo_url": "",
   "finding": "Non-object output schemas fall back to a default instead of failing.",
-  "ran_at": "2026-11-12T00:08:54+0000"
+  "ran_at": "2026-11-12T17:17:56+0000"
  },
  {
   "job": "prism-ui",
@@ -145,11 +145,11 @@
   "code": "systems/prism-ui",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/prism-ui",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584519",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353947705",
   "demo_label": "Open demo",
   "demo_url": "https://claude.ai/artifact/R23JKwzoct7jFaKdRVNqot",
   "finding": "No issues found.",
-  "ran_at": "2026-11-12T00:05:35+0000"
+  "ran_at": "2026-11-12T17:14:24+0000"
  },
  {
   "job": "langfuse",
@@ -164,11 +164,11 @@
   "code": "systems/langfuse",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/langfuse",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584585",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353947709",
   "demo_label": "",
   "demo_url": "",
   "finding": "No issues found; ran against a real self-hosted server.",
-  "ran_at": "2026-11-12T00:08:13+0000"
+  "ran_at": "2026-11-12T17:19:23+0000"
  },
  {
   "job": "chunking-methods",
@@ -183,11 +183,11 @@
   "code": "systems/chunking-methods",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/chunking-methods",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584646",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353947965",
   "demo_label": "",
   "demo_url": "",
   "finding": "Upstream is a guide without code; all 20 methods implemented here and tested.",
-  "ran_at": "2026-11-12T00:07:37+0000"
+  "ran_at": "2026-11-12T17:14:48+0000"
  },
  {
   "job": "chunky",
@@ -202,11 +202,11 @@
   "code": "systems/chunky",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/chunky",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584548",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353948343",
   "demo_label": "",
   "demo_url": "",
   "finding": "No issues found; tested through its own backend.",
-  "ran_at": "2026-11-12T00:08:18+0000"
+  "ran_at": "2026-11-12T17:17:24+0000"
  },
  {
   "job": "pake",
@@ -221,11 +221,11 @@
   "code": "systems/pake",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/pake",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584695",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353947822",
   "demo_label": "",
   "demo_url": "",
   "finding": "No issues found; builds a 4.8 MB Linux app from the sample page.",
-  "ran_at": "2026-11-12T00:12:54+0000"
+  "ran_at": "2026-11-12T17:20:21+0000"
  },
  {
   "job": "flowise",
@@ -240,11 +240,11 @@
   "code": "systems/flowise",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/flowise",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584374",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353947584",
   "demo_label": "",
   "demo_url": "",
   "finding": "The 3.1.4 Docker image crashes at start-up on its default SQLite database; runs on Postgres.",
-  "ran_at": "2026-11-12T00:09:57+0000"
+  "ran_at": "2026-11-12T17:19:30+0000"
  },
  {
   "job": "lobehub",
@@ -259,11 +259,11 @@
   "code": "systems/lobehub",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/lobehub",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584524",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353947627",
   "demo_label": "",
   "demo_url": "",
   "finding": "Runs upstream's deploy stack as is; its setup.sh is interactive, so secrets are generated the same way here.",
-  "ran_at": "2026-11-12T00:09:25+0000"
+  "ran_at": "2026-11-12T17:17:57+0000"
  },
  {
   "job": "autogpt",
@@ -278,11 +278,11 @@
   "code": "systems/autogpt",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/autogpt",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584495",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353948078",
   "demo_label": "",
   "demo_url": "",
   "finding": "Its nginx also listens on [::]:3000; on hosts without IPv6 that fails and the container stops, so setup drops that line there.",
-  "ran_at": "2026-11-12T00:15:27+0000"
+  "ran_at": "2026-11-12T17:23:18+0000"
  },
  {
   "job": "continue",
@@ -297,11 +297,11 @@
   "code": "systems/continue",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/continue",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584428",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353948072",
   "demo_label": "",
   "demo_url": "",
   "finding": "Packaging downloads ripgrep and SQLite binaries from GitHub releases and S3, so it needs that network access.",
-  "ran_at": "2026-11-12T00:15:27+0000"
+  "ran_at": "2026-11-12T17:25:34+0000"
  },
  {
   "job": "camel",
@@ -316,11 +316,11 @@
   "code": "systems/camel",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/camel",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584427",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353947887",
   "demo_label": "",
   "demo_url": "",
   "finding": "Its own lock gives the Gradio apps Gradio 3.18, which fails on CAMEL's Pydantic 2; setup moves them to Gradio 3.50.2.",
-  "ran_at": "2026-11-12T00:07:52+0000"
+  "ran_at": "2026-11-12T17:17:15+0000"
  },
  {
   "job": "metagpt",
@@ -335,11 +335,11 @@
   "code": "systems/metagpt",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/metagpt",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584401",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353948158",
   "demo_label": "",
   "demo_url": "",
   "finding": "lancedb==0.4.0 is gone from PyPI and typer 0.9 breaks on Click 8.2+; setup adjusts those pins.",
-  "ran_at": "2026-11-12T00:11:23+0000"
+  "ran_at": "2026-11-12T17:20:06+0000"
  },
  {
   "job": "dspy",
@@ -354,11 +354,11 @@
   "code": "systems/dspy",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/dspy",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584498",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353947876",
   "demo_label": "",
   "demo_url": "",
   "finding": "Needs uv 0.13.4+ for `uv sync`; installed with uv pip and its extras.",
-  "ran_at": "2026-11-12T00:10:00+0000"
+  "ran_at": "2026-11-12T17:19:22+0000"
  },
  {
   "job": "izwi",
@@ -373,11 +373,11 @@
   "code": "systems/izwi",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/izwi",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584370",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353947582",
   "demo_label": "",
   "demo_url": "",
   "finding": "No issues found.",
-  "ran_at": "2026-11-12T00:24:21+0000"
+  "ran_at": "2026-11-12T17:37:14+0000"
  },
  {
   "job": "skills-manager",
@@ -392,11 +392,11 @@
   "code": "systems/skills-manager",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/skills-manager",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584390",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353948121",
   "demo_label": "",
   "demo_url": "",
   "finding": "No issues found.",
-  "ran_at": "2026-11-12T00:17:38+0000"
+  "ran_at": "2026-11-12T17:26:22+0000"
  },
  {
   "job": "loopcut",
@@ -411,11 +411,11 @@
   "code": "systems/loopcut",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/loopcut",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584621",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353947753",
   "demo_label": "",
   "demo_url": "",
   "finding": "No Linux release; built from source as its developer guide describes.",
-  "ran_at": "2026-11-12T02:02:55+0000"
+  "ran_at": "2026-11-12T18:44:52+0000"
  },
  {
   "job": "fabricjs",
@@ -430,11 +430,11 @@
   "code": "systems/fabricjs",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/fabricjs",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584429",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353949147",
   "demo_label": "",
   "demo_url": "",
   "finding": "The website's dev server times out while TypeDoc builds the API pages; served from a production build.",
-  "ran_at": "2026-11-12T00:09:07+0000"
+  "ran_at": "2026-11-12T17:18:32+0000"
  },
  {
   "job": "fabricjs-site",
@@ -449,11 +449,11 @@
   "code": "systems/fabricjs-site",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/fabricjs-site",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584547",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353948102",
   "demo_label": "",
   "demo_url": "",
   "finding": "No Gemfile upstream; one with Jekyll 4.4 is added.",
-  "ran_at": "2026-11-12T00:07:00+0000"
+  "ran_at": "2026-11-12T17:17:32+0000"
  },
  {
   "job": "gods-eye-view",
@@ -468,11 +468,11 @@
   "code": "systems/gods-eye-view",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/gods-eye-view",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584358",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353948013",
   "demo_label": "",
   "demo_url": "",
   "finding": "Its default port 4173 is also Prism UI's here; served on 4174.",
-  "ran_at": "2026-11-12T00:11:33+0000"
+  "ran_at": "2026-11-12T17:19:05+0000"
  },
  {
   "job": "claude-code-best-practice",
@@ -487,11 +487,11 @@
   "code": "systems/claude-code-best-practice",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/claude-code-best-practice",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584383",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353948172",
   "demo_label": "",
   "demo_url": "",
   "finding": "No issues found.",
-  "ran_at": "2026-11-12T00:06:08+0000"
+  "ran_at": "2026-11-12T17:14:48+0000"
  },
  {
   "job": "opus-videos",
@@ -506,11 +506,11 @@
   "code": "systems/opus-videos",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/opus-videos",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873585130",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353948139",
   "demo_label": "",
   "demo_url": "",
   "finding": "A content repo; its prompts are rendered and can be remade with Claude.",
-  "ran_at": "2026-11-12T00:08:59+0000"
+  "ran_at": "2026-11-12T17:15:41+0000"
  },
  {
   "job": "appwrite",
@@ -525,30 +525,30 @@
   "code": "systems/appwrite",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/appwrite",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584544",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353948243",
   "demo_label": "",
   "demo_url": "",
   "finding": "The installer is a web wizard by default; it runs headless with --interactive=N.",
-  "ran_at": "2026-11-12T00:11:11+0000"
+  "ran_at": "2026-11-12T17:19:37+0000"
  },
  {
   "job": "pocketbase",
   "system": "PocketBase",
   "kind": "Backend in one file",
-  "status": "Passing",
-  "passed": 6,
-  "failed": 0,
+  "status": "Failing",
+  "passed": 5,
+  "failed": 1,
   "skipped": 0,
   "upstream": "pocketbase/pocketbase",
   "upstream_url": "https://github.com/pocketbase/pocketbase",
   "code": "systems/pocketbase",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/pocketbase",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584493",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353948055",
   "demo_label": "",
   "demo_url": "",
   "finding": "Needs Go 1.27; the toolchain is fetched automatically.",
-  "ran_at": "2026-11-12T00:07:22+0000"
+  "ran_at": "2026-11-12T17:16:34+0000"
  },
  {
   "job": "agents-from-scratch",
@@ -567,7 +567,7 @@
   "demo_label": "",
   "demo_url": "",
   "finding": "No interface upstream; Agents Lab, built here, runs its lessons, agent, evals and telemetry on llama.cpp.",
-  "ran_at": "2026-11-12T00:08:20+0000"
+  "ran_at": "2026-11-12T17:16:54+0000"
  },
  {
   "job": "jakes-brain",
@@ -582,11 +582,30 @@
   "code": "systems/jakes-brain",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/jakes-brain",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584423",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353948153",
   "demo_label": "",
   "demo_url": "",
   "finding": "Its config points at Jake's PC; setup.sh writes one for this machine, as its SPEC.md does for local runs.",
-  "ran_at": "2026-11-12T00:07:15+0000"
+  "ran_at": "2026-11-12T17:15:10+0000"
+ },
+ {
+  "job": "cc-generic",
+  "system": "CC-Generic",
+  "kind": "Variation calculus library",
+  "status": "Failing",
+  "passed": 3,
+  "failed": 1,
+  "skipped": 0,
+  "upstream": "walkie/CC-Generic",
+  "upstream_url": "https://github.com/walkie/CC-Generic",
+  "code": "systems/cc-generic",
+  "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/cc-generic",
+  "ci_label": "View job",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353948154",
+  "demo_label": "",
+  "demo_url": "",
+  "finding": "A 2012 Haskell library with no UI or cabal file; built unmodified on GHC 8.8.4, used from GHCi.",
+  "ran_at": "2026-11-12T17:20:12+0000"
  },
  {
   "job": "chunky-g",
@@ -601,11 +620,11 @@
   "code": "systems/chunky-g",
   "code_url": "https://github.com/gendaiski/Sandbox-2/tree/claude/loving-cannon-2y609d/systems/chunky-g",
   "ci_label": "View job",
-  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43124662993/job/130873584291",
+  "ci_url": "https://github.com/gendaiski/Sandbox-2/actions/runs/43267226580/job/131353948088",
   "demo_label": "Open demo",
   "demo_url": "https://claude.ai/artifact/NzSeFJqAm7NK4vk6pRsbDE",
   "finding": "Ten RAG tools' features in one browser page; Claude through claude.ai or the SDK, offline stand-ins otherwise.",
-  "ran_at": "2026-11-12T00:06:15+0000"
+  "ran_at": "2026-11-12T17:15:18+0000"
  },
  {
   "job": "post-studio",
@@ -624,6 +643,6 @@
   "demo_label": "",
   "demo_url": "",
   "finding": "Built here on yt-dlp, gallery-dl and FxTwitter; Threads has no extractor in either tool, so it reads the page's JSON.",
-  "ran_at": "2026-11-12T00:06:36+0000"
+  "ran_at": "2026-11-12T17:15:04+0000"
  }
 ]
