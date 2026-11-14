@@ -10,7 +10,7 @@ run(process.execPath,['templates/qa/inspection-browser.mjs','--build-only'],{env
 await copyFile('dist/fixture/fixture.html','dist/inspection.html');await rm('dist/fixture',{recursive:true});
 const license=(await readFile('LICENSE','utf8'))+'\n\nThree.js\n'+await readFile('node_modules/three/LICENSE','utf8');
 const attribution='<!--\n'+license+'\n-->\n';
-const notice='<div style="position:fixed;top:0;left:0;right:0;z-index:10;padding:12px 18px;background:#eee9dc;color:#453d2f;font:14px/1.5 system-ui"><strong>Water-effects test only.</strong> This is not the complete Pool showcase scene. <a href="./#showcase">View original reference recordings</a></div>';
+const notice='<div style="position:fixed;top:0;left:0;right:0;z-index:10;padding:12px 18px;background:#eee9dc;color:#453d2f;font:14px/1.5 system-ui"><strong>Water-effects test only.</strong> This is not the complete Pool showcase scene. <a href="./toolkit.html#showcase">View original reference recordings</a></div>';
 const original=attribution+(await readFile('verify/water/pool-diorama.html','utf8')).replace('Swimming Pool — a small diorama','Diorama — water-effects technical test').replace('<body>','<body>'+notice);
 await writeFile('dist/original.html',original);
 const b=await build({entryPoints:['preview/viewer.js'],bundle:true,write:false,minify:true,format:'iife',legalComments:'inline',target:'es2020'});
@@ -25,4 +25,17 @@ async function walk(dir=''){for(const e of await readdir(dir||'.',{withFileTypes
 await walk();files.sort();await writeFile('dist/files.json',JSON.stringify(files));
 archive['OPEN-WATER.html']=new TextEncoder().encode(html);archive['THIRD_PARTY_LICENSES.txt']=new TextEncoder().encode(license);
 await writeFile('dist/downloads/diorama-kit.zip',zipSync(archive,{level:6}));
-console.log('Built original scene, interactive viewer, inspection lab, reference films, '+files.length+' source files and portable ZIP.');
+console.log('Built water test, interactive viewer, inspection lab, reference films, '+files.length+' source files and portable ZIP.');
+
+await mkdir('dist/scenes',{recursive:true});
+const scenesBundle=await build({entryPoints:['reconstruction/main.js'],bundle:true,write:false,minify:true,format:'iife',legalComments:'inline',target:'es2020'});
+const scenesJs=scenesBundle.outputFiles[0].text.replace(/<\/script/gi,'<\\/script');
+const sceneHTML=attribution+(await readFile('reconstruction/index.html','utf8')).replace('<!--SCENE_SCRIPT-->',()=>'<script>'+scenesJs+'</script>');
+await writeFile('dist/scenes/index.html',sceneHTML);await writeFile('dist/downloads/diorama-scenes.html',sceneHTML);
+archive['OPEN-SCENES.html']=new TextEncoder().encode(sceneHTML);await writeFile('dist/downloads/diorama-kit.zip',zipSync(archive,{level:6}));
+console.log('Built four interactive scene reconstructions.');
+
+await copyFile('dist/index.html','dist/toolkit.html');
+await copyFile('dist/original.html','dist/water-test.html');
+const launch='<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url=./scenes/"><title>Diorama interactive scenes</title><a href="./scenes/">Open the four interactive Diorama reconstructions</a></html>';
+await writeFile('dist/index.html',launch);await writeFile('dist/original.html',launch);

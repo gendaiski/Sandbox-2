@@ -1,0 +1,264 @@
+{
+  "base": "http://127.0.0.1:4186/scenes/",
+  "scenes": [
+    {
+      "id": "pool",
+      "stats": {
+        "meshes": 249,
+        "triangles": 314004,
+        "invalid": 0,
+        "inventory": [
+          "swimmer",
+          "diver",
+          "lifeguard",
+          "sunbather",
+          "edge-sitter",
+          "waist-deep-swimmer",
+          "diving-board",
+          "ladder-pair",
+          "lifebuoy",
+          "beach-ball"
+        ],
+        "renderer": {
+          "frame": 54,
+          "calls": 1,
+          "triangles": 2,
+          "points": 0,
+          "lines": 0
+        }
+      },
+      "evidence": [
+        {
+          "t": 0,
+          "phase": "The afternoon"
+        },
+        {
+          "t": 5.5,
+          "phase": "On the diving board"
+        },
+        {
+          "t": 7,
+          "phase": "On the diving board"
+        },
+        {
+          "t": 8.3,
+          "phase": "Dive & splash"
+        },
+        {
+          "t": 12,
+          "phase": "Swim to the ladder"
+        },
+        {
+          "t": 21,
+          "phase": "Climb out & return"
+        },
+        {
+          "t": 25.8,
+          "phase": "Climb out & return"
+        }
+      ],
+      "repeat": true,
+      "motion": true
+    },
+    {
+      "id": "bank",
+      "stats": {
+        "meshes": 231,
+        "triangles": 15876,
+        "invalid": 0,
+        "inventory": [
+          "bank",
+          "exchange",
+          "corner-store",
+          "sedan",
+          "police-car-one",
+          "police-car-two",
+          "four-robbers",
+          "four-officers",
+          "alarm-windows",
+          "street-furniture"
+        ],
+        "renderer": {
+          "frame": 80,
+          "calls": 1,
+          "triangles": 2,
+          "points": 0,
+          "lines": 0
+        }
+      },
+      "evidence": [
+        {
+          "t": 0,
+          "phase": "Sedan arrives"
+        },
+        {
+          "t": 8,
+          "phase": "The bank entrance"
+        },
+        {
+          "t": 12,
+          "phase": "The bank entrance"
+        },
+        {
+          "t": 17,
+          "phase": "Alarm & departure"
+        },
+        {
+          "t": 28,
+          "phase": "Police arrive"
+        },
+        {
+          "t": 34,
+          "phase": "Officers fan out"
+        },
+        {
+          "t": 44,
+          "phase": "The street clears"
+        }
+      ],
+      "repeat": true,
+      "motion": true
+    },
+    {
+      "id": "arena",
+      "stats": {
+        "meshes": 336,
+        "triangles": 52542,
+        "invalid": 0,
+        "inventory": [
+          "garage",
+          "grandstand",
+          "spectators",
+          "yellow-monster-truck",
+          "red-monster-truck",
+          "ramp",
+          "scoreboard",
+          "flags",
+          "cones",
+          "engine-fire"
+        ],
+        "renderer": {
+          "frame": 106,
+          "calls": 1,
+          "triangles": 2,
+          "points": 0,
+          "lines": 0
+        }
+      },
+      "evidence": [
+        {
+          "t": 0,
+          "phase": "Live at the arena"
+        },
+        {
+          "t": 10,
+          "phase": "The ramp jump"
+        },
+        {
+          "t": 12,
+          "phase": "The ramp jump"
+        },
+        {
+          "t": 18,
+          "phase": "A new record"
+        },
+        {
+          "t": 26,
+          "phase": "Engine trouble"
+        },
+        {
+          "t": 32,
+          "phase": "Engine trouble"
+        },
+        {
+          "t": 37.9,
+          "phase": "Thank you"
+        }
+      ],
+      "repeat": true,
+      "motion": true
+    },
+    {
+      "id": "battle",
+      "stats": {
+        "meshes": 156,
+        "triangles": 17686,
+        "invalid": 0,
+        "inventory": [
+          "courtyard",
+          "stone-arch",
+          "yellow-mouse",
+          "orange-dragon",
+          "trainer-red",
+          "trainer-black",
+          "ball",
+          "lightning",
+          "fire-attack",
+          "recall"
+        ],
+        "renderer": {
+          "frame": 132,
+          "calls": 1,
+          "triangles": 2,
+          "points": 0,
+          "lines": 0
+        }
+      },
+      "evidence": [
+        {
+          "t": 0,
+          "phase": "The trainer throws"
+        },
+        {
+          "t": 6.7,
+          "phase": "The trainer throws"
+        },
+        {
+          "t": 8,
+          "phase": "Dragon arrives"
+        },
+        {
+          "t": 13,
+          "phase": "Thunder shock"
+        },
+        {
+          "t": 21,
+          "phase": "Flamethrower"
+        },
+        {
+          "t": 28.5,
+          "phase": "The charge"
+        },
+        {
+          "t": 36,
+          "phase": "Fire blast"
+        },
+        {
+          "t": 40,
+          "phase": "The final knockdown"
+        },
+        {
+          "t": 43,
+          "phase": "Recall"
+        }
+      ],
+      "repeat": true,
+      "motion": true
+    }
+  ],
+  "checks": [
+    "Orbit and hero reset",
+    "Timeline, play/pause and speed",
+    "PNG download",
+    "Explicit reference comparison",
+    "All four mobile layouts and reduced-motion pause",
+    "All scenes cold-render without external requests"
+  ],
+  "limits": [
+    "New authored reconstructions, not recovered original scene source.",
+    "Geometry and sampled transforms checked; no claim of continuous collision certification.",
+    "Test browser: Chromium software WebGL."
+  ],
+  "status": "PASS",
+  "errors": []
+}

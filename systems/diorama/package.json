@@ -6,7 +6,8 @@
   "scripts": {
     "build": "node preview/build.mjs",
     "test": "node scripts/test.mjs",
-    "preview": "python3 -m http.server 4185 --directory dist"
+    "preview": "python3 -m http.server 4185 --directory dist",
+    "test:scenes": "node scripts/test-scenes.mjs"
   },
   "dependencies": {
     "three": "0.170.0"
