@@ -1,0 +1,13 @@
+{
+  "source": "upstream/examples/dc.png",
+  "command": "python3 atlas.py film --image examples/dc.png --manifest examples/dc.json --output outputs/verification/dc-film.mp4 --seconds 12 --fps 24 --width 1280 --height 720",
+  "codec": "H.264",
+  "duration_seconds": 12,
+  "fps": 24,
+  "dimensions": [
+    1280,
+    720
+  ],
+  "full_ffmpeg_decode": "PASS",
+  "credits_sidecar_preserved": true
+}

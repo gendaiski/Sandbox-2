@@ -1,0 +1,2 @@
+# Only the original explorer exporter is needed by the static web build.
+pillow==13.0.0

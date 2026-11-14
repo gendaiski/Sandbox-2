@@ -1,0 +1,5 @@
+.build-deps/
+dist/
+node_modules
+verification/screenshots/
+upstream/.venv

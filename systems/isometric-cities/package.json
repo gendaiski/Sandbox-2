@@ -1,0 +1,11 @@
+{
+  "name": "isometric-cities-installation",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "python3 build_preview.py",
+    "test:browser": "node tests/browser.mjs"
+  },
+  "devDependencies": {"playwright-core": "1.56.1"}
+}

@@ -1,0 +1,10 @@
+{
+  "upstream_commit": "61684b5162bcf8259c49ae269b3e31277e01fe56",
+  "original_files_verified_byte_identical": 71,
+  "excluded": [
+    ".git",
+    ".venv",
+    "outputs",
+    "__pycache__"
+  ]
+}

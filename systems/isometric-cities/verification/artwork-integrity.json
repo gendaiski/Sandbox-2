@@ -1,0 +1,30 @@
+{
+  "upstream_commit": "61684b5162bcf8259c49ae269b3e31277e01fe56",
+  "native_images": [
+    {
+      "city": "dc",
+      "file": "map.png",
+      "sha256": "7cd2ebc4cc3f11a74ac9d3ee65a7b0f4258f18168c3e8e7ce01881a65c6cc001",
+      "unchanged": true
+    },
+    {
+      "city": "dc",
+      "file": "source.png",
+      "sha256": "1feba13d7d745da5f94c458caf0d0491aa0fb3533adcad7833ab7a8a330be386",
+      "unchanged": true
+    },
+    {
+      "city": "edinburgh",
+      "file": "map.png",
+      "sha256": "8783392a183598c812c406b79200fea21104ab181bf8a323e2cd4e9bf53d5bd9",
+      "unchanged": true
+    },
+    {
+      "city": "edinburgh",
+      "file": "source.png",
+      "sha256": "9de6dfd53ba81dbc8de4e7f37f5ecc4fcbe111a99261d22989627b8bae650c42",
+      "unchanged": true
+    }
+  ],
+  "viewer_matches_original_export": true
+}
