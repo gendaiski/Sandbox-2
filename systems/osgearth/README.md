@@ -1,5 +1,13 @@
 # osgEarth — Native Explorer Library
 
+Public library: https://osgearth-library-gendaiski.vercel.app/
+
+Unified Worlds Library: https://diorama-studio-gendaiski.vercel.app/#osgearth-library
+
+Download: https://osgearth-library-gendaiski.vercel.app/downloads/osgearth-installation.zip
+
+Published native preview expires **14 November 2026, 05:54 UTC**. The catalogue and downloads remain available afterward.
+
 Original upstream: https://github.com/pelicanmapping/osgearth
 
 Pinned revision: `16de96a16b10bce7f2167897826998060edc49f0` (master, inspected 14 November 2026).
