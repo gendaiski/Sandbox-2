@@ -1,0 +1,12 @@
+{
+  "base": "http://127.0.0.1:4193",
+  "checks": [
+    "dc: original artwork, native tiles, 23 landmarks, next/previous, pan/zoom, registered comparison, tour interruption, overview, credits and provenance export",
+    "edinburgh: original artwork, native tiles, 20 landmarks, next/previous, pan/zoom, registered comparison, tour interruption, overview, credits and provenance export",
+    "Original city navigation links switch explorers",
+    "Both mobile layouts, touch landmark selection, comparison and reduced-motion behavior"
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "status": "PASS"
+}
