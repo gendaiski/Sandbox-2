@@ -1,0 +1,1 @@
+from legalrag.api.server import app

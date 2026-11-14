@@ -1,0 +1,10 @@
+{
+  "upstream": "https://github.com/Fan-Luo/Legal-RAG",
+  "upstream_commit": "f51a3317cb82927095f128261e0154cf5be438aa",
+  "license": "Apache-2.0",
+  "installation_branch": "codex/legal-rag-english",
+  "installed": "2026-11-14",
+  "language": "en",
+  "test_mode": "native Python 3.12 CPU; real retrieval; no live generation key",
+  "runtime_corpus": "English UCC snapshot; English PDF uploads"
+}

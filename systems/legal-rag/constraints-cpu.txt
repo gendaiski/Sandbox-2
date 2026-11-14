@@ -1,0 +1,10 @@
+torch==2.5.1+cpu
+transformers==4.45.2
+sentence-transformers==3.3.1
+peft==0.13.2
+numpy==1.26.4
+
+pyarrow==18.1.0
+FlagEmbedding==1.2.11
+colbert-ai==0.2.22
+datasets==2.14.4

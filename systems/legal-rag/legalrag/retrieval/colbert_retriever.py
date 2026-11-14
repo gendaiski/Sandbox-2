@@ -1,0 +1,206 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import ClassVar, Dict, List, Optional, Tuple
+
+from legalrag.config import AppConfig
+from legalrag.schemas import LawChunk
+from filelock import FileLock, Timeout
+from colbert import Searcher
+from colbert.infra import Run, RunConfig
+
+def _ensure_colbert_importable() -> None:
+    try:
+        import colbert    
+    except Exception as e:
+        raise RuntimeError(
+            "ColBERT is not importable. Install the official Stanford ColBERT package "
+            "(e.g., `pip install colbert-ai` or `conda install -c conda-forge colbert-ai`), "
+            "or clone https://github.com/stanford-futuredata/ColBERT and add it to PYTHONPATH."
+        ) from e
+
+
+def _dict_to_chunk(d: dict) -> LawChunk: 
+    if hasattr(LawChunk, "model_validate"):
+        return LawChunk.model_validate(d)
+    return LawChunk.parse_obj(d)  # type: ignore[attr-defined]
+
+
+class ColBERTRetriever:
+    """
+    ColBERT channel retriever using the official Stanford ColBERT Searcher.
+
+    Contract:
+      - search(query, top_k) -> List[(LawChunk, score)]
+    """
+
+    def __init__(self, cfg: AppConfig):
+        self.cfg = cfg
+        rcfg = cfg.retrieval
+
+        self.enabled: bool = bool(getattr(rcfg, "enable_colbert", False))
+        self.index_path: Path = Path(str(getattr(rcfg, "colbert_index_path")))
+        self.index_name: str = str(getattr(rcfg, "colbert_index_name"))
+        self.model_name: Optional[str] = getattr(rcfg, "colbert_model_name", "colbert-ir/colbertv2.0")   
+        self.meta_file: Path = Path(str(getattr(rcfg, "colbert_meta_file")))
+        self.experiment: str = str(getattr(rcfg, "colbert_experiment"))
+        self.nranks: int = int(getattr(rcfg, "colbert_nranks", 1))
+
+        self._pid2chunk: Dict[int, LawChunk] = {}
+        self._collection: List[str] = []
+        self._searcher = None
+        self._meta_mtime: float | None = None
+
+        if not self.enabled:
+            return
+
+        _ensure_colbert_importable()
+        self._load_meta_and_collection()
+        self._init_searcher()
+        self._index_generation = self._generation()
+
+    _instances_by_key: ClassVar[
+        Dict[Tuple[str, str, str, str, str, int], "ColBERTRetriever"]
+    ] = {}
+    _searcher_cache: ClassVar[Dict[Tuple[str, str, str, str, int], object]] = {}
+
+    @classmethod
+    def from_config(cls, cfg: AppConfig) -> "ColBERTRetriever":
+        rcfg = cfg.retrieval
+        key = (
+            str(getattr(rcfg, "colbert_index_path")),
+            str(getattr(rcfg, "colbert_index_name")),
+            str(getattr(rcfg, "colbert_model_name", "colbert-ir/colbertv2.0")),
+            str(getattr(rcfg, "colbert_meta_file")),
+            str(getattr(rcfg, "colbert_experiment")),
+            int(getattr(rcfg, "colbert_nranks", 1)),
+        )
+        if key in cls._instances_by_key:
+            return cls._instances_by_key[key]
+        inst = cls(cfg)
+        cls._instances_by_key[key] = inst
+        return inst
+
+    def _load_meta_and_collection(self) -> None:
+        if not self.meta_file.exists():
+            raise RuntimeError(
+                f"ColBERT meta file not found: {self.meta_file}. "
+                "Run build_colbert_index() first."
+            )
+        meta_mtime = self.meta_file.stat().st_mtime
+        if self._meta_mtime is not None and self._meta_mtime == meta_mtime:
+            return
+
+        pid2chunk: Dict[int, LawChunk] = {}
+        max_pid = -1
+
+        with self.meta_file.open("r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                rec = json.loads(line)
+                pid = int(rec["pid"])
+                chunk = _dict_to_chunk(rec["chunk"])
+                pid2chunk[pid] = chunk
+                max_pid = max(max_pid, pid)
+
+        if max_pid < 0:
+            raise RuntimeError(f"ColBERT meta file is empty: {self.meta_file}")
+
+        # Reconstruct the collection in pid order (ColBERT passage ids refer to positions)
+        collection: List[str] = [""] * (max_pid + 1)
+        for pid, chunk in pid2chunk.items():
+            collection[pid] = (getattr(chunk, "text", "") or "").strip()
+
+        self._pid2chunk = pid2chunk
+        self._collection = collection
+        self._meta_mtime = meta_mtime
+
+    def _generation(self):
+        marker = self.index_path / self.experiment / "indexes" / self.index_name / "metadata.json"
+        return marker.stat().st_mtime_ns if marker.exists() else None
+
+    def _init_searcher(self, force=False) -> None:
+        from colbert import Searcher
+        from colbert.infra import Run, RunConfig
+
+        key = (
+            str(self.index_path),
+            str(self.index_name),
+            str(self.model_name),
+            str(self.experiment),
+            int(self.nranks),
+        )
+        if force:
+            self.__class__._searcher_cache.pop(key, None)
+            self._searcher = None
+        cached = self.__class__._searcher_cache.get(key)
+        if cached is not None:
+            self._searcher = cached
+            return
+
+        with Run().context(RunConfig(root=str(self.index_path), nranks=self.nranks, experiment=self.experiment)):
+            self._searcher = Searcher(index=self.index_name, collection=self._collection, checkpoint=self.model_name)
+        self.__class__._searcher_cache[key] = self._searcher
+
+    def search(self, query: str, top_k: int = 5) -> List[Tuple[LawChunk, float]]:
+        if not self.enabled:
+            return []
+        # Never pair a newly written PID map with an older in-memory index.
+        # Other retrieval channels remain available during a rebuild.
+        try:
+            with FileLock(str(self.index_path / ".colbert_build.lock"), timeout=0):
+                generation = self._generation()
+                if generation != self._index_generation:
+                    self._load_meta_and_collection()
+                    self._init_searcher(force=True)
+                    self._index_generation = generation
+                return self._search(query, top_k)
+        except Timeout:
+            return []
+
+    def _search(self, query: str, top_k: int = 5) -> List[Tuple[LawChunk, float]]:
+        if not self.enabled:
+            return []
+        if not self._searcher:
+            raise RuntimeError("ColBERT Searcher is not initialized.")
+
+        query = (query or "").strip()
+        if not query:
+            return []
+
+        try:
+            results = self._searcher.search(query, k=top_k)
+        except Exception as exc:
+            try:
+                import torch
+            except Exception:
+                torch = None
+            if torch is not None and isinstance(exc, torch.cuda.OutOfMemoryError):
+                try:
+                    if torch.cuda.is_available():
+                        torch.cuda.empty_cache()
+                except Exception:
+                    pass
+                return []
+            msg = str(exc).lower()
+            if "out of memory" in msg:
+                try:
+                    if torch is not None and torch.cuda.is_available():
+                        torch.cuda.empty_cache()
+                except Exception:
+                    pass
+                return []
+            raise
+        pids, ranks, scores = results  # pids are ints (passage ids)
+
+        out: List[Tuple[LawChunk, float]] = []
+        for pid, score in zip(pids, scores):
+            try:
+                chunk = self._pid2chunk[int(pid)]
+                out.append((chunk, float(score)))
+            except Exception:
+                continue
+        return out
