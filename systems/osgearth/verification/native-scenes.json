@@ -1,0 +1,1448 @@
+{
+  "date": "2026-11-14T05:22:24.857Z",
+  "revision": "16de96a16b10bce7f2167897826998060edc49f0",
+  "results": [
+    {
+      "id": "annotation",
+      "category": "Labels & annotations",
+      "requirements": [],
+      "running": false,
+      "exitCode": -11,
+      "log": "[osgearth warning] [ModelNode] No model and failed to load data from \n[osgearth warning] [ModelNode] No model\n",
+      "status": "Native process exited",
+      "capture": "captures/annotation.png",
+      "blank": true,
+      "assessment": "Native example failed to start or exited",
+      "initialAttempt": {
+        "status": "Native process exited",
+        "log": "[osgearth warning] [ModelNode] No model and failed to load data from \n[osgearth warning] [ModelNode] No model\n",
+        "blank": true
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "annotation_flat",
+      "category": "Labels & annotations",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [ModelNode] No model and failed to load data from \n[osgearth warning] [ModelNode] No model\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/annotation_flat.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log"
+    },
+    {
+      "id": "arcgisonline",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/arcgisonline.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "azuremaps",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Provider credentials or environment settings"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [AzureMaps] Azure Maps request failed due to authorization failure\n[osgearth warning] [AzureMaps] {\n[osgearth warning]   \"error\": {\n[osgearth warning]     \"code\": \"InvalidKey\",\n[osgearth warning]     \"message\": \"The provided key was incorrect or the account resource does not exist.\",\n[osgearth warning]     \"target\": \"WWW-Authenticate\",\n[osgearth warning]     \"details\": []\n[osgearth warning]   }\n[osgearth warning] }\n[osgearth warning] [AzureMapsImageLayer] \"Azure Maps layer\" Illegal- called getCacheBin() before layer is open.. did you call open()?\n[osgearth warning] [AzureMaps] Azure Maps request failed due to authorization failure\n[osgearth warning] [AzureMaps] {\n[osgearth warning]   \"error\": {\n[osgearth warning]     \"code\": \"InvalidKey\",\n[osgearth warning]     \"message\": \"The provided key was incorrect or the account resource does not exist.\",\n[osgearth warning]     \"target\": \"WWW-Authenticate\",\n[osgearth warning]     \"details\": []\n[osgearth warning]   }\n[osgearth warning] }\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/azuremaps.png",
+      "blank": false,
+      "assessment": "Provider credentials required — layer not rendered"
+    },
+    {
+      "id": "boston",
+      "category": "Cities, features & 3D models",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/boston.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "boston_overture_wip",
+      "category": "Cities, features & 3D models",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/boston_overture_wip.png",
+      "blank": true,
+      "assessment": "No scene content visible in initial capture — needs further setup or loading",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "",
+        "blank": true
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "boston_projected",
+      "category": "Cities, features & 3D models",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/boston_projected.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "bridges",
+      "category": "Cities, features & 3D models",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/bridges.png",
+      "blank": true,
+      "assessment": "No scene content visible in initial capture — needs further setup or loading",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "",
+        "blank": true
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "cesium_ion",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Optional Cesium Native nodekit and provider access",
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [EarthSerializer2] N8osgEarth19CesiumIonImageLayerE \"bing satellite\" : Configuration error: CesiumIon API key is required\n[osgearth warning] [EarthSerializer2] N8osgEarth25CesiumIonTerrainMeshLayerE \"cesium world terrain\" : Configuration error: CesiumIon API key is required\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/cesium_ion.png",
+      "blank": false,
+      "assessment": "Provider credentials required — layer not rendered"
+    },
+    {
+      "id": "composite_elevation",
+      "category": "Terrain & elevation",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [ShaderLoader] No shader source found for \"RexEngine.GL4.glsl\"\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/composite_elevation.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "composite_image",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/composite_image.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "constraints",
+      "category": "Diagnostics & rendering tests",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/constraints.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "contourmap",
+      "category": "Terrain & elevation",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [ShaderLoader] No shader source found for \"RexEngine.GL4.glsl\"\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/contourmap.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "copernicus",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/copernicus.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "datum_override",
+      "category": "Projections & coordinates",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/datum_override.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "day_night",
+      "category": "Atmosphere, lighting & ocean",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/day_night.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified",
+      "recheck": "Verified with the upstream-documented dedicated application or launch flag"
+    },
+    {
+      "id": "debug",
+      "category": "Diagnostics & rendering tests",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/debug.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "errors",
+      "category": "Diagnostics & rendering tests",
+      "requirements": [
+        "Intentional error-handling test; not a finished scene"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [EarthSerializer2] Replacing key \"features\" with \"OGRFeatures\"; please update your earth file\nError reading file .osgearth_model_none: file not handled\n[osgearth warning] [EarthSerializer2] N8osgEarth14GDALImageLayerE \"Missing required property Test\" : Configuration error: No URL, directory, or connection string specified\n[osgearth warning] [EarthSerializer2] N8osgEarth14GDALImageLayerE \"Missing URL Test\" : Resource unavailable: Failed to open /opt/osgearth/source/tests/missing_file.tif\n[osgearth warning] [EarthSerializer2] N8osgEarth10ModelLayerE \"Bad driver test\" : Service unavailable: Failed to create driver \"none\"\n[osgearth warning] [EarthSerializer2] N8osgEarth17FeatureModelLayerE \"Missing Feature Test\" : Resource unavailable: Failed to open \"/opt/osgearth/source/tests/missing.shp\"\n[osgearth warning] [EarthSerializer2] N8osgEarth22TerrainConstraintLayerE \"Bad Features Test\" : Configuration error: No URL, connection, or inline geometry provided\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/errors.png",
+      "blank": false,
+      "assessment": "Intentional upstream error-handling example"
+    },
+    {
+      "id": "extrusion_test",
+      "category": "Cities, features & 3D models",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/extrusion_test.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "feature_country_boundaries",
+      "category": "Cities, features & 3D models",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/feature_country_boundaries.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "feature_custom_filters",
+      "category": "Cities, features & 3D models",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/feature_custom_filters.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "recheck": "Verified with the upstream-documented dedicated application or launch flag"
+    },
+    {
+      "id": "feature_draped_lines",
+      "category": "Cities, features & 3D models",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/feature_draped_lines.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "feature_draped_polygons",
+      "category": "Cities, features & 3D models",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/feature_draped_polygons.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "feature_extrude",
+      "category": "Cities, features & 3D models",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": false,
+      "exitCode": -11,
+      "log": "",
+      "status": "Native process exited",
+      "capture": "captures/feature_extrude.png",
+      "blank": true,
+      "assessment": "Native example failed to start or exited",
+      "initialAttempt": {
+        "status": "Native process exited",
+        "log": "",
+        "blank": true
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "feature_inline_geometry",
+      "category": "Cities, features & 3D models",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/feature_inline_geometry.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "feature_labels",
+      "category": "Cities, features & 3D models",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/feature_labels.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "feature_models",
+      "category": "Cities, features & 3D models",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/feature_models.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "feature_multi_styling",
+      "category": "Cities, features & 3D models",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": false,
+      "exitCode": -11,
+      "log": "",
+      "status": "Native process exited",
+      "capture": "captures/feature_multi_styling.png",
+      "blank": true,
+      "assessment": "Native example failed to start or exited",
+      "initialAttempt": {
+        "status": "Native process exited",
+        "log": "",
+        "blank": true
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "feature_occlusion_culling",
+      "category": "Cities, features & 3D models",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [JavaScript] Runtime error: ReferenceError: parseDouble is not defined\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/feature_occlusion_culling.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log"
+    },
+    {
+      "id": "feature_poles",
+      "category": "Cities, features & 3D models",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/feature_poles.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "feature_polygons",
+      "category": "Cities, features & 3D models",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/feature_polygons.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "feature_polygons_textured",
+      "category": "Cities, features & 3D models",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/feature_polygons_textured.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "feature_rasterize",
+      "category": "Cities, features & 3D models",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/feature_rasterize.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "feature_scripted_styling",
+      "category": "Cities, features & 3D models",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/feature_scripted_styling.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "feature_scripted_styling_2",
+      "category": "Cities, features & 3D models",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/feature_scripted_styling_2.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "feature_select_symbol",
+      "category": "Cities, features & 3D models",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/feature_select_symbol.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "feature_simple",
+      "category": "Cities, features & 3D models",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/feature_simple.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "feature_tfs_scripting",
+      "category": "Cities, features & 3D models",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/feature_tfs_scripting.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "feature_tile_level",
+      "category": "Cities, features & 3D models",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/feature_tile_level.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "gdal_interp",
+      "category": "Maps & imagery providers",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/gdal_interp.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "gdaldem",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/gdaldem.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "glsl",
+      "category": "Maps & imagery providers",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/glsl.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "graticules",
+      "category": "Labels & annotations",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/graticules.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "hires-inset",
+      "category": "Maps & imagery providers",
+      "requirements": [],
+      "running": false,
+      "exitCode": -11,
+      "log": "",
+      "status": "Native process exited",
+      "capture": "captures/hires-inset.png",
+      "blank": true,
+      "assessment": "Native example failed to start or exited",
+      "initialAttempt": {
+        "status": "Native process exited",
+        "log": "",
+        "blank": true
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "intersect_filter",
+      "category": "Maps & imagery providers",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/intersect_filter.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "kml",
+      "category": "Cities, features & 3D models",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/kml.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "mapboxgl",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/mapboxgl.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "maplibre_vector",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [FeatureImageLayer] MapLibre world vectors: Vector mode requires OSGEARTH_ENABLE_SLUGHORN; falling back to raster\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/maplibre_vector.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "mapterhorn",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [ShaderLoader] No shader source found for \"RexEngine.GL4.glsl\"\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/mapterhorn.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "mapzen",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [ShaderLoader] No shader source found for \"RexEngine.GL4.glsl\"\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/mapzen.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "mbtiles",
+      "category": "Maps & imagery providers",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/mbtiles.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "[osgearth warning] [MBTiles] \"Countries of the World\" Failed to prepare SQL: SELECT (SELECT min(zoom_level) FROM tiles), (SELECT max(zoom_level) FROM tiles); ; unable to open database file\n[osgearth warning] [MBTiles] \"Countries of the World\" Failed to prepare SQL: SELECT tile_data from tiles where zoom_level = ? AND tile_column = ? AND tile_row = ?; unable to open database file\n[osgearth warning] [MBTiles] \"Countries of the World\" Failed to prepare SQL: SELECT value from metadata where name = ?; unable to open database file\n[osgearth warning] [EarthSerializer2] N8osgEarth17MBTilesImageLayerE \"Countries of the World\" : Configuration error: Required format not in metadata, nor specified in the options.\n",
+        "blank": false
+      },
+      "recheck": "Verified after staging an exact writable copy of the bundled WAL-mode SQLite database and original map configuration"
+    },
+    {
+      "id": "min_max_level",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/min_max_level.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "min_max_range",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/min_max_range.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "multiple_heightfields",
+      "category": "Maps & imagery providers",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [ShaderLoader] No shader source found for \"RexEngine.GL4.glsl\"\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/multiple_heightfields.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "nodata",
+      "category": "Maps & imagery providers",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/nodata.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "ocean",
+      "category": "Atmosphere, lighting & ocean",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/ocean.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "ocean_no_elevation",
+      "category": "Atmosphere, lighting & ocean",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/ocean_no_elevation.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "omt",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/omt.png",
+      "blank": true,
+      "assessment": "No scene content visible in initial capture — needs further setup or loading",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "",
+        "blank": true
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "openfreemap",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [FeatureImageLayer] OpenFreeMap vectors: Vector mode requires OSGEARTH_ENABLE_SLUGHORN; falling back to raster\n[osgearth warning] [EarthSerializer2] N16osgEarthPrestige10LabelLayerE \"Place and road names\" : Service unavailable: LabelLayer requires OSGEARTH_ENABLE_SLUGHORN\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/openfreemap.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "openweathermap",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/openweathermap.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "osm",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/osm.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "pmtiles",
+      "category": "Maps & imagery providers",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [PMTiles] \"data:buildings\" AWS SDK not available, cannot read S3 URLs.\n[osgearth warning] [PMTiles] \"data:buildings\" AWS SDK not available, cannot read S3 URLs.\n[osgearth warning] [EarthSerializer2] N8osgEarth20PMTilesFeatureSourceE \"data:buildings\" : Configuration error: \n[osgearth warning] [EarthSerializer2] N8osgEarth22TiledFeatureModelLayerE \"Overture Buildings\" : Configuration error: \n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/pmtiles.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log"
+    },
+    {
+      "id": "powerline",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/powerline.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "powerline_script",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/powerline_script.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "prestige-3dtiles",
+      "category": "Procedural & advanced rendering",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/prestige-3dtiles.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "prestige-online",
+      "category": "Procedural & advanced rendering",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [FeatureImageLayer] Country and state boundaries: Vector mode requires OSGEARTH_ENABLE_SLUGHORN; falling back to raster\nNow checking for plug-in osgPlugins-3.6.5/osgdb_stbdxt.so\nosg::Registry::addImageProcessor(ImageProcessor)\nLoaded plug-in osgPlugins-3.6.5/osgdb_stbdxt.so and located ImageProcessor\n[osgearth warning] [FeatureImageLayer] Prestige road surfaces (vector): Vector mode requires OSGEARTH_ENABLE_SLUGHORN; falling back to raster\n[osgearth warning] [EarthSerializer2] N16osgEarthPrestige10LabelLayerE \"Countries, states and major cities\" : Service unavailable: LabelLayer requires OSGEARTH_ENABLE_SLUGHORN\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/prestige-online.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "prestige",
+      "category": "Procedural & advanced rendering",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/prestige.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "prestige_grading",
+      "category": "Procedural & advanced rendering",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/prestige_grading.png",
+      "blank": true,
+      "assessment": "No scene content visible in initial capture — needs further setup or loading",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "Error writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/e6/a8fd6b6a38459444978292009e3092a4f329ae.osgb: write error\nNow checking for plug-in osgPlugins-3.6.5/osgdb_stbdxt.so\nosg::Registry::addImageProcessor(ImageProcessor)\nLoaded plug-in osgPlugins-3.6.5/osgdb_stbdxt.so and located ImageProcessor\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/e6/a8fd6b6a38459444978292009e3092a4f329ae\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/30/d5388a613e6ec059e9c1b527c05be25e6ca0e9\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/04/186f963933eb843c354f2cb3dfd4e8434044d2\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/e9/a68dc4c78b04a6d8ee27a200796fa7c604c272.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/e9/a68dc4c78b04a6d8ee27a200796fa7c604c272\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/f9/ea88450dfac5217f1367e7177e61d319be5539.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/f9/ea88450dfac5217f1367e7177e61d319be5539\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/fe/6f13a1c3340be2391e4d3805ef012db52309ee.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/fe/6f13a1c3340be2391e4d3805ef012db52309ee\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/f8/9bfeebedec8e104689dd769f300c233672ecd7\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n",
+        "blank": true
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "prestige_roads_nyc",
+      "category": "Procedural & advanced rendering",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [EarthSerializer2] N8osgEarth16OGRFeatureSourceE \"Compiled road profiles\" : Resource unavailable: Failed to open \"/opt/osgearth/source/tools/experiments/prestige_roads/output/road-grading-nyc/road-profiles.geojson\"\n[osgearth warning] [EarthSerializer2] N16osgEarthPrestige12GradingLayerE \"Single-LOD road grading\" : Configuration error: Grading feature source could not be opened or resolved\n[osgearth warning] [EarthSerializer2] N8osgEarth16OGRFeatureSourceE \"compiled-asphalt\" : Resource unavailable: Failed to open \"/opt/osgearth/source/tools/experiments/prestige_roads/output/render-fixture-nyc/render-contract/asphalt.gpkg\"\n[osgearth warning] [EarthSerializer2] N16osgEarthPrestige21SurfaceSplattingLayerE \"Prestige asphalt\" : Resource unavailable: Failed to load /opt/osgearth/source/tools/experiments/prestige_roads/output/bridge-boston-congress/materials/asphalt-orm.png ... file not found\n[osgearth warning] [EarthSerializer2] N8osgEarth16OGRFeatureSourceE \"paint-yellow\" : Resource unavailable: Failed to open \"/opt/osgearth/source/tools/experiments/prestige_roads/output/render-fixture-nyc/render-contract/yellow.geojson\"\n[osgearth warning] [EarthSerializer2] N16osgEarthPrestige21SurfaceSplattingLayerE \"Paint yellow\" : Resource unavailable: Failed to load /opt/osgearth/source/tools/experiments/prestige_roads/output/bridge-boston-congress/materials/yellow-orm.png ... file not found\n[osgearth warning] [EarthSerializer2] N8osgEarth16OGRFeatureSourceE \"paint-white\" : Resource unavailable: Failed to open \"/opt/osgearth/source/tools/experiments/prestige_roads/output/render-fixture-nyc/render-contract/white.geojson\"\n[osgearth warning] [EarthSerializer2] N16osgEarthPrestige21SurfaceSplattingLayerE \"Paint white\" : Resource unavailable: Failed to load /opt/osgearth/source/tools/experiments/prestige_roads/output/bridge-boston-congress/materials/white-orm.png ... file not found\n[osgearth warning] [EarthSerializer2] N16osgEarthPrestige15VegetationLayerE \"Prestige vegetation on graded elevation\" : Resource unavailable: Cannot resolve feature input: roads\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/prestige_roads_nyc.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "e] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/e0/1e12c12d99300bb101ef00d22d3c46e939e12c.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/e0/1e12c12d99300bb101ef00d22d3c46e939e12c\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/bf/11a5f6ac489cf60d120bd756ce92e2b85cb281.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/bf/11a5f6ac489cf60d120bd756ce92e2b85cb281\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/3b/e4e22c6e755c62dc07e3870fae0dde188c184b.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/3b/e4e22c6e755c62dc07e3870fae0dde188c184b\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/ab/33fdfa1dadf5c580a386059a9be7691bd9150f.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/ab/33fdfa1dadf5c580a386059a9be7691bd9150f\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/75/61c7fa863d70d444f8879168031c232e2d22b5.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/75/61c7fa863d70d444f8879168031c232e2d22b5\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/36/32e4c4354abbe92c56606632eebdf03ceacbbe.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/36/32e4c4354abbe92c56606632eebdf03ceacbbe\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/89/945a5f8e620cb9152e7159c0b57a24cfc4d348.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/89/945a5f8e620cb9152e7159c0b57a24cfc4d348\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/5c/99503511a2fcd6c3df194dad5cc9d440ab4824.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/5c/99503511a2fcd6c3df194dad5cc9d440ab4824\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/52/02138295dcec356768be2f1fad0f83128d2210.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/52/02138295dcec356768be2f1fad0f83128d2210\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/5f/e4829f8304d10255d0b891f104bf78ce1823c3.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/5f/e4829f8304d10255d0b891f104bf78ce1823c3\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/d8/8f3ef53e04a587b850c10679339b7421dea6b6.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/d8/8f3ef53e04a587b850c10679339b7421dea6b6\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/ac/8823d5674dbee83f0b38f96fed8543ffd6eaec.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/ac/8823d5674dbee83f0b38f96fed8543ffd6eaec\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/90/2d11582f84d994dc093f10a2f1c49dd2fe5523.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/90/2d11582f84d994dc093f10a2f1c49dd2fe5523\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/4d/8ba2e53e4df0d5b774bc0eadd5060826bf8f82.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/4d/8ba2e53e4df0d5b774bc0eadd5060826bf8f82\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/a2/f67340e6dd24765977f3ed0e97f56d5fcf6b54.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/a2/f67340e6dd24765977f3ed0e97f56d5fcf6b54\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/be/0a5b7c06a3fb426425dd96ddd5b9c1ceb2a90d.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/be/0a5b7c06a3fb426425dd96ddd5b9c1ceb2a90d\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/f9/13a3e0a4dd815b25398b8acdbf6de53693cdf7.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/f9/13a3e0a4dd815b25398b8acdbf6de53693cdf7\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/9f/36c2042119dcfe31857e8fd69305e432ac9690.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/9f/36c2042119dcfe31857e8fd69305e432ac9690\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/b4/18e2a88630129c88d263af6c708d011979e535.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/b4/18e2a88630129c88d263af6c708d011979e535\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/59/1757e2a09748969160a1a8dcfa13124fe036ec.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/59/1757e2a09748969160a1a8dcfa13124fe036ec\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/9e/843b0d6d76e27f8853c68d3dad17521b5a326a.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/9e/843b0d6d76e27f8853c68d3dad17521b5a326a\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\nError writing file /tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/dd/42c13bdaa47f9e1685a8625c9109772df6acf1.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-imagery-a6e59e5574b2e004/image/dd/42c13bdaa47f9e1685a8625c9109772df6acf1\" to cache bin \"ReadyMap-imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-elevation---unchanged-8228523a1c05d8e6/osgearth_cacheinfo.json]\n",
+        "blank": false
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "readymap-maritime",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/readymap-maritime.png",
+      "blank": true,
+      "assessment": "No scene content visible in initial capture — needs further setup or loading",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Maritime-Plain-Paper-Day-80380e580c61c855/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Maritime-Plain-Paper-Day-80380e580c61c855/osgearth_cacheinfo.json]\n",
+        "blank": true
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "readymap",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/readymap.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "readymap_flat",
+      "category": "Projections & coordinates",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/readymap_flat.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "readymap_template",
+      "category": "Maps & imagery providers",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/readymap_template.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified",
+      "recheck": "Verified with the upstream-documented dedicated application or launch flag"
+    },
+    {
+      "id": "roads",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] Failed to open database, unable to open database file\n[osgearth warning] Failed to prepare statement SELECT tile_data from tiles where zoom_level = ? AND tile_column = ? AND tile_row = ?unable to open database file\n[osgearth warning] Failed to prepare statement SELECT value from metadata where name = ?unable to open database file\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/roads.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "[osgearth warning] Failed to open database, unable to open database file\n[osgearth warning] Failed to prepare statement SELECT tile_data from tiles where zoom_level = ? AND tile_column = ? AND tile_row = ?unable to open database file\n[osgearth warning] Failed to prepare statement SELECT value from metadata where name = ?unable to open database file\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\nNow checking for plug-in osgPlugins-3.6.5/osgdb_stbdxt.so\nosg::Registry::addImageProcessor(ImageProcessor)\nLoaded plug-in osgPlugins-3.6.5/osgdb_stbdxt.so and located ImageProcessor\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/readymap_imagery-85847936fd068e2d/osgearth_cacheinfo.json]\n",
+        "blank": false
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "scene_clamping",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/scene_clamping.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "Now checking for plug-in osgPlugins-3.6.5/osgdb_stbdxt.so\nosg::Registry::addImageProcessor(ImageProcessor)\nLoaded plug-in osgPlugins-3.6.5/osgdb_stbdxt.so and located ImageProcessor\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/ef/4703e603aa223ccf246980cb01281d0727d72c\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/ef/4703e603aa223ccf246980cb01281d0727d72c.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/ef/4703e603aa223ccf246980cb01281d0727d72c\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/d6/e4e017627ec276e10f22659f8d67578a3b0e1d\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/64/98049c22e5e2de1fbec9c5e23f004b6297aebf.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/64/98049c22e5e2de1fbec9c5e23f004b6297aebf\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/64/98049c22e5e2de1fbec9c5e23f004b6297aebf\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/b8/20d70032f8e2320cdff5c4c6a8397ffe22e7c7\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/83/21555a53155c9e46da2903e452d5438c5fac0b\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/88/c3d84affd2cb202d809d7cd0bb6780ee577de6\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\nFailed to create /home/ubuntu/.cache/mesa_shader_cache/1e for shader cache (No space left on device)---disabling.\nFailed to create /home/ubuntu/.cache/mesa_shader_cache/5b for shader cache (No space left on device)---disabling.\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/59/2f8f024528000eb6f33dd85577e50db9a231b2.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/59/2f8f024528000eb6f33dd85577e50db9a231b2\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/e5/3f89818cb5887487c04c09e375d245334ea460\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/62/9fbfd61d088d2b35df4c70ff79aac9eb0c71e7\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/56/6718818a31897beda543ec80869510a184f094\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/71/f543507b621a718c28fd03b265b27856e8f9bd\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/83/3ad3bae1a6214e0bdc485fc35f10cc7a7e2bb7\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/9c/f07b6e76a87bce7dc998a1c827ca64b1d2e751\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/9c/f07b6e76a87bce7dc998a1c827ca64b1d2e751.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/9c/f07b6e76a87bce7dc998a1c827ca64b1d2e751\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/8d/133c10e761eb212b5b16f65e3f846989658a65.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/8d/133c10e761eb212b5b16f65e3f846989658a65\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/12/dce1385eb4ba5517751126f20a5ab0605ae7bd\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/10/65a1097b445bf8a3993383271f50d207d127f0\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/a0/0b5615015abbfd031aa096b6f26a610e393256\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/88/21dfca5b5e16ce8258b8ce5d92d68a2c0b1d96\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/6b/cbe58d804a4e37db8e476193caeb4b0b590a14.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/6b/cbe58d804a4e37db8e476193caeb4b0b590a14\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/9c/028024b26a4d1a2622f5286389cbc33aae12f8.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/9c/028024b26a4d1a2622f5286389cbc33aae12f8\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/9c/028024b26a4d1a2622f5286389cbc33aae12f8\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/1f/deb98fcce478e58cc2379425f3a9fa3b46c6f1\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/d6/3aadfadb5fb6486786e1838c56bd3ed643cdae\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/a0/bb36ec185b966bb848225c588d076540fc8a30\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/97/c63e7b66692272f1c27d7a5e5ab0074c97b443\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/10/6d1c01827b429b6eff40b621f1e35962b820c7\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/f5/d7e0a7e5a6d3b51755f22aea9c54a489d1a8ed\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/b8/e09eeca456177b488c4aaf1faf8be5c14f6dd5\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/b8/e09eeca456177b488c4aaf1faf8be5c14f6dd5.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/b8/e09eeca456177b488c4aaf1faf8be5c14f6dd5\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-90m-Elevation-8228523a1c05d8e6/elevation/33/af040bac53607adcc32fd3ad64555c358093ab\" to cache bin \"ReadyMap-90m-Elevation-8228523a1c05d8e6\"; msg = \"\"\n",
+        "blank": false
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "sdf",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/sdf.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "Failed to create /home/ubuntu/.cache/mesa_shader_cache/8e for shader cache (No space left on device)---disabling.\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/f2/427475810866eabe2fe7befc48999d24c2c563.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/f2/427475810866eabe2fe7befc48999d24c2c563\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\n",
+        "blank": false
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "shared",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/shared.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/imagery-a6e59e5574b2e004/osgearth_cacheinfo.json]\n",
+        "blank": false
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "silverlining",
+      "category": "Atmosphere, lighting & ocean",
+      "requirements": [
+        "Separate commercial SDK required",
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/silverlining.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "simple",
+      "category": "Maps & imagery providers",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/simple.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "simple_model",
+      "category": "Cities, features & 3D models",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "Error reading file /opt/osgearth/source/tests/cow.osg: file not found\nSubfile \"/opt/osgearth/source/tests/cow.osg\" could not be loaded\nError reading file /opt/osgearth/source/tests/cow.osg.(0,0,3.14).trans: file not handled\nSubfile \"/opt/osgearth/source/tests/cow.osg.(0,0,3.14).trans\" could not be loaded\n[osgearth warning] [GeoPoint] ILLEGAL: called GeoPoint::toWorld with AltitudeMode = RELATIVE_TO_TERRAIN\n[osgearth warning] [EarthSerializer2] N8osgEarth10ModelLayerE \"Cow in the Hudson\" : Resource unavailable: Failed to load model from URL (file not handled)\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/simple_model.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log"
+    },
+    {
+      "id": "skyview1",
+      "category": "Atmosphere, lighting & ocean",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/skyview1.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/EarthAtNight-72fbacd07a1a1727/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--8665240012575857/osgearth_cacheinfo.json]\n",
+        "blank": false
+      },
+      "recheck": "Verified with the upstream-documented dedicated application or launch flag"
+    },
+    {
+      "id": "skyview2",
+      "category": "Atmosphere, lighting & ocean",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/skyview2.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Skyview-7183c1c403e7b3db/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/-SkyViewImageLayer--e6f6f252b60970d1/osgearth_cacheinfo.json]\n",
+        "blank": false
+      },
+      "recheck": "Verified with the upstream-documented dedicated application or launch flag"
+    },
+    {
+      "id": "slughorn",
+      "category": "Procedural & advanced rendering",
+      "requirements": [
+        "Optional Slughorn dependency",
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [FeatureImageLayer] OSM land use: Vector mode requires OSGEARTH_ENABLE_SLUGHORN; falling back to raster\n[osgearth warning] [FeatureImageLayer] OSM water: Vector mode requires OSGEARTH_ENABLE_SLUGHORN; falling back to raster\n[osgearth warning] [FeatureImageLayer] OSM buildings: Vector mode requires OSGEARTH_ENABLE_SLUGHORN; falling back to raster\n[osgearth warning] [FeatureImageLayer] OSM roads: Vector mode requires OSGEARTH_ENABLE_SLUGHORN; falling back to raster\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/slughorn.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "[osgearth warning] [FeatureImageLayer] OSM land use: Vector mode requires OSGEARTH_ENABLE_SLUGHORN; falling back to raster\n[osgearth warning] [FeatureImageLayer] OSM water: Vector mode requires OSGEARTH_ENABLE_SLUGHORN; falling back to raster\n[osgearth warning] [FeatureImageLayer] OSM buildings: Vector mode requires OSGEARTH_ENABLE_SLUGHORN; falling back to raster\n[osgearth warning] [FeatureImageLayer] OSM roads: Vector mode requires OSGEARTH_ENABLE_SLUGHORN; falling back to raster\nFailed to create /home/ubuntu/.cache/mesa_shader_cache/6a for shader cache (No space left on device)---disabling.\nFailed to create /home/ubuntu/.cache/mesa_shader_cache/8d for shader cache (No space left on device)---disabling.\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-land-use-330a71f6e75e8872/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-land-use-330a71f6e75e8872/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-water-1d92312b3c69aac1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-water-1d92312b3c69aac1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-buildings-3dab9d7e96e8ce72/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-buildings-3dab9d7e96e8ce72/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-roads-8a870fe4cc86be08/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-land-use-330a71f6e75e8872/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-land-use-330a71f6e75e8872/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-water-1d92312b3c69aac1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-water-1d92312b3c69aac1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-buildings-3dab9d7e96e8ce72/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-buildings-3dab9d7e96e8ce72/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-land-use-330a71f6e75e8872/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-water-1d92312b3c69aac1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-buildings-3dab9d7e96e8ce72/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-roads-8a870fe4cc86be08/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-land-use-330a71f6e75e8872/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-water-1d92312b3c69aac1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-roads-8a870fe4cc86be08/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-buildings-3dab9d7e96e8ce72/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-land-use-330a71f6e75e8872/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-water-1d92312b3c69aac1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-roads-8a870fe4cc86be08/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-buildings-3dab9d7e96e8ce72/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-land-use-330a71f6e75e8872/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-water-1d92312b3c69aac1/osgearth_cacheinfo.json]\nFailed to create /home/ubuntu/.cache/mesa_shader_cache/94 for shader cache (No space left on device)---disabling.\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-buildings-3dab9d7e96e8ce72/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-roads-8a870fe4cc86be08/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-land-use-330a71f6e75e8872/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-water-1d92312b3c69aac1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-buildings-3dab9d7e96e8ce72/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-roads-8a870fe4cc86be08/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-land-use-330a71f6e75e8872/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-water-1d92312b3c69aac1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-buildings-3dab9d7e96e8ce72/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-roads-8a870fe4cc86be08/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-land-use-330a71f6e75e8872/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-water-1d92312b3c69aac1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-buildings-3dab9d7e96e8ce72/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-roads-8a870fe4cc86be08/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-land-use-330a71f6e75e8872/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-water-1d92312b3c69aac1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-buildings-3dab9d7e96e8ce72/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-roads-8a870fe4cc86be08/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-land-use-330a71f6e75e8872/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-water-1d92312b3c69aac1/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-buildings-3dab9d7e96e8ce72/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-roads-8a870fe4cc86be08/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-roads-8a870fe4cc86be08/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-roads-8a870fe4cc86be08/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-roads-8a870fe4cc86be08/osgearth_cacheinfo.json]\n",
+        "blank": false
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "slughorn_materials",
+      "category": "Procedural & advanced rendering",
+      "requirements": [
+        "Optional Slughorn dependency",
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [FeatureImageLayer] OSM selected features: Vector mode requires OSGEARTH_ENABLE_SLUGHORN; falling back to raster\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/slughorn_materials.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "[osgearth warning] [FeatureImageLayer] OSM selected features: Vector mode requires OSGEARTH_ENABLE_SLUGHORN; falling back to raster\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-db0bea471c3a36b/osgearth_cacheinfo.json]\n",
+        "blank": false
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "slughorn_single_layer",
+      "category": "Procedural & advanced rendering",
+      "requirements": [
+        "Optional Slughorn dependency",
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [FeatureImageLayer] OSM selected features: Vector mode requires OSGEARTH_ENABLE_SLUGHORN; falling back to raster\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/slughorn_single_layer.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "[osgearth warning] [FeatureImageLayer] OSM selected features: Vector mode requires OSGEARTH_ENABLE_SLUGHORN; falling back to raster\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/ReadyMap-Imagery-e5fbe3039699e3f5/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/OSM-selected-features-65c2e54ed1e50d33/osgearth_cacheinfo.json]\n",
+        "blank": false
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "sse",
+      "category": "Diagnostics & rendering tests",
+      "requirements": [],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/sse.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "Error writing file /tmp/osgearth-cache/World-6c88339c46741047/image/08/d21f1b9f99af4c04d4e146a1b279127ebda24c.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/World-6c88339c46741047/image/08/d21f1b9f99af4c04d4e146a1b279127ebda24c\" to cache bin \"World-6c88339c46741047\"; msg = \"\"\nError writing file /tmp/osgearth-cache/World-6c88339c46741047/image/4d/1f661cda0089562e9d51e451978d42d21835f3.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/World-6c88339c46741047/image/4d/1f661cda0089562e9d51e451978d42d21835f3\" to cache bin \"World-6c88339c46741047\"; msg = \"\"\nError writing file /tmp/osgearth-cache/World-6c88339c46741047/image/23/aac333babfe930e1f7123af70e035b393e3674.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/World-6c88339c46741047/image/23/aac333babfe930e1f7123af70e035b393e3674\" to cache bin \"World-6c88339c46741047\"; msg = \"\"\nError writing file /tmp/osgearth-cache/World-6c88339c46741047/image/84/1240d0c60b796af17cc6da5a0e54b4987ee73d.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/World-6c88339c46741047/image/84/1240d0c60b796af17cc6da5a0e54b4987ee73d\" to cache bin \"World-6c88339c46741047\"; msg = \"\"\nError writing file /tmp/osgearth-cache/World-6c88339c46741047/image/a4/f03a82abf4f5caf9c9eec436a89c9bcc767035.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/World-6c88339c46741047/image/a4/f03a82abf4f5caf9c9eec436a89c9bcc767035\" to cache bin \"World-6c88339c46741047\"; msg = \"\"\n",
+        "blank": false
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "state_plane",
+      "category": "Projections & coordinates",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/state_plane.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/Hi-res-Imagery-fb781f3c08a641e7/osgearth_cacheinfo.json]\n",
+        "blank": false
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "tessellation",
+      "category": "Diagnostics & rendering tests",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [ShaderLoader] No shader source found for \"RexEngine.GL4.glsl\"\n[osgearth warning] [RexTerrainEngineNode] GPU tessellation is only supported in NVGL mode. Disabling.\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/tessellation.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "[osgearth warning] [ShaderLoader] No shader source found for \"RexEngine.GL4.glsl\"\n[osgearth warning] [RexTerrainEngineNode] GPU tessellation is only supported in NVGL mode. Disabling.\nFailed to create /home/ubuntu/.cache/mesa_shader_cache/6c for shader cache (No space left on device)---disabling.\n",
+        "blank": false
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "tilepackage",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/tilepackage.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/bluemarble-bf6ec2c5ff4bd7fa/osgearth_cacheinfo.json]\n",
+        "blank": false
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "triton",
+      "category": "Atmosphere, lighting & ocean",
+      "requirements": [
+        "Separate commercial SDK required",
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "[osgearth warning] [ModelNode] No model and failed to load data from \n[osgearth warning] [ModelNode] No model\n",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/triton.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log"
+    },
+    {
+      "id": "utm",
+      "category": "Projections & coordinates",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/utm.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "Error writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/9c/f78c774bb1bf6b649b6963d64554c86ecc69c6.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/9c/f78c774bb1bf6b649b6963d64554c86ecc69c6\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/e9/fb1f073da847f52b9ec1d9062d5d9600d32194.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/e9/fb1f073da847f52b9ec1d9062d5d9600d32194\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/98/98f7ae633066d7d026b74f66c191a136e5373c.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/98/98f7ae633066d7d026b74f66c191a136e5373c\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/9c/f78c774bb1bf6b649b6963d64554c86ecc69c6.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/9c/f78c774bb1bf6b649b6963d64554c86ecc69c6\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/9c/777e70562f1aa4edd1cb211cceb64b61a9e6fb.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/9c/777e70562f1aa4edd1cb211cceb64b61a9e6fb\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/59/e23127aacb1d917a6fd0cfbfdbfc3062843691.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/59/e23127aacb1d917a6fd0cfbfdbfc3062843691\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/8d/49e65bd149c11933d311f995dd4ff8021d7285.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/8d/49e65bd149c11933d311f995dd4ff8021d7285\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/da/ab6caa7cd04b6e25b00733d3d6d83a4bb91c07.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/da/ab6caa7cd04b6e25b00733d3d6d83a4bb91c07\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/ef/4b0bdc1ab7044e37344a40f3edf69190498e05.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/ef/4b0bdc1ab7044e37344a40f3edf69190498e05\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/83/b722443499fedd74bb631e8a380a75da9118e9.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/83/b722443499fedd74bb631e8a380a75da9118e9\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\nError writing file /tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/1e/5c54a8c311458b05219fe0a4024fd4c5312382.osgb: write error\n[osgearth warning] [FileSystemCache] FAILED to write \"/tmp/osgearth-cache/ReadyMap-15m-Imagery-a6e59e5574b2e004/image/1e/5c54a8c311458b05219fe0a4024fd4c5312382\" to cache bin \"ReadyMap-15m-Imagery-a6e59e5574b2e004\"; msg = \"\"\n",
+        "blank": false
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "wms-t_nexrad_animated",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/wms-t_nexrad_animated.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "Failed to create /home/ubuntu/.cache/mesa_shader_cache/01 for shader cache (No space left on device)---disabling.\n",
+        "blank": false
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    },
+    {
+      "id": "wms_nexrad",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/wms_nexrad.png",
+      "blank": false,
+      "assessment": "Native scene captured — individual layers not exhaustively verified"
+    },
+    {
+      "id": "wmts",
+      "category": "Maps & imagery providers",
+      "requirements": [
+        "Online data source (including inherited layers)"
+      ],
+      "running": true,
+      "exitCode": null,
+      "log": "",
+      "status": "Process running; captured for visual review",
+      "capture": "captures/wmts.png",
+      "blank": false,
+      "assessment": "Scene captured with native warnings — inspect diagnostic log",
+      "initialAttempt": {
+        "status": "Process running; captured for visual review",
+        "log": "[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n[osgearth warning] [FileSystemCache] FAILED to find or create cache bin at [/tmp/osgearth-cache/WMTS-Layer-ed395111e84fcee0/osgearth_cacheinfo.json]\n",
+        "blank": false
+      },
+      "recheck": "Retested with disk cache disabled after the initial cache exhausted the evaluation partition"
+    }
+  ],
+  "summary": {
+    "Native example failed to start or exited": 4,
+    "Scene captured with native warnings — inspect diagnostic log": 24,
+    "Native scene captured — individual layers not exhaustively verified": 58,
+    "Provider credentials required — layer not rendered": 2,
+    "No scene content visible in initial capture — needs further setup or loading": 5,
+    "Intentional upstream error-handling example": 1
+  },
+  "method": "Each original map launched sequentially, observed after six seconds, native process/log recorded and actual noVNC display captured. Flat-colour captures are flagged; successful startup does not verify every layer or interaction."
+}

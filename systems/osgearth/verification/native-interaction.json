@@ -1,0 +1,23 @@
+{
+  "checks": [
+    {
+      "id": "mbtiles",
+      "running": true,
+      "log": ""
+    },
+    {
+      "id": "cessna-model",
+      "running": true,
+      "log": "[osgearth warning] [MapNodeHelper] Loaded scene graph does not contain a MapNode\n"
+    },
+    {
+      "id": "simple",
+      "running": true,
+      "log": ""
+    }
+  ],
+  "interaction": [
+    "Original Tools menu opened",
+    "Mouse orbit and zoom input delivered over noVNC"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "counts": {
+    "samples": 94,
+    "assets": 526,
+    "applications": 63,
+    "files": 2580
+  },
+  "pagesChecked": 689,
+  "empty": [],
+  "errors": [],
+  "checks": [
+    "Every catalogue route renders meaningful content",
+    "Nested expand/collapse",
+    "Search",
+    "Missing native service shows actionable diagnostics",
+    "Mobile navigation and overflow"
+  ]
+}

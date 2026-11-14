@@ -1,0 +1,7 @@
+services:
+  osgearth:
+    build: .
+    ports:
+      - "127.0.0.1:4288:8080"
+    shm_size: 512mb
+    restart: unless-stopped

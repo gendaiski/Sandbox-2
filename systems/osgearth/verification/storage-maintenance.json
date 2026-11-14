@@ -1,0 +1,16 @@
+{
+  "removed": "Reinstallable dependency directories from historical portfolio audit checkouts only. Sources, manifests, lockfiles, product app installations, databases and volumes retained.",
+  "paths": [
+    "/workspace/portfolio-audit/repos/workflows/node_modules",
+    "/workspace/portfolio-audit/repos/fcc/node_modules",
+    "/workspace/portfolio-audit/repos/autopolis/node_modules",
+    "/workspace/portfolio-audit/repos/orbit/node_modules",
+    "/workspace/portfolio-audit/repos/brainquest/node_modules",
+    "/workspace/portfolio-audit/repos/alienid/node_modules",
+    "/workspace/portfolio-audit/repos/gitcity/node_modules",
+    "/workspace/portfolio-audit/repos/blaxel/node_modules",
+    "/workspace/portfolio-audit/repos/reagraph/node_modules",
+    "/workspace/portfolio-audit/repos/termly2/node_modules",
+    "/workspace/portfolio-audit/tooling/node_modules"
+  ]
+}

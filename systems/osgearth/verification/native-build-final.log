@@ -1,0 +1,32 @@
+[1/27] Linking CXX executable src/applications/osgearth_imgui/osgearth_imgui
+[2/27] Building CXX object src/applications/osgearth_tests/CMakeFiles/osgearth_tests.dir/ImageUtilsTests.cpp.o
+[3/27] Building CXX object src/applications/osgearth_tests/CMakeFiles/osgearth_tests.dir/ExpressionTests.cpp.o
+[4/27] Building CXX object src/applications/osgearth_tests/CMakeFiles/osgearth_tests.dir/PathTests.cpp.o
+[5/27] Building CXX object src/applications/osgearth_tests/CMakeFiles/osgearth_tests.dir/FeatureTests.cpp.o
+[6/27] Building CXX object src/applications/osgearth_tests/CMakeFiles/osgearth_tests.dir/PagedNodeTests.cpp.o
+[7/27] Building CXX object src/applications/osgearth_tests/CMakeFiles/osgearth_tests.dir/MaterialTexturePreparationTests.cpp.o
+[8/27] Building CXX object src/applications/osgearth_tests/CMakeFiles/osgearth_tests.dir/SpatialReferenceTests.cpp.o
+[9/27] Building CXX object src/applications/osgearth_tests/CMakeFiles/osgearth_tests.dir/ThreadingTests.cpp.o
+[10/27] Building CXX object src/applications/osgearth_tests/CMakeFiles/osgearth_tests.dir/StringUtilsTests.cpp.o
+[11/27] Building CXX object src/applications/osgearth_tests/CMakeFiles/osgearth_tests.dir/ImageLayerTests.cpp.o
+[12/27] Building CXX object src/applications/osgearth_tests/CMakeFiles/osgearth_tests.dir/PBRMaterialTests.cpp.o
+In file included from /opt/osgearth/source/src/applications/osgearth_tests/PBRMaterialTests.cpp:5:
+/opt/osgearth/source/src/applications/osgearth_tests/PBRMaterialTests.cpp: In function 'void ____C_A_T_C_H____T_E_S_T____9()':
+/opt/osgearth/source/src/applications/osgearth_tests/PBRMaterialTests.cpp:272:44: warning: comparison between 'enum osg::Geometry::AttributeBinding' and 'enum osg::Array::Binding' [-Wenum-compare]
+  272 |     REQUIRE(ignored[0]->getNormalBinding() == osg::Array::BIND_PER_VERTEX);
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[13/27] Building CXX object src/applications/osgearth_tests/CMakeFiles/osgearth_tests.dir/TextureArenaUploadTests.cpp.o
+[14/27] Linking CXX executable src/applications/osgearth_shadercomp/osgearth_shadercomp
+[15/27] Building CXX object src/applications/osgearth_tests/CMakeFiles/osgearth_tests.dir/TextureArenaTests.cpp.o
+[16/27] Building CXX object src/applications/osgearth_tests/CMakeFiles/osgearth_tests.dir/SkyEnvironmentTests.cpp.o
+[17/27] Building CXX object src/applications/osgearth_tests/CMakeFiles/osgearth_tests.dir/VirtualProgramTests.cpp.o
+[18/27] Linking CXX executable src/applications/osgearth_tests/osgearth_tests
+[19/27] Building CXX object src/applications/osgearth_benchmarks/CMakeFiles/osgearth_benchmarks.dir/main.cpp.o
+[20/27] Building CXX object src/applications/osgearth_benchmarks/CMakeFiles/osgearth_benchmarks.dir/MaterialTexturePreparationBenchmarks.cpp.o
+[21/27] Building CXX object src/applications/osgearth_benchmarks/CMakeFiles/osgearth_benchmarks.dir/VirtualProgramBenchmarks.cpp.o
+[22/27] Building CXX object src/applications/osgearth_benchmarks/CMakeFiles/osgearth_benchmarks.dir/ChonkMaterialBenchmarks.cpp.o
+[23/27] Building CXX object src/applications/osgearth_benchmarks/CMakeFiles/osgearth_benchmarks.dir/ChonkBenchmarks.cpp.o
+[24/27] Building CXX object src/applications/osgearth_benchmarks/CMakeFiles/osgearth_benchmarks.dir/VirtualProgramProfileBenchmarks.cpp.o
+[25/27] Building CXX object src/applications/osgearth_benchmarks/CMakeFiles/osgearth_benchmarks.dir/CacheBenchmarks.cpp.o
+[26/27] Building CXX object src/applications/osgearth_benchmarks/CMakeFiles/osgearth_benchmarks.dir/SkyBenchmarks.cpp.o
+[27/27] Linking CXX executable src/applications/osgearth_benchmarks/osgearth_benchmarks

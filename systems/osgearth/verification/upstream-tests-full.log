@@ -1,0 +1,325 @@
+Passed 1 test case with 7 assertions.
+
+Passed 1 test case with 7 assertions.
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osgearth_tests is a Catch v1.6.1 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+Chonk baked impostor normals retain their source frame
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:24
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:28: 
+warning:
+  Baked normal test needs NVGL
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osgearth_tests is a Catch v1.6.1 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+Chonk alpha single-sample worker
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:167
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:108: 
+warning:
+  Chonk coverage test needs NVGL
+
+===============================================================================
+test cases: 1 | 1 passed
+assertions: - none -
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osgearth_tests is a Catch v1.6.1 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+Chonk alpha multisample worker
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:170
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:108: 
+warning:
+  Chonk coverage test needs NVGL
+
+===============================================================================
+test cases: 1 | 1 passed
+assertions: - none -
+
+-------------------------------------------------------------------------------
+Chonk GPU rendering preserves instances and responds to SSE
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:386
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:390: 
+warning:
+  Chonk GPU test needs NVGL and OSG_GL_CONTEXT_VERSION=4.6
+
+-------------------------------------------------------------------------------
+Chonk density LOD preserves stable survivors and dithered coverage
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:470
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:474: 
+warning:
+  Chonk density LOD test needs NVGL and OSG_GL_CONTEXT_VERSION=4.6
+
+-------------------------------------------------------------------------------
+Chonk LOD transitions survive a near-plane intersection
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:596
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:600: 
+warning:
+  Chonk LOD test needs NVGL and OSG_GL_CONTEXT_VERSION=4.6
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osgearth_tests is a Catch v1.6.1 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+Chonk GPU visibility validation
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:810
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:685: 
+warning:
+  Chonk GPU test needs NVGL and OSG_GL_CONTEXT_VERSION=4.6
+
+===============================================================================
+test cases: 1 | 1 passed
+assertions: - none -
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osgearth_tests is a Catch v1.6.1 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+Chonk unculled visibility validation
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:816
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:685: 
+warning:
+  Chonk GPU test needs NVGL and OSG_GL_CONTEXT_VERSION=4.6
+
+===============================================================================
+test cases: 1 | 1 passed
+assertions: - none -
+
+-------------------------------------------------------------------------------
+Chonk additive quality shares global SSE without population leakage
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:822
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:826: 
+warning:
+  Additive quality GPU test needs NVGL
+
+-------------------------------------------------------------------------------
+Chonk occlusion follows the active depth convention
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:889
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkTests.cpp:893: 
+warning:
+  Depth convention test needs NVGL and OSG_GL_CONTEXT_VERSION=4.6
+
+[osgearth warning] [Chonk] Chonk index out of range
+-------------------------------------------------------------------------------
+Chonk page appends validate ranges state capacity and arenas
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkPageTests.cpp:112
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkPageTests.cpp:124: FAILED:
+  REQUIRE( builder.addMesh(blending) == ChonkGeometryPage::INVALID_MESH )
+with expansion:
+  1 == 4294967295 (0xffffffff)
+
+[osgearth warning] [Chonk] Cannot pack Chonk geometry (invalid or exceeds page capacity)
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osgearth_tests is a Catch v1.6.1 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+Chonk page GPU worker
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkPageTests.cpp:319
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkPageTests.cpp:218: 
+warning:
+  Chonk page GPU test requires NVGL and OpenGL 4.6
+
+===============================================================================
+test cases: 1 | 1 passed
+assertions: - none -
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osgearth_tests is a Catch v1.6.1 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+Chonk page empty worker
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkPageTests.cpp:324
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkPageTests.cpp:218: 
+warning:
+  Chonk page GPU test requires NVGL and OpenGL 4.6
+
+===============================================================================
+test cases: 1 | 1 passed
+assertions: - none -
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osgearth_tests is a Catch v1.6.1 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+Chonk page unculled worker
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkPageTests.cpp:321
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkPageTests.cpp:218: 
+warning:
+  Chonk page GPU test requires NVGL and OpenGL 4.6
+
+===============================================================================
+test cases: 1 | 1 passed
+assertions: - none -
+
+[osgearth warning] [Chonk] Chonk index out of range
+===============================================================================
+All tests passed (14 assertions in 1 test case)
+
+[osgearth warning] [Chonk] Chonk geometry page is full
+[osgearth warning] [Chonk] Chonk geometry page is full
+[osgearth warning] [Chonk] Chonk geometry page is full
+-------------------------------------------------------------------------------
+Chonk scene conversion packs ordinary PBR geometry and retains fallback state
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkPageTests.cpp:523
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkPageTests.cpp:549: FAILED:
+  REQUIRE( after.ordinary == 3 )
+with expansion:
+  1 == 3
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osgearth_tests is a Catch v1.6.1 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+Chonk scene rendering worker
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkPageTests.cpp:608
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkPageTests.cpp:610: 
+warning:
+  NVGL unavailable
+
+===============================================================================
+test cases: 1 | 1 passed
+assertions: - none -
+
+[osgearth warning] [Chonk] MaterialArena exhausted its 65536 live material IDs
+[osgearth warning] [Chonk] MaterialArena exhausted its 65536 live material IDs
+[osgearth warning] [Chonk] MaterialArena exhausted its 65536 live material IDs
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+osgearth_tests is a Catch v1.6.1 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+Chonk material GPU validation
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkMaterialTests.cpp:203
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/ChonkMaterialTests.cpp:207: 
+warning:
+  Requires NVGL and OSG_GL_CONTEXT_VERSION=4.6
+
+===============================================================================
+test cases: 1 | 1 passed
+assertions: - none -
+
+[osgearth warning] JSON decoding error: * Line 1, Column 2
+[osgearth warning]   Missing '}' or object member name
+[osgearth warning] 
+[osgearth warning] XML parsing error
+[osgearth warning] Error reading end tag. (row 1, col 17)
+[osgearth warning]  1 *	<root><unclosed></root>
+-------------------------------------------------------------------------------
+getFullPath works
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/PathTests.cpp:27
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/PathTests.cpp:30: FAILED:
+  REQUIRE( fullPath == "C:/models/model.obj" )
+with expansion:
+  "C:/images/../models/model.obj"
+  ==
+  "C:/models/model.obj"
+
+-------------------------------------------------------------------------------
+stripRelativePaths works
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/PathTests.cpp:53
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/PathTests.cpp:59: FAILED:
+  REQUIRE( fullPath == "C:/files/image.png" )
+with expansion:
+  "C:/files/1/2/3/../../../image.png"
+  ==
+  "C:/files/image.png"
+
+Now checking for plug-in osgPlugins-3.6.5/osgdb_stbdxt.so
+osg::Registry::addImageProcessor(ImageProcessor)
+Loaded plug-in osgPlugins-3.6.5/osgdb_stbdxt.so and located ImageProcessor
+-------------------------------------------------------------------------------
+glTF converts channels and factors to shared PBR materials
+-------------------------------------------------------------------------------
+/opt/osgearth/source/src/applications/osgearth_tests/PBRMaterialTests.cpp:178
+...............................................................................
+
+/opt/osgearth/source/src/applications/osgearth_tests/PBRMaterialTests.cpp:178: FAILED:
+  {Unknown expression after the reported line}
+due to a fatal error condition:
+  SIGSEGV - Segmentation violation signal
+
+===============================================================================
+test cases:  118 |  113 passed | 5 failed
+assertions: 3714 | 3709 passed | 5 failed
+
+osg::Registry::removeImageProcessor();

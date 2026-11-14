@@ -1,0 +1,18 @@
+-- Detected an out-of-source build. Kudos.
+-- Building SHARED libraries
+-- Found OSG version 3.6.5
+-- Found WebP 1.3.2
+-- Found LERC
+-- Found CURL: /usr/lib/x86_64-linux-gnu/libcurl.so (found version "8.5.0")  
+-- Found GDAL: /usr/lib/x86_64-linux-gnu/libgdal.so (found version "3.8.4") 
+-- Found SQLite3: /usr/include (found version "3.45.1") 
+-- Found protobuf
+-- Found spdlog
+-- Found SQLite3 - will support MBTiles
+-- Found geos
+-- Found meshoptimizer
+-- Creating /opt/osgearth/build/build_include/osgEarth/BuildConfig
+-- Creating /opt/osgearth/build/build_include/osgEarth/Version
+-- Configuring done (0.2s)
+-- Generating done (0.1s)
+-- Build files have been written to: /opt/osgearth/build

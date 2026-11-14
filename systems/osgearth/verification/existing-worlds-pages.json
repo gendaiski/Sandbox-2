@@ -1,0 +1,28 @@
+{
+  "entries": 138,
+  "staticRoutes": 85,
+  "blank": [],
+  "live": [
+    {
+      "id": "pool",
+      "meshes": 249
+    },
+    {
+      "id": "bank",
+      "meshes": 231
+    },
+    {
+      "id": "arena",
+      "meshes": 336
+    },
+    {
+      "id": "battle",
+      "meshes": 156
+    },
+    {
+      "id": "game",
+      "meshes": 163
+    }
+  ],
+  "errors": []
+}
