@@ -1,0 +1,14 @@
+FICTIONAL CASE ¢ SCANNED COPY
+
+Exhibit C — Inspection report
+
+Exhibit C — Northstar inspection report NS-2026-014. Northstar's technician
+tested all 60 Meridian M14 laptops on 17 October 2026. Twelve devices shut
+down within 30 minutes, and a different six devices could not charge.
+Eighteen distinct devices failed and 42 passed the test. All 60 devices
+matched the ordered RAM and SSD specifications. The report includes device
+serial numbers in a separate attachment that has not been supplied. The
+technician found no visible liquid damage but did not disassemble the
+devices. The report records symptoms, not a proven root cause. Repair cost
+and latent defects in the other 42 devices are not established. This
+document is fictional.

@@ -1,0 +1,170 @@
+[
+  {
+    "question": "In the fictional Northstar NS-2026-014 case, how many Meridian M14 laptops failed inspection and what were the reported symptoms? Cite Exhibit C.",
+    "expected_evidence": "Eighteen",
+    "hits": [
+      {
+        "rank": 1,
+        "score": 1.11375,
+        "law_name": "Northstar-ca",
+        "chapter": null,
+        "section": null,
+        "article_no": "Exhibit-3",
+        "text": "Exhibit C \u2014 Inspection report\n2026-10-17\nExhibit C \u2014 Northstar inspection report NS-2026-014. Northstar's technician tested all 60 Meridian\nM14 laptops on 17 October 2026. Twelve devices shut down within 30 minutes, and a different six\ndevices could not charge. Eighteen distinct devices failed and 42 passed the test. All 60 devices\nmatched the ordered RAM and SSD specifications. The report includes device serial numbers in a\nseparate attachment that has not been supplied. The technician found no visible liquid damage but\ndid not disassemble the devices. The report records symptoms, not a proven root cause. Repair\ncost and latent defects in the other 42 devices are not established. This document is fictional.",
+        "source": "rerank"
+      },
+      {
+        "rank": 2,
+        "score": 1.0192416187092541,
+        "law_name": "Northstar-ca",
+        "chapter": null,
+        "section": null,
+        "article_no": "Exhibit-4",
+        "text": "Exhibit D \u2014 Buyer notice\n2026-10-20\nExhibit D \u2014 Northstar buyer notice NS-2026-014. On 20 October 2026, Northstar emailed Meridian\nreporting 18 failed laptops, attaching the inspection report and requesting repair or replacement\nunder the purchase order. Northstar offered access to the failed units and asked Meridian to\npropose collection arrangements. Northstar wrote that the affected training class had been\npostponed. The sent-message copy is supplied, but proof of receipt is not. Northstar has not\nsupplied a formal rejection notice, a revocation of acceptance, or evidence that the unpaid USD\n36,000 balance was withheld lawfully. The legal effect and timeliness of the notice remain questions\nfor analysis. This document is fictional.",
+        "source": "rerank"
+      },
+      {
+        "rank": 3,
+        "score": 0.9055381393111004,
+        "law_name": "Northstar-ca",
+        "chapter": null,
+        "section": null,
+        "article_no": "Exhibit",
+        "text": "Exhibit A \u2014 Purchase order\n2026-10-01\nExhibit A \u2014 Northstar purchase order NS-2026-014. On 1 October 2026, Northstar Training Ltd\nordered 60 new Meridian M14 business laptops from Meridian Devices Inc at USD 1,200 each, for\nUSD 72,000 total. Northstar paid USD 36,000 as a deposit;USD 36,000 is stated to be due after\ndelivery. The laptops must operate for ordinary office work and training, include 16 GB RAM and a\n512 GB SSD, and pass a four-hour operating test. Delivery is due on 15 October 2026. The signed\norder says the seller will repair or replace confirmed defective units within ten business days after\nwritten notice. It contains no express disclaimer of merchantability and no exclusive-remedy clause.\nThe order contains no choice-of-law or forum clause. This is a fictional transaction;",
+        "source": "rerank"
+      },
+      {
+        "rank": 4,
+        "score": 0.8095704770950609,
+        "law_name": "Northstar-ca",
+        "chapter": null,
+        "section": null,
+        "article_no": "Exhibit-5",
+        "text": "Exhibit E \u2014 Supplier response\n2026-10-22\nExhibit E \u2014 Meridian supplier response NS-2026-014. On 22 October 2026, Meridian\nacknowledged the complaint about 18 laptops. Meridian asserted that all units passed its factory\ntesting and suggested transit damage or a buyer power-supply problem. No factory test records,\ncarrier report or expert report accompanied the response. Meridian offered to inspect six sample\nunits on 27 October 2026 but did not commit to repair or replacement by a specific date. The\nresponse does not resolve whether the defects existed at delivery. Meridian's asserted causes are\ndisputed allegations, not established facts. This document is fictional.",
+        "source": "rerank"
+      },
+      {
+        "rank": 5,
+        "score": 0.8041924860757632,
+        "law_name": "Northstar-ca",
+        "chapter": null,
+        "section": null,
+        "article_no": "Exhibit-6",
+        "text": "Exhibit F \u2014 Loss schedule\n2026-10-24\nExhibit F \u2014 Northstar loss schedule NS-2026-014. The 18 affected laptops have a contract price of\nUSD 21,600, calculated as 18 times USD 1,200. Northstar lists USD 2,400 in temporary laptop hire\nand USD 900 in inspection expenses, both supported by fictional invoices in this exhibit: hire\ninvoice NH-2400 and inspection invoice NI-900. Documented outlays total USD 3,300. Northstar\nalso alleges USD 8,000 in lost profit, but supplies no bookings, margin calculation or mitigation\nevidence. Contract price, refund, repair cost and consequential loss are different measures and\nmust not be added automatically or double-counted. The legal recoverability of any sum has not\nbeen established. This document is fictional.",
+        "source": "rerank"
+      }
+    ]
+  },
+  {
+    "question": "What does UCC 2-314 say about the implied warranty of merchantability and fitness for ordinary purposes? Retrieve and cite the statutory text.",
+    "expected_evidence": "2-314",
+    "hits": [
+      {
+        "rank": 1,
+        "score": 1.11375,
+        "law_name": "Uniform Commercial Code",
+        "chapter": "",
+        "section": "3Part GENERAL OBLIGATION AND CONSTRUCTION OF CONTRACT",
+        "article_no": "\u00a7 2-314",
+        "text": "\u00a7 2-314. Implied Warranty: Merchantability; Usage of Trade.\n(1) Unless excluded or modified (Section 2-316), a warranty that the goods shall be merchantable is implied in a contract for their sale if the seller is a merchant with respect to goods of that kind. Under this section the serving for value of food or drink to be consumed either on the premises or elsewhere is a sale.\n(2) Goods to be merchantable must be at least such as (a) pass without objection in the trade under the contract description; and (b) in the case of fungible goods, are of fair average quality within the description; and (c) are fit for the ordinary purposes for which such goods are used; and (d) run, within the variations permitted by the agreement, of even kind, quality and quantity within each unit and among all units involved; and (e) are adequately contained, packaged, and labeled as the agreement may require; and (f) conform to the promise or affirmations of fact made on the container or label if any.\n(3) Unless excluded or modified (Section 2-316) other implied warranties may arise from course of dealing or usage of trade.",
+        "source": "rerank"
+      },
+      {
+        "rank": 2,
+        "score": 0.8708883306168056,
+        "law_name": "Uniform Commercial Code",
+        "chapter": "",
+        "section": "3Part GENERAL OBLIGATION AND CONSTRUCTION OF CONTRACT",
+        "article_no": "\u00a7 2-315",
+        "text": "\u00a7 2-315. Implied Warranty: Fitness for Particular Purpose. Where the seller at the time of contracting has reason to know any particular purpose for which the goods are required and that the buyer is relying on the seller's skill or judgment to select or furnish suitable goods, there is unless excluded or modified under the next section an implied warranty that the goods shall be fit for such purpose.",
+        "source": "rerank"
+      },
+      {
+        "rank": 3,
+        "score": 0.8662325596515441,
+        "law_name": "Uniform Commercial Code",
+        "chapter": "",
+        "section": "2Part FORMATION AND CONSTRUCTION OF LEASE CONTRACT",
+        "article_no": "\u00a7 2A-212",
+        "text": "\u00a7 2A-212. IMPLIED WARRANTY OF MERCHANTABILITY.\n(1) Except in a finance lease, a warranty that the goods will be merchantable is implied in a lease contract if the lessor is a merchant with respect to goods of that kind.\n(2) Goods to be merchantable must be at least such as (a) pass without objection in the trade under the description in the lease agreement; (b) in the case of fungible goods, are of fair average quality within the description; (c) are fit for the ordinary purposes for which goods of that type are used; (d) run, within the variation permitted by the lease agreement, of even kind, quality, and quantity within each unit and among all units involved; (e) are adequately contained, packaged, and labeled as the lease agreement may require; and (f) conform to any promises or affirmations of fact made on the container or label.\n(3) Other implied warranties may arise from course of dealing or usage of trade.",
+        "source": "rerank"
+      },
+      {
+        "rank": 4,
+        "score": 0.8119209287610019,
+        "law_name": "Uniform Commercial Code",
+        "chapter": "",
+        "section": "2Part FORMATION AND CONSTRUCTION OF LEASE CONTRACT",
+        "article_no": "\u00a7 2A-213",
+        "text": "\u00a7 2A-213. IMPLIED WARRANTY OF FITNESS FOR PARTICULAR PURPOSE. Except in a finance lease, if the lessor at the time the lease contract is made has reason to know of any particular purpose for which the goods are required and that the lessee is relying on the lessor's skill or judgment to select or furnish suitable goods, there is in the lease contract an implied warranty that the goods will be fit for that purpose.",
+        "source": "rerank"
+      },
+      {
+        "rank": 5,
+        "score": 0.7624138858869762,
+        "law_name": "Uniform Commercial Code",
+        "chapter": "",
+        "section": "3Part GENERAL OBLIGATION AND CONSTRUCTION OF CONTRACT",
+        "article_no": "\u00a7 2-316",
+        "text": "\u00a7 2-316. Exclusion or Modification of Warranties.\n(1) Words or conduct relevant to the creation of an express warranty and words or conduct tending to negate or limit warranty shall be construed wherever reasonable as consistent with each other; but subject to the provisions of this Article on parol or extrinsic evidence (Section 2-202) negation or limitation is inoperative to the extent that such construction is unreasonable.\n(2)Subject to subsection (3), to exclude or modify the implied warranty of merchantability or any part of it the language must mention merchantability and in case of a writing must be conspicuous, and to exclude or modify any implied warranty of fitness the exclusion must be by a writing and conspicuous. Language to exclude all implied warranties of fitness is sufficient if it states, for example, that \"There are no warranties which extend beyond the description on the face hereof.\"\n(3)Notwithstanding subsection (2) (a) unless the circumstances indicate otherwise, all implied warranties are excluded by expressions like \"as is\", \"with all faults\" or other language which in common understanding calls the buyer's attention to the exclusion of warranties and makes plain that there is no implied warranty; and (b) when the buyer before entering into the contract has examined the goods or the sample or model as fully as he desired or has refused to examine the goods there is no implied warranty with regard to defects which an examination ought in the circumstances to have revealed to him; and (c) an implied warranty can also be excluded or modified by course of dealing or course of performance or usage of trade.\n(4) Remedies for breach of warranty can be limited in accordance with the provisions of this Article on liquidation or limitation of damages and on contractual modification of remedy (Sections 2-718 and 2-719).",
+        "source": "rerank"
+      }
+    ]
+  },
+  {
+    "question": "Using Exhibit A and Exhibit F of Northstar NS-2026-014, calculate the total order value, affected-unit contract value and documented additional outlays separately. Identify the unsupported lost-profit claim and avoid double counting. Cite the exhibits.",
+    "expected_evidence": "3,300",
+    "hits": [
+      {
+        "rank": 1,
+        "score": 1.11375,
+        "law_name": "Northstar-ca",
+        "chapter": null,
+        "section": null,
+        "article_no": "Exhibit-6",
+        "text": "Exhibit F \u2014 Loss schedule\n2026-10-24\nExhibit F \u2014 Northstar loss schedule NS-2026-014. The 18 affected laptops have a contract price of\nUSD 21,600, calculated as 18 times USD 1,200. Northstar lists USD 2,400 in temporary laptop hire\nand USD 900 in inspection expenses, both supported by fictional invoices in this exhibit: hire\ninvoice NH-2400 and inspection invoice NI-900. Documented outlays total USD 3,300. Northstar\nalso alleges USD 8,000 in lost profit, but supplies no bookings, margin calculation or mitigation\nevidence. Contract price, refund, repair cost and consequential loss are different measures and\nmust not be added automatically or double-counted. The legal recoverability of any sum has not\nbeen established. This document is fictional.",
+        "source": "rerank"
+      },
+      {
+        "rank": 2,
+        "score": 0.8470355745563478,
+        "law_name": "Northstar-ca",
+        "chapter": null,
+        "section": null,
+        "article_no": "Exhibit-4",
+        "text": "Exhibit D \u2014 Buyer notice\n2026-10-20\nExhibit D \u2014 Northstar buyer notice NS-2026-014. On 20 October 2026, Northstar emailed Meridian\nreporting 18 failed laptops, attaching the inspection report and requesting repair or replacement\nunder the purchase order. Northstar offered access to the failed units and asked Meridian to\npropose collection arrangements. Northstar wrote that the affected training class had been\npostponed. The sent-message copy is supplied, but proof of receipt is not. Northstar has not\nsupplied a formal rejection notice, a revocation of acceptance, or evidence that the unpaid USD\n36,000 balance was withheld lawfully. The legal effect and timeliness of the notice remain questions\nfor analysis. This document is fictional.",
+        "source": "rerank"
+      },
+      {
+        "rank": 3,
+        "score": 0.8011369658003588,
+        "law_name": "Northstar-ca",
+        "chapter": null,
+        "section": null,
+        "article_no": "Exhibit",
+        "text": "Exhibit A \u2014 Purchase order\n2026-10-01\nExhibit A \u2014 Northstar purchase order NS-2026-014. On 1 October 2026, Northstar Training Ltd\nordered 60 new Meridian M14 business laptops from Meridian Devices Inc at USD 1,200 each, for\nUSD 72,000 total. Northstar paid USD 36,000 as a deposit;USD 36,000 is stated to be due after\ndelivery. The laptops must operate for ordinary office work and training, include 16 GB RAM and a\n512 GB SSD, and pass a four-hour operating test. Delivery is due on 15 October 2026. The signed\norder says the seller will repair or replace confirmed defective units within ten business days after\nwritten notice. It contains no express disclaimer of merchantability and no exclusive-remedy clause.\nThe order contains no choice-of-law or forum clause. This is a fictional transaction;",
+        "source": "rerank"
+      },
+      {
+        "rank": 4,
+        "score": 0.5557157289159342,
+        "law_name": "Northstar-ca",
+        "chapter": null,
+        "section": null,
+        "article_no": "Exhibit-3",
+        "text": "Exhibit C \u2014 Inspection report\n2026-10-17\nExhibit C \u2014 Northstar inspection report NS-2026-014. Northstar's technician tested all 60 Meridian\nM14 laptops on 17 October 2026. Twelve devices shut down within 30 minutes, and a different six\ndevices could not charge. Eighteen distinct devices failed and 42 passed the test. All 60 devices\nmatched the ordered RAM and SSD specifications. The report includes device serial numbers in a\nseparate attachment that has not been supplied. The technician found no visible liquid damage but\ndid not disassemble the devices. The report records symptoms, not a proven root cause. Repair\ncost and latent defects in the other 42 devices are not established. This document is fictional.",
+        "source": "rerank"
+      },
+      {
+        "rank": 5,
+        "score": 0.5442710032430746,
+        "law_name": "Northstar-ca",
+        "chapter": null,
+        "section": null,
+        "article_no": "Exhibit-2",
+        "text": "Exhibit B \u2014 Delivery receipt\n2026-10-15\nExhibit B \u2014 Northstar delivery receipt NS-2026-014. Meridian delivered 60 laptop cartons on 15\nOctober 2026. Northstar's warehouse clerk signed: Received 60 cartons;quantity only;equipment\nperformance not tested. Six cartons had visible corner dents. No serial-number mapping between\nthe dented cartons and individual devices was recorded. The delivery receipt does not establish\nwhen any device defect arose, whether a legal acceptance occurred, or whether any right was\nwaived. This document is fictional.",
+        "source": "rerank"
+      }
+    ]
+  }
+]

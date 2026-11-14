@@ -77,6 +77,10 @@ See the architecture diagram for the full data flow.
 <img src="docs/architecture.png" alt="Legal-RAG Architecture" width="800"/>
 
  
+## Populated demonstration case
+
+[Open the fictional Northstar case](https://sb-5pdq64fn7m57.vercel.run/ui/demo-case.html): six exhibits, seven question flows and an optional scanned PDF for OCR. This is temporary hosting; see [CLOUD-PREVIEW.md](CLOUD-PREVIEW.md). For fresh installations, follow [DEMO-CASE.md](DEMO-CASE.md) to seed the real backend.
+
 ## English installation
 
 This branch preserves the original chat, citations, PDF upload and API-key interface, with English-only published screens, an English corpus and English answer instructions. See [INSTALL-ENGLISH.md](INSTALL-ENGLISH.md) for requirements, validation and deployment limitations.
