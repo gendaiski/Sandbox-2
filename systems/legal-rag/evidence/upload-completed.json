@@ -1,0 +1,8 @@
+{
+  "faiss": "done",
+  "bm25": "done",
+  "colbert": "done",
+  "graph": "done",
+  "added": 1,
+  "error": null
+}

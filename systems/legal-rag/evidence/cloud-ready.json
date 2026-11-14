@@ -1,0 +1,9 @@
+{
+  "ready": true,
+  "warmup_done": true,
+  "error": null,
+  "has_gpu": false,
+  "provider": "disabled",
+  "language": "en",
+  "generation_available": false
+}

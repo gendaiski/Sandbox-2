@@ -1,0 +1,30 @@
+................                                                         [100%]
+=============================== warnings summary ===============================
+../legal-rag-venv/lib/python3.12/site-packages/jieba/_compat.py:18
+  /tmp/legal-rag-venv/lib/python3.12/site-packages/jieba/_compat.py:18: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+    import pkg_resources
+
+legalrag/llm/client.py:43
+  /tmp/legal-rag/legalrag/llm/client.py:43: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.14/migration/
+    class LLMClient(BaseModel):
+
+tests/test_english_installation.py::test_retrieval_api_does_not_require_generation_key
+  /tmp/legal-rag/legalrag/api/server.py:251: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+tests/test_english_installation.py::test_retrieval_api_does_not_require_generation_key
+  /tmp/legal-rag-venv/lib/python3.12/site-packages/fastapi/applications.py:4723: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+16 passed, 4 warnings in 5.04s
