@@ -1,0 +1,115 @@
+{
+  "command": "node templates/qa/inspection-browser.mjs",
+  "bundleSha256": "26f640a7827245c60b0b8742948e68c9bb441c51a04cf175d338fa7afdc278b1",
+  "helperSha256": "3c2920326b81b6532abdafdab2aa58101dbffb5dd2094b5c15fb80e854cd2500",
+  "checks": [
+    {
+      "preset": "stroked-toon",
+      "status": "PASS",
+      "id": "shared",
+      "delta": 72.84753202544118,
+      "depthDelta": 0,
+      "occluderDark": true,
+      "negativeDepthDetected": true,
+      "restoredDiff": 0
+    },
+    {
+      "preset": "stroked-toon",
+      "status": "PASS",
+      "id": "basic",
+      "delta": 65.36289527904685,
+      "depthDelta": 0,
+      "occluderDark": true,
+      "negativeDepthDetected": null,
+      "restoredDiff": 0
+    },
+    {
+      "preset": "stroked-toon",
+      "status": "PASS",
+      "id": "multi",
+      "delta": 89.23129982979486,
+      "depthDelta": 0,
+      "occluderDark": true,
+      "negativeDepthDetected": null,
+      "restoredDiff": 0
+    },
+    {
+      "preset": "pixel",
+      "status": "PASS",
+      "id": "shared",
+      "delta": 79.442533369166,
+      "depthDelta": 0,
+      "occluderDark": true,
+      "negativeDepthDetected": true,
+      "restoredDiff": 0
+    },
+    {
+      "preset": "pixel",
+      "status": "PASS",
+      "id": "basic",
+      "delta": 65.54725432231479,
+      "depthDelta": 0,
+      "occluderDark": true,
+      "negativeDepthDetected": null,
+      "restoredDiff": 0
+    },
+    {
+      "preset": "pixel",
+      "status": "PASS",
+      "id": "multi",
+      "delta": 96.09397115470752,
+      "depthDelta": 0,
+      "occluderDark": true,
+      "negativeDepthDetected": null,
+      "restoredDiff": 0
+    },
+    {
+      "preset": "pixel-stroke",
+      "status": "PASS",
+      "id": "shared",
+      "delta": 72.59894293648661,
+      "depthDelta": 0,
+      "occluderDark": true,
+      "negativeDepthDetected": true,
+      "restoredDiff": 0
+    },
+    {
+      "preset": "pixel-stroke",
+      "status": "PASS",
+      "id": "basic",
+      "delta": 66.16760727403027,
+      "depthDelta": 0,
+      "occluderDark": true,
+      "negativeDepthDetected": null,
+      "restoredDiff": 0
+    },
+    {
+      "preset": "pixel-stroke",
+      "status": "PASS",
+      "id": "multi",
+      "delta": 89.50739048642838,
+      "depthDelta": 0,
+      "occluderDark": true,
+      "negativeDepthDetected": null,
+      "restoredDiff": 0
+    }
+  ],
+  "screenshots": [
+    "stroked-toon-shared.png",
+    "stroked-toon-basic.png",
+    "stroked-toon-multi.png",
+    "pixel-shared.png",
+    "pixel-basic.png",
+    "pixel-multi.png",
+    "pixel-stroke-shared.png",
+    "pixel-stroke-basic.png",
+    "pixel-stroke-multi.png"
+  ],
+  "errors": [],
+  "limits": [
+    "Synthetic helper fixture only, not a complete educational UI or scene.",
+    "Rendered colour difference and depth assertions do not prove every subject-specific part readable; inspect the captures and repeat in the real scene.",
+    "No camera focus, orbit, mechanical contact, deformation or manufacturing certification."
+  ],
+  "status": "PASS"
+}

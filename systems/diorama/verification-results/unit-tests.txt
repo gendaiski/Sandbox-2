@@ -1,0 +1,25 @@
+
+> diorama-restored@5.7.0 test
+> node scripts/test.mjs
+
+✔ templates/qa/inspection.test.mjs (136.749219ms)
+✔ templates/qa/mechanism-contract.test.mjs (34.275823ms)
+✔ verify/action-clearance.test.mjs (120.11288ms)
+✔ verify/construction-kit.mjs (126.153186ms)
+✔ verify/educational-asset-gate.test.mjs (83.306721ms)
+✔ verify/interface-checks.mjs (82.993338ms)
+✔ verify/pose-bounds.test.mjs (98.523155ms)
+✔ verify/scene-contract.mjs (80.100045ms)
+✔ verify/stroked-toon/check.mjs (81.464989ms)
+✔ verify/stroked-toon/inspection.mjs (84.016288ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 356.457339
+exit  max step 5.8 cm/frame y -0.38..0.00
+entry max step 5.8 cm/frame y -0.38..0.00
+transfer: continuous, lands on the seat, faces the car on the way in
