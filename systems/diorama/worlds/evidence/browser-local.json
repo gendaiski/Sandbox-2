@@ -1,0 +1,32 @@
+{
+  "base": "http://127.0.0.1:4186",
+  "counts": {
+    "ready": 7,
+    "landmarks": 43,
+    "files": 71,
+    "films": 3
+  },
+  "checks": [
+    "All 7 worlds, 43 landmarks, 71 files and 3 films present",
+    "Collapse all closes every nested group",
+    "Expand all opens every nested group",
+    "Search opens native DC viewer at White House",
+    "Native source comparison works",
+    "Edinburgh encoded landmark works",
+    "Live Diorama renders",
+    "Battle executes a real turn",
+    "Original film decodes metadata",
+    "Original film plays",
+    "Source file renders as readable text",
+    "No injected source scripts",
+    "Amsterdam correctly labelled unavailable",
+    "All ten original CLI commands listed",
+    "Download contains self-contained library shell",
+    "Earlier Diorama library retained",
+    "Mobile menu opens",
+    "Mobile drawer closes after choosing a city",
+    "Mobile has no horizontal overflow",
+    "No browser script errors"
+  ],
+  "errors": []
+}
