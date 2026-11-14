@@ -1,6 +1,6 @@
 # Cloud preview deployment
 
-The English installation uses a real Vercel Sandbox backend, not static HTML.
+The English installation uses a real Vercel Sandbox backend, not static HTML. Public HTTP 200, login-free browser access, English display in a Chinese browser locale, real UCC 2-314 retrieval and mobile layout were verified on 2026-11-14 at 00:11 UTC. Evidence is saved in `evidence/cloud-*`. CPU search can take tens of seconds.
 
 - Vercel team: `gendaiski`
 - Project: `legal-rag-english`

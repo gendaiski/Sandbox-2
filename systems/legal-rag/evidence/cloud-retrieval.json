@@ -1,0 +1,37 @@
+{
+  "question": "What is the implied warranty of merchantability under UCC 2-314?",
+  "retrieval_id": "0e180df56b354a9a9afb741811fcf081",
+  "top_k": 3,
+  "hits": [
+    {
+      "rank": 1,
+      "score": 1.11375,
+      "law_name": "Uniform Commercial Code",
+      "chapter": "",
+      "section": "3Part GENERAL OBLIGATION AND CONSTRUCTION OF CONTRACT",
+      "article_no": "\u00a7 2-314",
+      "text": "\u00a7 2-314. Implied Warranty: Merchantability; Usage of Trade.\n(1) Unless excluded or modified (Section 2-316), a warranty that the goods shall be merchantable is implied in a contract for their sale if the seller is a merchant with respect to goods of that kind. Under this section the serving for value of food or drink to be consumed either on the premises or elsewhere is a sale.\n(2) Goods to be merchantable must be at least such as (a) pass without objection in the trade under the contract description; and (b) in the case of fungible goods, are of fair average quality within the description; and (c) are fit for the ordinary purposes for which such goods are used; and (d) run, within the variations permitted by the agreement, of even kind, quality and quantity within each unit and among all units involved; and (e) are adequately contained, packaged, and labeled as the agreement may require; and (f) conform to the promise or affirmations of fact made on the container or label if any.\n(3) Unless excluded or modified (Section 2-316) other implied warranties may arise from course of dealing or usage of trade.",
+      "source": "rerank"
+    },
+    {
+      "rank": 2,
+      "score": 0.9655177107392585,
+      "law_name": "Uniform Commercial Code",
+      "chapter": "",
+      "section": "2Part FORMATION AND CONSTRUCTION OF LEASE CONTRACT",
+      "article_no": "\u00a7 2A-212",
+      "text": "\u00a7 2A-212. IMPLIED WARRANTY OF MERCHANTABILITY.\n(1) Except in a finance lease, a warranty that the goods will be merchantable is implied in a lease contract if the lessor is a merchant with respect to goods of that kind.\n(2) Goods to be merchantable must be at least such as (a) pass without objection in the trade under the description in the lease agreement; (b) in the case of fungible goods, are of fair average quality within the description; (c) are fit for the ordinary purposes for which goods of that type are used; (d) run, within the variation permitted by the lease agreement, of even kind, quality, and quantity within each unit and among all units involved; (e) are adequately contained, packaged, and labeled as the lease agreement may require; and (f) conform to any promises or affirmations of fact made on the container or label.\n(3) Other implied warranties may arise from course of dealing or usage of trade.",
+      "source": "rerank"
+    },
+    {
+      "rank": 3,
+      "score": 0.7815538477290905,
+      "law_name": "Uniform Commercial Code",
+      "chapter": "",
+      "section": "3Part GENERAL OBLIGATION AND CONSTRUCTION OF CONTRACT",
+      "article_no": "\u00a7 2-316",
+      "text": "\u00a7 2-316. Exclusion or Modification of Warranties.\n(1) Words or conduct relevant to the creation of an express warranty and words or conduct tending to negate or limit warranty shall be construed wherever reasonable as consistent with each other; but subject to the provisions of this Article on parol or extrinsic evidence (Section 2-202) negation or limitation is inoperative to the extent that such construction is unreasonable.\n(2)Subject to subsection (3), to exclude or modify the implied warranty of merchantability or any part of it the language must mention merchantability and in case of a writing must be conspicuous, and to exclude or modify any implied warranty of fitness the exclusion must be by a writing and conspicuous. Language to exclude all implied warranties of fitness is sufficient if it states, for example, that \"There are no warranties which extend beyond the description on the face hereof.\"\n(3)Notwithstanding subsection (2) (a) unless the circumstances indicate otherwise, all implied warranties are excluded by expressions like \"as is\", \"with all faults\" or other language which in common understanding calls the buyer's attention to the exclusion of warranties and makes plain that there is no implied warranty; and (b) when the buyer before entering into the contract has examined the goods or the sample or model as fully as he desired or has refused to examine the goods there is no implied warranty with regard to defects which an examination ought in the circumstances to have revealed to him; and (c) an implied warranty can also be excluded or modified by course of dealing or course of performance or usage of trade.\n(4) Remedies for breach of warranty can be limited in accordance with the provisions of this Article on liquidation or limitation of damages and on contractual modification of remedy (Sections 2-718 and 2-719).",
+      "source": "rerank"
+    }
+  ]
+}
