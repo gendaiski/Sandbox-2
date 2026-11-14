@@ -1,5 +1,7 @@
 # Cloud preview deployment
 
+Latest case session: resumed 2026-11-14 at 00:31 UTC as `sbx_25DvSdKMiZ2Nt7OpKty6MOpbu0aE`, with expected expiry around **01:16 UTC**. The same public URL now includes `/ui/demo-case.html`. The initial-session details below are retained as deployment history.
+
 The English installation uses a real Vercel Sandbox backend, not static HTML. Public HTTP 200, login-free browser access, English display in a Chinese browser locale, real UCC 2-314 retrieval and mobile layout were verified on 2026-11-14 at 00:11 UTC. Evidence is saved in `evidence/cloud-*`. CPU search can take tens of seconds.
 
 - Vercel team: `gendaiski`

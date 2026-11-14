@@ -120,6 +120,8 @@
         align-items: center;
       }
 
+      @media (max-width: 600px){.topbar{flex-wrap:wrap;gap:10px}.topbar-actions{width:100%;justify-content:flex-end}}
+
       .brand{
         display: flex;
         align-items: center;
@@ -149,6 +151,7 @@
       }
 
       .topbar-actions{
+        flex-wrap: wrap;
         display: flex;
         gap: 10px;
         align-items: center;
@@ -509,6 +512,7 @@
             <!-- 语言切换按钮 -->
             <div id="langSwitch" class="lang-switch" aria-label="English interface"><span class="lang-en active">EN</span></div>
 
+            <a class="btn btn-ghost" href="/ui/demo-case.html">Demo case</a>
             <button id="newChatBtn" class="btn btn-ghost" type="button" data-i18n="newChat">New chat</button>
           </div>
         </header>
@@ -1518,6 +1522,11 @@
       applyLanguage(currentLang);
       checkGpuStatus();
       resetConversation();
+      const demoQuestion = new URLSearchParams(location.search).get('question');
+      if (demoQuestion) {
+        questionInput.value = demoQuestion.slice(0, 4000);
+        questionInput.focus();
+      }
     </script>
   </body>
 </html>

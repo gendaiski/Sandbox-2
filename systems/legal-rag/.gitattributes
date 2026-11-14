@@ -1,3 +1,4 @@
 docs/* linguist-detectable=false
 notebooks/* linguist-detectable=false
 data/graph/*.html linguist-detectable=false
+ui/demo-case/*.pdf binary
