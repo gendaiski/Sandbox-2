@@ -1,0 +1,30 @@
+import {chromium} from 'playwright-core';
+import fs from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const base=process.env.BASE_URL||'http://127.0.0.1:4186';
+const browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+const page=await browser.newPage({viewport:{width:1440,height:1000}});let errors=[];page.on('pageerror',e=>errors.push(e.message));
+const checks=[];const check=(n,v)=>{assert(v,n);checks.push(n)};
+try{
+ await page.goto(base,{waitUntil:'networkidle'});await page.waitForFunction(()=>window.__worlds);
+ const counts=await page.evaluate(()=>({ready:__worlds.ready,landmarks:__worlds.landmarks,files:__worlds.files,films:__worlds.films}));assert.deepEqual(counts,{ready:7,landmarks:43,files:71,films:3});checks.push('All 7 worlds, 43 landmarks, 71 files and 3 films present');
+ await page.screenshot({path:'/tmp/worlds-desktop.png',fullPage:true});
+ await page.locator('#collapse').click();check('Collapse all closes every nested group',await page.locator('#tree details[open]').count()===0);
+ await page.locator('#expand').click();check('Expand all opens every nested group',await page.locator('#tree details[open]').count()===await page.locator('#tree details').count());
+ await page.locator('#search').fill('White House');await page.locator('main .results a').first().click();await page.waitForFunction(()=>document.querySelector('iframe')?.src.includes('#white-house'));
+ const city=page.frameLocator('iframe');await city.locator('#picture').waitFor();await city.locator('#picture').evaluate(i=>i.decode());check('Search opens native DC viewer at White House',(await page.locator('iframe').getAttribute('src')).endsWith('#white-house'));
+ await page.frames().find(f=>f.url().includes('/dc/viewer')).waitForFunction(()=>!!document.querySelector('#source').onclick);await city.locator('#source').click();check('Native source comparison works',await city.locator('#source').getAttribute('aria-pressed')==='true');
+ await page.goto(base+'/#edinburgh-st-giles%27-cathedral');await page.frameLocator('iframe').locator('#picture').evaluate(i=>i.decode());check('Edinburgh encoded landmark works',(await page.locator('iframe').getAttribute('src')).includes("st-giles'"));
+ await page.goto(base+'/#pool');await page.frameLocator('iframe').locator('canvas').waitFor();const pool=page.frames().find(f=>f.url().includes('/scenes/'));await pool.waitForFunction(()=>window.__dioramaReady);check('Live Diorama renders',await pool.evaluate(()=>__diorama3.stats().meshes>0));
+ await page.goto(base+'/#game');await page.frameLocator('iframe').locator('#start-battle').waitFor();const game=page.frames().find(f=>f.url().includes('/scenes/'));await game.waitForFunction(()=>window.__dioramaReady);await game.locator('#start-battle').click();await game.locator('[data-move="attack"]').click();await page.waitForTimeout(1800);check('Battle executes a real turn',await game.evaluate(()=>window.__diorama3.controller.state.enemyHp<130));
+ await page.goto(base+'/#film-make-your-city');await page.locator('video').evaluate(v=>new Promise((resolve,reject)=>{v.onloadedmetadata=resolve;v.onerror=()=>reject(Error('video failed'));if(v.readyState>=1)resolve()}));check('Original film decodes metadata',await page.locator('video').evaluate(v=>v.duration>10));await page.locator('video').evaluate(v=>{v.muted=true;return v.play()});await page.waitForTimeout(1000);check('Original film plays',await page.locator('video').evaluate(v=>v.currentTime>0));
+ await page.goto(base+'/#file-source/showcase.py');check('Source file renders as readable text',(await page.locator('pre.code').innerText()).length>100);check('No injected source scripts',await page.locator('main script').count()===0);
+ await page.goto(base+'/#ref-amsterdam');check('Amsterdam correctly labelled unavailable',(await page.locator('main').innerText()).includes('Assets not published'));
+ await page.goto(base+'/#tools');check('All ten original CLI commands listed',await page.locator('[data-command]').count()===10);
+ const download=await page.request.get(base+'/downloads/worlds-library.html');check('Download contains self-contained library shell',download.ok()&&(await download.text()).includes('<base href="https://diorama-studio-gendaiski.vercel.app/">'));
+ await page.goto(base+'/diorama-library.html');check('Earlier Diorama library retained',await page.locator('#cards .card').count()===5);
+ await page.setViewportSize({width:390,height:844});await page.goto(base);await page.locator('#menu').click();check('Mobile menu opens',await page.locator('#menu').getAttribute('aria-expanded')==='true');await page.locator('#search').fill('Edinburgh');await page.waitForTimeout(350);await page.screenshot({path:'/tmp/worlds-mobile-menu.png'});await page.locator('#tree a[data-id="city-edinburgh"]').click();check('Mobile drawer closes after choosing a city',await page.locator('#menu').getAttribute('aria-expanded')==='false');
+ await page.goto(base);check('Mobile has no horizontal overflow',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.screenshot({path:'/tmp/worlds-mobile.png',fullPage:true});
+ check('No browser script errors',errors.length===0);
+ console.log(JSON.stringify({base,counts,checks,errors},null,2));await fs.writeFile('/tmp/worlds-browser-report.json',JSON.stringify({base,counts,checks,errors},null,2));
+}finally{await browser.close()}

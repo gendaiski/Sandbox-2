@@ -1,0 +1,3 @@
+Contains Scottish Government and Fugro LiDAR Phase 5 data, Crown copyright 2020–2021, OGL v3. © OpenStreetMap contributors, ODbL. Palette evidence: Andrew Shiva / Wikipedia, Scotland-2016-Aerial-Edinburgh Castle, CC BY-SA 4.0. No aerial photograph pixels are used in this source.
+Keep these credits with the film and its sharing description.
+Original soundtrack: A Little City in the Sun, composed for this film. Instruments rendered locally with GeneralUser GS by S. Christian Collins.

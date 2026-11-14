@@ -21,7 +21,7 @@ for(const f of ['index.html','studio.css','studio.js'])await copyFile('preview/'
 await cp('media','dist/media',{recursive:true});
 await writeFile('dist/THIRD_PARTY_LICENSES.txt',license);await copyFile('INSTALLATION.md','dist/INSTALLATION.md');await copyFile('SCENE-STATUS.md','dist/SCENE-STATUS.md');
 const files=[], archive={};
-async function walk(dir=''){for(const e of await readdir(dir||'.',{withFileTypes:true})){if(['.git','node_modules','dist','evidence'].includes(e.name))continue;const f=path.posix.join(dir,e.name);if(e.isDirectory())await walk(f);else{const bytes=await readFile(f);archive[f]=new Uint8Array(bytes);if(/\.(md|js|mjs|css|json|txt)$/.test(f)||f==='LICENSE'){files.push(f);await mkdir(path.dirname('dist/source/'+f),{recursive:true});await copyFile(f,'dist/source/'+f);}}}}
+async function walk(dir=''){for(const e of await readdir(dir||'.',{withFileTypes:true})){if(['.git','node_modules','dist','evidence'].includes(e.name))continue;const f=path.posix.join(dir,e.name);if(f==='worlds/media')continue;if(e.isDirectory())await walk(f);else{const bytes=await readFile(f);archive[f]=new Uint8Array(bytes);if(/\.(md|js|mjs|css|json|txt)$/.test(f)||f==='LICENSE'){files.push(f);await mkdir(path.dirname('dist/source/'+f),{recursive:true});await copyFile(f,'dist/source/'+f);}}}}
 await walk();files.sort();await writeFile('dist/files.json',JSON.stringify(files));
 archive['OPEN-WATER.html']=new TextEncoder().encode(html);archive['THIRD_PARTY_LICENSES.txt']=new TextEncoder().encode(license);
 await writeFile('dist/downloads/diorama-kit.zip',zipSync(archive,{level:6}));
@@ -46,3 +46,18 @@ await copyFile('library/style.css','dist/library/style.css');
 await copyFile('library/index.html','dist/index.html');
 try {await cp('library/thumbnails','dist/thumbnails',{recursive:true});} catch(e) {if(e.code!=='ENOENT')throw e;}
 console.log('Built Diorama library and studio.');
+
+// Unified library keeps the earlier Diorama library intact at its own URL.
+await copyFile('dist/index.html','dist/diorama-library.html');
+const worldsBundle=await build({entryPoints:['worlds/app.js'],bundle:true,write:false,minify:true,format:'iife',target:'es2022'});
+const worldsJs=worldsBundle.outputFiles[0].text.replace(/<\/script/gi,'<\\/script');
+const worldsCSS=await readFile('worlds/style.css','utf8');
+const worldsTemplate=(await readFile('worlds/index.html','utf8')).replace('<!--STYLE-->',()=>'<style>'+worldsCSS+'</style>').replace('<!--SCRIPT-->',()=>'<script>'+worldsJs+'</script>');
+await writeFile('dist/index.html',worldsTemplate.replace('<!--BASE-->',''));
+await writeFile('dist/worlds-library.html',worldsTemplate.replace('<!--BASE-->',''));
+await writeFile('dist/downloads/worlds-library.html',worldsTemplate.replace('<!--BASE-->','<base href="https://diorama-studio-gendaiski.vercel.app/">'));
+await mkdir('dist/worlds',{recursive:true});
+for(const f of ['dc.png','edinburgh.png','LICENSE','THIRD_PARTY_NOTICES.md'])await copyFile('worlds/'+f,'dist/worlds/'+f);
+await cp('worlds/media','dist/worlds/media',{recursive:true});
+await cp('worlds/evidence','dist/worlds/evidence',{recursive:true});
+console.log('Built unified Worlds Library: 7 worlds, 43 landmarks, 3 original films, all 71 source files.');
