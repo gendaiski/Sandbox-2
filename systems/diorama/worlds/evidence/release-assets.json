@@ -1,0 +1,51 @@
+[
+  {
+    "name": "washington-dc.mp4",
+    "release": "v0.4.2",
+    "source": "https://github.com/Statecraft-Labs/isometric-cities/releases/download/v0.4.2/washington-dc.mp4",
+    "bytes": 83320788,
+    "sha256": "4a1306c25343e05164178e5c4997c496a24cb9412e67694a21644244b12c9736"
+  },
+  {
+    "name": "washington-dc.credits.txt",
+    "release": "v0.4.2",
+    "source": "https://github.com/Statecraft-Labs/isometric-cities/releases/download/v0.4.2/washington-dc.credits.txt",
+    "bytes": 433,
+    "sha256": "8a26f26ebaf39e05905fc31af2630841e8a8e42a8e68db81e82f6f3d176f9a50"
+  },
+  {
+    "name": "make-your-city.mp4",
+    "release": "v0.4.2",
+    "source": "https://github.com/Statecraft-Labs/isometric-cities/releases/download/v0.4.2/make-your-city.mp4",
+    "bytes": 28819012,
+    "sha256": "737a0d9f67daa2abe8450931db5a23030568dea0ea179593666d92749e6ec48c"
+  },
+  {
+    "name": "make-your-city.credits.txt",
+    "release": "v0.4.2",
+    "source": "https://github.com/Statecraft-Labs/isometric-cities/releases/download/v0.4.2/make-your-city.credits.txt",
+    "bytes": 442,
+    "sha256": "e036294fa86cbf5cac0aeea7ed17530a29f714e58206b5e9c59ad220ea1d8813"
+  },
+  {
+    "name": "GeneralUser-GS-LICENSE.txt",
+    "release": "v0.4.2",
+    "source": "https://github.com/Statecraft-Labs/isometric-cities/releases/download/v0.4.2/GeneralUser-GS-LICENSE.txt",
+    "bytes": 2317,
+    "sha256": "7b32efefdf95ce38a043799f0659853ddc00fbaa14d8c50f0aca16b9b8b405be"
+  },
+  {
+    "name": "edinburgh.mp4",
+    "release": "v0.4.0",
+    "source": "https://github.com/Statecraft-Labs/isometric-cities/releases/download/v0.4.0/edinburgh.mp4",
+    "bytes": 87238353,
+    "sha256": "931c89b6aeb645ba0a14739a3c992e4567d07a78fa1d3979c5f35849f0195bac"
+  },
+  {
+    "name": "edinburgh.credits.txt",
+    "release": "v0.4.0",
+    "source": "https://github.com/Statecraft-Labs/isometric-cities/releases/download/v0.4.0/edinburgh.credits.txt",
+    "bytes": 490,
+    "sha256": "b4ea74e9c626b616d3dba2c3f5fab937f8c90536c6dca267ce1c62fe9744d0bc"
+  }
+]
