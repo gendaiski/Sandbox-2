@@ -1,0 +1,16 @@
+{
+  "checks": [
+    "Five library designs, actual rendered thumbnails, category and search filters",
+    "All five live scene designs load",
+    "Playable Pikachu win, damage, potions, guard, PP, terminal controls and result",
+    "Charizard selection, hard difficulty, loss and local scoreboard",
+    "Studio title, lighting, smooth rendering, stage color, local save and JSON export",
+    "Saved variation reopens with its settings",
+    "JSON import and invalid-file rejection",
+    "Mobile library and playable battle without horizontal overflow",
+    "Downloaded standalone battle plays with all external requests blocked"
+  ],
+  "errors": [],
+  "base": "http://127.0.0.1:4186",
+  "status": "PASS"
+}

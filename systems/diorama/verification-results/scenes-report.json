@@ -20,7 +20,7 @@
           "beach-ball"
         ],
         "renderer": {
-          "frame": 54,
+          "frame": 58,
           "calls": 1,
           "triangles": 2,
           "points": 0,
@@ -79,7 +79,7 @@
           "street-furniture"
         ],
         "renderer": {
-          "frame": 80,
+          "frame": 86,
           "calls": 1,
           "triangles": 2,
           "points": 0,
@@ -138,7 +138,7 @@
           "engine-fire"
         ],
         "renderer": {
-          "frame": 106,
+          "frame": 114,
           "calls": 1,
           "triangles": 2,
           "points": 0,
@@ -197,7 +197,7 @@
           "recall"
         ],
         "renderer": {
-          "frame": 132,
+          "frame": 142,
           "calls": 1,
           "triangles": 2,
           "points": 0,

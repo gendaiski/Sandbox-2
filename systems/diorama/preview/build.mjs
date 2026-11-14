@@ -33,9 +33,16 @@ const scenesJs=scenesBundle.outputFiles[0].text.replace(/<\/script/gi,'<\\/scrip
 const sceneHTML=attribution+(await readFile('reconstruction/index.html','utf8')).replace('<!--SCENE_SCRIPT-->',()=>'<script>'+scenesJs+'</script>');
 await writeFile('dist/scenes/index.html',sceneHTML);await writeFile('dist/downloads/diorama-scenes.html',sceneHTML);
 archive['OPEN-SCENES.html']=new TextEncoder().encode(sceneHTML);await writeFile('dist/downloads/diorama-kit.zip',zipSync(archive,{level:6}));
-console.log('Built four interactive scene reconstructions.');
+console.log('Built four scene reconstructions and a playable battle variation.');
 
 await copyFile('dist/index.html','dist/toolkit.html');
 await copyFile('dist/original.html','dist/water-test.html');
 const launch='<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url=./scenes/"><title>Diorama interactive scenes</title><a href="./scenes/">Open the four interactive Diorama reconstructions</a></html>';
-await writeFile('dist/index.html',launch);await writeFile('dist/original.html',launch);
+await writeFile('dist/original.html',launch);
+await mkdir('dist/library',{recursive:true});
+const libraryBundle=await build({entryPoints:['library/app.js'],bundle:true,write:false,minify:true,format:'iife',target:'es2020'});
+await writeFile('dist/library/app.js',libraryBundle.outputFiles[0].text);
+await copyFile('library/style.css','dist/library/style.css');
+await copyFile('library/index.html','dist/index.html');
+try {await cp('library/thumbnails','dist/thumbnails',{recursive:true});} catch(e) {if(e.code!=='ENOENT')throw e;}
+console.log('Built Diorama library and studio.');
