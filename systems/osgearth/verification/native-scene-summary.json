@@ -1,0 +1,9 @@
+{
+  "Native example failed to start or exited": 4,
+  "Scene captured with native warnings \u2014 inspect diagnostic log": 4,
+  "Native scene captured \u2014 individual layers not exhaustively verified": 74,
+  "Provider credentials required \u2014 layer not rendered": 2,
+  "External local dataset required \u2014 not shipped by upstream": 4,
+  "Intentional upstream error-handling example": 1,
+  "Base scene only \u2014 optional SDK or dependency required": 5
+}

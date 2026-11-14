@@ -1,0 +1,10 @@
+{
+  "url": "https://diorama-studio-gendaiski.vercel.app/#earth-mbtiles",
+  "entries": 233,
+  "checks": [
+    "Public unified library includes 94 nested osgEarth examples",
+    "Search opens actual embedded MBTiles page",
+    "Repaired native scene capture loads"
+  ],
+  "errors": []
+}

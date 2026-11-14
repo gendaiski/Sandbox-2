@@ -1,0 +1,14 @@
+{
+  "base": "https://osgearth-library-gendaiski.vercel.app/",
+  "checks": [
+    "Public homepage loads without authentication; 689 routes",
+    "Public library launches repaired MBTiles in original native UI; RFB connected",
+    "All 94 native results visible in coverage table",
+    "Public download responds: /downloads/osgearth-library.html",
+    "Public download responds: /downloads/osgearth-installation.zip",
+    "Portable HTML hosted as rendered interface",
+    "Mobile drawer, search and layout verified"
+  ],
+  "errors": [],
+  "nativePreviewExpires": "2026-11-14T05:54:24Z"
+}

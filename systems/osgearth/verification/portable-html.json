@@ -1,0 +1,10 @@
+{
+  "openedAs": "Standalone HTML document supplied directly to browser; managed browser blocks file:// navigation",
+  "network": "All HTTPS requests blocked",
+  "routes": 689,
+  "checks": [
+    "Embedded catalogue and interface load without network",
+    "Search works",
+    "Media and native renderer remain separate online/native resources"
+  ]
+}

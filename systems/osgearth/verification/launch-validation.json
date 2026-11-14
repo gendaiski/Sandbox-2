@@ -1,0 +1,18 @@
+[
+  {
+    "input": [],
+    "status": 400
+  },
+  {
+    "input": {
+      "sample": "../../etc/passwd"
+    },
+    "status": 400
+  },
+  {
+    "input": {
+      "asset": "data/not-present.osg"
+    },
+    "status": 400
+  }
+]
