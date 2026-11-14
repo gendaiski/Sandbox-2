@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "base": "http://127.0.0.1:4185",
+  "checks": [
+    "Live scene loads; pause works",
+    "Deterministic freeze reproduces exact rendered image",
+    "Keyboard orbit and reset restore hero camera",
+    "PNG download succeeds",
+    "Rendering lab navigation, selection and preset switching",
+    "Supplied reference video plays",
+    "Searchable source library loads real source",
+    "390px mobile layout has no page overflow",
+    "Standalone water remains interactive with network disabled",
+    "Cold standalone render requires no external requests"
+  ],
+  "errors": []
+}
