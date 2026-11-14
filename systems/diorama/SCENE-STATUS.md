@@ -2,6 +2,10 @@
 
 Reviewed 14 November 2026 against upstream commit c790df5007be54cccb6c083f7743fae120c89cf4.
 
+## New game and library
+
+The library now collects the four reconstructed scenes and a fifth, playable Pokémon Battle variation. The game reuses the courtyard with new arena markings, explicit local battle rules and player controls. It is not another recovered upstream scene. Its title, lighting, render style and stage color can be saved as local studio variations.
+
 ## Current delivery
 
 Four new interactive Three.js scenes are implemented in `reconstruction/` and published at `/scenes/`: Pool, Bank Job, Dust Kings and creature battle. They use authored geometry and deterministic animation with original toolkit rig/pose/render helpers. They are substantial reference-based reconstructions, not recovered upstream projects or pixel-identical copies. Each has native playback, orbit/reset, scrubbing, speed controls, PNG export and offline HTML. The original MP4 is available only in a labelled comparison dialog.

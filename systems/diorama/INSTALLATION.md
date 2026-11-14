@@ -3,9 +3,22 @@
 Upstream: https://github.com/sloemo01/diorama
 Revision: c790df5007be54cccb6c083f7743fae120c89cf4 (v5.7.0).
 
+## Library, studio and new battle game
+
+The site root is now a categorized library. It contains the four reference-based scenes plus a new **Pokémon Battle** variation. Each card opens the live Three.js studio. The existing toolkit and water/inspection fixtures remain separate.
+
+- `/`: searchable library with category filtering, saved variations and JSON import.
+- `/scenes/#game`: playable fan-made battle. Choose Pikachu or Charizard, then Start battle. Use a special attack (6 PP), unlimited physical attack, guard (70% damage reduction), or two potions (up to 36 HP each). The local opponent uses a strong attack every third turn. Easy, Normal and Hard affect enemy damage. Win/loss, a 60-turn draw, battle log and New battle reset are implemented. The game uses simplified rules and newly authored models, not official game assets or official combat rules.
+- `/scenes/`: five designs, scene playback controls, orbit/reset, PNG capture, plus Customize: title, daylight/golden/moonlight, pixel/smooth rendering and stage color. Save to the library or export/import design JSON. Individual object editing is not part of this studio.
+- `/downloads/diorama-scenes.html`: self-contained studio and game. Native rendering and gameplay need no network. Reference films still need the full ZIP's media folder or the hosted site.
+
+Saved variations and battle win/loss totals use local browser storage. There is no account, server database or cross-device sync. Export design JSON to transfer settings between browsers. Saving does not overwrite built-in scenes. Current fights restart when reloaded or when leaving the game.
+
+Pokémon names refer to an unofficial fan-made mini-game. No official logos, music, sprites or game assets are bundled. Existing MIT notices and toolkit attribution remain intact.
+
 ## New interactive scenes
 
-Open `/scenes/` (also the site root) for the newly authored Pool, Bank Job, Dust Kings and creature battle. These reconstruct the supplied recordings using real scene geometry and articulated animation. Source is in `reconstruction/`; source provenance and design choices are recorded there. They are not claimed to be exact or recovered originals. The native canvas never uses the recordings as a background or substitute.
+Open `/scenes/` from the library for the newly authored Pool, Bank Job, Dust Kings and creature battle. These reconstruct the supplied recordings using real scene geometry and articulated animation. Source is in `reconstruction/`; source provenance and design choices are recorded there. They are not claimed to be exact or recovered originals. The native canvas never uses the recordings as a background or substitute.
 
 Controls: scene tabs, drag/pinch/wheel orbit, keyboard arrows/R, play/pause, restart, timeline, speed, PNG capture, reference-film dialog and downloadable offline HTML. `OPEN-SCENES.html` in the ZIP runs all four without networking; reference film playback additionally requires the included `media/` folder.
 
@@ -56,3 +69,5 @@ Machine-readable reports are in `verification-results/`. Tests use Chromium and 
 Regression: `node scripts/test-scenes.mjs`, with optional `BASE_URL`, `QA_OUT` and `CHROME_PATH`. Tests sample real scene geometry and multiple motion phases; they do not certify exact visual fidelity or continuous collision freedom.
 
 Four-scene verification: all four scenes pass sampled timeline phases, finite transforms, pixel-exact replay, visible animation, orbit/reset, scrub/play/speed, PNG download, reference dialog, 390px mobile layout and cold rendering without external requests. See `verification-results/scenes-report.json`.
+
+Library/game regression: after `npm run build` and `npm run preview`, run `npm run test:battle`, `npm run test:studio` and `npm run test:scenes`. `BASE_URL` can override the preview origin (scene suite expects a `/scenes/` suffix). Chromium is required for browser tests.
