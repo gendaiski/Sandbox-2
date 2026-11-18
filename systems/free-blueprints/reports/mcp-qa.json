@@ -1,0 +1,36 @@
+{
+  "selected_commit": "2cf1f63ccd1f2312e25ac4b1bcae2bf2db02f867",
+  "tools": [
+    "list_blueprints",
+    "get_blueprint"
+  ],
+  "blueprints": [
+    {
+      "id": "rfx-procurement",
+      "files": 10,
+      "manifest_sha256": "67a09e2738109b922b8f45acccc7f2931318f33a8545f3227e22be6188af26b7"
+    },
+    {
+      "id": "employee-onboarding",
+      "files": 10,
+      "manifest_sha256": "aa994247e6f1f0c48073c151713e65c96f96a04184869e58b8544b13c8468c8b"
+    }
+  ],
+  "checks": {
+    "stdioHandshake": true,
+    "toolsDiscovery": true,
+    "catalogMatchesSource": true,
+    "bothManifestsMatchSource": true,
+    "invalidIdReturnsError": true,
+    "safeRelativePaths": true,
+    "workerHealthStatus": 200,
+    "workerNotFoundStatus": 404,
+    "workerMcpInitialize": true,
+    "workerToolsDiscovery": true,
+    "workerCatalogAndManifestsMatchSource": true
+  },
+  "limitations": [
+    "No external MCP endpoints called",
+    "No AI agents executed"
+  ]
+}

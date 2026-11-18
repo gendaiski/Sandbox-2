@@ -1,0 +1,4 @@
+.preview-work/
+dist/
+node_modules/
+.env

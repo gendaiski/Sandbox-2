@@ -1,0 +1,195 @@
+CPU-load test uses the current admitted slot because no runners are registered
+TAP version 13
+# command: ["/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node","/workspace/pullboard-work/stable/bin/pullboard.js","spec","show","G99","--json"]
+# status: 1
+# signal: none
+# elapsed: 520ms
+# stderr: 
+# command: ["/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node","/workspace/pullboard-work/stable/bin/pullboard.js","next","--json"]
+# status: 1
+# signal: none
+# elapsed: 452ms
+# stderr: 
+# command: ["/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node","/workspace/pullboard-work/stable/bin/pullboard.js","status","--not-a-real-flag","--json"]
+# status: 2
+# signal: none
+# elapsed: 158ms
+# stderr: 
+# command: ["/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node","/workspace/pullboard-work/stable/bin/pullboard.js","cliam","--json"]
+# status: 2
+# signal: none
+# elapsed: 243ms
+# stderr: 
+# command: ["/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node","/workspace/pullboard-work/stable/bin/pullboard.js","spec","check"]
+# status: 1
+# signal: none
+# elapsed: 534ms
+# stderr: 
+# command: ["/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node","/workspace/pullboard-work/stable/bin/pullboard.js","spec","check","--json"]
+# status: 1
+# signal: none
+# elapsed: 605ms
+# stderr: 
+# command: ["/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node","/workspace/pullboard-work/stable/bin/pullboard.js","decisions","--as","person","--json"]
+# status: 1
+# signal: none
+# elapsed: 466ms
+# stderr: 
+# command: ["/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node","/workspace/pullboard-work/stable/bin/pullboard.js","answer","3","No","--json"]
+# status: 1
+# signal: none
+# elapsed: 536ms
+# stderr: 
+# Subtest: [A1] every catalog command and subcommand has a real CLI exercise
+    # Subtest: [A1] command results match the catalog across roots and subcommands
+    ok 1 - [A1] command results match the catalog across roots and subcommands
+      ---
+      duration_ms: 62801.264346
+      type: 'test'
+      ...
+    # Subtest: [A1,B21,B27] a lane decision is answered by its agent through CLI JSON
+    ok 2 - [A1,B21,B27] a lane decision is answered by its agent through CLI JSON
+      ---
+      duration_ms: 18402.288611
+      type: 'test'
+      ...
+    # Subtest: [A1,B21,B27] decisions shows an agent its direct and lane asks only
+    ok 3 - [A1,B21,B27] decisions shows an agent its direct and lane asks only
+      ---
+      duration_ms: 30463.575377
+      type: 'test'
+      ...
+    # Subtest: [A1] refusals are one JSON document with exact public error fields
+    ok 4 - [A1] refusals are one JSON document with exact public error fields
+      ---
+      duration_ms: 19607.15856
+      type: 'test'
+      ...
+    # Subtest: [A1] long-running servers flush one JSON document before shutdown
+    ok 5 - [A1] long-running servers flush one JSON document before shutdown
+      ---
+      duration_ms: 19636.976305
+      type: 'test'
+      ...
+    # Subtest: [A1,A2] watch --json prints one catalog document per event line
+    ok 6 - [A1,A2] watch --json prints one catalog document per event line
+      ---
+      duration_ms: 15107.840879
+      type: 'test'
+      ...
+    # Subtest: [A1,A10] view exports a static folder through its JSON variant
+    ok 7 - [A1,A10] view exports a static folder through its JSON variant
+      ---
+      duration_ms: 14627.971181
+      type: 'test'
+      ...
+    # Subtest: [A1,E13,E14,E15] move returns its real CLI result across local boards
+    ok 8 - [A1,E13,E14,E15] move returns its real CLI result across local boards
+      ---
+      duration_ms: 12421.655922
+      type: 'test'
+      ...
+    # Subtest: [A1] catalog commands keep their real repository exercises
+    ok 9 - [A1] catalog commands keep their real repository exercises
+      ---
+      duration_ms: 51340.967059
+      type: 'test'
+      ...
+    # Subtest: [A1,R1,R2] flow replay exposes its recorded history and replay through real CLI JSON
+    ok 10 - [A1,R1,R2] flow replay exposes its recorded history and replay through real CLI JSON
+      ---
+      duration_ms: 14159.45972
+      type: 'test'
+      ...
+    # Subtest: [A1,C7] map exposes its main stamp and every rendered view through real CLI JSON
+    ok 11 - [A1,C7] map exposes its main stamp and every rendered view through real CLI JSON
+      ---
+      duration_ms: 21962.084586
+      type: 'test'
+      ...
+    # Subtest: [A1] intake records a real outside pull request through the CLI
+    ok 12 - [A1] intake records a real outside pull request through the CLI
+      ---
+      duration_ms: 2835.230855
+      type: 'test'
+      ...
+    # Subtest: [A1,C7] test runs named test files and reports where they ran
+    ok 13 - [A1,C7] test runs named test files and reports where they ran
+      ---
+      duration_ms: 17932.273664
+      type: 'test'
+      ...
+    # Subtest: [A1,H11] sync shares a board through a real Git remote without an account
+    ok 14 - [A1,H11] sync shares a board through a real Git remote without an account
+      ---
+      duration_ms: 18547.17354
+      type: 'test'
+      ...
+    1..14
+ok 1 - [A1] every catalog command and subcommand has a real CLI exercise
+  ---
+  duration_ms: 62803.462768
+  type: 'test'
+  ...
+# command: ["/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node","/workspace/pullboard-work/stable/bin/pullboard.js","inbox","--acted-on","event:15,event:17,event:9,claim:2:2026-11-03T23:25:56.958Z","--json"]
+# status: 1
+# signal: none
+# elapsed: 440ms
+# stderr: 
+# Subtest: a recorded submit stays successful when its later activity delivery fails [N26,H16,V4]
+ok 2 - a recorded submit stays successful when its later activity delivery fails [N26,H16,V4]
+  ---
+  duration_ms: 5627.217901
+  type: 'test'
+  ...
+# Subtest: status moves are feed events and the board sends no status shout [B3,R2,N26,H16]
+ok 3 - status moves are feed events and the board sends no status shout [B3,R2,N26,H16]
+  ---
+  duration_ms: 5244.458369
+  type: 'test'
+  ...
+# Subtest: an agent feed shows only activity that touches its items files rows and lane [R2,N26,H16]
+ok 4 - an agent feed shows only activity that touches its items files rows and lane [R2,N26,H16]
+  ---
+  duration_ms: 4459.659073
+  type: 'test'
+  ...
+# Subtest: activity cursors leave events arriving during an observation pending [N26]
+ok 5 - activity cursors leave events arriving during an observation pending [N26]
+  ---
+  duration_ms: 39.210883
+  type: 'test'
+  ...
+# Subtest: inbox delivery uses real Git paths and board-bound cursors without consuming later news [R2,N26,H16]
+ok 6 - inbox delivery uses real Git paths and board-bound cursors without consuming later news [R2,N26,H16]
+  ---
+  duration_ms: 8859.787157
+  type: 'test'
+  ...
+# Subtest: old ordinary shout replay does not become newly typed news [H16,N26]
+ok 7 - old ordinary shout replay does not become newly typed news [H16,N26]
+  ---
+  duration_ms: 41.533879
+  type: 'test'
+  ...
+# Subtest: interrupts arrive at once and the digest arrives as a short summary at a break [R2,N26,H16]
+ok 8 - interrupts arrive at once and the digest arrives as a short summary at a break [R2,N26,H16]
+  ---
+  duration_ms: 10737.997792
+  type: 'test'
+  ...
+# Subtest: interrupt receipts replay once and only their recipient can acknowledge delivered work [N26,H2,H16]
+ok 9 - interrupt receipts replay once and only their recipient can acknowledge delivered work [N26,H2,H16]
+  ---
+  duration_ms: 49.211714
+  type: 'test'
+  ...
+1..9
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 63464.510642

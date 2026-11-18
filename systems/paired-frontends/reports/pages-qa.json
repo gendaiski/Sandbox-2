@@ -1,0 +1,203 @@
+{
+  "routes": [
+    {
+      "route": "Dashboard",
+      "errors": [],
+      "blank": false,
+      "inputs": 3
+    },
+    {
+      "route": "Events",
+      "errors": [],
+      "blank": false,
+      "inputs": 9
+    },
+    {
+      "route": "Events?sub=new",
+      "errors": [],
+      "blank": false,
+      "inputs": 16
+    },
+    {
+      "route": "Workflows?sub=new",
+      "errors": [],
+      "blank": false,
+      "inputs": 11
+    },
+    {
+      "route": "Categories",
+      "errors": [],
+      "blank": false,
+      "inputs": 0
+    },
+    {
+      "route": "Buckets",
+      "errors": [],
+      "blank": false,
+      "inputs": 0
+    },
+    {
+      "route": "Tags",
+      "errors": [],
+      "blank": false,
+      "inputs": 0
+    },
+    {
+      "route": "Alerts",
+      "errors": [],
+      "blank": false,
+      "inputs": 5
+    },
+    {
+      "route": "Servers",
+      "errors": [],
+      "blank": false,
+      "inputs": 2
+    },
+    {
+      "route": "Groups",
+      "errors": [],
+      "blank": false,
+      "inputs": 0
+    },
+    {
+      "route": "Snapshots",
+      "errors": [],
+      "blank": false,
+      "inputs": 5
+    },
+    {
+      "route": "MyAccount",
+      "errors": [],
+      "blank": false,
+      "inputs": 6
+    },
+    {
+      "route": "MySettings",
+      "errors": [],
+      "blank": false,
+      "inputs": 33
+    },
+    {
+      "route": "MySecurity",
+      "errors": [],
+      "blank": false,
+      "inputs": 0
+    },
+    {
+      "route": "ActivityLog",
+      "errors": [],
+      "blank": false,
+      "inputs": 5
+    },
+    {
+      "route": "AlertSetup",
+      "errors": [],
+      "blank": false,
+      "inputs": 5
+    },
+    {
+      "route": "APIKeys",
+      "errors": [],
+      "blank": false,
+      "inputs": 0
+    },
+    {
+      "route": "Channels",
+      "errors": [],
+      "blank": false,
+      "inputs": 1
+    },
+    {
+      "route": "Conductors",
+      "errors": [],
+      "blank": false,
+      "inputs": 0
+    },
+    {
+      "route": "Config",
+      "errors": [],
+      "blank": false,
+      "inputs": 154
+    },
+    {
+      "route": "LogViewer",
+      "errors": [],
+      "blank": false,
+      "inputs": 6
+    },
+    {
+      "route": "Marketplace",
+      "errors": [],
+      "blank": false,
+      "inputs": 6
+    },
+    {
+      "route": "Monitors",
+      "errors": [],
+      "blank": false,
+      "inputs": 0
+    },
+    {
+      "route": "Plugins",
+      "errors": [],
+      "blank": false,
+      "inputs": 1
+    },
+    {
+      "route": "Secrets",
+      "errors": [],
+      "blank": false,
+      "inputs": 1
+    },
+    {
+      "route": "System",
+      "errors": [],
+      "blank": false,
+      "inputs": 0
+    },
+    {
+      "route": "Users",
+      "errors": [],
+      "blank": false,
+      "inputs": 1
+    },
+    {
+      "route": "Roles",
+      "errors": [],
+      "blank": false,
+      "inputs": 0
+    },
+    {
+      "route": "WebHooks",
+      "errors": [],
+      "blank": false,
+      "inputs": 1
+    },
+    {
+      "route": "Tickets",
+      "errors": [],
+      "blank": false,
+      "inputs": 10
+    },
+    {
+      "route": "Tickets?sub=new",
+      "errors": [],
+      "blank": false,
+      "inputs": 11
+    },
+    {
+      "route": "Search",
+      "errors": [],
+      "blank": false,
+      "inputs": 11
+    },
+    {
+      "route": "Docs",
+      "errors": [],
+      "blank": false,
+      "inputs": 1
+    }
+  ],
+  "requests": []
+}

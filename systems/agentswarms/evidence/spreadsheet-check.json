@@ -1,0 +1,12 @@
+{
+  "workbookCreated": true,
+  "formula": "=SUM(A1:A2)",
+  "inputs": {
+    "A1": 2,
+    "A2": 3
+  },
+  "result": 5,
+  "afterReload": "5",
+  "errors": [],
+  "scope": "Original browser formula engine; device-local draft storage, no cloud/lakehouse/AI"
+}

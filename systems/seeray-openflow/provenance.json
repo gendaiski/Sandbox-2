@@ -1,0 +1,13 @@
+{
+  "upstream": "https://github.com/SeeRay11/OpenFlow",
+  "tag": "v1.3.0",
+  "commit": "53b0470592ab7f1cefdc8bacb293cb0a0a97b1ab",
+  "license": "MIT",
+  "mode": "frontend-only",
+  "runtime_installed": false,
+  "project_id": "appgprj_6af315cd7e1c81918a42aaf0119e6a4f",
+  "url": "https://seeray-openflow-original.aelgendy673996.chatgpt.site",
+  "source_site_commit": "99f6255ead190f1223de654cb3a73f1f14a723eb",
+  "site_version": 2,
+  "revision": "Original full-height CSS/layout restored; original UI and actual user flows audited"
+}

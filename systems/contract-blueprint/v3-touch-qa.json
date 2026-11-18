@@ -1,0 +1,9 @@
+{
+  "documentClickEditUpdatesPaymentAndClause": true,
+  "pinchZoom": true,
+  "touchHandFreePan": true,
+  "handPreservesZoom": true,
+  "visualFollowsPython": true,
+  "frozenEditionPreserved": true,
+  "errors": []
+}

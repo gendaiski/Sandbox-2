@@ -1,0 +1,1 @@
+Apple SwiftUI, Foundation and UniformTypeIdentifiers only. Xcode 16+, iOS/iPadOS 17+. No external packages or backend.

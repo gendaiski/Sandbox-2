@@ -1,0 +1,11 @@
+{
+  "date": "2026-11-04",
+  "checks": {
+    "schemeXML": "parsed",
+    "bundledSnapshots": "valid JSON",
+    "originalExportHashes": "all match unchanged source"
+  },
+  "appleCompilation": "not run: Swift/Xcode unavailable on Linux",
+  "deviceTests": "not run",
+  "thirdPartyRuntimeDependencies": []
+}

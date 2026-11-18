@@ -1,0 +1,9 @@
+{
+  "status": "blocked",
+  "reason": "The public Git clone does not include the commercial runtime or license. No installation was attempted.",
+  "original_links": {
+    "gallery": "https://yfiles.com/demos/",
+    "playground": "https://yfiles.com/play",
+    "evaluation": "https://www.yworks.com/products/yfiles-for-html/evaluate"
+  }
+}

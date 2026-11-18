@@ -1,0 +1,15 @@
+{
+  "upstream": "https://github.com/agent-blueprint/free-blueprints",
+  "commit": "2cf1f63ccd1f2312e25ac4b1bcae2bf2db02f867",
+  "release": "No published release found; pinned main commit",
+  "package_version": "1.0.2",
+  "mcp_identity_version": "1.0.0",
+  "license_declaration": "MIT in README and package.json; no standalone LICENSE file",
+  "original_browser_ui_included": false,
+  "reader_is_added_convenience_ui": true,
+  "genuine_mcp_built_and_verified_locally": true,
+  "public_mcp_backend_deployed": false,
+  "agent_workflows_executed": false,
+  "live_url": "https://free-blueprints-original.aelgendy673996.chatgpt.site",
+  "site_id": "appgprj_6af31de188988191ae485f100dff1814"
+}

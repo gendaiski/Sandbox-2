@@ -1,0 +1,20 @@
+const originalFetch=window.fetch.bind(window);window.fetch=async(input:any,init?:any)=>{const u=String(input?.url||input);if(u.includes('localhost:')||u.includes('/api/v1'))return new Response(JSON.stringify({detail:'Backend not connected',conversations:[],messages:[]}),{status:init?.method&&init.method!=='GET'?503:200,headers:{'Content-Type':'application/json'}});return originalFetch(input,init)};
+import React,{Suspense} from 'react';import{createRoot}from'react-dom/client';import QueryProvider from '../components/providers/query-provider';import Shell from '../app/OpenClawLayoutShell';import {Toaster} from '../components/ui/toaster';import{usePathname}from './navigation';import '../app/globals.css';
+import C0 from '../app/OpenClawHomeClient';
+import C1 from '../app/audit-log/AuditLogClient';
+import C2 from '../app/network/NetworkClient';
+import C3 from '../app/integrations/OpenClawIntegrationsClient';
+import C4 from '../app/agent-tasks/AgentTasksClient';
+import C5 from '../app/tasks/TasksClient';
+import C6 from '../app/settings/SettingsClient';
+import C7 from '../app/templates/OpenClawTemplatesClient';
+import C8 from '../app/team/OpenClawTeamClient';
+import C9 from '../app/channels/OpenClawChannelsClient';
+import C10 from '../app/agents/OpenClawAgentsClient';
+import C11 from '../app/monitoring/MonitoringClient';
+import C12 from '../app/swarms/OpenClawSwarmsClient';
+import C13 from '../app/recursive-intelligence/RecursiveIntelligenceClient';
+import C14 from '../app/agents/[id]/OpenClawAgentDetailClient';
+import C15 from '../app/swarms/[id]/OpenClawSwarmDetailClient';
+function Page(){const path=usePathname();if(path==='/')return <C0/>;if(path==='/audit-log')return <C1/>;if(path==='/network')return <C2/>;if(path==='/integrations')return <C3/>;if(path==='/agent-tasks')return <C4/>;if(path==='/tasks')return <C5/>;if(path==='/settings')return <C6/>;if(path==='/templates')return <C7/>;if(path==='/team')return <C8/>;if(path==='/channels')return <C9/>;if(path==='/agents')return <C10/>;if(path==='/monitoring')return <C11/>;if(path==='/swarms')return <C12/>;if(path==='/recursive-intelligence')return <C13/>;if(path.startsWith('/agents/'))return <C14 agentId={path.split("/").pop()!} />;if(path.startsWith('/swarms/'))return <C15 swarmId={path.split("/").pop()!} />;return <p>Page unavailable in selected upstream revision.</p>}
+function App(){return <QueryProvider><div style={{background:'#fff3cd',padding:'8px 18px',fontSize:12}}>Original UI · Frontend preview · Create your own local drafts. Agent execution, telemetry and integrations need the backend. <a href="/">All apps</a></div><Shell><Suspense fallback={<p>Loading…</p>}><Page/></Suspense></Shell><Toaster/></QueryProvider>}createRoot(document.getElementById('root')!).render(<App/>);

@@ -1,0 +1,14 @@
+{
+  "schemeXML": "parsed",
+  "bundledCatalog": "JSON verified",
+  "thirdPartyRuntimeDependencies": [],
+  "AppleBuild": "Not run: no Xcode/Apple SDK in Linux",
+  "deviceTest": "Not run",
+  "projectSwiftSourceReferences": [
+    "WorkflowApp.swift",
+    "CatalogStore.swift",
+    "WorkspaceView.swift",
+    "WorkflowGraph.swift"
+  ],
+  "sourceReferencesExist": true
+}

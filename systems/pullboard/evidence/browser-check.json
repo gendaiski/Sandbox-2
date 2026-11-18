@@ -1,0 +1,51 @@
+{
+  "date": "2026-11-03T23:20:04.748Z",
+  "ui": "unchanged official v0.9.3 export",
+  "tabs": [
+    {
+      "name": "home",
+      "textLength": 590
+    },
+    {
+      "name": "items",
+      "textLength": 1661
+    },
+    {
+      "name": "shouts",
+      "textLength": 306
+    },
+    {
+      "name": "spec",
+      "textLength": 605
+    },
+    {
+      "name": "doctrine",
+      "textLength": 1845
+    },
+    {
+      "name": "activity",
+      "textLength": 1482
+    },
+    {
+      "name": "roadmap",
+      "textLength": 314
+    },
+    {
+      "name": "settings",
+      "textLength": 539
+    }
+  ],
+  "scriptErrors": [
+    "Theme pointer check: locator.click: Timeout 3000ms exceeded."
+  ],
+  "replay": "Event 1 / 18 · join",
+  "iPadViewport": {
+    "width": 820,
+    "height": 1180,
+    "horizontalOverflow": false
+  },
+  "limitations": [
+    "Read-only snapshot; writes require original local backend",
+    "Scripted tour seats are not model runs"
+  ]
+}

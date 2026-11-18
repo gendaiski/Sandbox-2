@@ -1,0 +1,30 @@
+{
+  "agentDraftPersisted": true,
+  "agentFormTabs": [
+    "Model",
+    "Knowledge",
+    "Memory",
+    "Guardrails",
+    "Tools",
+    "General"
+  ],
+  "officialTemplateNodeCount": 9,
+  "inspectorVisible": true,
+  "localSwarmTables": [
+    {
+      "table": "swarms",
+      "rows": 1
+    },
+    {
+      "table": "swarm_versions",
+      "rows": 1
+    }
+  ],
+  "tablet": {
+    "viewport": 820,
+    "overflow": false,
+    "sidebarElements": 40
+  },
+  "errors": [],
+  "agentRunsExecuted": 0
+}

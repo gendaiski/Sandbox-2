@@ -1,0 +1,12 @@
+{
+  "implementation": "Independent clean-room design and browser reference implementation",
+  "version": "0.1.0",
+  "official_product": "https://altaflow.com/",
+  "official_public_application_repository_found": false,
+  "private_repository_absence_proven": false,
+  "webhook_examples_reference": "https://github.com/airslate-oss/webhook-bots-docs/tree/f4e5ba0bc86280c66f76ea18e4b1a27ee9d5f047",
+  "site_id": "appgprj_6af3249dcf6881918ae9fa3e01552391",
+  "public_access_approved": false,
+  "backend_installed": false,
+  "api_or_model_usage": false
+}

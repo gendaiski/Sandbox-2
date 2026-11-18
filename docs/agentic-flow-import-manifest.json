@@ -1,0 +1,866 @@
+{
+  "sourceRepository": "gendaiski/Agentic-Coding-Space",
+  "sourceCommit": "ccff2f917e93ac9a2e050ce9a46f75c2e0b98ab6",
+  "files": [
+    {
+      "sourcePath": "projects/agentic-ai-workflows/README.md",
+      "path": "systems/agentic-ai-workflows/README.md",
+      "mode": "100644",
+      "originalSHA": "d341cfba432595485fd488ca1d54c4eb6ee0e013",
+      "sha": "d7061900fa606d402b2871ea8620719fc6cd0267",
+      "bytes": 3130,
+      "documentationPathsAdjusted": true
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/TECHNICAL-SPEC.md",
+      "path": "systems/agentic-ai-workflows/TECHNICAL-SPEC.md",
+      "mode": "100644",
+      "originalSHA": "313c9ea4396b6a04bd8ca45eb09a577f1837e32a",
+      "sha": "313c9ea4396b6a04bd8ca45eb09a577f1837e32a",
+      "bytes": 14842,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/browser/app.js",
+      "path": "systems/agentic-ai-workflows/browser/app.js",
+      "mode": "100644",
+      "originalSHA": "43a4741eb9074a9a605329fa4cb97307055276c4",
+      "sha": "43a4741eb9074a9a605329fa4cb97307055276c4",
+      "bytes": 7719,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/browser/catalog.json",
+      "path": "systems/agentic-ai-workflows/browser/catalog.json",
+      "mode": "100644",
+      "originalSHA": "fe0bf36c0bba46a286c46bd38fdf32630613b985",
+      "sha": "fe0bf36c0bba46a286c46bd38fdf32630613b985",
+      "bytes": 45657,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/browser/index.html",
+      "path": "systems/agentic-ai-workflows/browser/index.html",
+      "mode": "100644",
+      "originalSHA": "687e7f5f3e1de2bf079d6045d4180ca44f72f6df",
+      "sha": "687e7f5f3e1de2bf079d6045d4180ca44f72f6df",
+      "bytes": 2191,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/browser/style.css",
+      "path": "systems/agentic-ai-workflows/browser/style.css",
+      "mode": "100644",
+      "originalSHA": "5c1c1a5dd5cd5d74b6eb52d84df591e216b42b33",
+      "sha": "5c1c1a5dd5cd5d74b6eb52d84df591e216b42b33",
+      "bytes": 5779,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/evidence/browser-check.json",
+      "path": "systems/agentic-ai-workflows/evidence/browser-check.json",
+      "mode": "100644",
+      "originalSHA": "b7acf67ff4cbd1c882e0fd3d5103f196d208fc5a",
+      "sha": "b7acf67ff4cbd1c882e0fd3d5103f196d208fc5a",
+      "bytes": 1782,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/evidence/document-extraction.txt",
+      "path": "systems/agentic-ai-workflows/evidence/document-extraction.txt",
+      "mode": "100644",
+      "originalSHA": "15b46d7975a2af6cbacbf1da40b5954670a33f6e",
+      "sha": "15b46d7975a2af6cbacbf1da40b5954670a33f6e",
+      "bytes": 305,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/evidence/native-checks.json",
+      "path": "systems/agentic-ai-workflows/evidence/native-checks.json",
+      "mode": "100644",
+      "originalSHA": "bf6d3061bc426c40be2370c91e863152bc330ef0",
+      "sha": "bf6d3061bc426c40be2370c91e863152bc330ef0",
+      "bytes": 365,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/evidence/source-sha256.json",
+      "path": "systems/agentic-ai-workflows/evidence/source-sha256.json",
+      "mode": "100644",
+      "originalSHA": "1cef92f81f5e68f37219b5e3b80e5746e3e47af3",
+      "sha": "1cef92f81f5e68f37219b5e3b80e5746e3e47af3",
+      "bytes": 1231,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/evidence/static-analysis.json",
+      "path": "systems/agentic-ai-workflows/evidence/static-analysis.json",
+      "mode": "100644",
+      "originalSHA": "7d65ac25c36b30163e3e9f81e4b1cb199595e9b7",
+      "sha": "7d65ac25c36b30163e3e9f81e4b1cb199595e9b7",
+      "bytes": 3212,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/swift-native/README.md",
+      "path": "systems/agentic-ai-workflows/swift-native/README.md",
+      "mode": "100644",
+      "originalSHA": "d9212e9c68f4c4cae810bb58954b6f126a8b797c",
+      "sha": "d9212e9c68f4c4cae810bb58954b6f126a8b797c",
+      "bytes": 1304,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/swift-native/WorkflowExplorer.xcodeproj/project.pbxproj",
+      "path": "systems/agentic-ai-workflows/swift-native/WorkflowExplorer.xcodeproj/project.pbxproj",
+      "mode": "100644",
+      "originalSHA": "4f3ee53b37d98b6086b8c64c2373d73c840f178a",
+      "sha": "4f3ee53b37d98b6086b8c64c2373d73c840f178a",
+      "bytes": 5679,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/swift-native/WorkflowExplorer.xcodeproj/xcshareddata/xcschemes/WorkflowExplorer.xcscheme",
+      "path": "systems/agentic-ai-workflows/swift-native/WorkflowExplorer.xcodeproj/xcshareddata/xcschemes/WorkflowExplorer.xcscheme",
+      "mode": "100644",
+      "originalSHA": "ed1d233e0d5ba40a51658ac14f98ad6871b0f5e1",
+      "sha": "ed1d233e0d5ba40a51658ac14f98ad6871b0f5e1",
+      "bytes": 1359,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/swift-native/WorkflowExplorer/CatalogStore.swift",
+      "path": "systems/agentic-ai-workflows/swift-native/WorkflowExplorer/CatalogStore.swift",
+      "mode": "100644",
+      "originalSHA": "c705c623eea88be54f22a9a16b9cacf90a84e381",
+      "sha": "c705c623eea88be54f22a9a16b9cacf90a84e381",
+      "bytes": 1222,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/swift-native/WorkflowExplorer/Resources/DEPENDENCIES.txt",
+      "path": "systems/agentic-ai-workflows/swift-native/WorkflowExplorer/Resources/DEPENDENCIES.txt",
+      "mode": "100644",
+      "originalSHA": "481b8528bbe37e0b4af85c202ba2a6dd2441cc05",
+      "sha": "481b8528bbe37e0b4af85c202ba2a6dd2441cc05",
+      "bytes": 119,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/swift-native/WorkflowExplorer/Resources/Documentation/provenance.txt",
+      "path": "systems/agentic-ai-workflows/swift-native/WorkflowExplorer/Resources/Documentation/provenance.txt",
+      "mode": "100644",
+      "originalSHA": "b8dd68b2f9b282cd83f20ba63c9281f01d6cd411",
+      "sha": "b8dd68b2f9b282cd83f20ba63c9281f01d6cd411",
+      "bytes": 163,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/swift-native/WorkflowExplorer/Resources/catalog.json",
+      "path": "systems/agentic-ai-workflows/swift-native/WorkflowExplorer/Resources/catalog.json",
+      "mode": "100644",
+      "originalSHA": "fe0bf36c0bba46a286c46bd38fdf32630613b985",
+      "sha": "fe0bf36c0bba46a286c46bd38fdf32630613b985",
+      "bytes": 45657,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/swift-native/WorkflowExplorer/WorkflowApp.swift",
+      "path": "systems/agentic-ai-workflows/swift-native/WorkflowExplorer/WorkflowApp.swift",
+      "mode": "100644",
+      "originalSHA": "3406778166258d15a1006e1dd28970e55655712b",
+      "sha": "3406778166258d15a1006e1dd28970e55655712b",
+      "bytes": 195,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/swift-native/WorkflowExplorer/WorkflowGraph.swift",
+      "path": "systems/agentic-ai-workflows/swift-native/WorkflowExplorer/WorkflowGraph.swift",
+      "mode": "100644",
+      "originalSHA": "0384e9990c1347a48fa63ffe31cc6dd7475d3fd8",
+      "sha": "0384e9990c1347a48fa63ffe31cc6dd7475d3fd8",
+      "bytes": 2042,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentic-ai-workflows/swift-native/WorkflowExplorer/WorkspaceView.swift",
+      "path": "systems/agentic-ai-workflows/swift-native/WorkflowExplorer/WorkspaceView.swift",
+      "mode": "100644",
+      "originalSHA": "dd3c9be7a5b5a87fb71d4619af734e886fc3df53",
+      "sha": "dd3c9be7a5b5a87fb71d4619af734e886fc3df53",
+      "bytes": 5680,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/README.md",
+      "path": "systems/agentswarms/README.md",
+      "mode": "100644",
+      "originalSHA": "ef57607c18f2f9db28cc83e8d81425dd22731116",
+      "sha": "4c8d2c9a18dddedb9175a6ddfdd2b720451e3ec0",
+      "bytes": 5700,
+      "documentationPathsAdjusted": true
+    },
+    {
+      "sourcePath": "projects/agentswarms/TECHNICAL-SPEC.md",
+      "path": "systems/agentswarms/TECHNICAL-SPEC.md",
+      "mode": "100644",
+      "originalSHA": "c26d2eebebba97cf1b8f978f53c0f3f043cbf4e2",
+      "sha": "c26d2eebebba97cf1b8f978f53c0f3f043cbf4e2",
+      "bytes": 7642,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/UPSTREAM-LICENSE.md",
+      "path": "systems/agentswarms/UPSTREAM-LICENSE.md",
+      "mode": "100644",
+      "originalSHA": "0d5c73878d694c5e381ab5380af1fda3325ab56e",
+      "sha": "0d5c73878d694c5e381ab5380af1fda3325ab56e",
+      "bytes": 3919,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/evidence/all-static-pages.json",
+      "path": "systems/agentswarms/evidence/all-static-pages.json",
+      "mode": "100644",
+      "originalSHA": "6ffc8c3c0bc3f9faac665fa9406eacbf7cd0becd",
+      "sha": "6ffc8c3c0bc3f9faac665fa9406eacbf7cd0becd",
+      "bytes": 14601,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/evidence/browser-sql.json",
+      "path": "systems/agentswarms/evidence/browser-sql.json",
+      "mode": "100644",
+      "originalSHA": "cc43e2d092e78352fd9aeb0b8edd829819e2e821",
+      "sha": "cc43e2d092e78352fd9aeb0b8edd829819e2e821",
+      "bytes": 130,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/evidence/build.txt",
+      "path": "systems/agentswarms/evidence/build.txt",
+      "mode": "100644",
+      "originalSHA": "4f36ebba39576d801ceca78d7e3741c75270290f",
+      "sha": "4f36ebba39576d801ceca78d7e3741c75270290f",
+      "bytes": 39722,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/evidence/frontend-workflows.json",
+      "path": "systems/agentswarms/evidence/frontend-workflows.json",
+      "mode": "100644",
+      "originalSHA": "ac0841b199fe511494d9703df1ccce01a1a8b3dd",
+      "sha": "ac0841b199fe511494d9703df1ccce01a1a8b3dd",
+      "bytes": 485,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/evidence/navigation-check.json",
+      "path": "systems/agentswarms/evidence/navigation-check.json",
+      "mode": "100644",
+      "originalSHA": "081fc35eb5d08b0613c151db12ba49e9fe493904",
+      "sha": "081fc35eb5d08b0613c151db12ba49e9fe493904",
+      "bytes": 10555,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/evidence/routing-build.txt",
+      "path": "systems/agentswarms/evidence/routing-build.txt",
+      "mode": "100644",
+      "originalSHA": "2f72558a960317e8cd9cd2202b33223b4b958ea4",
+      "sha": "2f72558a960317e8cd9cd2202b33223b4b958ea4",
+      "bytes": 39722,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/evidence/spreadsheet-check.json",
+      "path": "systems/agentswarms/evidence/spreadsheet-check.json",
+      "mode": "100644",
+      "originalSHA": "ddb4a6aece58b7fd74329bb372c2bf938f6c16d1",
+      "sha": "ddb4a6aece58b7fd74329bb372c2bf938f6c16d1",
+      "bytes": 251,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/evidence/static-routing-repair.json",
+      "path": "systems/agentswarms/evidence/static-routing-repair.json",
+      "mode": "100644",
+      "originalSHA": "fba471b432a5b1ddd8beffa2396402f4a16fd020",
+      "sha": "fba471b432a5b1ddd8beffa2396402f4a16fd020",
+      "bytes": 1044,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/evidence/ui-fidelity.json",
+      "path": "systems/agentswarms/evidence/ui-fidelity.json",
+      "mode": "100644",
+      "originalSHA": "51d96b7b8460205a4dec35697d0d90fb5246a87c",
+      "sha": "51d96b7b8460205a4dec35697d0d90fb5246a87c",
+      "bytes": 249,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/evidence/wasm-packaging.json",
+      "path": "systems/agentswarms/evidence/wasm-packaging.json",
+      "mode": "100644",
+      "originalSHA": "02788f89d3614a0ebe28772d027b8ece19e0aa4a",
+      "sha": "02788f89d3614a0ebe28772d027b8ece19e0aa4a",
+      "bytes": 598,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/frontend-overrides/index.html",
+      "path": "systems/agentswarms/frontend-overrides/index.html",
+      "mode": "100644",
+      "originalSHA": "90171b7c83fa8767bf51dc7dbd22502958ee4d25",
+      "sha": "90171b7c83fa8767bf51dc7dbd22502958ee4d25",
+      "bytes": 463,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/frontend-overrides/preview/auth.tsx",
+      "path": "systems/agentswarms/frontend-overrides/preview/auth.tsx",
+      "mode": "100644",
+      "originalSHA": "20c60903835c8c3954ae9fa9d8b527117c9d35c2",
+      "sha": "20c60903835c8c3954ae9fa9d8b527117c9d35c2",
+      "bytes": 270,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/frontend-overrides/preview/database.ts",
+      "path": "systems/agentswarms/frontend-overrides/preview/database.ts",
+      "mode": "100644",
+      "originalSHA": "443d49d19f116de4b0fd238cdc8e4f16785df48a",
+      "sha": "443d49d19f116de4b0fd238cdc8e4f16785df48a",
+      "bytes": 4579,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/frontend-overrides/preview/dispatch.ts",
+      "path": "systems/agentswarms/frontend-overrides/preview/dispatch.ts",
+      "mode": "100644",
+      "originalSHA": "42a3fbf85e6b3cded2bd26ef831ce952bfa42505",
+      "sha": "42a3fbf85e6b3cded2bd26ef831ce952bfa42505",
+      "bytes": 1605,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/frontend-overrides/preview/engine-check.html",
+      "path": "systems/agentswarms/frontend-overrides/preview/engine-check.html",
+      "mode": "100644",
+      "originalSHA": "9a79b0333c0293da045f1fa1fc98c0ae3e56548e",
+      "sha": "9a79b0333c0293da045f1fa1fc98c0ae3e56548e",
+      "bytes": 69,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/frontend-overrides/preview/iam.ts",
+      "path": "systems/agentswarms/frontend-overrides/preview/iam.ts",
+      "mode": "100644",
+      "originalSHA": "a65c055897126fd2555de46fe8b893ff07658995",
+      "sha": "a65c055897126fd2555de46fe8b893ff07658995",
+      "bytes": 330,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/frontend-overrides/preview/main.tsx",
+      "path": "systems/agentswarms/frontend-overrides/preview/main.tsx",
+      "mode": "100644",
+      "originalSHA": "5de7ab5a3c76e6e3e58c81957faced3c2a9b817e",
+      "sha": "5de7ab5a3c76e6e3e58c81957faced3c2a9b817e",
+      "bytes": 2001,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/frontend-overrides/preview/sheets.ts",
+      "path": "systems/agentswarms/frontend-overrides/preview/sheets.ts",
+      "mode": "100644",
+      "originalSHA": "e40c9ca739867b984944f9c681474f98d235519d",
+      "sha": "e40c9ca739867b984944f9c681474f98d235519d",
+      "bytes": 4672,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/frontend-overrides/preview/start.ts",
+      "path": "systems/agentswarms/frontend-overrides/preview/start.ts",
+      "mode": "100644",
+      "originalSHA": "b62e954993c1049be3137a3443d7d1589be72880",
+      "sha": "b62e954993c1049be3137a3443d7d1589be72880",
+      "bytes": 494,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/frontend-overrides/src/lib/browserDuckdb.ts",
+      "path": "systems/agentswarms/frontend-overrides/src/lib/browserDuckdb.ts",
+      "mode": "100644",
+      "originalSHA": "f21881ca31db31fd654abc97c609d72732d4cbe8",
+      "sha": "f21881ca31db31fd654abc97c609d72732d4cbe8",
+      "bytes": 14840,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/frontend-overrides/src/router.tsx",
+      "path": "systems/agentswarms/frontend-overrides/src/router.tsx",
+      "mode": "100644",
+      "originalSHA": "76b2e7bc800de7859a6a8f82212121a8db0d1b52",
+      "sha": "76b2e7bc800de7859a6a8f82212121a8db0d1b52",
+      "bytes": 2985,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/frontend-overrides/src/routes/__root.tsx",
+      "path": "systems/agentswarms/frontend-overrides/src/routes/__root.tsx",
+      "mode": "100644",
+      "originalSHA": "4f147ebd5ba5896d5b70ee2af17c7a331fde843e",
+      "sha": "4f147ebd5ba5896d5b70ee2af17c7a331fde843e",
+      "bytes": 876,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/frontend-overrides/vite.config.ts",
+      "path": "systems/agentswarms/frontend-overrides/vite.config.ts",
+      "mode": "100644",
+      "originalSHA": "92826d2b94fa71f1d583444a53bda00c83f81364",
+      "sha": "92826d2b94fa71f1d583444a53bda00c83f81364",
+      "bytes": 3975,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/prepare-frontend.py",
+      "path": "systems/agentswarms/prepare-frontend.py",
+      "mode": "100644",
+      "originalSHA": "d76e6c296eb5bc7b50d5cfac1e9b3ae63ab50816",
+      "sha": "d76e6c296eb5bc7b50d5cfac1e9b3ae63ab50816",
+      "bytes": 2370,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/route-inventory.json",
+      "path": "systems/agentswarms/route-inventory.json",
+      "mode": "100644",
+      "originalSHA": "67a7d11fedb725e20ccae08f20b40f8699a209df",
+      "sha": "67a7d11fedb725e20ccae08f20b40f8699a209df",
+      "bytes": 22013,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/agentswarms/versions.json",
+      "path": "systems/agentswarms/versions.json",
+      "mode": "100644",
+      "originalSHA": "d32abb48662c05f10403458d3c2cb7a107a2988b",
+      "sha": "d32abb48662c05f10403458d3c2cb7a107a2988b",
+      "bytes": 389,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/graphflow/README.md",
+      "path": "systems/graphflow/README.md",
+      "mode": "100644",
+      "originalSHA": "6ede93c3811f7403b8864384fd35a003af25d224",
+      "sha": "ce7b02f42b14abae280e9adf634635f108bd8880",
+      "bytes": 2352,
+      "documentationPathsAdjusted": true
+    },
+    {
+      "sourcePath": "projects/graphflow/TECHNICAL-SPEC.md",
+      "path": "systems/graphflow/TECHNICAL-SPEC.md",
+      "mode": "100644",
+      "originalSHA": "3ce553337111dc1dfff51b8e58889f6b8f978d79",
+      "sha": "3ce553337111dc1dfff51b8e58889f6b8f978d79",
+      "bytes": 2573,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/graphflow/evidence/browser-check.json",
+      "path": "systems/graphflow/evidence/browser-check.json",
+      "mode": "100644",
+      "originalSHA": "737f42b3e85b9a86a782be34815f595132abecce",
+      "sha": "737f42b3e85b9a86a782be34815f595132abecce",
+      "bytes": 784,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/graphflow/versions.json",
+      "path": "systems/graphflow/versions.json",
+      "mode": "100644",
+      "originalSHA": "264dde9aa4c36910e2e7d2849045dc3e9433af63",
+      "sha": "264dde9aa4c36910e2e7d2849045dc3e9433af63",
+      "bytes": 351,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/README.md",
+      "path": "systems/pullboard/README.md",
+      "mode": "100644",
+      "originalSHA": "824dc3707fe92211df7c11085cb92fdb292f12a2",
+      "sha": "67d9dc1b9261737e298df5d3846c27ec999c9e31",
+      "bytes": 4172,
+      "documentationPathsAdjusted": true
+    },
+    {
+      "sourcePath": "projects/pullboard/TECHNICAL-SPEC.md",
+      "path": "systems/pullboard/TECHNICAL-SPEC.md",
+      "mode": "100644",
+      "originalSHA": "4056d156657d27f17680264f63858074424c1e22",
+      "sha": "4056d156657d27f17680264f63858074424c1e22",
+      "bytes": 8628,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/UPSTREAM-LICENSE",
+      "path": "systems/pullboard/UPSTREAM-LICENSE",
+      "mode": "100644",
+      "originalSHA": "8a624e4e254f6bb64e20a12a1ad028353061cf14",
+      "sha": "8a624e4e254f6bb64e20a12a1ad028353061cf14",
+      "bytes": 1068,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/browser-preview/README.md",
+      "path": "systems/pullboard/browser-preview/README.md",
+      "mode": "100644",
+      "originalSHA": "339fc13ed366497ebbeff8c1215186d35bef4f60",
+      "sha": "339fc13ed366497ebbeff8c1215186d35bef4f60",
+      "bytes": 1453,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/browser-preview/prepare.py",
+      "path": "systems/pullboard/browser-preview/prepare.py",
+      "mode": "100644",
+      "originalSHA": "e0809e58cf2c0617f705a4177b2a535e0cbb0d8d",
+      "sha": "e0809e58cf2c0617f705a4177b2a535e0cbb0d8d",
+      "bytes": 1139,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/browser-preview/tablet-layout.css",
+      "path": "systems/pullboard/browser-preview/tablet-layout.css",
+      "mode": "100644",
+      "originalSHA": "99c49fa382f2006b65318e4090d65c8e388871cd",
+      "sha": "99c49fa382f2006b65318e4090d65c8e388871cd",
+      "bytes": 1022,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/browser-preview/verification.json",
+      "path": "systems/pullboard/browser-preview/verification.json",
+      "mode": "100644",
+      "originalSHA": "ff80a476d9bb4d9f687b69a16e03225acdfe94eb",
+      "sha": "ff80a476d9bb4d9f687b69a16e03225acdfe94eb",
+      "bytes": 1856,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/browser-preview/verify.cjs",
+      "path": "systems/pullboard/browser-preview/verify.cjs",
+      "mode": "100644",
+      "originalSHA": "cb33cac31a5ae2cce865b20cfc3ffe99fdf70a6d",
+      "sha": "cb33cac31a5ae2cce865b20cfc3ffe99fdf70a6d",
+      "bytes": 1575,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/demo/api/v1/boards.json",
+      "path": "systems/pullboard/demo/api/v1/boards.json",
+      "mode": "100644",
+      "originalSHA": "3e4a4b305e9ddb236bf7b1a9994b111e572cd6ac",
+      "sha": "3e4a4b305e9ddb236bf7b1a9994b111e572cd6ac",
+      "bytes": 179,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/demo/api/v1/boards/e89d30954c8df7d968ca703c0b680129/events.json",
+      "path": "systems/pullboard/demo/api/v1/boards/e89d30954c8df7d968ca703c0b680129/events.json",
+      "mode": "100644",
+      "originalSHA": "d7b6df36cdbb196057051582a84cb64c63b2bf7c",
+      "sha": "d7b6df36cdbb196057051582a84cb64c63b2bf7c",
+      "bytes": 7412,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/demo/api/v1/boards/e89d30954c8df7d968ca703c0b680129/state.json",
+      "path": "systems/pullboard/demo/api/v1/boards/e89d30954c8df7d968ca703c0b680129/state.json",
+      "mode": "100644",
+      "originalSHA": "856fede4710aac6c6f1892ab7c3b79c8766ea33e",
+      "sha": "856fede4710aac6c6f1892ab7c3b79c8766ea33e",
+      "bytes": 34538,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/demo/index.html",
+      "path": "systems/pullboard/demo/index.html",
+      "mode": "100644",
+      "originalSHA": "b527961ae4519bde2e003000685a1227994ac905",
+      "sha": "b527961ae4519bde2e003000685a1227994ac905",
+      "bytes": 370146,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/demo/view.css",
+      "path": "systems/pullboard/demo/view.css",
+      "mode": "100644",
+      "originalSHA": "56f4e217720146a881c90fd145e1c6557ba8dae4",
+      "sha": "56f4e217720146a881c90fd145e1c6557ba8dae4",
+      "bytes": 95033,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/evidence/README.md",
+      "path": "systems/pullboard/evidence/README.md",
+      "mode": "100644",
+      "originalSHA": "60271ecc951badcf0dce3cf21a3b3708fafef4a7",
+      "sha": "60271ecc951badcf0dce3cf21a3b3708fafef4a7",
+      "bytes": 1676,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/evidence/browser-check.json",
+      "path": "systems/pullboard/evidence/browser-check.json",
+      "mode": "100644",
+      "originalSHA": "089ce5ada216bb362439ba7979a9f66385ba9244",
+      "sha": "089ce5ada216bb362439ba7979a9f66385ba9244",
+      "bytes": 950,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/evidence/export-sha256.json",
+      "path": "systems/pullboard/evidence/export-sha256.json",
+      "mode": "100644",
+      "originalSHA": "50ee4d0f7b9aa9dae4dc7766778edd57ad68187f",
+      "sha": "50ee4d0f7b9aa9dae4dc7766778edd57ad68187f",
+      "bytes": 524,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/evidence/tour-output.txt",
+      "path": "systems/pullboard/evidence/tour-output.txt",
+      "mode": "100644",
+      "originalSHA": "a73b13abd29ccdb63ff405deecc59ae8c932b5d7",
+      "sha": "a73b13abd29ccdb63ff405deecc59ae8c932b5d7",
+      "bytes": 4474,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/evidence/tour-stderr.txt",
+      "path": "systems/pullboard/evidence/tour-stderr.txt",
+      "mode": "100644",
+      "originalSHA": "43cb469c996030b374088cf470e893dcee27ec51",
+      "sha": "43cb469c996030b374088cf470e893dcee27ec51",
+      "bytes": 278,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/evidence/upstream-tests.txt",
+      "path": "systems/pullboard/evidence/upstream-tests.txt",
+      "mode": "100644",
+      "originalSHA": "a0a174f8a766f2dc83bd9248bb408bfa041c0849",
+      "sha": "a0a174f8a766f2dc83bd9248bb408bfa041c0849",
+      "bytes": 7674,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/official-sample/api/v1/boards.json",
+      "path": "systems/pullboard/official-sample/api/v1/boards.json",
+      "mode": "100644",
+      "originalSHA": "93ff0d918f22456a93b274febeeb404a6d22b60c",
+      "sha": "93ff0d918f22456a93b274febeeb404a6d22b60c",
+      "bytes": 159,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/official-sample/api/v1/boards/demo-board/events.json",
+      "path": "systems/pullboard/official-sample/api/v1/boards/demo-board/events.json",
+      "mode": "100644",
+      "originalSHA": "ac17ceef28f3f1be7830c09b8558122e21e0a51d",
+      "sha": "ac17ceef28f3f1be7830c09b8558122e21e0a51d",
+      "bytes": 8778,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/official-sample/api/v1/boards/demo-board/state.json",
+      "path": "systems/pullboard/official-sample/api/v1/boards/demo-board/state.json",
+      "mode": "100644",
+      "originalSHA": "fb8e4f3f1661a68b8578fd4a25f384ee4ff20fc3",
+      "sha": "fb8e4f3f1661a68b8578fd4a25f384ee4ff20fc3",
+      "bytes": 36436,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/official-sample/index.html",
+      "path": "systems/pullboard/official-sample/index.html",
+      "mode": "100644",
+      "originalSHA": "076864a714877bfe205cea4fecb36294c439a895",
+      "sha": "076864a714877bfe205cea4fecb36294c439a895",
+      "bytes": 315856,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/official-sample/view.css",
+      "path": "systems/pullboard/official-sample/view.css",
+      "mode": "100644",
+      "originalSHA": "6fd99756bece8ecf1f6a7a103252b63ea7027d16",
+      "sha": "6fd99756bece8ecf1f6a7a103252b63ea7027d16",
+      "bytes": 91291,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/scripts/tour.mjs",
+      "path": "systems/pullboard/scripts/tour.mjs",
+      "mode": "100644",
+      "originalSHA": "39029610e8c20c897e56c5017809d9455cd6d7d1",
+      "sha": "39029610e8c20c897e56c5017809d9455cd6d7d1",
+      "bytes": 616,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/source-inventory.json",
+      "path": "systems/pullboard/source-inventory.json",
+      "mode": "100644",
+      "originalSHA": "2b5c165e3ca3373dcea76a85daed3849ac0762c8",
+      "sha": "2b5c165e3ca3373dcea76a85daed3849ac0762c8",
+      "bytes": 3021,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/swift-native/PullboardNative.xcodeproj/project.pbxproj",
+      "path": "systems/pullboard/swift-native/PullboardNative.xcodeproj/project.pbxproj",
+      "mode": "100644",
+      "originalSHA": "7c8cda2f4ccb19892656328e4854133cbcc65c0d",
+      "sha": "7c8cda2f4ccb19892656328e4854133cbcc65c0d",
+      "bytes": 5669,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/swift-native/PullboardNative.xcodeproj/xcshareddata/xcschemes/PullboardNative.xcscheme",
+      "path": "systems/pullboard/swift-native/PullboardNative.xcodeproj/xcshareddata/xcschemes/PullboardNative.xcscheme",
+      "mode": "100644",
+      "originalSHA": "e6236fd7191e5f13c1e01dd82d55a92cb4eb655b",
+      "sha": "e6236fd7191e5f13c1e01dd82d55a92cb4eb655b",
+      "bytes": 1353,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/swift-native/PullboardNative/BoardStore.swift",
+      "path": "systems/pullboard/swift-native/PullboardNative/BoardStore.swift",
+      "mode": "100644",
+      "originalSHA": "a45c1e23f6d23db15f98dc0e6b716fdd2bb42ff3",
+      "sha": "a45c1e23f6d23db15f98dc0e6b716fdd2bb42ff3",
+      "bytes": 2843,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/swift-native/PullboardNative/OriginalUIView.swift",
+      "path": "systems/pullboard/swift-native/PullboardNative/OriginalUIView.swift",
+      "mode": "100644",
+      "originalSHA": "d4ecae091a23359f322b5e9ade719b287c5597a6",
+      "sha": "d4ecae091a23359f322b5e9ade719b287c5597a6",
+      "bytes": 2768,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/swift-native/PullboardNative/PullboardApp.swift",
+      "path": "systems/pullboard/swift-native/PullboardNative/PullboardApp.swift",
+      "mode": "100644",
+      "originalSHA": "b8c2eb0fb93f5cbb46860d9adb11b887c26fb3bc",
+      "sha": "b8c2eb0fb93f5cbb46860d9adb11b887c26fb3bc",
+      "bytes": 199,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/swift-native/PullboardNative/Resources/OriginalUI/api/v1/boards.json",
+      "path": "systems/pullboard/swift-native/PullboardNative/Resources/OriginalUI/api/v1/boards.json",
+      "mode": "100644",
+      "originalSHA": "3e4a4b305e9ddb236bf7b1a9994b111e572cd6ac",
+      "sha": "3e4a4b305e9ddb236bf7b1a9994b111e572cd6ac",
+      "bytes": 179,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/swift-native/PullboardNative/Resources/OriginalUI/api/v1/boards/e89d30954c8df7d968ca703c0b680129/events.json",
+      "path": "systems/pullboard/swift-native/PullboardNative/Resources/OriginalUI/api/v1/boards/e89d30954c8df7d968ca703c0b680129/events.json",
+      "mode": "100644",
+      "originalSHA": "d7b6df36cdbb196057051582a84cb64c63b2bf7c",
+      "sha": "d7b6df36cdbb196057051582a84cb64c63b2bf7c",
+      "bytes": 7412,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/swift-native/PullboardNative/Resources/OriginalUI/api/v1/boards/e89d30954c8df7d968ca703c0b680129/state.json",
+      "path": "systems/pullboard/swift-native/PullboardNative/Resources/OriginalUI/api/v1/boards/e89d30954c8df7d968ca703c0b680129/state.json",
+      "mode": "100644",
+      "originalSHA": "856fede4710aac6c6f1892ab7c3b79c8766ea33e",
+      "sha": "856fede4710aac6c6f1892ab7c3b79c8766ea33e",
+      "bytes": 34538,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/swift-native/PullboardNative/Resources/OriginalUI/index.html",
+      "path": "systems/pullboard/swift-native/PullboardNative/Resources/OriginalUI/index.html",
+      "mode": "100644",
+      "originalSHA": "b527961ae4519bde2e003000685a1227994ac905",
+      "sha": "b527961ae4519bde2e003000685a1227994ac905",
+      "bytes": 370146,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/swift-native/PullboardNative/Resources/OriginalUI/view.css",
+      "path": "systems/pullboard/swift-native/PullboardNative/Resources/OriginalUI/view.css",
+      "mode": "100644",
+      "originalSHA": "56f4e217720146a881c90fd145e1c6557ba8dae4",
+      "sha": "56f4e217720146a881c90fd145e1c6557ba8dae4",
+      "bytes": 95033,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/swift-native/PullboardNative/Resources/sample.json",
+      "path": "systems/pullboard/swift-native/PullboardNative/Resources/sample.json",
+      "mode": "100644",
+      "originalSHA": "fb8e4f3f1661a68b8578fd4a25f384ee4ff20fc3",
+      "sha": "fb8e4f3f1661a68b8578fd4a25f384ee4ff20fc3",
+      "bytes": 36436,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/swift-native/PullboardNative/Resources/tour.json",
+      "path": "systems/pullboard/swift-native/PullboardNative/Resources/tour.json",
+      "mode": "100644",
+      "originalSHA": "856fede4710aac6c6f1892ab7c3b79c8766ea33e",
+      "sha": "856fede4710aac6c6f1892ab7c3b79c8766ea33e",
+      "bytes": 34538,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/swift-native/PullboardNative/WorkspaceView.swift",
+      "path": "systems/pullboard/swift-native/PullboardNative/WorkspaceView.swift",
+      "mode": "100644",
+      "originalSHA": "a94818da2ffb722a7aba1b290cfb17851f6f8e60",
+      "sha": "a94818da2ffb722a7aba1b290cfb17851f6f8e60",
+      "bytes": 10730,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/swift-native/README.md",
+      "path": "systems/pullboard/swift-native/README.md",
+      "mode": "100644",
+      "originalSHA": "3cd8cdc78f2cfcadc708b839d72d81a70acc9cc1",
+      "sha": "3cd8cdc78f2cfcadc708b839d72d81a70acc9cc1",
+      "bytes": 2919,
+      "documentationPathsAdjusted": false
+    },
+    {
+      "sourcePath": "projects/pullboard/swift-native/verification.json",
+      "path": "systems/pullboard/swift-native/verification.json",
+      "mode": "100644",
+      "originalSHA": "fd8fdef15573ce742c64eff12ccea1522c05a791",
+      "sha": "fd8fdef15573ce742c64eff12ccea1522c05a791",
+      "bytes": 302,
+      "documentationPathsAdjusted": false
+    }
+  ],
+  "existingSystemsPreserved": [
+    "flowise",
+    "openflow",
+    "chunckerflow"
+  ]
+}

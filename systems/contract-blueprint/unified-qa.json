@@ -1,0 +1,13 @@
+{
+  "singleEntry": true,
+  "autoRunsOnlyTrustedStarter": true,
+  "pythonEditsUpdateAgreement": true,
+  "pythonEditsUpdateSourceMap": true,
+  "pythonEditsUpdateFullWorkflow": true,
+  "pythonCategoryUpdatesMap": true,
+  "reviewStateSurvivesViewSwitch": true,
+  "sharedSourceReader": true,
+  "reloadPreservesWorkspace": true,
+  "ipad": true,
+  "errors": []
+}

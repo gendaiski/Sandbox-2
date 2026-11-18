@@ -1,0 +1,1 @@
+{"name":"seeray-openflow-original-preview","private":true,"type":"module","scripts":{"build":"vite build"},"dependencies":{"solid-js":"1.9.10"},"devDependencies":{"vite":"7.1.4","vite-plugin-solid":"2.11.10","typescript":"5.8.2"}}

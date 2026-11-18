@@ -1,0 +1,9 @@
+{
+  "pinchZoomWithTouchEvents": true,
+  "visualValuesFromPython": true,
+  "customMilestonesFromPython": true,
+  "frozenEditionSurvivesSourceChanges": true,
+  "sourceChangeWarning": true,
+  "rebuildEdition": true,
+  "errors": []
+}

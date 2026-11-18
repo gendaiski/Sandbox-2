@@ -1,0 +1,23 @@
+{
+  "accordHomepage": true,
+  "rootAndCleanRoutes": true,
+  "multiLevelSidebar": true,
+  "collapseRail": true,
+  "stageDisclosure": true,
+  "commandPaletteKeyboard": true,
+  "contextualRunAction": true,
+  "pythonBindingsPreserved": true,
+  "fullWorkspaceBackup": true,
+  "matterSwitching": true,
+  "mobileDrawer": true,
+  "desktopWidths": [
+    1440,
+    1024
+  ],
+  "mobileWidths": [
+    768,
+    375
+  ],
+  "resumeJourney": true,
+  "errors": []
+}

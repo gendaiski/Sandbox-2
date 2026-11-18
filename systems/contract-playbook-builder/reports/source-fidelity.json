@@ -1,0 +1,26 @@
+{
+  "pinned_commit": "1fc8318cc473a2f574a00ab80e09cdd1ff4cc56d",
+  "unchanged_original_files": 85,
+  "changed_files": [
+    "index.css",
+    "App.tsx",
+    "const.ts",
+    "main.tsx",
+    "components/WelcomeModal.tsx",
+    "pages/Dashboard.tsx",
+    "pages/Export.tsx",
+    "pages/Home.tsx",
+    "pages/CreatePlaybookAI.tsx"
+  ],
+  "unchanged_pages": [
+    "pages/Settings.tsx",
+    "pages/ClauseDetail.tsx",
+    "pages/PlaybookLibrary.tsx",
+    "pages/NotFound.tsx",
+    "pages/CreatePlaybook.tsx",
+    "pages/PlaybookDetail.tsx",
+    "pages/ClauseLibrary.tsx",
+    "pages/ComponentShowcase.tsx"
+  ],
+  "unchanged_components": 68
+}

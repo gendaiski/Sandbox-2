@@ -1,0 +1,18 @@
+{
+  "id": "appgdep_6af3366f0d3881919770af27961b626f",
+  "project_id": "appgprj_6af3249dcf6881918ae9fa3e01552391",
+  "title": "Document Workflow Studio — Altaflow Research Recreation",
+  "version_id": "appgprj_6af3249dcf6881918ae9fa3e01552391~appgver_c40ac6b8f3088191a23b54538a267b80",
+  "type": "publish",
+  "status": "succeeded",
+  "url": "https://altaflow-workflow-studio.aelgendy673996.chatgpt.site",
+  "has_mcp": false,
+  "screenshot_asset_pointer": null,
+  "provider_deployment_id": "site---6af3249dcf6881918ae9fa3e01552391",
+  "failure_message": null,
+  "env_set_revision": 0,
+  "updated_at": "2026-11-10T15:21:33.819338+00:00",
+  "entry_url": "https://altaflow-workflow-studio.aelgendy673996.chatgpt.site/both.html",
+  "audience": "owner-only preserved",
+  "source_commit": "51627e5069135626a3ce1945ea7adf6094598680"
+}

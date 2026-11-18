@@ -1,0 +1,20 @@
+{
+  "id": "appgdep_6af31f8915b88191a55cb5a2fe37464c",
+  "project_id": "appgprj_6af31de188988191ae485f100dff1814",
+  "title": "Free Blueprints — Source Reader",
+  "version_id": "appgprj_6af31de188988191ae485f100dff1814~appgver_d796601b0de08191b8866f5b54198ebc",
+  "type": "publish",
+  "status": "succeeded",
+  "url": "https://free-blueprints-original.aelgendy673996.chatgpt.site",
+  "has_mcp": false,
+  "screenshot_asset_pointer": null,
+  "provider_deployment_id": "site---6af31de188988191ae485f100dff1814",
+  "failure_message": null,
+  "env_set_revision": 0,
+  "updated_at": "2026-11-10T13:43:50.465199+00:00",
+  "site_source_commit": "28e82e1cac6034010e138f7e94d79f165f065dfb",
+  "archive_content_hash": "sha256:a4c16f857da5c6470084f5748f1cf397a86e4b861e6bc456323ec958053463e9",
+  "access_mode": "public",
+  "original_browser_ui": false,
+  "public_mcp_backend_deployed": false
+}

@@ -1,0 +1,10 @@
+{
+  "repository": "AgentSwarms-fyi/agentswarms",
+  "commit": "70c295f17af39c81b1a4b56e6552307f5d91eef3",
+  "selectedVersion": "v1.6.0",
+  "installationEnvironment": "Linux cloud workspace, not user Windows PC",
+  "runtime": "Node 24.19",
+  "distribution": "Original React UI with frontend-only service adapters",
+  "backendInstalled": false,
+  "publicAccess": "Frontend inspection only"
+}

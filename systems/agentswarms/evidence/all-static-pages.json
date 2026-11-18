@@ -1,0 +1,685 @@
+{
+  "tested": 97,
+  "resourceRoutesNotSwept": 13,
+  "results": [
+    {
+      "url": "/index",
+      "landed": "/",
+      "textBytes": 13927,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/account",
+      "landed": "/account",
+      "textBytes": 1583,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/admin/iam",
+      "landed": "/admin/iam",
+      "textBytes": 596,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/admin/runtime",
+      "landed": "/admin/runtime",
+      "textBytes": 1273,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/agents",
+      "landed": "/agents",
+      "textBytes": 869,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/ai-analyst",
+      "landed": "/ai-analyst",
+      "textBytes": 1214,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/analytics",
+      "landed": "/analytics",
+      "textBytes": 1127,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/analytics/observability",
+      "landed": "/analytics/observability",
+      "textBytes": 1462,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/audit",
+      "landed": "/audit",
+      "textBytes": 1415,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/bi",
+      "landed": "/bi",
+      "textBytes": 1324,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/budgets",
+      "landed": "/budgets",
+      "textBytes": 1144,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/dashboard",
+      "landed": "/dashboard",
+      "textBytes": 1599,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/data-monitors",
+      "landed": "/data-monitors",
+      "textBytes": 1403,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/data-sql",
+      "landed": "/data-sql",
+      "textBytes": 1251,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/embeds",
+      "landed": "/embeds",
+      "textBytes": 2194,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/etl",
+      "landed": "/etl",
+      "textBytes": 1508,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/evaluations",
+      "landed": "/evaluations",
+      "textBytes": 1342,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/image-playground",
+      "landed": "/image-playground",
+      "textBytes": 1690,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/integrations",
+      "landed": "/integrations",
+      "textBytes": 3379,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/knowledge",
+      "landed": "/knowledge",
+      "textBytes": 1523,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/lakehouse",
+      "landed": "/lakehouse",
+      "textBytes": 1247,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/mcp-builder",
+      "landed": "/mcp-builder",
+      "textBytes": 1583,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/mcp",
+      "landed": "/mcp",
+      "textBytes": 1344,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/metrics",
+      "landed": "/metrics",
+      "textBytes": 1301,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/ml",
+      "landed": "/ml",
+      "textBytes": 1591,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/ml/new",
+      "landed": "/ml/new",
+      "textBytes": 1519,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/model-registry",
+      "landed": "/model-registry",
+      "textBytes": 1348,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/monitoring",
+      "landed": "/monitoring",
+      "textBytes": 1895,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/notebooks",
+      "landed": "/notebooks",
+      "textBytes": 2508,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/playground",
+      "landed": "/playground",
+      "textBytes": 2165,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/prompt-compare",
+      "landed": "/prompt-compare",
+      "textBytes": 2448,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/prompts",
+      "landed": "/prompts",
+      "textBytes": 26270,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/secrets",
+      "landed": "/secrets",
+      "textBytes": 1549,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/semantics",
+      "landed": "/semantics",
+      "textBytes": 1484,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/settings",
+      "landed": "/settings",
+      "textBytes": 1673,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/sheets",
+      "landed": "/sheets",
+      "textBytes": 1904,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/skills",
+      "landed": "/skills",
+      "textBytes": 1463,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/sql-models",
+      "landed": "/sql-models",
+      "textBytes": 1770,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/swarms",
+      "landed": "/swarms",
+      "textBytes": 3071,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/traces",
+      "landed": "/traces",
+      "textBytes": 1219,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/workflows",
+      "landed": "/workflows",
+      "textBytes": 1528,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/",
+      "landed": "/",
+      "textBytes": 13927,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/about",
+      "landed": "/about",
+      "textBytes": 5326,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/architecture",
+      "landed": "/architecture",
+      "textBytes": 5233,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/contact",
+      "landed": "/contact",
+      "textBytes": 1074,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/account",
+      "landed": "/docs/account",
+      "textBytes": 4478,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/agents",
+      "landed": "/docs/agents",
+      "textBytes": 14996,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/ai-sql",
+      "landed": "/docs/ai-sql",
+      "textBytes": 8298,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/analytics",
+      "landed": "/docs/analytics",
+      "textBytes": 9689,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/api",
+      "landed": "/docs/api",
+      "textBytes": 13751,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/bi",
+      "landed": "/docs/bi",
+      "textBytes": 53330,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/budgets",
+      "landed": "/docs/budgets",
+      "textBytes": 13414,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/concepts",
+      "landed": "/docs/concepts",
+      "textBytes": 11655,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/dashboard",
+      "landed": "/docs/dashboard",
+      "textBytes": 8004,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/data-monitors",
+      "landed": "/docs/data-monitors",
+      "textBytes": 6509,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/data-prep",
+      "landed": "/docs/data-prep",
+      "textBytes": 12363,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/data",
+      "landed": "/docs/data",
+      "textBytes": 31637,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/debugging",
+      "landed": "/docs/debugging",
+      "textBytes": 15638,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/embedding",
+      "landed": "/docs/embedding",
+      "textBytes": 20794,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/etl",
+      "landed": "/docs/etl",
+      "textBytes": 32248,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/gateway",
+      "landed": "/docs/gateway",
+      "textBytes": 15298,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/guardrails",
+      "landed": "/docs/guardrails",
+      "textBytes": 10654,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/iam",
+      "landed": "/docs/iam",
+      "textBytes": 18313,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/",
+      "landed": "/docs/",
+      "textBytes": 6976,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/integrations",
+      "landed": "/docs/integrations",
+      "textBytes": 14942,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/knowledge",
+      "landed": "/docs/knowledge",
+      "textBytes": 34732,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/lakehouse",
+      "landed": "/docs/lakehouse",
+      "textBytes": 24919,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/mcp",
+      "landed": "/docs/mcp",
+      "textBytes": 17129,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/ml",
+      "landed": "/docs/ml",
+      "textBytes": 11063,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/ml/operations",
+      "landed": "/docs/ml/operations",
+      "textBytes": 5753,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/ml/predictions",
+      "landed": "/docs/ml/predictions",
+      "textBytes": 21457,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/ml/serving",
+      "landed": "/docs/ml/serving",
+      "textBytes": 20468,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/ml/training",
+      "landed": "/docs/ml/training",
+      "textBytes": 20503,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/ml/trust",
+      "landed": "/docs/ml/trust",
+      "textBytes": 19652,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/models",
+      "landed": "/docs/models",
+      "textBytes": 9171,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/notebooks",
+      "landed": "/docs/notebooks",
+      "textBytes": 16840,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/playground",
+      "landed": "/docs/playground",
+      "textBytes": 10373,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/quickstart",
+      "landed": "/docs/quickstart",
+      "textBytes": 10936,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/secrets",
+      "landed": "/docs/secrets",
+      "textBytes": 8952,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/self-hosting",
+      "landed": "/docs/self-hosting",
+      "textBytes": 7647,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/self-hosting/configuration",
+      "landed": "/docs/self-hosting/configuration",
+      "textBytes": 20166,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/self-hosting/kubernetes",
+      "landed": "/docs/self-hosting/kubernetes",
+      "textBytes": 21283,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/self-hosting/operations",
+      "landed": "/docs/self-hosting/operations",
+      "textBytes": 11569,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/semantics",
+      "landed": "/docs/semantics",
+      "textBytes": 30159,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/sheets",
+      "landed": "/docs/sheets",
+      "textBytes": 18599,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/skills",
+      "landed": "/docs/skills",
+      "textBytes": 9617,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/sql-models",
+      "landed": "/docs/sql-models",
+      "textBytes": 10188,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/swarms",
+      "landed": "/docs/swarms",
+      "textBytes": 28192,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs",
+      "landed": "/docs",
+      "textBytes": 6976,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/docs/workflows",
+      "landed": "/docs/workflows",
+      "textBytes": 16812,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/engine-check",
+      "landed": "/engine-check",
+      "textBytes": 270,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/license",
+      "landed": "/license",
+      "textBytes": 4332,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/login",
+      "landed": "/login",
+      "textBytes": 593,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/privacy",
+      "landed": "/privacy",
+      "textBytes": 4938,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/reset-password",
+      "landed": "/reset-password",
+      "textBytes": 251,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/security",
+      "landed": "/security",
+      "textBytes": 7861,
+      "errorPage": false,
+      "scriptErrors": []
+    },
+    {
+      "url": "/terms",
+      "landed": "/terms",
+      "textBytes": 5486,
+      "errorPage": false,
+      "scriptErrors": []
+    }
+  ]
+}

@@ -1,0 +1,1349 @@
+{
+  "repository": "kalpthakkar/Agentic-AI-Workflows",
+  "commit": "80ebec83d8b2d143a42433803e1cc9be44b02b52",
+  "notice": "Independent frontend explorer. Source contains n8n templates, not an original application UI. No workflow executes here.",
+  "workflows": [
+    {
+      "id": "commerce",
+      "name": "E-Commerce Order Fulfillment",
+      "title": "E-Commerce Order Fulfillment Workflow",
+      "path": "workflows/E-Commerce Order Fulfillment Workflow/E-Commerce Implementation.json",
+      "active": false,
+      "nodes": [
+        {
+          "id": "28b991e7-4937-4cc4-87f2-16e43f036716",
+          "name": "Create an order",
+          "type": "n8n-nodes-base.shopify",
+          "version": 1,
+          "position": [
+            208,
+            0
+          ],
+          "parameters": "{\n  \"additionalFields\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "91fe1445-e665-4fab-b3e9-e229a9271441",
+          "name": "On form submission",
+          "type": "n8n-nodes-base.formTrigger",
+          "version": 2.3,
+          "position": [
+            48,
+            0
+          ],
+          "parameters": "{\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "2ae20338-6eab-48e7-b495-06469a6c9824",
+          "name": "Create a charge",
+          "type": "n8n-nodes-base.stripe",
+          "version": 1,
+          "position": [
+            416,
+            -80
+          ],
+          "parameters": "{\n  \"resource\": \"charge\",\n  \"operation\": \"create\",\n  \"additionalFields\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "0425fc5d-7eb8-4235-8d47-b521e62008c6",
+          "name": "Create a payout",
+          "type": "n8n-nodes-base.payPal",
+          "version": 1,
+          "position": [
+            416,
+            80
+          ],
+          "parameters": "{\n  \"additionalFields\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "5cd5d8e3-19c0-4641-b8a7-770f2f2d1f68",
+          "name": "Sticky Note",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            352,
+            -176
+          ],
+          "parameters": "{\n  \"content\": \"### Payment Options\\n\\nCustomer Enters Credentials\",\n  \"height\": 416,\n  \"width\": 224,\n  \"color\": 7\n}",
+          "annotation": true,
+          "notes": "### Payment Options\n\nCustomer Enters Credentials"
+        },
+        {
+          "id": "84f9eb27-2148-4ba1-9a92-9bcfbd7e387d",
+          "name": "If",
+          "type": "n8n-nodes-base.if",
+          "version": 2.2,
+          "position": [
+            624,
+            0
+          ],
+          "parameters": "{\n  \"conditions\": {\n    \"options\": {\n      \"caseSensitive\": true,\n      \"leftValue\": \"\",\n      \"typeValidation\": \"strict\",\n      \"version\": 2\n    },\n    \"conditions\": [\n      {\n        \"id\": \"985bcc9e-3432-423a-9e65-1ffe4a358863\",\n        \"leftValue\": false,\n        \"rightValue\": \"\",\n        \"operator\": {\n          \"type\": \"boolean\",\n          \"operation\": \"true\",\n          \"singleValue\": true\n        }\n      },\n      {\n        \"id\": \"f0443d53-7b3e-4a79-923c-65ad33f698e2\",\n        \"leftValue\": false,\n        \"rightValue\": \"\",\n        \"operator\": {\n          \"type\": \"boolean\",\n          \"operation\": \"false\",\n          \"singleValue\": true\n        }\n      }\n    ],\n    \"combinator\": \"and\"\n  },\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "c7d6eae9-ff44-4971-b1bb-3036feed2197",
+          "name": "Sticky Note1",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            624,
+            -112
+          ],
+          "parameters": "{\n  \"content\": \"### Success\",\n  \"height\": 80,\n  \"width\": 150,\n  \"color\": 2\n}",
+          "annotation": true,
+          "notes": "### Success"
+        },
+        {
+          "id": "ebe9e3e5-b020-486f-971f-3ebce68323ed",
+          "name": "Sticky Note2",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            624,
+            144
+          ],
+          "parameters": "{\n  \"content\": \"### Fail\",\n  \"height\": 80,\n  \"width\": 150,\n  \"color\": 3\n}",
+          "annotation": true,
+          "notes": "### Fail"
+        },
+        {
+          "id": "1941e1f9-b66a-4d1c-85a6-30e286ae96c1",
+          "name": "HTTP Request",
+          "type": "n8n-nodes-base.httpRequest",
+          "version": 4.2,
+          "position": [
+            1184,
+            -64
+          ],
+          "parameters": "{\n  \"sendQuery\": true,\n  \"queryParameters\": {\n    \"parameters\": [\n      {}\n    ]\n  },\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "3b81025c-42fd-4794-b602-fb6ad93e9c90",
+          "name": "Sticky Note3",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            992,
+            -128
+          ],
+          "parameters": "{\n  \"content\": \"### Send **API** or **HTTP Get Query** to Warehouse system requesting for Stock\",\n  \"height\": 224,\n  \"width\": 336,\n  \"color\": 7\n}",
+          "annotation": true,
+          "notes": "### Send **API** or **HTTP Get Query** to Warehouse system requesting for Stock"
+        },
+        {
+          "id": "81bd6352-ebe0-45b8-a765-2b3ec181193c",
+          "name": "Sticky Note4",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            1344,
+            -192
+          ],
+          "parameters": "{\n  \"content\": \"### In-Stock\",\n  \"height\": 112,\n  \"width\": 166,\n  \"color\": 2\n}",
+          "annotation": true,
+          "notes": "### In-Stock"
+        },
+        {
+          "id": "6708cf42-b175-4989-8b5b-4f37cca43dbb",
+          "name": "Sticky Note5",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            1344,
+            64
+          ],
+          "parameters": "{\n  \"content\": \"### Out-of-Stock\",\n  \"height\": 80,\n  \"width\": 166,\n  \"color\": 3\n}",
+          "annotation": true,
+          "notes": "### Out-of-Stock"
+        },
+        {
+          "id": "628c5ed3-c93e-421c-ab6c-f7f4c947d1c5",
+          "name": " If",
+          "type": "n8n-nodes-base.if",
+          "version": 2.2,
+          "position": [
+            1360,
+            -64
+          ],
+          "parameters": "{\n  \"conditions\": {\n    \"options\": {\n      \"caseSensitive\": true,\n      \"leftValue\": \"\",\n      \"typeValidation\": \"strict\",\n      \"version\": 2\n    },\n    \"conditions\": [\n      {\n        \"id\": \"477c3982-e4da-4fcf-a5d9-efb23d940581\",\n        \"leftValue\": false,\n        \"rightValue\": \"\",\n        \"operator\": {\n          \"type\": \"boolean\",\n          \"operation\": \"true\",\n          \"singleValue\": true\n        }\n      },\n      {\n        \"id\": \"97547b82-d76a-42d5-b58c-f764fe0021bb\",\n        \"leftValue\": false,\n        \"rightValue\": \"\",\n        \"operator\": {\n          \"type\": \"boolean\",\n          \"operation\": \"false\",\n          \"singleValue\": true\n        }\n      }\n    ],\n    \"combinator\": \"and\"\n  },\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "c696b696-bd0f-4224-ab4c-4d189f9dd42b",
+          "name": "Sticky Note6",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            1872,
+            -192
+          ],
+          "parameters": "{\n  \"content\": \"### Notify Customer \\n**Append Invoice & Shipment, Tracking Information**\",\n  \"height\": 336,\n  \"width\": 208,\n  \"color\": 7\n}",
+          "annotation": true,
+          "notes": "### Notify Customer \n**Append Invoice & Shipment, Tracking Information**"
+        },
+        {
+          "id": "3b514192-b29d-4374-b5ac-0d90130b6d1b",
+          "name": "Place Order",
+          "type": "n8n-nodes-base.httpRequest",
+          "version": 4.2,
+          "position": [
+            1552,
+            -80
+          ],
+          "parameters": "{\n  \"method\": \"POST\",\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "fce55592-4897-4f82-a983-137ece8f128c",
+          "name": "Queue Order",
+          "type": "n8n-nodes-base.httpRequest",
+          "version": 4.2,
+          "position": [
+            1040,
+            -304
+          ],
+          "parameters": "{\n  \"method\": \"POST\",\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "3284b2cb-339a-4f65-9d38-4567bd180711",
+          "name": "Sticky Note7",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            1520,
+            -192
+          ],
+          "parameters": "{\n  \"content\": \"### POST Request to Warehouse System or DB\",\n  \"height\": 336,\n  \"width\": 166,\n  \"color\": 5\n}",
+          "annotation": true,
+          "notes": "### POST Request to Warehouse System or DB"
+        },
+        {
+          "id": "68721d83-0625-4f3e-96be-13b6dd54363c",
+          "name": "FedEx API",
+          "type": "n8n-nodes-base.httpRequest",
+          "version": 4.2,
+          "position": [
+            1728,
+            -80
+          ],
+          "parameters": "{\n  \"method\": \"POST\",\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "aa1e5b73-ad26-49c9-a79f-31ebfea79c76",
+          "name": "Sticky Note8",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            1696,
+            -192
+          ],
+          "parameters": "{\n  \"content\": \"### Request Shipment Service (e.g. UPS, FedEx, USPS)\\n\\n\",\n  \"height\": 336,\n  \"width\": 166,\n  \"color\": 5\n}",
+          "annotation": true,
+          "notes": "### Request Shipment Service (e.g. UPS, FedEx, USPS)\n\n"
+        },
+        {
+          "id": "b4455c5c-eb19-4ff6-b3d8-3174f77036a2",
+          "name": "Send Confirmation Email",
+          "type": "n8n-nodes-base.emailSend",
+          "version": 2.1,
+          "position": [
+            1920,
+            -80
+          ],
+          "parameters": "{\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "f669bd39-454d-4d00-af2a-64470ec8c063",
+          "name": "Send Alert Email",
+          "type": "n8n-nodes-base.emailSend",
+          "version": 2.1,
+          "position": [
+            1184,
+            -304
+          ],
+          "parameters": "{\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "9811cd9f-68a8-473a-9fc3-8c9866109078",
+          "name": "Sticky Note9",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            2096,
+            -368
+          ],
+          "parameters": "{\n  \"content\": \"### ERP Reporting System | Create Logs\",\n  \"height\": 688,\n  \"width\": 208,\n  \"color\": 6\n}",
+          "annotation": true,
+          "notes": "### ERP Reporting System | Create Logs"
+        },
+        {
+          "id": "c9233522-dfc0-4880-a7db-7e07e02fdf4e",
+          "name": "AWS Database | Create Log",
+          "type": "n8n-nodes-base.awsDynamoDb",
+          "version": 1,
+          "position": [
+            2144,
+            -304
+          ],
+          "parameters": "{\n  \"additionalFields\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "428219ca-57fb-41c0-a5fa-7b9d3999d739",
+          "name": "Loop | 3 Attempts",
+          "type": "n8n-nodes-base.splitInBatches",
+          "version": 3,
+          "position": [
+            848,
+            144
+          ],
+          "parameters": "{\n  \"batchSize\": 3,\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "449f56c9-8764-411f-b173-f999a5bb3e47",
+          "name": "AWS Database | Flag User",
+          "type": "n8n-nodes-base.awsDynamoDb",
+          "version": 1,
+          "position": [
+            2144,
+            128
+          ],
+          "parameters": "{\n  \"additionalFields\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "9a3d55a8-3571-41cf-8728-ded155b2c7ff",
+          "name": "Sticky Note10",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            32,
+            -112
+          ],
+          "parameters": "{\n  \"content\": \"### Retail Form Trigger\",\n  \"height\": 80,\n  \"width\": 160\n}",
+          "annotation": true,
+          "notes": "### Retail Form Trigger"
+        },
+        {
+          "id": "ff7e70fb-a361-4e86-9258-0397ba32f53e",
+          "name": "Loop Over Items",
+          "type": "n8n-nodes-base.splitInBatches",
+          "version": 3,
+          "position": [
+            848,
+            -80
+          ],
+          "parameters": "{\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "346ffa3b-4431-4e33-bd2e-bb1f0397ae3f",
+          "name": "Find Next Nearest Warehouse",
+          "type": "n8n-nodes-base.code",
+          "version": 2,
+          "position": [
+            1040,
+            -64
+          ],
+          "parameters": "{\n  \"language\": \"python\",\n  \"pythonCode\": \"# Loop over input items and add a new field called 'myNewField' to the JSON of each one\\nfor item in _input.all():\\n  item.json.myNewField = 1\\nreturn _input.all()\"\n}",
+          "annotation": false,
+          "notes": ""
+        }
+      ],
+      "edges": [
+        {
+          "id": "0",
+          "source": "On form submission",
+          "target": "Create an order",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "1",
+          "source": "Create an order",
+          "target": "Create a charge",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "2",
+          "source": "Create an order",
+          "target": "Create a payout",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "3",
+          "source": "Create a charge",
+          "target": "If",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "4",
+          "source": "Create a payout",
+          "target": "If",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "5",
+          "source": "If",
+          "target": "Loop Over Items",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "6",
+          "source": "If",
+          "target": "Loop | 3 Attempts",
+          "kind": "main",
+          "output": 1,
+          "input": 0
+        },
+        {
+          "id": "7",
+          "source": "HTTP Request",
+          "target": " If",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "8",
+          "source": " If",
+          "target": "Place Order",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "9",
+          "source": " If",
+          "target": "Loop Over Items",
+          "kind": "main",
+          "output": 1,
+          "input": 0
+        },
+        {
+          "id": "10",
+          "source": "Place Order",
+          "target": "FedEx API",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "11",
+          "source": "Queue Order",
+          "target": "Send Alert Email",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "12",
+          "source": "FedEx API",
+          "target": "Send Confirmation Email",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "13",
+          "source": "Loop | 3 Attempts",
+          "target": "AWS Database | Flag User",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "14",
+          "source": "Loop | 3 Attempts",
+          "target": "Create an order",
+          "kind": "main",
+          "output": 1,
+          "input": 0
+        },
+        {
+          "id": "15",
+          "source": "Loop Over Items",
+          "target": "Queue Order",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "16",
+          "source": "Loop Over Items",
+          "target": "Find Next Nearest Warehouse",
+          "kind": "main",
+          "output": 1,
+          "input": 0
+        },
+        {
+          "id": "17",
+          "source": "Find Next Nearest Warehouse",
+          "target": "HTTP Request",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "18",
+          "source": "Send Alert Email",
+          "target": "AWS Database | Create Log",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "19",
+          "source": "Send Confirmation Email",
+          "target": "AWS Database | Create Log",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        }
+      ],
+      "issues": [
+        {
+          "node": "If",
+          "detail": "Literal false predicates combined with AND are placeholders, not a business-data decision."
+        },
+        {
+          "node": "HTTP Request",
+          "detail": "HTTP endpoint URL is missing."
+        },
+        {
+          "node": " If",
+          "detail": "Literal false predicates combined with AND are placeholders, not a business-data decision."
+        },
+        {
+          "node": "Place Order",
+          "detail": "HTTP endpoint URL is missing."
+        },
+        {
+          "node": "Queue Order",
+          "detail": "HTTP endpoint URL is missing."
+        },
+        {
+          "node": "FedEx API",
+          "detail": "HTTP endpoint URL is missing."
+        },
+        {
+          "node": "Find Next Nearest Warehouse",
+          "detail": "Default Python sample adds myNewField; the named business logic is not implemented."
+        },
+        {
+          "node": "Create an order",
+          "detail": "Both payment providers are connected in parallel. A payment-method router and idempotency contract are not defined."
+        },
+        {
+          "node": "Loop | 3 Attempts",
+          "detail": "batchSize=3 batches items; it does not implement a proven three-attempt retry policy."
+        }
+      ],
+      "triggerReachable": [
+        " If",
+        "AWS Database | Create Log",
+        "AWS Database | Flag User",
+        "Create a charge",
+        "Create a payout",
+        "Create an order",
+        "FedEx API",
+        "Find Next Nearest Warehouse",
+        "HTTP Request",
+        "If",
+        "Loop Over Items",
+        "Loop | 3 Attempts",
+        "On form submission",
+        "Place Order",
+        "Queue Order",
+        "Send Alert Email",
+        "Send Confirmation Email"
+      ],
+      "missingEndpoints": [],
+      "credentialReferenceCount": 0,
+      "settings": {
+        "executionOrder": "v1"
+      }
+    },
+    {
+      "id": "onboarding",
+      "name": "Employee Onboarding Workflow",
+      "title": "Employee Onboarding Workflow",
+      "path": "workflows/Employee Onboarding Workflow/Employee Onboarding Implementation.json",
+      "active": false,
+      "nodes": [
+        {
+          "id": "e29ebae0-3a4f-46c2-a8c0-f781dda24318",
+          "name": "Sticky Note",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            -160,
+            -176
+          ],
+          "parameters": "{\n  \"content\": \"## HR System Webhook (Trigger)\\n\\nWhen HR enters a new hire entry.\",\n  \"height\": 336,\n  \"width\": 416,\n  \"color\": 7\n}",
+          "annotation": true,
+          "notes": "## HR System Webhook (Trigger)\n\nWhen HR enters a new hire entry."
+        },
+        {
+          "id": "fcc4feaa-55ec-40ff-b2a1-f04187447fad",
+          "name": "If",
+          "type": "n8n-nodes-base.if",
+          "version": 2.2,
+          "position": [
+            528,
+            0
+          ],
+          "parameters": "{\n  \"conditions\": {\n    \"options\": {\n      \"caseSensitive\": true,\n      \"leftValue\": \"\",\n      \"typeValidation\": \"strict\",\n      \"version\": 2\n    },\n    \"conditions\": [\n      {\n        \"id\": \"1c87e121-6eb3-462c-b92a-5c0665cd3f06\",\n        \"leftValue\": false,\n        \"rightValue\": \"\",\n        \"operator\": {\n          \"type\": \"boolean\",\n          \"operation\": \"true\",\n          \"singleValue\": true\n        }\n      },\n      {\n        \"id\": \"924edf26-6f20-46ff-9055-e0d95dfef57d\",\n        \"leftValue\": false,\n        \"rightValue\": \"\",\n        \"operator\": {\n          \"type\": \"boolean\",\n          \"operation\": \"false\",\n          \"singleValue\": true\n        }\n      }\n    ],\n    \"combinator\": \"and\"\n  },\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "37281029-7bb4-4bf6-9c5e-3fc67b20c3f5",
+          "name": "Sticky Note1",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            592,
+            -368
+          ],
+          "parameters": "{\n  \"content\": \"## Pass\",\n  \"height\": 416,\n  \"width\": 150,\n  \"color\": 4\n}",
+          "annotation": true,
+          "notes": "## Pass"
+        },
+        {
+          "id": "3a3b0296-30e6-4934-affc-659ac1a5aaac",
+          "name": "Sticky Note2",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            592,
+            112
+          ],
+          "parameters": "{\n  \"content\": \"## Fail\\n\\n• Update Record\\n• Notify HR (Optional)\",\n  \"height\": 224,\n  \"width\": 198,\n  \"color\": 3\n}",
+          "annotation": true,
+          "notes": "## Fail\n\n• Update Record\n• Notify HR (Optional)"
+        },
+        {
+          "id": "7bea6481-0bff-4507-81c8-a8ae6ce2af68",
+          "name": "Create an employee",
+          "type": "n8n-nodes-base.bambooHr",
+          "version": 1,
+          "position": [
+            96,
+            0
+          ],
+          "parameters": "{\n  \"additionalFields\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "d0c7a667-de7d-4183-9226-27116ab31e18",
+          "name": "HRIS New-Hire Webhook",
+          "type": "n8n-nodes-base.webhook",
+          "version": 2.1,
+          "position": [
+            -96,
+            0
+          ],
+          "parameters": "{\n  \"path\": \"1017360d-bd19-4330-a733-2bcc4cc6e6cf\",\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "e53bfba0-c434-4c13-a307-7a5d7be06623",
+          "name": "Sticky Note3",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            272,
+            -176
+          ],
+          "parameters": "{\n  \"content\": \"## Background Check Trigger\\n\\nWaits for response from separate system running background screening service (e.g., Checkr).\",\n  \"height\": 336,\n  \"width\": 304,\n  \"color\": 7\n}",
+          "annotation": true,
+          "notes": "## Background Check Trigger\n\nWaits for response from separate system running background screening service (e.g., Checkr)."
+        },
+        {
+          "id": "4fe95e2a-13a3-46ec-8208-28f627d94625",
+          "name": "Wait - On Webhook Call",
+          "type": "n8n-nodes-base.wait",
+          "version": 1.1,
+          "position": [
+            352,
+            0
+          ],
+          "parameters": "{\n  \"resume\": \"webhook\",\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "8281621e-7aca-48fa-a77b-c33065cb862f",
+          "name": "Update an employee",
+          "type": "n8n-nodes-base.bambooHr",
+          "version": 1,
+          "position": [
+            848,
+            176
+          ],
+          "parameters": "{\n  \"operation\": \"update\",\n  \"updateFields\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "db993bc7-ab47-4653-9852-fbdae278f03a",
+          "name": "Google Workspace - Create a user",
+          "type": "n8n-nodes-base.gSuiteAdmin",
+          "version": 1,
+          "position": [
+            864,
+            -544
+          ],
+          "parameters": "{\n  \"additionalFields\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "49e303ff-4bd6-442c-aea9-28fab776305f",
+          "name": "Slack - Invite a user",
+          "type": "n8n-nodes-base.slack",
+          "version": 2.3,
+          "position": [
+            864,
+            -384
+          ],
+          "parameters": "{\n  \"resource\": \"channel\",\n  \"operation\": \"invite\",\n  \"channelId\": {\n    \"__rl\": true,\n    \"mode\": \"list\",\n    \"value\": \"\"\n  }\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "c695b33b-45f9-42cb-b439-9acffa6848d0",
+          "name": "Salesforce - Create an account",
+          "type": "n8n-nodes-base.salesforce",
+          "version": 1,
+          "position": [
+            864,
+            -240
+          ],
+          "parameters": "{\n  \"resource\": \"account\",\n  \"additionalFields\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "9cd93d95-7f0d-4648-bc29-73e04d4ef9e4",
+          "name": "Post-Provisioning Tests",
+          "type": "n8n-nodes-base.code",
+          "version": 2,
+          "position": [
+            1280,
+            -64
+          ],
+          "parameters": "{\n  \"language\": \"python\",\n  \"pythonCode\": \"# Loop over input items and add a new field called 'myNewField' to the JSON of each one\\nfor item in _input.all():\\n  item.json.myNewField = 1\\nreturn _input.all()\"\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "71555683-7f46-4fe0-9fbb-e08067894e04",
+          "name": "Create an event",
+          "type": "n8n-nodes-base.googleCalendar",
+          "version": 1.3,
+          "position": [
+            1600,
+            -64
+          ],
+          "parameters": "{\n  \"calendar\": {\n    \"__rl\": true,\n    \"mode\": \"list\",\n    \"value\": \"\"\n  },\n  \"additionalFields\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "0dafc1ec-c6d4-4899-bfe8-e84daa9fabba",
+          "name": "Sticky Note4",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            1424,
+            -160
+          ],
+          "parameters": "{\n  \"content\": \"## Schedule Orientation\",\n  \"height\": 272,\n  \"width\": 304,\n  \"color\": 6\n}",
+          "annotation": true,
+          "notes": "## Schedule Orientation"
+        },
+        {
+          "id": "7fa5fcf6-d505-4595-bb15-443ce59abc35",
+          "name": "Laptop Order Workflow Request - HTTP",
+          "type": "n8n-nodes-base.httpRequest",
+          "version": 4.2,
+          "position": [
+            864,
+            -80
+          ],
+          "parameters": "{\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "51d618d0-5983-404a-82ca-bbf42dd6820e",
+          "name": "Merge Flow",
+          "type": "n8n-nodes-base.merge",
+          "version": 3.2,
+          "position": [
+            1120,
+            -96
+          ],
+          "parameters": "{\n  \"numberInputs\": 4\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "54db997f-3e09-49f6-b40a-99f48a3b80a4",
+          "name": "Sticky Note6",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            688,
+            -560
+          ],
+          "parameters": "{\n  \"content\": \"## Provisioning\",\n  \"height\": 656,\n  \"width\": 336,\n  \"color\": 5\n}",
+          "annotation": true,
+          "notes": "## Provisioning"
+        },
+        {
+          "id": "efec5b7d-08f6-41af-996c-77196ee08b0c",
+          "name": "Get Availability",
+          "type": "n8n-nodes-base.googleCalendar",
+          "version": 1.3,
+          "position": [
+            1440,
+            -64
+          ],
+          "parameters": "{\n  \"resource\": \"calendar\",\n  \"calendar\": {\n    \"__rl\": true,\n    \"mode\": \"list\",\n    \"value\": \"\"\n  },\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "c52b6bf6-ffef-48cf-9805-e005605006f7",
+          "name": "Update Employee Records",
+          "type": "n8n-nodes-base.bambooHr",
+          "version": 1,
+          "position": [
+            1792,
+            -64
+          ],
+          "parameters": "{\n  \"operation\": \"update\",\n  \"updateFields\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "22c0885a-c0e7-4eec-9e69-93c1267841f2",
+          "name": "Sticky Note5",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            1744,
+            -272
+          ],
+          "parameters": "{\n  \"content\": \"## Finalize\\n \\nUpdate\\n• provisioning_status\\n• orientation time\\n• laptop ticket ID\\n• salesforce_id, etc\\n\\n**Send Welcome Email**\",\n  \"height\": 384,\n  \"width\": 352\n}",
+          "annotation": true,
+          "notes": "## Finalize\n \nUpdate\n• provisioning_status\n• orientation time\n• laptop ticket ID\n• salesforce_id, etc\n\n**Send Welcome Email**"
+        },
+        {
+          "id": "047ccacf-ccbf-4c12-b180-b05cc83d916a",
+          "name": "LLM Chain",
+          "type": "@n8n/n8n-nodes-langchain.chainLlm",
+          "version": 1.7,
+          "position": [
+            1024,
+            176
+          ],
+          "parameters": "{\n  \"batching\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "5508534d-83ff-4590-8e5b-b706182257bd",
+          "name": "Sticky Note7",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            992,
+            128
+          ],
+          "parameters": "{\n  \"content\": \"### Summarize Reason & Email Formatting\",\n  \"height\": 304,\n  \"width\": 480,\n  \"color\": 7\n}",
+          "annotation": true,
+          "notes": "### Summarize Reason & Email Formatting"
+        },
+        {
+          "id": "c77e9890-2327-4e75-af38-bd95259e4199",
+          "name": "OpenAI Chat Model",
+          "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+          "version": 1.2,
+          "position": [
+            1104,
+            320
+          ],
+          "parameters": "{\n  \"model\": {\n    \"__rl\": true,\n    \"mode\": \"list\",\n    \"value\": \"gpt-4.1-mini\"\n  },\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "1fcabdb4-cfcf-44fe-bd61-d5825c220ccd",
+          "name": "Send welcome onboarding email",
+          "type": "n8n-nodes-base.emailSend",
+          "version": 2.1,
+          "position": [
+            1968,
+            -64
+          ],
+          "parameters": "{\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "08d6f5a5-f04d-46f1-8dc3-108f51df735b",
+          "name": "Notify HR",
+          "type": "n8n-nodes-base.emailSend",
+          "version": 2.1,
+          "position": [
+            1328,
+            176
+          ],
+          "parameters": "{\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "49ef9863-cd77-4f74-bb37-3945790be10b",
+          "name": "If employee exists",
+          "type": "n8n-nodes-base.if",
+          "version": 2.2,
+          "position": [
+            352,
+            912
+          ],
+          "parameters": "{\n  \"conditions\": {\n    \"options\": {\n      \"caseSensitive\": true,\n      \"leftValue\": \"\",\n      \"typeValidation\": \"strict\",\n      \"version\": 2\n    },\n    \"conditions\": [\n      {\n        \"id\": \"4eac9052-560f-446e-8e18-27730566c104\",\n        \"leftValue\": \"\",\n        \"rightValue\": \"\",\n        \"operator\": {\n          \"type\": \"string\",\n          \"operation\": \"equals\",\n          \"name\": \"filter.operator.equals\"\n        }\n      }\n    ],\n    \"combinator\": \"and\"\n  },\n  \"options\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "e4a53b51-0481-4f31-bb73-3844ea1f367f",
+          "name": "Get all members",
+          "type": "n8n-nodes-base.slack",
+          "version": 2.3,
+          "position": [
+            144,
+            912
+          ],
+          "parameters": "{\n  \"resource\": \"channel\",\n  \"operation\": \"member\",\n  \"channelId\": {\n    \"__rl\": true,\n    \"mode\": \"list\",\n    \"value\": \"\"\n  }\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "9c18a35f-fa68-4bd5-a94e-d41609ac4976",
+          "name": "Update employee record",
+          "type": "n8n-nodes-base.bambooHr",
+          "version": 1,
+          "position": [
+            960,
+            896
+          ],
+          "parameters": "{\n  \"operation\": \"update\",\n  \"updateFields\": {}\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "2324064c-8dec-4a4c-bdef-e269a436724f",
+          "name": "Sticky Note8",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            896,
+            800
+          ],
+          "parameters": "{\n  \"content\": \"### Link Employee\\n\\nAdd Slack_ID \",\n  \"height\": 256,\n  \"width\": 224,\n  \"color\": 7\n}",
+          "annotation": true,
+          "notes": "### Link Employee\n\nAdd Slack_ID "
+        },
+        {
+          "id": "32a283f7-0384-4183-b519-74de5e6f5f24",
+          "name": "Sticky Note9",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            288,
+            816
+          ],
+          "parameters": "{\n  \"content\": \"### Check employee already exists\\n\\nMap employee using EID or Email\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n• Don't use onboarding-id for mapping since employee could be onboarded twice in system with career gap or change in role.\\n• Don't use firstname.lastname since it could potentially overlap.\\n\\n\",\n  \"height\": 384,\n  \"width\": 272,\n  \"color\": 7\n}",
+          "annotation": true,
+          "notes": "### Check employee already exists\n\nMap employee using EID or Email\n\n\n\n\n\n\n\n\n\n\n\n\n• Don't use onboarding-id for mapping since employee could be onboarded twice in system with career gap or change in role.\n• Don't use firstname.lastname since it could potentially overlap.\n\n"
+        },
+        {
+          "id": "772ae8a7-4b5c-49d0-b32c-a39640c8d86c",
+          "name": "Sticky Note10",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            -80,
+            896
+          ],
+          "parameters": "{\n  \"content\": \"## Slack Provisioning Component [START]\\n\\nSub Workflow\",\n  \"height\": 208,\n  \"width\": 176\n}",
+          "annotation": true,
+          "notes": "## Slack Provisioning Component [START]\n\nSub Workflow"
+        },
+        {
+          "id": "7785cfbf-f13f-4537-9096-93e0e9744495",
+          "name": "Create or Invite a new user",
+          "type": "n8n-nodes-base.slack",
+          "version": 2.3,
+          "position": [
+            656,
+            1008
+          ],
+          "parameters": "{\n  \"resource\": \"channel\",\n  \"operation\": \"invite\",\n  \"channelId\": {\n    \"__rl\": true,\n    \"mode\": \"list\",\n    \"value\": \"\"\n  }\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "84239b2c-26a9-4a63-9fa4-470712760e62",
+          "name": "Sticky Note11",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            640,
+            880
+          ],
+          "parameters": "{\n  \"content\": \"Skip Create\",\n  \"height\": 80,\n  \"width\": 160,\n  \"color\": 7\n}",
+          "annotation": true,
+          "notes": "Skip Create"
+        },
+        {
+          "id": "ee85aaaa-9b8b-4832-a421-c65c6999bcf4",
+          "name": "Safeguard Code",
+          "type": "n8n-nodes-base.code",
+          "version": 2,
+          "position": [
+            1184,
+            896
+          ],
+          "parameters": "{\n  \"language\": \"python\",\n  \"pythonCode\": \"# Loop over input items and add a new field called 'myNewField' to the JSON of each one\\nfor item in _input.all():\\n  item.json.myNewField = 1\\nreturn _input.all()\"\n}",
+          "annotation": false,
+          "notes": ""
+        },
+        {
+          "id": "000cdb9e-3ddf-4aa4-9a6f-758223bc88f6",
+          "name": "Sticky Note12",
+          "type": "n8n-nodes-base.stickyNote",
+          "version": 1,
+          "position": [
+            1136,
+            800
+          ],
+          "parameters": "{\n  \"content\": \"### Post-Verification (Optional)\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\nCheck for duplicates, create logs, and take **dedupe actions**.\\n\",\n  \"height\": 320,\n  \"width\": 224,\n  \"color\": 7\n}",
+          "annotation": true,
+          "notes": "### Post-Verification (Optional)\n\n\n\n\n\n\n\n\n\n\n\n\n\nCheck for duplicates, create logs, and take **dedupe actions**.\n"
+        }
+      ],
+      "edges": [
+        {
+          "id": "0",
+          "source": "HRIS New-Hire Webhook",
+          "target": "Create an employee",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "1",
+          "source": "Create an employee",
+          "target": "Wait - On Webhook Call",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "2",
+          "source": "Wait - On Webhook Call",
+          "target": "If",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "3",
+          "source": "If",
+          "target": "Google Workspace - Create a user",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "4",
+          "source": "If",
+          "target": "Slack - Invite a user",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "5",
+          "source": "If",
+          "target": "Salesforce - Create an account",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "6",
+          "source": "If",
+          "target": "Laptop Order Workflow Request - HTTP",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "7",
+          "source": "If",
+          "target": "Update an employee",
+          "kind": "main",
+          "output": 1,
+          "input": 0
+        },
+        {
+          "id": "8",
+          "source": "Update an employee",
+          "target": "LLM Chain",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "9",
+          "source": "Google Workspace - Create a user",
+          "target": "Merge Flow",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "10",
+          "source": "Slack - Invite a user",
+          "target": "Merge Flow",
+          "kind": "main",
+          "output": 0,
+          "input": 1
+        },
+        {
+          "id": "11",
+          "source": "Salesforce - Create an account",
+          "target": "Merge Flow",
+          "kind": "main",
+          "output": 0,
+          "input": 2
+        },
+        {
+          "id": "12",
+          "source": "Post-Provisioning Tests",
+          "target": "Get Availability",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "13",
+          "source": "Merge Flow",
+          "target": "Post-Provisioning Tests",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "14",
+          "source": "Laptop Order Workflow Request - HTTP",
+          "target": "Merge Flow",
+          "kind": "main",
+          "output": 0,
+          "input": 3
+        },
+        {
+          "id": "15",
+          "source": "Get Availability",
+          "target": "Create an event",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "16",
+          "source": "Create an event",
+          "target": "Update Employee Records",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "17",
+          "source": "LLM Chain",
+          "target": "Notify HR",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "18",
+          "source": "OpenAI Chat Model",
+          "target": "LLM Chain",
+          "kind": "ai_languageModel",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "19",
+          "source": "Update Employee Records",
+          "target": "Send welcome onboarding email",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "20",
+          "source": "Get all members",
+          "target": "If employee exists",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "21",
+          "source": "If employee exists",
+          "target": "Update employee record",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "22",
+          "source": "If employee exists",
+          "target": "Create or Invite a new user",
+          "kind": "main",
+          "output": 1,
+          "input": 0
+        },
+        {
+          "id": "23",
+          "source": "Create or Invite a new user",
+          "target": "Update employee record",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        },
+        {
+          "id": "24",
+          "source": "Update employee record",
+          "target": "Safeguard Code",
+          "kind": "main",
+          "output": 0,
+          "input": 0
+        }
+      ],
+      "issues": [
+        {
+          "node": "If",
+          "detail": "Literal false predicates combined with AND are placeholders, not a business-data decision."
+        },
+        {
+          "node": "Post-Provisioning Tests",
+          "detail": "Default Python sample adds myNewField; the named business logic is not implemented."
+        },
+        {
+          "node": "Laptop Order Workflow Request - HTTP",
+          "detail": "HTTP endpoint URL is missing."
+        },
+        {
+          "node": "Safeguard Code",
+          "detail": "Default Python sample adds myNewField; the named business logic is not implemented."
+        },
+        {
+          "node": "If employee exists",
+          "detail": "Not reachable from the exported main trigger graph."
+        },
+        {
+          "node": "Get all members",
+          "detail": "Not reachable from the exported main trigger graph."
+        },
+        {
+          "node": "Update employee record",
+          "detail": "Not reachable from the exported main trigger graph."
+        },
+        {
+          "node": "Create or Invite a new user",
+          "detail": "Not reachable from the exported main trigger graph."
+        },
+        {
+          "node": "Safeguard Code",
+          "detail": "Not reachable from the exported main trigger graph."
+        },
+        {
+          "node": "If employee exists",
+          "detail": "Blank literal strings compare equal; employee lookup/matching expressions are not configured."
+        }
+      ],
+      "triggerReachable": [
+        "Create an employee",
+        "Create an event",
+        "Get Availability",
+        "Google Workspace - Create a user",
+        "HRIS New-Hire Webhook",
+        "If",
+        "LLM Chain",
+        "Laptop Order Workflow Request - HTTP",
+        "Merge Flow",
+        "Notify HR",
+        "Post-Provisioning Tests",
+        "Salesforce - Create an account",
+        "Send welcome onboarding email",
+        "Slack - Invite a user",
+        "Update Employee Records",
+        "Update an employee",
+        "Wait - On Webhook Call"
+      ],
+      "missingEndpoints": [],
+      "credentialReferenceCount": 0,
+      "settings": {
+        "executionOrder": "v1"
+      }
+    }
+  ]
+}

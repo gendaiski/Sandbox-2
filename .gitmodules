@@ -1,0 +1,47 @@
+[submodule "systems/pullboard/upstream"]
+	path = systems/pullboard/upstream
+	url = https://github.com/pullboard-dev/pullboard.git
+
+[submodule "systems/agentic-ai-workflows/upstream"]
+	path = systems/agentic-ai-workflows/upstream
+	url = https://github.com/kalpthakkar/Agentic-AI-Workflows.git
+
+[submodule "systems/graphflow/upstream"]
+	path = systems/graphflow/upstream
+	url = https://github.com/826aryan/GraphFlow.git
+
+[submodule "systems/agentswarms/upstream"]
+	path = systems/agentswarms/upstream
+	url = https://github.com/AgentSwarms-fyi/agentswarms.git
+
+[submodule "systems/agent-swarm-studio/upstream"]
+	path = systems/agent-swarm-studio/upstream
+	url = https://github.com/travis-burmaster/agent-swarm-studio.git
+
+[submodule "systems/agent-swarm-monitor/upstream"]
+	path = systems/agent-swarm-monitor/upstream
+	url = https://github.com/AINative-Studio/agent-swarm-monitor.git
+
+[submodule "systems/multi-agent-ai-swarm/upstream"]
+	path = systems/multi-agent-ai-swarm/upstream
+	url = https://github.com/shortcut119/Multi-Agent-AI-Swarm.git
+
+[submodule "systems/contract-playbook-builder/upstream"]
+	path = systems/contract-playbook-builder/upstream
+	url = https://github.com/lawyerbuilder/contract_playbook_builder_v2.git
+
+[submodule "systems/xyops/upstream"]
+	path = systems/xyops/upstream
+	url = https://github.com/pixlcore/xyops.git
+
+[submodule "systems/seeray-openflow/upstream"]
+	path = systems/seeray-openflow/upstream
+	url = https://github.com/SeeRay11/OpenFlow.git
+
+[submodule "systems/free-blueprints/upstream"]
+	path = systems/free-blueprints/upstream
+	url = https://github.com/agent-blueprint/free-blueprints.git
+
+[submodule "systems/yfiles-demos/upstream"]
+	path = systems/yfiles-demos/upstream
+	url = https://github.com/yWorks/yfiles-for-html-demos.git

@@ -1,0 +1,79 @@
+{
+  "engine": "Linux Chromium/Playwright",
+  "results": [
+    {
+      "width": 1440,
+      "workflow": "commerce",
+      "nodes": 28,
+      "annotations": 11,
+      "findings": 9,
+      "nodeInspection": true,
+      "notesSurviveReload": true,
+      "jsonExport": true,
+      "graphZoom": true,
+      "noPageOverflow": true
+    },
+    {
+      "width": 1440,
+      "workflow": "onboarding",
+      "nodes": 36,
+      "annotations": 13,
+      "findings": 10,
+      "nodeInspection": true,
+      "notesSurviveReload": true,
+      "jsonExport": true,
+      "graphZoom": true,
+      "noPageOverflow": true
+    },
+    {
+      "width": 820,
+      "workflow": "commerce",
+      "nodes": 28,
+      "annotations": 11,
+      "findings": 9,
+      "nodeInspection": true,
+      "notesSurviveReload": true,
+      "jsonExport": true,
+      "graphZoom": true,
+      "noPageOverflow": true
+    },
+    {
+      "width": 820,
+      "workflow": "onboarding",
+      "nodes": 36,
+      "annotations": 13,
+      "findings": 10,
+      "nodeInspection": true,
+      "notesSurviveReload": true,
+      "jsonExport": true,
+      "graphZoom": true,
+      "noPageOverflow": true
+    },
+    {
+      "width": 390,
+      "workflow": "commerce",
+      "nodes": 28,
+      "annotations": 11,
+      "findings": 9,
+      "nodeInspection": true,
+      "notesSurviveReload": true,
+      "jsonExport": true,
+      "graphZoom": true,
+      "noPageOverflow": true
+    },
+    {
+      "width": 390,
+      "workflow": "onboarding",
+      "nodes": 36,
+      "annotations": 13,
+      "findings": 10,
+      "nodeInspection": true,
+      "notesSurviveReload": true,
+      "jsonExport": true,
+      "graphZoom": true,
+      "noPageOverflow": true
+    }
+  ],
+  "scriptErrors": [],
+  "nativeTests": "Not run: Apple tooling unavailable"
+}

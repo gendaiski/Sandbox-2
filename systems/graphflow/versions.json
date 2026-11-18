@@ -1,0 +1,10 @@
+{
+  "repository": "826aryan/GraphFlow",
+  "commit": "67b2bc0fb494c7d2858f23a386c7009dae45f4ae",
+  "selectedVersion": "1.0.0",
+  "installationEnvironment": "Linux cloud workspace, not user Windows PC",
+  "runtime": "Node 24.19",
+  "distribution": "Original browser frontend",
+  "backendInstalled": false,
+  "publicAccess": "Frontend inspection only"
+}

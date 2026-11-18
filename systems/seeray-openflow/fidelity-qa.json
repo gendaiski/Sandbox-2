@@ -1,0 +1,53 @@
+{
+  "layout": {
+    "customBar": 0,
+    "root": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 1000
+    },
+    "canvas": {
+      "x": 240,
+      "y": 121,
+      "width": 900,
+      "height": 851
+    }
+  },
+  "wiredEdges": 1,
+  "dragMoved": {
+    "x": 70,
+    "y": 50
+  },
+  "reopen": {
+    "name": "User flow fidelity QA",
+    "nodes": 2,
+    "edges": 1
+  },
+  "importRoundTrip": {
+    "name": "User flow fidelity QA",
+    "nodes": 2,
+    "edges": 1,
+    "matchesExport": true
+  },
+  "swarmSettings": true,
+  "orchestrationSettings": true,
+  "mergeBlocked": true,
+  "ipad": {
+    "root": {
+      "x": 0,
+      "y": 0,
+      "width": 810,
+      "height": 1080
+    },
+    "scrollWidth": 810,
+    "canvas": {
+      "x": 240,
+      "y": 121,
+      "width": 270,
+      "height": 931
+    },
+    "topbar": 1
+  },
+  "errors": []
+}

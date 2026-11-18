@@ -1,0 +1,17 @@
+{
+  "answer": {
+    "answer": 17
+  },
+  "code": 0,
+  "jobId": "browser_d182c37eb13e485eaf5e1392c05de167",
+  "timeout": {
+    "code": 1,
+    "description": "Browser task timed out after 1500 ms."
+  },
+  "failed": {
+    "code": 1,
+    "description": "real failure"
+  },
+  "details": "   Browser workflow executed locally; 3 nodes completed\nJOB SUMMARY\nJOB ID\nbrowser_d182c37eb13e485eaf5e1392c05de167\nCATEGORY\nGeneral\nTARGETS\n(None)\nJOB STATE\n Complete\nEVENT\nQA actual browser DAG\nPLUGIN\n(None)\nSERVER\n(None)\nJOB STARTED\n Today at 4:02:49 PM\nPARENT WORKFLOW\n(None)\nLINKED JOB\n(None)\nAVG CPU\n Not measured (browser)\nJOB COMPLETED\n Today at 4:02:49 PM\nSOURCE\nLocal Preview\nATTEMPT\n(Initial)\nAVG MEM\n Not measured (browser)\nELAPSED TIME\n 0.04 seconds\n WORKFLOW RUN\n Edit...\n100%\nOn-Demand\nManual Run\nDouble\nCATEGORY\nGeneral\nPLUGIN\nBrowser JavaScript (local)\nTARGETS\n(None)\nTAGS\n(None)\nPlugin Parameters:\n JAVASCRIPT FUNCTION BODY\n console.log(\"doubling\", input.value); return {value: input.value * 2};\nInherited Actions:\nON ANY ERROR\n Take Snapshot\nAdd three\nCATEGORY\nGeneral\nPLUGIN\nBrowser JavaScript (local)\nTARGETS\n(None)\nTAGS\n(None)\nPlugin Parameters:\n JAVASCRIPT FUNCTION BODY\n return {answer: input.value + 3};\nInherited Actions:\nON ANY ERROR\n Take Snapshot\nOn Success\nWORKFLOW JOBS\n2 JOBS\n \nPAGE 1 OF 1\nJob/Node ID\nEvent/Plugin\nCategory\nServer\nState\nElapsed\nProgress/Result\nActions\nDouble (browser_dc05ef1680344289946781addc60e110)\nDouble\nGeneral\n(None)\n Complete\n 0.02 seconds\nSuccess\nView Details...\nAdd three (browser_c56d321194df45b986d177403b55fb18)\nAdd three\nGeneral\n(None)\n Complete\n 0 seconds\nSuccess\nView Details...\nINPUT DATA\n{\n\t\"value\": 7\n}\nOUTPUT DATA\n{\n\t\"answer\": 17\n}\nWORKFLOW JOB OUTPUTS\n Download...\nWORKFLOW LOG\n Download...\nDate/Time\nServer\nNode ID\nType\nMessage\n Today at 4:02:49 PM\nbrowser-local\n-\n-\nBrowser-local workflow started\n Today at 4:02:49 PM\nbrowser-local\n#start\n Trigger\nExecuting trigger node\n Today at 4:02:49 PM\nbrowser-local\n#start\n Trigger\nNode completed\n Today at 4:02:49 PM\nbrowser-local\n#double\n Job\nExecuting job node\n Today at 4:02:49 PM\nbro",
+  "errors": []
+}

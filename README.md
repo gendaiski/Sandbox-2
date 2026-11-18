@@ -80,3 +80,8 @@ is the Prism UI demo, live. Both pages are private until shared.
   plain install leaves MinerU without torch. `setup.sh --full` pins
   `mineru[core]>=3.4.1,<4`.
 - **Langfuse:** 9/9 checks pass against a real self-hosted Langfuse (4.68.0) in CI.
+
+
+## Saved agent and flow packages
+
+[Agent/workflow package index](docs/agentic-flow-systems.md): AgentSwarms, GraphFlow, Agentic AI Workflows and Pullboard, with pinned upstream source, frontend setup, specifications and saved verification evidence. These source packages live under `systems/`; the existing test-bench and CI registrations are unchanged.

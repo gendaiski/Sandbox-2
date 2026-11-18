@@ -1,0 +1,9 @@
+{
+  "upstream": "https://github.com/shortcut119/Multi-Agent-AI-Swarm",
+  "commit": "b5ed2e992a2fbf70f63e0546e0166514fff3ed2f",
+  "selected_release": "No release selected; pinned default-branch commit",
+  "mode": "frontend-only",
+  "access": "public, no sign-in",
+  "backend_installed": false,
+  "live_url": "https://swarm-apps-original.aelgendy673996.chatgpt.site/multi/"
+}

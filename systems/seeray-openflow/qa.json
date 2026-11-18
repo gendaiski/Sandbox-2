@@ -1,0 +1,44 @@
+{
+  "persisted": true,
+  "errors": [],
+  "requests": [
+    "http://127.0.0.1:8234/",
+    "http://127.0.0.1:8234/fonts/Inter.ttf",
+    "http://127.0.0.1:8234/assets/index-iMX3TSG-.js",
+    "http://127.0.0.1:8234/assets/index-CW9K9g9P.css",
+    "http://127.0.0.1:8234/fonts/JetBrainsMonoNerdFontMono-Regular.woff2",
+    "http://127.0.0.1:8234/",
+    "http://127.0.0.1:8234/fonts/Inter.ttf",
+    "http://127.0.0.1:8234/assets/index-iMX3TSG-.js",
+    "http://127.0.0.1:8234/assets/index-CW9K9g9P.css",
+    "http://127.0.0.1:8234/fonts/JetBrainsMonoNerdFontMono-Regular.woff2",
+    "http://127.0.0.1:8234/",
+    "http://127.0.0.1:8234/fonts/Inter.ttf",
+    "http://127.0.0.1:8234/assets/index-iMX3TSG-.js",
+    "http://127.0.0.1:8234/assets/index-CW9K9g9P.css",
+    "http://127.0.0.1:8234/fonts/JetBrainsMonoNerdFontMono-Regular.woff2"
+  ],
+  "checks": [
+    {
+      "panel": "api keys",
+      "text": "Original OpenFlow v1.3.0 · Browser preview · Save your own local workflows. Engine execution, API keys and host access are disabled. Details\nOpenFlow\nOpen\nattach\nmode: pipeline\npipe: ancestors\nverify: off\npermissions: auto\nparallel: 4\ntimeout: 30m\nalerts: off\nRun\nStop\nopencode serve unavailable — frontend preview only (HTTP 503)\ntemplates\n\nstart from a ready-made pipeline\n\nsolo coder\nMake one change to your project.\nplan and code\nPlan first, then implement.\nplan, code, review\nThe full loop.\nresearch and write\nDraft a document.\nswarm debate\nThree views argue, one decides.\norchestrated build\nOne boss, three specialists.\nroles\n\ndrag onto the canvas, or click to drop one in\n\nplanner\narchitect\ncoder\nreviewer\norchestrator\nsynthesizer\ncustom\ngraph\n2 nodes · 0 edges\n\ndrag a node header to move it\n\ndrag the right port onto a left port to connect\n\nclick an edge to delete it\n\nDelete key removes the selected node\n\nplanner\nidle\ndefault model\ncoder\nidle\ndefault model\nreset view\n100%\nselect a node to edit it\nConnect a provider\nNo providers to show — `opencode serve` is not answering, so the catalog could not be read. Start or restart the engine, then reopen this dialog.\noffline — opencode serve unavailable — frontend preview only (HTTP 503)\nno run yet\n—\nRuns\nBrowser local drafts (no host access)"
+    },
+    {
+      "panel": "skills",
+      "text": "Original OpenFlow v1.3.0 · Browser preview · Save your own local workflows. Engine execution, API keys and host access are disabled. Details\nOpenFlow\nOpen\nattach\nmode: pipeline\npipe: ancestors\nverify: off\npermissions: auto\nparallel: 4\ntimeout: 30m\nalerts: off\nRun\nStop\nopencode serve unavailable — frontend preview only (HTTP 503)\ntemplates\n\nstart from a ready-made pipeline\n\nsolo coder\nMake one change to your project.\nplan and code\nPlan first, then implement.\nplan, code, review\nThe full loop.\nresearch and write\nDraft a document.\nswarm debate\nThree views argue, one decides.\norchestrated build\nOne boss, three specialists.\nroles\n\ndrag onto the canvas, or click to drop one in\n\nplanner\narchitect\ncoder\nreviewer\norchestrator\nsynthesizer\ncustom\ngraph\n2 nodes · 0 edges\n\ndrag a node header to move it\n\ndrag the right port onto a left port to connect\n\nclick an edge to delete it\n\nDelete key removes the selected node\n\nplanner\nidle\ndefault model\ncoder\nidle\ndefault model\nreset view\n100%\nselect a node to edit it\nSkills\nSkills live in .openflow/skills and load into every card the agent's permissions allow.\nNew skill\nNo skills yet. Create one — it becomes a tool your cards can call.\noffline — opencode serve unavailable — frontend preview only (HTTP 503)\nno run yet\n—\nRuns\nBrowser local drafts (no host access)"
+    },
+    {
+      "panel": "mcp servers",
+      "text": "Original OpenFlow v1.3.0 · Browser preview · Save your own local workflows. Engine execution, API keys and host access are disabled. Details\nOpenFlow\nOpen\nattach\nmode: pipeline\npipe: ancestors\nverify: off\npermissions: auto\nparallel: 4\ntimeout: 30m\nalerts: off\nRun\nStop\nopencode serve unavailable — frontend preview only (HTTP 503)\ntemplates\n\nstart from a ready-made pipeline\n\nsolo coder\nMake one change to your project.\nplan and code\nPlan first, then implement.\nplan, code, review\nThe full loop.\nresearch and write\nDraft a document.\nswarm debate\nThree views argue, one decides.\norchestrated build\nOne boss, three specialists.\nroles\n\ndrag onto the canvas, or click to drop one in\n\nplanner\narchitect\ncoder\nreviewer\norchestrator\nsynthesizer\ncustom\ngraph\n2 nodes · 0 edges\n\ndrag a node header to move it\n\ndrag the right port onto a left port to connect\n\nclick an edge to delete it\n\nDelete key removes the selected node\n\nplanner\nidle\ndefault model\ncoder\nidle\ndefault model\nreset view\n100%\nselect a node to edit it\nMCP servers\nServers are written to the project's opencode.json, so cards and the opencode CLI see the same set.\nNew server\nNo MCP servers configured. Add one — every card can then be given access to it in the inspector.\noffline — opencode serve unavailable — frontend preview only (HTTP 503)\nno run yet\n—\nRuns\nBrowser local drafts (no host access)"
+    },
+    {
+      "panel": "toggle sessions panel",
+      "text": "Original OpenFlow v1.3.0 · Browser preview · Save your own local workflows. Engine execution, API keys and host access are disabled. Details\nOpenFlow\nOpen\nattach\nmode: pipeline\npipe: ancestors\nverify: off\npermissions: auto\nparallel: 4\ntimeout: 30m\nalerts: off\nRun\nStop\nopencode serve unavailable — frontend preview only (HTTP 503)\nsessions\n\nopencode serve unavailable — frontend preview only (HTTP 503)\n\nNo sessions in this project yet.\n\ntemplates\n\nstart from a ready-made pipeline\n\nsolo coder\nMake one change to your project.\nplan and code\nPlan first, then implement.\nplan, code, review\nThe full loop.\nresearch and write\nDraft a document.\nswarm debate\nThree views argue, one decides.\norchestrated build\nOne boss, three specialists.\nroles\n\ndrag onto the canvas, or click to drop one in\n\nplanner\narchitect\ncoder\nreviewer\norchestrator\nsynthesizer\ncustom\ngraph\n2 nodes · 0 edges\n\ndrag a node header to move it\n\ndrag the right port onto a left port to connect\n\nclick an edge to delete it\n\nDelete key removes the selected node\n\nplanner\nidle\ndefault model\ncoder\nidle\ndefault model\nreset view\n100%\nselect a node to edit it\noffline — opencode serve unavailable — frontend preview only (HTTP 503)\nno run yet\n—\nRuns\nBrowser local drafts (no host access)"
+    }
+  ],
+  "ipad": {
+    "scrollWidth": 810,
+    "viewport": 810,
+    "rootHeight": 1050
+  }
+}

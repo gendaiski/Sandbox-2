@@ -1,0 +1,30 @@
+{
+  "source_commit": "a2309bd452f0d4b0e1cb5f9f9072e81e2b17757d",
+  "tag": "v3.1.0.4",
+  "source_checkout_unmodified": true,
+  "runtime_lib_directory_present": false,
+  "license_file_present_not_read": false,
+  "root_start_script_present": false,
+  "count_definition": "HTML index files nested under demo categories; not a claim that every entry is runnable in this environment",
+  "html_index_files_by_category": {
+    "analysis": 5,
+    "application-features": 39,
+    "databinding": 12,
+    "input": 37,
+    "layout": 44,
+    "layout-features": 28,
+    "loading": 7,
+    "showcase": 31,
+    "style": 43,
+    "testing": 1,
+    "toolkit": 10,
+    "tutorial-graph-builder": 13,
+    "tutorial-style-implementation-edge": 12,
+    "tutorial-style-implementation-label": 11,
+    "tutorial-style-implementation-node": 12,
+    "tutorial-style-implementation-port": 6,
+    "tutorial-yfiles-basic-features": 12,
+    "view": 29
+  },
+  "html_index_file_total": 352
+}

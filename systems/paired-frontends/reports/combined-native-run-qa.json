@@ -1,0 +1,12 @@
+{
+  "nativeSave": true,
+  "nativeCanvasSelect": true,
+  "nativeTestButton": true,
+  "nativeConfirm": true,
+  "actualOutput": {
+    "value": 23
+  },
+  "reopened": true,
+  "backupIncludesRun": true,
+  "errors": []
+}
