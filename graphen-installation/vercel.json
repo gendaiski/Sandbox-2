@@ -1,0 +1,12 @@
+{
+  "framework": null,
+  "installCommand": "npm ci",
+  "buildCommand": "npm run lint && npm test && npm run build && node deployment/prepare.mjs",
+  "outputDirectory": "site",
+  "trailingSlash": true,
+  "redirects": [
+    { "source": "/", "destination": "/graphen/", "permanent": false },
+    { "source": "/studio", "destination": "/graphen/studio/", "permanent": false },
+    { "source": "/docs", "destination": "/graphen/docs/", "permanent": false }
+  ]
+}

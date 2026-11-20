@@ -1,0 +1,121 @@
+# Security-focused architecture with guardrails
+version: "1.1"
+metadata:
+  name: "Security Gates"
+  description: "Multi-agent system with approval gates"
+  owner: "Graphen Team"
+  sla: "99.95% availability"
+
+models:
+  - id: claude_opus
+    provider: anthropic
+    model: claude-opus-4
+    temperature: 0.2
+  - id: gpt4o
+    provider: openai
+    model: gpt-4o
+    temperature: 0.3
+
+groups:
+  - id: processing
+    name: "Processing Layer"
+  - id: security
+    name: "Security Controls"
+
+agents:
+  - id: intake
+    name: "Intake Agent"
+    role: "Receives and classifies requests"
+    model: gpt4o
+    tools: [classifier]
+    guardrails: [pii_filter]
+  - id: processor
+    group: processing
+    name: "Processor Agent"
+    role: "Executes approved actions"
+    model: claude_opus
+    tools: [database, payment_api]
+    memory: [audit_log]
+    guardrails: [access_control, compliance_check]
+
+mcps:
+  - id: database
+    group: processing
+    name: "Primary Database"
+    protocol: mcp/v1
+    endpoint: https://mcp.internal/db
+  - id: payment_api
+    group: processing
+    name: "Payment Gateway"
+    protocol: mcp/v1
+    endpoint: https://mcp.internal/payments
+
+memories:
+  - id: audit_log
+    group: processing
+    name: "Audit Log"
+    provider: TimescaleDB
+    mode: append
+
+tools:
+  - id: classifier
+    name: "Request Classifier"
+    mechanism: function
+
+guardrails:
+  - id: pii_filter
+    name: "PII Filter"
+    mechanism: pattern-matching
+    human_in_the_loop: false
+  - id: access_control
+    name: "Access Control"
+    mechanism: approval_gate
+    human_in_the_loop: true
+  - id: compliance_check
+    name: "Compliance Check"
+    mechanism: policy-engine
+    human_in_the_loop: false
+
+components:
+  - id: high_value_check
+    group: security
+    type: condition
+    name: "High Value Transaction?"
+    expression: "amount > 10000"
+  - id: require_approval
+    group: security
+    type: action
+    name: "Require Manager Approval"
+    action_type: notification
+
+topology:
+  - from: intake
+    to: pii_filter
+    label: "Sanitize input"
+  - from: intake
+    to: classifier
+    label: "Classifies request"
+  - from: intake
+    to: processor
+    label: "Forward request"
+  - from: processor
+    to: database
+    label: "Read/Write data"
+  - from: processor
+    to: payment_api
+    label: "Process payment"
+  - from: processor
+    to: access_control
+    label: "Verify permissions"
+  - from: processor
+    to: compliance_check
+    label: "Runs policy checks"
+  - from: processor
+    to: audit_log
+    label: "Records activity"
+  - from: processor
+    to: high_value_check
+    label: "Check transaction value"
+  - from: high_value_check
+    to: require_approval
+    label: "If amount > $10k"

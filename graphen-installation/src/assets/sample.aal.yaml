@@ -1,0 +1,94 @@
+# Default architecture loaded in the Studio.
+version: "1.1"
+metadata:
+  name: "Support Orchestrator"
+  description: "A multi-agent customer support architecture."
+  owner: "Platform Architecture"
+
+models:
+  - id: sonnet
+    provider: "anthropic"
+    model: "claude-sonnet-4-5"
+  - id: gpt_4o
+    provider: "openai"
+    model: "gpt-4o"
+
+groups:
+  - id: technical_support
+    name: "Technical Support"
+    description: "Investigation and knowledge retrieval."
+
+agents:
+  - id: supervisor
+    name: "Triage Supervisor"
+    role: "Routes incoming requests"
+    version: "1.0"
+    model: sonnet
+    tools: [classifier]
+    guardrails: [pii_filter]
+  - id: specialist
+    group: technical_support
+    name: "Technical Agent"
+    role: "Resolves complex issues"
+    model: gpt_4o
+    tools: [customer_db]
+    memory: [knowledge_base]
+
+mcps:
+  - id: customer_db
+    group: technical_support
+    name: "Customer DB"
+    protocol: "mcp/v1"
+    endpoint: "https://mcp.example.com/customers"
+
+memories:
+  - id: knowledge_base
+    group: technical_support
+    name: "Knowledge Base"
+    provider: "Qdrant"
+    mode: "RAG"
+
+tools:
+  - id: classifier
+    name: "Intent Classifier"
+    mechanism: "function"
+
+guardrails:
+  - id: pii_filter
+    name: "PII Filter"
+    mechanism: "pattern-matching"
+    human_in_the_loop: false
+
+components:
+  - id: complexity_check
+    group: technical_support
+    type: condition
+    name: "Complex request?"
+    expression: "ticket.complexity > 3"
+  - id: escalate
+    group: technical_support
+    type: action
+    name: "Escalate ticket"
+    action_type: "state_mutation"
+
+topology:
+  - from: supervisor
+    to: pii_filter
+    label: "Validates input"
+  - from: supervisor
+    to: specialist
+    label: "Delegates"
+  - from: supervisor
+    to: classifier
+    label: "Classifies intent"
+  - from: specialist
+    to: customer_db
+    label: "Queries"
+  - from: customer_db
+    to: knowledge_base
+    label: "Retrieves context"
+  - from: specialist
+    to: complexity_check
+  - from: complexity_check
+    to: escalate
+    label: "If complex"

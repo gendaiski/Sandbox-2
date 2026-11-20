@@ -1,0 +1,72 @@
+# RAG Pipeline with vector memory
+version: "1.1"
+metadata:
+  name: "RAG Pipeline"
+  description: "Document retrieval augmented generation"
+  owner: "Graphen Team"
+
+models:
+  - id: embedder
+    provider: openai
+    model: text-embedding-3-small
+  - id: gpt4o
+    provider: openai
+    model: gpt-4o
+    temperature: 0.3
+
+agents:
+  - id: retriever
+    name: "Retriever Agent"
+    role: "Finds relevant documents"
+    model: gpt4o
+    tools: [vector_search]
+    memory: [knowledge_base]
+  - id: generator
+    name: "Generator Agent"
+    role: "Synthesizes answers"
+    model: gpt4o
+    memory: [knowledge_base]
+    guardrails: [hallucination_check]
+
+mcps:
+  - id: document_store
+    name: "Document Store"
+    protocol: mcp/v1
+    endpoint: https://mcp.example.com/documents
+
+memories:
+  - id: knowledge_base
+    name: "Knowledge Base"
+    provider: Qdrant
+    mode: RAG
+
+tools:
+  - id: vector_search
+    name: "Vector Search"
+    mechanism: function
+
+guardrails:
+  - id: hallucination_check
+    name: "Hallucination Check"
+    mechanism: pattern-matching
+    human_in_the_loop: false
+
+topology:
+  - from: retriever
+    to: document_store
+    label: "Index documents"
+  - from: retriever
+    to: vector_search
+    label: "Semantic query"
+  - from: retriever
+    to: knowledge_base
+    label: "Reads vectors"
+  - from: generator
+    to: retriever
+    label: "Requests context"
+  - from: generator
+    to: knowledge_base
+    label: "Stores context"
+  - from: generator
+    to: hallucination_check
+    label: "Validates answer"
