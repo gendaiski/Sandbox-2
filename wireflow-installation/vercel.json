@@ -1,0 +1,5 @@
+{
+  "framework": "nextjs",
+  "installCommand": "mv restore-source.mjs /tmp/wireflow-restore.mjs && node /tmp/wireflow-restore.mjs && npm ci",
+  "buildCommand": "npm run lint && npm run typecheck && npm test && npm run build"
+}
