@@ -1,0 +1,32 @@
+{
+  "projectName": "Client Portal",
+  "projectType": "saas",
+  "docsPath": "docs",
+  "createdBy": "beforecode",
+  "version": "0.2.0",
+  "workflow": "context-first",
+  "context": {
+    "projectName": "Client Portal",
+    "projectType": "saas",
+    "hasIdea": true,
+    "hasProblem": false,
+    "hasUsers": true,
+    "hasFeatures": true,
+    "aiBuildMode": "TBD"
+  },
+  "documents": [
+    "00-project-context.md",
+    "01-open-questions.md",
+    "03-project-brief.md",
+    "04-research-report.md",
+    "05-prd.md",
+    "06-ux-flows.md",
+    "07-trd.md",
+    "08-database-schema.md",
+    "09-api-documentation.md",
+    "10-permission-matrix.md",
+    "11-qa-test-plan.md",
+    "12-implementation-plan.md",
+    "13-deployment-plan.md"
+  ]
+}

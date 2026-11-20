@@ -1,0 +1,596 @@
+[
+  {
+    "id": "beforecode@0.2.0",
+    "name": "beforecode",
+    "version": "0.2.0",
+    "size": 49378,
+    "unpackedSize": 158861,
+    "shasum": "3548aa6cc91f94e115eda48150d65291bd35437e",
+    "integrity": "sha512-E8o1iuRc4w9lFR/nRKL9Ew7QKUzJdBJaPGzVGAXhlwiKgslyahVVoNdqccT2+b0YSZV1gwzgpGwDNcwv7OP3HA==",
+    "filename": "beforecode-0.2.0.tgz",
+    "files": [
+      {
+        "path": "LICENSE",
+        "size": 1068,
+        "mode": 384
+      },
+      {
+        "path": "README.md",
+        "size": 5331,
+        "mode": 384
+      },
+      {
+        "path": "assets/beforecode-banner.svg",
+        "size": 2269,
+        "mode": 384
+      },
+      {
+        "path": "assets/beforecode-social-preview.svg",
+        "size": 2270,
+        "mode": 384
+      },
+      {
+        "path": "assets/concepts/beforecode-hero-with-badges.svg",
+        "size": 5796,
+        "mode": 384
+      },
+      {
+        "path": "assets/context-first-workflow.svg",
+        "size": 3598,
+        "mode": 384
+      },
+      {
+        "path": "bin/beforecode.js",
+        "size": 189,
+        "mode": 384
+      },
+      {
+        "path": "checklists/api-readiness-checklist.md",
+        "size": 219,
+        "mode": 384
+      },
+      {
+        "path": "checklists/launch-readiness-checklist.md",
+        "size": 222,
+        "mode": 384
+      },
+      {
+        "path": "checklists/prd-review-checklist.md",
+        "size": 216,
+        "mode": 384
+      },
+      {
+        "path": "checklists/pre-build-checklist.md",
+        "size": 215,
+        "mode": 384
+      },
+      {
+        "path": "checklists/qa-readiness-checklist.md",
+        "size": 218,
+        "mode": 384
+      },
+      {
+        "path": "checklists/README.md",
+        "size": 426,
+        "mode": 384
+      },
+      {
+        "path": "checklists/technical-readiness-checklist.md",
+        "size": 225,
+        "mode": 384
+      },
+      {
+        "path": "docs/cli-usage.md",
+        "size": 2347,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-agent/agent-workflow.md",
+        "size": 334,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-agent/api-documentation.md",
+        "size": 343,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-agent/database-schema.md",
+        "size": 341,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-agent/evaluation-plan.md",
+        "size": 335,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-agent/implementation-plan.md",
+        "size": 339,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-agent/memory-plan.md",
+        "size": 331,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-agent/prd.md",
+        "size": 333,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-agent/qa-test-plan.md",
+        "size": 332,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-agent/research-report.md",
+        "size": 345,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-agent/threat-model.md",
+        "size": 332,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-agent/tool-permission-plan.md",
+        "size": 340,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-agent/trd.md",
+        "size": 333,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-video-editor/00-project-context.md",
+        "size": 2818,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-video-editor/01-open-questions.md",
+        "size": 1647,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-video-editor/03-prd.md",
+        "size": 3304,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-video-editor/04-trd.md",
+        "size": 2855,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-video-editor/05-system-architecture.md",
+        "size": 2388,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-video-editor/06-agent-workflows.md",
+        "size": 2489,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-video-editor/07-rendering-pipeline.md",
+        "size": 2304,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-video-editor/08-qa-regression-plan.md",
+        "size": 1935,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-video-editor/09-ai-coding-handoff.md",
+        "size": 1549,
+        "mode": 384
+      },
+      {
+        "path": "examples/ai-video-editor/README.md",
+        "size": 1931,
+        "mode": 384
+      },
+      {
+        "path": "examples/browser-qa-agent/00-project-context.md",
+        "size": 2632,
+        "mode": 384
+      },
+      {
+        "path": "examples/browser-qa-agent/01-open-questions.md",
+        "size": 1601,
+        "mode": 384
+      },
+      {
+        "path": "examples/browser-qa-agent/03-prd.md",
+        "size": 2761,
+        "mode": 384
+      },
+      {
+        "path": "examples/browser-qa-agent/04-trd.md",
+        "size": 2604,
+        "mode": 384
+      },
+      {
+        "path": "examples/browser-qa-agent/05-browser-workflow.md",
+        "size": 2149,
+        "mode": 384
+      },
+      {
+        "path": "examples/browser-qa-agent/06-report-format.md",
+        "size": 1842,
+        "mode": 384
+      },
+      {
+        "path": "examples/browser-qa-agent/07-safety-rules.md",
+        "size": 1862,
+        "mode": 384
+      },
+      {
+        "path": "examples/browser-qa-agent/08-evaluation-plan.md",
+        "size": 1988,
+        "mode": 384
+      },
+      {
+        "path": "examples/browser-qa-agent/09-ai-handoff.md",
+        "size": 1571,
+        "mode": 384
+      },
+      {
+        "path": "examples/browser-qa-agent/README.md",
+        "size": 1904,
+        "mode": 384
+      },
+      {
+        "path": "examples/example-quality-standard.md",
+        "size": 2495,
+        "mode": 384
+      },
+      {
+        "path": "examples/README.md",
+        "size": 1550,
+        "mode": 384
+      },
+      {
+        "path": "examples/saas-crm-pro/00-project-context.md",
+        "size": 3071,
+        "mode": 384
+      },
+      {
+        "path": "examples/saas-crm-pro/01-open-questions.md",
+        "size": 2034,
+        "mode": 384
+      },
+      {
+        "path": "examples/saas-crm-pro/03-prd.md",
+        "size": 4257,
+        "mode": 384
+      },
+      {
+        "path": "examples/saas-crm-pro/04-trd.md",
+        "size": 2809,
+        "mode": 384
+      },
+      {
+        "path": "examples/saas-crm-pro/05-erd.md",
+        "size": 3553,
+        "mode": 384
+      },
+      {
+        "path": "examples/saas-crm-pro/06-api-spec.md",
+        "size": 3345,
+        "mode": 384
+      },
+      {
+        "path": "examples/saas-crm-pro/07-ux-flows.md",
+        "size": 3097,
+        "mode": 384
+      },
+      {
+        "path": "examples/saas-crm-pro/08-permission-matrix.md",
+        "size": 2393,
+        "mode": 384
+      },
+      {
+        "path": "examples/saas-crm-pro/09-qa-test-plan.md",
+        "size": 2557,
+        "mode": 384
+      },
+      {
+        "path": "examples/saas-crm-pro/10-ai-handoff.md",
+        "size": 1567,
+        "mode": 384
+      },
+      {
+        "path": "examples/saas-crm-pro/README.md",
+        "size": 2498,
+        "mode": 384
+      },
+      {
+        "path": "examples/saas-crm/api-documentation.md",
+        "size": 183,
+        "mode": 384
+      },
+      {
+        "path": "examples/saas-crm/database-schema.md",
+        "size": 166,
+        "mode": 384
+      },
+      {
+        "path": "examples/saas-crm/implementation-plan.md",
+        "size": 158,
+        "mode": 384
+      },
+      {
+        "path": "examples/saas-crm/prd.md",
+        "size": 369,
+        "mode": 384
+      },
+      {
+        "path": "examples/saas-crm/project-brief.md",
+        "size": 287,
+        "mode": 384
+      },
+      {
+        "path": "examples/saas-crm/qa-test-plan.md",
+        "size": 146,
+        "mode": 384
+      },
+      {
+        "path": "examples/saas-crm/trd.md",
+        "size": 153,
+        "mode": 384
+      },
+      {
+        "path": "package.json",
+        "size": 1088,
+        "mode": 384
+      },
+      {
+        "path": "prompts/chatgpt/generate-prd.md",
+        "size": 257,
+        "mode": 384
+      },
+      {
+        "path": "prompts/codex/audit-against-docs.md",
+        "size": 214,
+        "mode": 384
+      },
+      {
+        "path": "prompts/codex/build-from-docs.md",
+        "size": 219,
+        "mode": 384
+      },
+      {
+        "path": "prompts/codex/generate-tests.md",
+        "size": 161,
+        "mode": 384
+      },
+      {
+        "path": "prompts/README.md",
+        "size": 276,
+        "mode": 384
+      },
+      {
+        "path": "src/args.js",
+        "size": 593,
+        "mode": 384
+      },
+      {
+        "path": "src/cli.js",
+        "size": 2418,
+        "mode": 384
+      },
+      {
+        "path": "src/commands/add.js",
+        "size": 750,
+        "mode": 384
+      },
+      {
+        "path": "src/commands/check.js",
+        "size": 776,
+        "mode": 384
+      },
+      {
+        "path": "src/commands/doctor.js",
+        "size": 1607,
+        "mode": 384
+      },
+      {
+        "path": "src/commands/handoff.js",
+        "size": 639,
+        "mode": 384
+      },
+      {
+        "path": "src/commands/init.js",
+        "size": 837,
+        "mode": 384
+      },
+      {
+        "path": "src/commands/list.js",
+        "size": 629,
+        "mode": 384
+      },
+      {
+        "path": "src/commands/score.js",
+        "size": 1017,
+        "mode": 384
+      },
+      {
+        "path": "src/commands/start.js",
+        "size": 4150,
+        "mode": 384
+      },
+      {
+        "path": "src/core/checker.js",
+        "size": 1063,
+        "mode": 384
+      },
+      {
+        "path": "src/core/config.js",
+        "size": 996,
+        "mode": 384
+      },
+      {
+        "path": "src/core/context.js",
+        "size": 6576,
+        "mode": 384
+      },
+      {
+        "path": "src/core/doctor.js",
+        "size": 4011,
+        "mode": 384
+      },
+      {
+        "path": "src/core/foo.js",
+        "size": 42,
+        "mode": 384
+      },
+      {
+        "path": "src/core/generator.js",
+        "size": 3917,
+        "mode": 384
+      },
+      {
+        "path": "src/core/handoff.js",
+        "size": 1996,
+        "mode": 384
+      },
+      {
+        "path": "src/core/scorer.js",
+        "size": 925,
+        "mode": 384
+      },
+      {
+        "path": "src/core/workspace.js",
+        "size": 2717,
+        "mode": 384
+      },
+      {
+        "path": "src/data/project-types.js",
+        "size": 2143,
+        "mode": 384
+      },
+      {
+        "path": "src/data/templates.js",
+        "size": 829,
+        "mode": 384
+      },
+      {
+        "path": "src/fs-utils.js",
+        "size": 1175,
+        "mode": 384
+      },
+      {
+        "path": "src/paths.js",
+        "size": 404,
+        "mode": 384
+      },
+      {
+        "path": "src/project-types.js",
+        "size": 106,
+        "mode": 384
+      },
+      {
+        "path": "src/template-map.js",
+        "size": 86,
+        "mode": 384
+      },
+      {
+        "path": "templates/api-documentation.md",
+        "size": 344,
+        "mode": 384
+      },
+      {
+        "path": "templates/build-plan.md",
+        "size": 192,
+        "mode": 384
+      },
+      {
+        "path": "templates/business-requirements.md",
+        "size": 242,
+        "mode": 384
+      },
+      {
+        "path": "templates/database-schema.md",
+        "size": 357,
+        "mode": 384
+      },
+      {
+        "path": "templates/decision-record.md",
+        "size": 264,
+        "mode": 384
+      },
+      {
+        "path": "templates/deployment-plan.md",
+        "size": 275,
+        "mode": 384
+      },
+      {
+        "path": "templates/implementation-plan.md",
+        "size": 388,
+        "mode": 384
+      },
+      {
+        "path": "templates/permission-matrix.md",
+        "size": 238,
+        "mode": 384
+      },
+      {
+        "path": "templates/prd.md",
+        "size": 682,
+        "mode": 384
+      },
+      {
+        "path": "templates/project-brief.md",
+        "size": 377,
+        "mode": 384
+      },
+      {
+        "path": "templates/qa-test-plan.md",
+        "size": 365,
+        "mode": 384
+      },
+      {
+        "path": "templates/README.md",
+        "size": 833,
+        "mode": 384
+      },
+      {
+        "path": "templates/release-scope.md",
+        "size": 139,
+        "mode": 384
+      },
+      {
+        "path": "templates/research-report.md",
+        "size": 402,
+        "mode": 384
+      },
+      {
+        "path": "templates/srs.md",
+        "size": 344,
+        "mode": 384
+      },
+      {
+        "path": "templates/trd.md",
+        "size": 721,
+        "mode": 384
+      },
+      {
+        "path": "templates/ui-system.md",
+        "size": 305,
+        "mode": 384
+      },
+      {
+        "path": "templates/ux-flows.md",
+        "size": 307,
+        "mode": 384
+      }
+    ],
+    "entryCount": 116,
+    "bundled": []
+  }
+]

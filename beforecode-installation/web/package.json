@@ -1,0 +1,1 @@
+{"name":"beforecode-planning-studio","version":"1.0.0","private":true,"type":"module","scripts":{"start":"node server.mjs","build":"node build.mjs","test":"node --test verification/backend.test.mjs"},"engines":{"node":">=22"}}
