@@ -72,10 +72,10 @@ index 2953303..422fec8 100755
    exit 1
  fi
 diff --git a/orb/src/main.js b/orb/src/main.js
-index 0488c02..594db30 100644
+index 0488c02..fde16ad 100644
 --- a/orb/src/main.js
 +++ b/orb/src/main.js
-@@ -11,14 +11,18 @@ const bridge = new EventBridge(orb, logPanel);
+@@ -11,19 +11,27 @@ const bridge = new EventBridge(orb, logPanel);
  
  // Window drag — manual implementation for decoration-less window
  const dragRegion = document.getElementById('drag-region');
@@ -84,7 +84,11 @@ index 0488c02..594db30 100644
 +if (!appWindow) {
 +  document.getElementById('ctx-reset-pos').hidden = true;
 +  document.getElementById('ctx-quit').hidden = true;
++  // A desktop-sized renderer must not be stretched across a browser viewport.
++  Object.assign(canvas.style, { width: '220px', height: '220px', margin: 'auto' });
++  Object.assign(document.body.style, { display: 'grid', placeItems: 'center', background: '#050507' });
 +}
++orb.resize(canvas.clientWidth, canvas.clientHeight);
  
  dragRegion.addEventListener('mousedown', async (e) => {
    if (e.detail === 2) {
@@ -96,7 +100,13 @@ index 0488c02..594db30 100644
  });
  
  // Resize handling
-@@ -49,15 +53,29 @@ document.getElementById('ctx-log').addEventListener('click', () => {
+ window.addEventListener('resize', () => {
+-  orb.resize(window.innerWidth, window.innerHeight);
++  orb.resize(canvas.clientWidth, canvas.clientHeight);
+ });
+ 
+ // Context menu
+@@ -49,15 +57,24 @@ document.getElementById('ctx-log').addEventListener('click', () => {
  
  document.getElementById('ctx-reset-pos').addEventListener('click', async () => {
    const { LogicalPosition } = await import('@tauri-apps/api/dpi');
@@ -117,12 +127,7 @@ index 0488c02..594db30 100644
 +  notice.textContent = 'Animation demo · Brain is not connected';
 +  Object.assign(notice.style, { position: 'fixed', top: '12px', left: '12px', color: '#aaa', font: '12px sans-serif', zIndex: '10' });
 +  document.body.appendChild(notice);
-+  const events = ['memory_save', 'search', 'entity_update', 'memory_contradict', 'context_compact', 'team_dispatch'];
-+  let eventIndex = 0;
-+  setInterval(() => {
-+    const type = events[eventIndex++ % events.length];
-+    bridge.handleEvent({ type, label: `Animation demonstration: ${type}` });
-+  }, 3500);
++  // No automatic synthetic events. The separate website preview has explicit controls.
 +} else {
 +  bridge.connectWebSocket(import.meta.env.VITE_BRAIN_WS_URL || 'ws://localhost:9321');
 +}

@@ -4,13 +4,15 @@ Original: https://github.com/TheStack-ai/jarvis-orb
 Pinned commit: d4345141e02054bafb8987ce0012123ca528a528
 Licence: MIT; original notices retained.
 
-Original orb animation preview: https://jarvis-orb-original-preview.vercel.app/?demo=1
+Original website preview: https://jarvis-orb-original-preview.vercel.app/
+
+Native-size desktop visual preview: https://jarvis-orb-original-preview.vercel.app/desktop/
 
 ## Result — 20 November 2026
 
 Installed the original Python memory/MCP backend and Three.js/Tauri UI dependencies. The production frontend builds. All 25 original brain tests passed. A new real MCP transport check exercises all seven tools, verifies actual WebSocket event delivery, then restarts the process and confirms SQLite memory and entity state persist.
 
-The browser preview uses the original orb shaders, particles, animation functions and log panel. Its `?demo=1` mode is explicitly labeled “Animation demo · Brain is not connected” and sends animation examples only. It is not a hosted memory database. Remove the query for the original localhost Brain connection behavior.
+The corrected browser homepage reproduces the official website and its original shader/animation module. The separate desktop view uses the original renderer in the documented 220×220 frame, with manual animation controls and no automatic cycling. Neither preview claims a hosted Brain connection. The full web preview source, documentation and comparison evidence are in `web-preview/`; see its README for build instructions.
 
 Desktop always-on-top, window dragging and quitting require Tauri on Windows/macOS. Native Windows/macOS installers were not built on this Linux host. The original release installation scripts are included, and the original desktop source is intact. See upstream releases for native binaries: https://github.com/TheStack-ai/jarvis-orb/releases
 
@@ -22,7 +24,7 @@ Desktop always-on-top, window dragging and quitting require Tauri on Windows/mac
 - Updated the frontend build target to ES2022/Chrome110/Safari16 after its legacy target failed with the installed Vite/Three.js versions.
 - Guarded Tauri-only window calls in browsers and hid unavailable native window menu actions. Native desktop behavior is preserved.
 - Added optional JARVIS_BRAIN_DIR and JARVIS_WS_PORT settings for isolated durable data; defaults remain unchanged.
-- Added VITE_BRAIN_WS_URL for alternate browser builds and a clearly labeled visual demonstration mode.
+- Added VITE_BRAIN_WS_URL for alternate browser builds. Browser fallback now preserves the native square size; the earlier automatic synthetic-event loop was removed.
 
 ## Restore and run
 
