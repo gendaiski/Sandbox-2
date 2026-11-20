@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Jarvis Orb — Technical Specification</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>
+  :root{color-scheme:light;--ink:#182936;--muted:#526574;--line:#dce4e9;--paper:#fff;--accent:#176878}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:#f3f5f6;color:var(--ink);font:16px/1.7 system-ui,-apple-system,sans-serif;max-width:none}main{max-width:1100px;margin:0 0 0 295px;padding:64px 54px;background:var(--paper)}h1{font-size:42px;line-height:1.15;letter-spacing:-1.5px}h2{font-size:27px;line-height:1.3;margin:64px 0 20px;padding-top:20px;border-top:1px solid var(--line)}h3{font-size:20px;margin-top:32px}p{margin:16px 0}a{color:var(--accent);text-underline-offset:3px}code{font: .86em/1.5 ui-monospace,Consolas,monospace;overflow-wrap:anywhere;background:#eef3f5;border-radius:4px;padding:2px 4px}pre{padding:20px;background:#101e2a;color:#e8f1f7;border-radius:12px;overflow:auto;font-size:13px}pre code{background:none;padding:0;white-space:pre}table{display:block;max-width:100%;overflow:auto;border-collapse:collapse;font-size:14px;margin:24px 0}td,th{border:1px solid var(--line);padding:12px 14px;vertical-align:top;min-width:105px}th{text-align:left;background:#eaf0f3}tr:nth-child(even){background:#f8fafb}#TOC{position:fixed;top:0;bottom:0;left:0;width:295px;overflow-y:auto;padding:28px 20px;background:#122631;color:#dce9ee;font-size:13px;scrollbar-width:thin;scrollbar-color:#647d8b transparent}#TOC a{color:inherit;text-decoration:none;display:block;padding:7px 8px;border-radius:6px}#TOC a:hover,#TOC a:focus{background:#264452;color:white}#TOC ul{padding-left:8px;list-style:none}#TOC>ul{padding:0}#TOC>ul>li>a{font-weight:700;font-size:16px}#TOC ul ul ul{display:none}.doc-actions{position:fixed;right:20px;top:16px;z-index:10}button{background:#176878;color:white;border:0;border-radius:8px;padding:10px 18px;font:inherit;cursor:pointer}button:focus-visible{outline:3px solid #e5b02b;outline-offset:3px}li{margin:9px 0}strong{color:inherit}@media(max-width:950px){#TOC{position:relative;width:auto;max-height:300px}main{margin:0;padding:35px 22px}h1{font-size:32px}.doc-actions{position:relative;right:auto;top:auto;padding:14px 22px}}@media print{#TOC,.doc-actions{display:none}body,main{background:white;margin:0;padding:0}body{font-size:10pt}h1{font-size:26pt}h2{font-size:17pt;margin-top:28px;break-after:avoid}h3{break-after:avoid}pre{white-space:pre-wrap;background:#f4f6f8;color:#111;font-size:8pt}pre code{white-space:pre-wrap}table{display:table;width:100%;font-size:8pt}td,th{padding:6px;min-width:0;overflow-wrap:anywhere}tr{break-inside:avoid}a{color:#174353} @page{size:A4;margin:17mm}}
+  </style>
+</head>
+<body>
+<header id="title-block-header" hidden>
+<h1 class="title">Jarvis Orb — Technical Specification</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#jarvis-orb--technical-specification"
+id="toc-jarvis-orb--technical-specification">Jarvis Orb — Technical
+Specification</a>
+<ul>
+<li><a href="#1-scope-and-source-authority"
+id="toc-1-scope-and-source-authority">1. Scope and source
+authority</a></li>
+<li><a href="#2-product-behavior-and-user-journeys"
+id="toc-2-product-behavior-and-user-journeys">2. Product behavior and
+user journeys</a></li>
+<li><a href="#3-website-layout-and-visual-specification"
+id="toc-3-website-layout-and-visual-specification">3. Website layout and
+visual specification</a></li>
+<li><a href="#4-exact-website-rendering-contract"
+id="toc-4-exact-website-rendering-contract">4. Exact website rendering
+contract</a></li>
+<li><a href="#5-desktop-renderer-and-interaction-contract"
+id="toc-5-desktop-renderer-and-interaction-contract">5. Desktop renderer
+and interaction contract</a></li>
+<li><a href="#6-system-architecture-and-boundaries"
+id="toc-6-system-architecture-and-boundaries">6. System architecture and
+boundaries</a></li>
+<li><a href="#7-mcp-tool-contracts" id="toc-7-mcp-tool-contracts">7. MCP
+tool contracts</a></li>
+<li><a href="#8-database-specification"
+id="toc-8-database-specification">8. Database specification</a></li>
+<li><a href="#9-event-transport-and-lifecycle"
+id="toc-9-event-transport-and-lifecycle">9. Event transport and
+lifecycle</a></li>
+<li><a href="#10-claims-gaps-and-implementation-decisions"
+id="toc-10-claims-gaps-and-implementation-decisions">10. Claims, gaps
+and implementation decisions</a></li>
+<li><a href="#11-installation-packaging-and-deployment"
+id="toc-11-installation-packaging-and-deployment">11. Installation,
+packaging and deployment</a></li>
+<li><a href="#12-improvements-that-preserve-the-visual-identity"
+id="toc-12-improvements-that-preserve-the-visual-identity">12.
+Improvements that preserve the visual identity</a></li>
+<li><a href="#13-acceptance-tests-and-release-gates"
+id="toc-13-acceptance-tests-and-release-gates">13. Acceptance tests and
+release gates</a></li>
+<li><a href="#14-build-sequence-and-deliverables"
+id="toc-14-build-sequence-and-deliverables">14. Build sequence and
+deliverables</a></li>
+<li><a href="#15-licensing-and-change-control"
+id="toc-15-licensing-and-change-control">15. Licensing and change
+control</a></li>
+</ul></li>
+</ul>
+</nav>
+<div class="doc-actions"><button onclick="window.print()">Print / Save PDF</button></div>
+<main>
+<h1 id="jarvis-orb--technical-specification">Jarvis Orb — Technical
+Specification</h1>
+<p>Version 1.0 · 20 November 2026 · Prepared for Ahmed El Gendy</p>
+<p><strong>Purpose:</strong> enable a faithful rebuild of Jarvis Orb,
+with the original website animation and interaction as the visual
+baseline, a working memory backend, and clearly separated improvements.
+This is a specification and source audit; it does not claim that the
+proposed improvements have been implemented.</p>
+<h2 id="1-scope-and-source-authority">1. Scope and source authority</h2>
+<p>Jarvis Orb consists of three distinct surfaces. Treating them as one
+renderer caused the earlier visual mismatch.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Surface</th>
+<th>Actual purpose</th>
+<th>Fidelity authority</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Official website</td>
+<td>Public product presentation, interactive hero orb, installation
+instructions</td>
+<td>Live website HTML/CSS/GLSL and pointer behavior</td>
+</tr>
+<tr class="even">
+<td>Desktop Orb</td>
+<td>Transparent, always-on-top Tauri window visualizing backend
+events</td>
+<td><code>orb/</code> source, Tauri configuration and released native
+builds</td>
+</tr>
+<tr class="odd">
+<td>Brain Lite</td>
+<td>Local persistent memory and entity tools for MCP clients</td>
+<td><code>brain/jarvis_brain/</code> implementation and tests</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Required default for Ahmed's web version:</strong> the
+official website's unframed, mouse-responsive orb. Do not substitute the
+desktop shader, a screenshot, a GIF, a CSS sphere, an iframe in a black
+card, or synthetic event cycling.</p>
+<p>Source precedence: observed behavior and pinned implementation
+establish what exists; README describes product intent; design plans
+describe intended work, which may be absent. Improvements below are
+explicitly new requirements.</p>
+<h3 id="reference-register">Reference register</h3>
+<table>
+<thead>
+<tr class="header">
+<th>ID</th>
+<th>Reference</th>
+<th>Revision / role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>S1</td>
+<td><a
+href="https://github.com/TheStack-ai/jarvis-orb/tree/d4345141e02054bafb8987ce0012123ca528a528">Upstream
+repository</a></td>
+<td>Pinned commit
+<code>d4345141e02054bafb8987ce0012123ca528a528</code></td>
+</tr>
+<tr class="even">
+<td>S2</td>
+<td><a href="https://jarvis-brain-visualizer.vercel.app/">Official
+website</a></td>
+<td>Live reference inspected 20 November 2026; not itself a versioned
+release</td>
+</tr>
+<tr class="odd">
+<td>S3</td>
+<td><a
+href="https://github.com/TheStack-ai/jarvis-orb/blob/d4345141e02054bafb8987ce0012123ca528a528/README.md">README</a></td>
+<td>Features, installation, platform claims</td>
+</tr>
+<tr class="even">
+<td>S4</td>
+<td><a
+href="https://github.com/TheStack-ai/jarvis-orb/blob/d4345141e02054bafb8987ce0012123ca528a528/docs/plans/2026-03-16-brain-visualizer-design.md">Initial
+design</a> and <a
+href="https://github.com/TheStack-ai/jarvis-orb/blob/d4345141e02054bafb8987ce0012123ca528a528/docs/plans/2026-03-16-implementation-plan.md">implementation
+plan</a></td>
+<td>Historical plans; some capabilities were never implemented</td>
+</tr>
+<tr class="odd">
+<td>S5</td>
+<td><a
+href="https://github.com/TheStack-ai/jarvis-orb/blob/d4345141e02054bafb8987ce0012123ca528a528/docs/superpowers/specs/2026-03-22-orb-quality-buildup-design.md">Desktop
+quality plan</a></td>
+<td>Connection indicator, context menu, logs, resizing</td>
+</tr>
+<tr class="even">
+<td>S6</td>
+<td><a
+href="https://github.com/gendaiski/Sandbox-2/tree/4357f5ea8d81d769c36b2ea7cf1722509beb7201/jarvis-orb-installation">Saved
+implementation</a></td>
+<td>Prior installation corrections and web reference adapter; private
+repository</td>
+</tr>
+<tr class="odd">
+<td>S7</td>
+<td><a
+href="https://github.com/gendaiski/Sandbox-2/tree/4357f5ea8d81d769c36b2ea7cf1722509beb7201/jarvis-orb-installation/web-preview">Saved
+website source and verification</a></td>
+<td>Exact website shader module, HTML, comparison scripts and
+results</td>
+</tr>
+<tr class="even">
+<td>S8</td>
+<td><a
+href="https://jarvis-orb-original-preview.vercel.app/desktop/">Current
+public visual preview</a></td>
+<td>Website visual experience; no hosted Brain database</td>
+</tr>
+<tr class="odd">
+<td>S9</td>
+<td><a
+href="https://github.com/gendaiski/Sandbox-2/pull/23">Installation
+PR</a></td>
+<td>Installation and renderer corrections; not merged as of this
+review</td>
+</tr>
+</tbody>
+</table>
+<p>Also reviewed: <code>SECURITY.md</code>,
+<code>CONTRIBUTING.md</code>, <code>LICENSE</code>, both installers,
+Dockerfile, Python package metadata, CLI, all memory/entity/event
+modules, desktop HTML/JS/Rust/configuration and existing test cases.
+Companion source manifest records hashes of the reviewed files. Local
+installation patches are identified separately from the upstream
+baseline.</p>
+<h2 id="2-product-behavior-and-user-journeys">2. Product behavior and
+user journeys</h2>
+<h3 id="website-reference-experience">Website reference experience</h3>
+<ol type="1">
+<li>Open directly without an account or ChatGPT sign-in.</li>
+<li>See the original navigation, heading, floating orb and download
+actions.</li>
+<li>Move the pointer across the orb: its orientation and colour shift
+smoothly; autonomous breathing and rotation continue.</li>
+<li>Move around the page: the background glow follows the pointer and
+card shadows respond to its position.</li>
+<li>Navigate Why, Brain, Orb and Stack anchors; switch macOS/Linux and
+Windows installation tabs and copy the selected command.</li>
+<li>Scroll through the original sections and footer. Content reveals on
+intersection; it must not remain permanently invisible after a script
+failure in the improved version.</li>
+</ol>
+<h3 id="real-memory-experience">Real memory experience</h3>
+<ol type="1">
+<li>Install Brain Lite and configure a compatible MCP client.</li>
+<li>The client invokes a memory or entity tool over stdio.</li>
+<li>Brain validates input, commits SQLite changes, and publishes the
+corresponding event to connected Orb clients.</li>
+<li>The desktop Orb animates that event and appends its escaped label to
+the log.</li>
+<li>Restart the process; saved memories, entities and transition history
+remain available.</li>
+</ol>
+<p>Brain Lite is not a general autonomous agent, voice assistant, LLM
+service, or desktop-control agent. The calling AI client supplies
+reasoning and decides when to invoke tools.</p>
+<h2 id="3-website-layout-and-visual-specification">3. Website layout and
+visual specification</h2>
+<p>Preserve section order: fixed navigation → hero → installation
+selector → problem → before/after → six Brain features → Orb reactions
+and demo image → three scenarios → architecture → origin → footer.
+Preserve original text in reference mode; clearly annotate unsupported
+claims in any operational product documentation.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Property</th>
+<th>Reference value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Page background / main text</td>
+<td><code>#FAFAFA</code> / <code>#1D1D1F</code></td>
+</tr>
+<tr class="even">
+<td>Secondary / tertiary text</td>
+<td><code>#86868B</code> / <code>#AEAEB2</code></td>
+</tr>
+<tr class="odd">
+<td>Teal / purple / holographic accent</td>
+<td><code>#4A9EBF</code> / <code>#6B4FA0</code> /
+<code>#8EE4FF</code></td>
+</tr>
+<tr class="even">
+<td>Fonts</td>
+<td>Inter weights 400–700; JetBrains Mono 400 for commands</td>
+</tr>
+<tr class="odd">
+<td>Main content width</td>
+<td>980px maximum; 22px horizontal gutters</td>
+</tr>
+<tr class="even">
+<td>Navigation</td>
+<td>Fixed; translucent <code>rgba(250,250,250,.72)</code>; saturation
+180%; blur 20px; subtle bottom border</td>
+</tr>
+<tr class="odd">
+<td>Hero headline</td>
+<td><code>clamp(44px,8vw,80px)</code>; weight 700; line-height 1.05;
+letter-spacing −.04em</td>
+</tr>
+<tr class="even">
+<td>Section headline</td>
+<td><code>clamp(28px,5vw,52px)</code>; weight 700; line-height 1.08</td>
+</tr>
+<tr class="odd">
+<td>Section spacing</td>
+<td>140px vertical; 80px at viewport width ≤640px</td>
+</tr>
+<tr class="even">
+<td>Hero orb stage</td>
+<td>300×300 CSS px; 220×220 at width ≤640px</td>
+</tr>
+<tr class="odd">
+<td>Stage appearance</td>
+<td>Transparent; no border, opaque card, square backdrop or visible
+window chrome</td>
+</tr>
+<tr class="even">
+<td>Canvas</td>
+<td>Transparent WebGL; CSS border-radius 50%; fills stage</td>
+</tr>
+<tr class="odd">
+<td>Buttons</td>
+<td>Pill-shaped; black filled primary; thin outlined secondary</td>
+</tr>
+<tr class="even">
+<td>Scroll reveal</td>
+<td>Opacity 0→1, translateY 24px→0, .8s ease, observer threshold
+.12</td>
+</tr>
+</tbody>
+</table>
+<p>The canvas has rectangular bounds internally, as all canvases do.
+Those bounds must never appear as a visible square around the hero orb.
+The soft halo extends well beyond the stage. The rounded demo GIF lower
+on the page is a separate illustration, not the hero renderer.</p>
+<p>At ≤640px, comparison and architecture statistics become
+single-column, feature numbers shrink to 32px, feature layout stacks,
+hero buttons stack, and navigation hides the non-GitHub links. Preserve
+this in reference mode; an accessible mobile menu is an improvement, not
+an existing feature.</p>
+<h2 id="4-exact-website-rendering-contract">4. Exact website rendering
+contract</h2>
+<p>The source module in S7 is the canonical implementation artifact.
+Reuse its GLSL rather than attempting to recreate the appearance from
+colour descriptions. Mathematical expressions below describe that
+module.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Rendering parameter</th>
+<th>Required reference value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Renderer</td>
+<td>Three.js WebGLRenderer; alpha and antialias enabled</td>
+</tr>
+<tr class="even">
+<td>Device pixel ratio</td>
+<td><code>min(devicePixelRatio,2)</code></td>
+</tr>
+<tr class="odd">
+<td>Camera</td>
+<td>Perspective; FOV 45°; aspect 1; near .1; far 100; z=3</td>
+</tr>
+<tr class="even">
+<td>Geometry</td>
+<td>Sphere radius .8; 96 width and 96 height segments</td>
+</tr>
+<tr class="odd">
+<td>Material</td>
+<td>Transparent custom ShaderMaterial; output alpha .92</td>
+</tr>
+<tr class="even">
+<td>Noise</td>
+<td>Original 3D simplex implementation, one octave</td>
+</tr>
+<tr class="odd">
+<td>Displacement</td>
+<td><code>position + normal * snoise(position*1.8 + t*.3) * .08</code></td>
+</tr>
+<tr class="even">
+<td>Base colours</td>
+<td>Shader vectors <code>(.29,.62,.75)</code> and
+<code>(.42,.31,.63)</code></td>
+</tr>
+<tr class="odd">
+<td>Gradient factor</td>
+<td><code>(position.y+1)*.5 + smoothedMouse.x*.2</code></td>
+</tr>
+<tr class="even">
+<td>Fresnel</td>
+<td><code>(1-max(dot(normalize(cameraPosition-position),normal),0))²</code></td>
+</tr>
+<tr class="odd">
+<td>Iridescence</td>
+<td>Fresnel ×.2; sine phases <code>position.y*4+t*.6</code>, then +2.094
+and +4.189</td>
+</tr>
+<tr class="even">
+<td>Edge glow</td>
+<td><code>(.56,.89,1) * Fresnel * .3</code></td>
+</tr>
+<tr class="odd">
+<td>Rotation</td>
+<td>y=<code>t*.08 + smoothedMouse.x*.3</code>;
+x=<code>smoothedMouse.y*.2</code> radians</td>
+</tr>
+<tr class="even">
+<td>Breathing</td>
+<td>Uniform mesh scale <code>1+sin(t*.6)*.02</code></td>
+</tr>
+</tbody>
+</table>
+<p>Do not introduce the desktop renderer's ACES exposure, bloom
+compositor, ambient particles or event effects into this reference
+profile. They change its appearance. Do not “correct” shader coordinate
+spaces or colour conversion during the parity phase; even mathematically
+justified changes can alter the result.</p>
+<h3 id="pointer-contract">Pointer contract</h3>
+<p>The stage receives <code>mousemove</code>. Given its current viewport
+rectangle:</p>
+<pre class="text"><code>targetX = 2 * ((clientX - left) / width  - 0.5)
+targetY = 2 * ((clientY - top)  / height - 0.5)
+smoothX += (targetX - smoothX) * 0.05
+smoothY += (targetY - smoothY) * 0.05</code></pre>
+<p>These smoothing steps run once per rendered frame. At ±1 horizontal
+input the added rotation tends toward ±.3 radians; vertical input tends
+toward ±.2 radians. Horizontal input also shifts the colour gradient.
+Moving the pointer does not translate the sphere across the screen. No
+click or drag is required. The original has no mouseleave reset: the
+last target persists outside the stage.</p>
+<p>Document-level <code>mousemove</code> updates two separate lighting
+systems:</p>
+<pre class="text"><code>d = distance(pointer, orb stage centre)
+intensity = max(0, 1 - d/1200)
+halo diameter = 900 + 600*intensity px
+inline halo opacity = .4 + .6*intensity</code></pre>
+<p>The cursor-following background is a 900px radial gradient centred on
+CSS variables <code>--mx</code> and <code>--my</code>. The orb-centred
+halo has blur 60px and a 6-second ease-in-out pulse, with opacity
+.6→1→.6 and scale 1→1.08→1. <strong>CSS animation also controls
+opacity:</strong> its animated value can override the inline pointer
+opacity. Reproduce the original cascade; do not interpret inline values
+alone as the actual composited brightness.</p>
+<p>For each responsive card: shadow x/y offsets are .02 times the vector
+from cursor to card centre; proximity
+<code>p=max(0,1-distance/600)</code> controls blur <code>12+24p</code>
+px and alpha <code>.04+.1p</code>; transition is .15s ease. Applicable
+elements are <code>.compare-card.after</code>, <code>.brain-feat</code>,
+<code>.scenario-card</code>, <code>.arch-box</code>,
+<code>.orb-row</code>.</p>
+<h2 id="5-desktop-renderer-and-interaction-contract">5. Desktop renderer
+and interaction contract</h2>
+<p>This is a separately named profile, not the website orb. Tauri v2
+configuration defines a 220×220 window at logical (50,50), transparent,
+undecorated, fixed-size and always-on-top. The older plan's 200×200
+description is superseded by configuration.</p>
+<p>Desktop uses sphere radius .75 with 128×128 segments; ACES filmic
+tone mapping with exposure .7; UnrealBloomPass strength .12, radius 1
+and threshold .8. Connected colours are <code>#4A9EBF</code>,
+<code>#6B4FA0</code>, glow <code>#5BB8D4</code>; disconnected colours
+are <code>#555566</code>, <code>#444455</code>, glow
+<code>#556677</code>. Alpha is .9. There are 30 dim ambient particles,
+50 event particles and three initially hidden sub-orbs. It does not
+implement the website's mouse tilt.</p>
+<p>Idle y rotation is elapsed×.06; x rotation is
+<code>sin(elapsed*.03)*.05</code>; breathing target is
+<code>1+sin(elapsed*.6)*.025</code>. Scale, displacement, glow, alert
+mix and bloom interpolate toward their targets by .03 per frame.
+Connected displacement/glow targets are .08/.3; disconnected targets are
+.03/.1.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Action</th>
+<th>Implemented response</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Mouse down in drag region</td>
+<td>Native window dragging</td>
+</tr>
+<tr class="even">
+<td>Double mouse down (<code>detail===2</code>)</td>
+<td>Toggle logs</td>
+</tr>
+<tr class="odd">
+<td>Right-click</td>
+<td>Connection status, Log Show/Hide, Reset Position, Quit</td>
+</tr>
+<tr class="even">
+<td>Reset Position</td>
+<td>Move window to logical (50,50)</td>
+</tr>
+<tr class="odd">
+<td>First WebSocket connection</td>
+<td>Show logs for 3 seconds, then hide</td>
+</tr>
+<tr class="even">
+<td>Connected indicator</td>
+<td>Green 6px dot with soft glow</td>
+</tr>
+<tr class="odd">
+<td>Disconnected indicator</td>
+<td>Gray dot; despite plan mentioning red</td>
+</tr>
+<tr class="even">
+<td>Log output</td>
+<td>Last five lines; 11px monospace; newest white; .3s fade/8px
+slide</td>
+</tr>
+</tbody>
+</table>
+<p>“Run Doctor” appears in the quality plan but is absent from the
+implemented context menu. The CLI provides it separately.</p>
+<h3 id="event-animation-targets">Event animation targets</h3>
+<p>Values are target values followed by the frame interpolation, not
+instantaneous jumps unless the source assigns colours directly. Event
+replacement is immediate; there is no queue.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Event</th>
+<th style="text-align: right;">Duration</th>
+<th style="text-align: right;">Scale</th>
+<th style="text-align: right;">Displacement</th>
+<th style="text-align: right;">Glow</th>
+<th style="text-align: right;">Bloom</th>
+<th>Additional effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>memory_save</code></td>
+<td style="text-align: right;">3s</td>
+<td style="text-align: right;">1.1</td>
+<td style="text-align: right;">.22</td>
+<td style="text-align: right;">.8</td>
+<td style="text-align: right;">.25</td>
+<td>50 inward particles</td>
+</tr>
+<tr class="even">
+<td><code>memory_contradict</code></td>
+<td style="text-align: right;">3.5s</td>
+<td style="text-align: right;">1.05</td>
+<td style="text-align: right;">.28</td>
+<td style="text-align: right;">.7</td>
+<td style="text-align: right;">.3</td>
+<td>Alert mix .8 toward <code>#CC4466</code></td>
+</tr>
+<tr class="odd">
+<td><code>entity_update</code></td>
+<td style="text-align: right;">2.5s</td>
+<td style="text-align: right;">1.15</td>
+<td style="text-align: right;">.25</td>
+<td style="text-align: right;">.7</td>
+<td style="text-align: right;">.2</td>
+<td>First colour changes to <code>#00D4FF</code></td>
+</tr>
+<tr class="even">
+<td><code>search</code></td>
+<td style="text-align: right;">2.5s</td>
+<td style="text-align: right;">.9</td>
+<td style="text-align: right;">.18</td>
+<td style="text-align: right;">.7</td>
+<td style="text-align: right;">.2</td>
+<td>Colours <code>#9B60FF</code> and <code>#BB80FF</code></td>
+</tr>
+<tr class="odd">
+<td><code>team_dispatch</code></td>
+<td style="text-align: right;">4s</td>
+<td style="text-align: right;">.7</td>
+<td style="text-align: right;">Unchanged</td>
+<td style="text-align: right;">Unchanged</td>
+<td style="text-align: right;">Unchanged</td>
+<td>Three sub-orbs at (−1,.6,0), (1,.6,0), (0,−.9,0), sub-scale .7</td>
+</tr>
+<tr class="even">
+<td><code>team_result</code></td>
+<td style="text-align: right;">2.5s</td>
+<td style="text-align: right;">1.15</td>
+<td style="text-align: right;">Unchanged</td>
+<td style="text-align: right;">.7</td>
+<td style="text-align: right;">.25</td>
+<td>Particles; one lerp step toward centre, hidden after 1s</td>
+</tr>
+<tr class="odd">
+<td><code>context_compact</code></td>
+<td style="text-align: right;">2.5s</td>
+<td style="text-align: right;">.45</td>
+<td style="text-align: right;">.03</td>
+<td style="text-align: right;">.9</td>
+<td style="text-align: right;">.3</td>
+<td>Shrink and brighten; return to idle after timeout</td>
+</tr>
+<tr class="even">
+<td><code>session_start</code></td>
+<td style="text-align: right;">3s</td>
+<td style="text-align: right;">1.2</td>
+<td style="text-align: right;">.2</td>
+<td style="text-align: right;">.8</td>
+<td style="text-align: right;">.25</td>
+<td>Particles</td>
+</tr>
+<tr class="odd">
+<td><code>idle</code> / unknown type</td>
+<td style="text-align: right;">Immediate reset</td>
+<td style="text-align: right;">1 then breathing</td>
+<td style="text-align: right;">Connection-dependent</td>
+<td style="text-align: right;">Connection-dependent</td>
+<td style="text-align: right;">.12</td>
+<td>Clear alert and hide sub-orbs</td>
+</tr>
+</tbody>
+</table>
+<p>Particle origins lie at radii 1.8–2.4 with initial inward velocity
+−position×1.2. Position contracts ×.985 each frame; opacity decays
+×.992. Team-result merging is not a continuously interpolated trajectory
+in the present code. Fixing it is an optional enhancement after baseline
+capture.</p>
+<h2 id="6-system-architecture-and-boundaries">6. System architecture and
+boundaries</h2>
+<pre class="text"><code>PUBLIC WEBSITE                       LOCAL PRODUCT
+HTML/CSS + Three.js                   Claude Code / Cursor / MCP client
+  └─ pointer + clock                       │ stdio MCP requests/responses
+     └─ website shader                     ▼
+No Brain connection                  Python FastMCP server
+                                       ├─ MemoryCompiler ─┐
+                                       ├─ EntityStore ────┴─ SQLite + FTS5
+                                       └─ EventEmitter
+                                             │ WebSocket events
+                                             ▼
+                                      Tauri desktop Orb
+                                      EventBridge → renderer + logs</code></pre>
+<p>The WebSocket channel is visualization output, not a
+memory-management API. The web preview does not contain a database or
+execute MCP tools. A static deployment cannot turn it into the local
+Brain simply by copying the HTML.</p>
+<p>Defaults: database <code>~/.jarvis-orb/brain.db</code>; event address
+<code>ws://localhost:9321</code>. The saved installation adds
+environment overrides <code>JARVIS_BRAIN_DIR</code> and
+<code>JARVIS_WS_PORT</code>; the browser-aware desktop adapter adds
+<code>VITE_BRAIN_WS_URL</code>. These are installation changes, not
+proof of a hosted backend.</p>
+<h2 id="7-mcp-tool-contracts">7. MCP tool contracts</h2>
+<p>Tools return text, not rich structured resources. Keep these
+names/signatures for compatibility. Improved validation must preserve
+successful-call semantics and return explicit errors rather than false
+success.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Tool</th>
+<th>Inputs</th>
+<th>Persistence and emitted event</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>memory_save</code></td>
+<td><code>content</code>; <code>memory_type="episodic"</code>;
+<code>project=""</code>; comma-separated <code>tags=""</code>;
+<code>source=""</code></td>
+<td>Save record; event <code>memory_save</code>, content prefix ≤50
+chars, <code>tier</code></td>
+</tr>
+<tr class="even">
+<td><code>memory_search</code></td>
+<td><code>query</code>; <code>limit=10</code>, clamped 1–100 at MCP
+layer</td>
+<td>FTS search, filter contradicted/superseded records; event
+<code>search</code>; text results truncate content to 100 chars</td>
+</tr>
+<tr class="odd">
+<td><code>memory_verify</code></td>
+<td><code>memory_id</code>; <code>action="verify"</code></td>
+<td>Verify one ID, or colon-separated <code>old:new</code> for supersede
+/ <code>a:b</code> for contradict; emits memory save or
+contradiction</td>
+</tr>
+<tr class="even">
+<td><code>entity_create</code></td>
+<td><code>entity_type</code>; <code>name</code>; JSON string
+<code>state="{}"</code></td>
+<td>Create entity, event <code>entity_update</code></td>
+</tr>
+<tr class="odd">
+<td><code>entity_update</code></td>
+<td><code>entity_id</code>; JSON string <code>new_state</code>;
+<code>reason=""</code></td>
+<td>Replace complete state, append transition; event
+<code>entity_update</code></td>
+</tr>
+<tr class="even">
+<td><code>entity_query</code></td>
+<td><code>entity_type=""</code>; <code>name=""</code></td>
+<td>Exact-match optional filters, default 50 records; event
+<code>search</code></td>
+</tr>
+<tr class="odd">
+<td><code>entity_relate</code></td>
+<td><code>subject_id</code>; <code>predicate</code>;
+<code>object_id</code></td>
+<td>Persist directed relation; event <code>entity_update</code></td>
+</tr>
+</tbody>
+</table>
+<p>Important edge behavior: blank search is rejected. Memory types are
+an enum. JSON syntax errors are returned as errors, but JSON object
+shape is not rigorously enforced. Unknown verification actions or
+malformed ID pairs may still return “Done”; missing IDs can produce
+no-op success. Entity state replacement is not a merge. Search
+exceptions are swallowed and appear as no results. These behaviors need
+correction in the improved implementation, with explicit regression
+cases.</p>
+<p>No exposed <code>entity_link</code>, <code>distill</code>, graph
+traversal, or transition-history MCP tool exists, despite historical
+plans mentioning some of them. Entity memory linking and history
+retrieval exist as internal store methods.</p>
+<h2 id="8-database-specification">8. Database specification</h2>
+<p>SQLite is the local system of record. Both store modules open
+connections to the same file. Persist timestamps in ISO-8601 UTC.
+Current IDs are the first eight characters of UUID4, not full UUIDs.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Table</th>
+<th>Columns and constraints</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>memories</code></td>
+<td><code>id</code> text PK; required <code>memory_type</code>,
+<code>content</code>, <code>created_at</code>,
+<code>last_validated</code>; <code>project=''</code>,
+<code>tags='[]'</code>, <code>confidence=1</code>,
+<code>source=''</code>, <code>ttl_days=90</code>, nullable
+<code>superseded_by</code>, <code>contradicted_by</code>,
+<code>verification_status='unverified'</code></td>
+</tr>
+<tr class="even">
+<td><code>memories_fts</code></td>
+<td>FTS5 external-content index on content, project, tags; id and
+memory_type unindexed; rowid maps to memories; insert/update/delete
+triggers</td>
+</tr>
+<tr class="odd">
+<td><code>entities</code></td>
+<td><code>id</code> PK; required
+entity_type/name/created_at/last_updated; JSON-text current_state
+defaults <code>{}</code></td>
+</tr>
+<tr class="even">
+<td><code>entity_transitions</code></td>
+<td><code>id</code> PK; entity_id FK; JSON-text from_state/to_state;
+reason; timestamp</td>
+</tr>
+<tr class="odd">
+<td><code>relationships</code></td>
+<td><code>id</code> PK; subject_id/object_id FKs; predicate;
+confidence=1; created_at</td>
+</tr>
+<tr class="even">
+<td><code>entity_memory_links</code></td>
+<td>entity_id FK; memory_id text; linked_at;
+unique(entity_id,memory_id); no memory FK in current schema</td>
+</tr>
+</tbody>
+</table>
+<p>EntityStore enables foreign keys. Memory save uses INSERT OR REPLACE.
+Search sanitizes selected FTS punctuation then queries FTS5 and sorts
+candidates by <code>created_at DESC</code>. It limits candidates before
+MCP filters out contradicted/superseded records, so returned count can
+be below the requested limit even when more valid records exist.</p>
+<p><code>supersede(old,new)</code> marks old stale and sets
+superseded_by. <code>contradict(a,b)</code> marks both contradicted with
+cross-references. <code>verify(id)</code> changes status/date but does
+not clear existing supersession or contradiction pointers. TTL and
+confidence are stored; expiry and decay are not implemented in the
+inspected search path.</p>
+<p>Improvement requirements: full-length IDs for new records without
+breaking old references; versioned migrations; atomic state+transition
+writes; explicit missing-record errors; validated foreign references;
+indexes for actual query patterns; safe online backup/restore; integrity
+check; busy timeout and measured concurrency policy. Preserve originals
+during migration and test rollback.</p>
+<h2 id="9-event-transport-and-lifecycle">9. Event transport and
+lifecycle</h2>
+<p>Existing event envelope:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span><span class="dt">&quot;type&quot;</span><span class="fu">:</span><span class="st">&quot;memory_save&quot;</span><span class="fu">,</span><span class="dt">&quot;label&quot;</span><span class="fu">:</span><span class="st">&quot;Decision: use SQLite&quot;</span><span class="fu">,</span><span class="dt">&quot;timestamp&quot;</span><span class="fu">:</span><span class="st">&quot;2026-11-20T12:00:00+00:00&quot;</span><span class="fu">,</span><span class="dt">&quot;tier&quot;</span><span class="fu">:</span><span class="st">&quot;semantic&quot;</span><span class="fu">}</span></span></code></pre></div>
+<p>Emitter broadcasts JSON to current clients, uses gather with
+exceptions collected, and does not persist/replay events. Receiver
+parses JSON, triggers the renderer, and logs the label; invalid JSON
+produces a warning. Reconnect delay is fixed at 3000ms. The native code
+does not validate a versioned schema or use event acknowledgments.</p>
+<p>Critical lifecycle findings:</p>
+<ul>
+<li>The MCP server initializes stores and starts the event listener
+lazily on the first tool invocation.</li>
+<li>Rust <code>start_brain()</code> launches
+<code>jarvis_brain.demo_server</code>, which emits random sample events.
+It does not launch the real MCP memory service.</li>
+<li>CLI <code>start_brain(demo=False)</code> launches the stdio MCP
+module, but process survival alone does not prove a negotiated MCP
+session or an active event listener.</li>
+<li>Demo and MCP emitters can compete for port 9321. Emitter startup
+failure is suppressed, allowing real memory operations with no
+corresponding visible events.</li>
+<li>Rust forgets the child handle; its comment that the child will
+automatically die on app exit is not a reliable lifecycle
+guarantee.</li>
+</ul>
+<p><strong>Required improved design:</strong> a single explicitly owned
+event hub; MCP processes publish into that hub; native app connects as a
+subscriber. Separate demo mode with an obvious label and no startup into
+fake activity. Use a local authenticated IPC publisher or loopback
+publishing endpoint with an installation-scoped secret; never expose it
+to the public internet. Event hub readiness must be checked before
+showing connected status. Add event IDs, source=<code>live|demo</code>,
+protocol version and process identity while accepting existing event
+fields for compatibility. Close managed children gracefully; detect
+existing hubs before binding; expose actionable errors for port
+conflicts.</p>
+<h2 id="10-claims-gaps-and-implementation-decisions">10. Claims, gaps
+and implementation decisions</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Claim / plan</th>
+<th>What inspection establishes</th>
+<th>Required handling</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Automatic 4-tier classification</td>
+<td>Caller selects enum; default episodic</td>
+<td>Document accurately; add opt-in classifier only as enhancement</td>
+</tr>
+<tr class="even">
+<td>30-day half-life scoring</td>
+<td>Search sorts by creation timestamp</td>
+<td>Add explicit retrieval policy and tests before claiming decay</td>
+</tr>
+<tr class="odd">
+<td>Automatic contradiction detection</td>
+<td>Manual verify/supersede/contradict operations</td>
+<td>Require explicit conflict workflow; optional detector must
+distinguish suggestion from fact</td>
+</tr>
+<tr class="even">
+<td>Team orchestration / context compression</td>
+<td>Animation handlers and demo events</td>
+<td>Do not imply real orchestration or compression engine</td>
+</tr>
+<tr class="odd">
+<td>Every thought visible</td>
+<td>Only emitted tool events are visible</td>
+<td>Describe as activity visualization, not model-internal thought
+access</td>
+</tr>
+<tr class="even">
+<td>Intel Mac support</td>
+<td>README table says yes; shell installer exits on non-arm64 macOS</td>
+<td>Verify separate Intel build/install path before support claim</td>
+</tr>
+<tr class="odd">
+<td>Zero cloud dependencies</td>
+<td>Local Brain is local; website fonts/GIF are external</td>
+<td>Bundle licensed assets for an offline edition</td>
+</tr>
+<tr class="even">
+<td>Secure local WebSocket</td>
+<td>Loopback bind, no explicit Origin allowlist/auth check</td>
+<td>Add both before treating local browser access as trusted</td>
+</tr>
+<tr class="odd">
+<td>Owner-only storage</td>
+<td>Installer chmods directory; helper exists but store init does not
+call it</td>
+<td>Enforce in all entry points; Windows ACL handling separately</td>
+</tr>
+<tr class="even">
+<td>3MB app</td>
+<td>Marketing claim, not complete runtime/install size measurement</td>
+<td>Measure each signed artifact and installed footprint</td>
+</tr>
+<tr class="odd">
+<td>Connection state</td>
+<td>Can indicate connection to demo server</td>
+<td>Display source and real service readiness separately</td>
+</tr>
+</tbody>
+</table>
+<p>If temporal retrieval is added, specify the new policy explicitly:
+<code>score = relevance * confidence * 2^(-ageDays/30)</code>, with
+nonnegative normalized relevance and age anchored to a documented
+timestamp. This formula is a proposed design, not a discovered upstream
+implementation. Filter invalid memories before ranking/limiting; test
+0/30/60-day factors 1/.5/.25 and deterministic tie-breaking.</p>
+<h2 id="11-installation-packaging-and-deployment">11. Installation,
+packaging and deployment</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Component</th>
+<th>Baseline dependencies / delivery</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Brain</td>
+<td>Python ≥3.11, aiosqlite ≥.20, MCP FastMCP, websockets; saved
+compatibility bounds MCP ≥1,&lt;2 and websockets ≥12,&lt;15</td>
+</tr>
+<tr class="even">
+<td>Website preview</td>
+<td>Three.js .183.2, Vite 8; compatible Node version from package
+engines; preserve lockfile</td>
+</tr>
+<tr class="odd">
+<td>Desktop</td>
+<td>Tauri 2, Rust 2021 crate, platform WebView/build dependencies; pnpm
+10.32.1 in package metadata</td>
+</tr>
+<tr class="even">
+<td>Database</td>
+<td>SQLite build with FTS5 support; writable persistent path</td>
+</tr>
+<tr class="odd">
+<td>Source distribution</td>
+<td>Pinned source, lockfiles, build instructions, licences, manifest and
+verification scripts</td>
+</tr>
+</tbody>
+</table>
+<p>Recommended reproducible Brain setup: create an isolated Python
+environment, install <code>./brain</code> plus its development extras
+for testing, configure an MCP client with the environment's Python
+executable and module <code>jarvis_brain.mcp_server</code>. Do not
+assume launching a stdio process alone is an interactive web
+backend.</p>
+<p>Website build: from <code>web-preview</code>, use <code>npm ci</code>
+and <code>npm run build</code>. Current adapter emits identical
+<code>/</code>, <code>/desktop/</code> and <code>/orb/</code> entries.
+These aliases must not silently select different visual profiles.</p>
+<p>Desktop build: install pinned frontend dependencies, then
+<code>pnpm tauri build</code> on each supported target platform. Verify
+transparent windows, dragging, menu, WebView behavior and installer
+signing on real Windows/macOS machines. Linux Brain support does not
+establish Linux desktop support.</p>
+<p>Static visual preview may be publicly hosted without sign-in. Full
+Brain hosting would require a separate persistent process, authenticated
+data access, WSS and per-user isolation; it is outside the existing
+local architecture. A public anonymous demo can use disposable sample
+data, but must never expose Ahmed's private database. Do not describe a
+public visual URL as a complete hosted Brain.</p>
+<p>Installers currently fetch source/releases from upstream. Improved
+release delivery must pin artifacts, verify checksums/signatures, report
+failures, avoid overwriting existing data, and separate uninstalling the
+app from deleting memories. The existing Dockerfile runs the MCP stdio
+entry point; it is not a web-app deployment configuration.</p>
+<h2 id="12-improvements-that-preserve-the-visual-identity">12.
+Improvements that preserve the visual identity</h2>
+<p>Implement these only after reference-mode acceptance. Keep original
+visual values as the default and maintain separately testable
+profiles.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Priority</th>
+<th>Improvement</th>
+<th>Acceptance target</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>P0</td>
+<td>Correct real-event lifecycle and demo separation</td>
+<td>A real MCP save commits a record and causes exactly one observable
+live event; no random event startup</td>
+</tr>
+<tr class="even">
+<td>P0</td>
+<td>Input, reference and transport validation</td>
+<td>Invalid IDs/actions/JSON are explicit errors; unsolicited origins
+cannot subscribe</td>
+</tr>
+<tr class="odd">
+<td>P1</td>
+<td>Responsive renderer sizing</td>
+<td>ResizeObserver updates renderer/camera without stretched geometry or
+square artifacts</td>
+</tr>
+<tr class="even">
+<td>P1</td>
+<td>Frame-rate-independent smoothing</td>
+<td>Enhanced profile uses <code>1-(1-.05)^(dt*60)</code> for website
+mouse easing; same settling time at 30/60/120Hz</td>
+</tr>
+<tr class="odd">
+<td>P1</td>
+<td>Reduced motion and keyboard access</td>
+<td>Opt-in/reduced-motion mode stops unnecessary motion; controls work
+by keyboard; canvas has a readable description</td>
+</tr>
+<tr class="even">
+<td>P1</td>
+<td>WebGL loss/failure handling</td>
+<td>Context-restored recovery or clearly labelled static fallback; no
+blank page and no fake interactive claim</td>
+</tr>
+<tr class="odd">
+<td>P1</td>
+<td>Offline assets</td>
+<td>Bundle original licensed fonts, Three.js and GIF; offline
+network-blocked test passes</td>
+</tr>
+<tr class="even">
+<td>P1</td>
+<td>Clear installation and health checks</td>
+<td>Verify MCP handshake, database/FTS5 readiness, event source and
+usable port rather than only package imports</td>
+</tr>
+<tr class="odd">
+<td>P2</td>
+<td>Memory inspector</td>
+<td>Search, inspect provenance, verify/supersede, entity history,
+backup/restore outside the uncluttered orb surface</td>
+</tr>
+<tr class="even">
+<td>P2</td>
+<td>Event queue and transitions</td>
+<td>Bounded queue/priority policy prevents dropped important alerts;
+smooth team-result animation</td>
+</tr>
+<tr class="odd">
+<td>P2</td>
+<td>Mobile pointer adaptation</td>
+<td>Explicit touch/pen interaction in enhanced mode; no unexplained
+desktop hover dependency</td>
+</tr>
+</tbody>
+</table>
+<p>Reference mode preserves existing frame-based behavior for
+comparisons. Enhanced mode can improve timing, accessibility and
+resilience without silently changing the original look. No square
+control panel should be placed around the default orb.</p>
+<h2 id="13-acceptance-tests-and-release-gates">13. Acceptance tests and
+release gates</h2>
+<p>Every test run must record source revision, dependency lock hash,
+browser version, OS/GPU or software renderer, viewport, DPR, font
+loading state, clock/seed policy and artifact location. Screenshot
+equality in one renderer is not a guarantee across every GPU.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Test ID</th>
+<th>Procedure</th>
+<th>Pass condition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>VIS-01</td>
+<td>Render hero on white and reference background at desktop/mobile
+sizes</td>
+<td>No visible square, opaque backdrop, clipped halo or substitute
+image</td>
+</tr>
+<tr class="even">
+<td>VIS-02</td>
+<td>Freeze time at 0,1,3,8 seconds for original and candidate</td>
+<td>Controlled same-environment images match; frames differ across
+times, proving animation</td>
+</tr>
+<tr class="odd">
+<td>PTR-01</td>
+<td>Move real pointer to stage left/right/top/bottom/centre</td>
+<td>Smoothed tilt and gradient follow defined formulas; sphere centre
+does not translate</td>
+</tr>
+<tr class="even">
+<td>PTR-02</td>
+<td>Move pointer outside stage and across page</td>
+<td>Last stage target persists; cursor glow, halo diameter and shadows
+behave as reference</td>
+</tr>
+<tr class="odd">
+<td>PTR-03</td>
+<td>Inspect computed styles through pulse cycle</td>
+<td>Distinguish CSS-animated opacity from inline values; no frame
+clipping</td>
+</tr>
+<tr class="even">
+<td>WEB-01</td>
+<td>Test every navigation anchor, install tab, clipboard
+success/failure</td>
+<td>Correct destinations/text; accessible feedback; no unhandled
+errors</td>
+</tr>
+<tr class="odd">
+<td>WEB-02</td>
+<td>Open all three saved aliases at 1440×1000 and mobile ≤640px</td>
+<td>Same website renderer; 300px/220px stage; no legacy desktop
+frame</td>
+</tr>
+<tr class="even">
+<td>MEM-01</td>
+<td>Save one entry per memory tier via actual MCP session, then
+restart</td>
+<td>IDs/data persist and search returns valid records</td>
+</tr>
+<tr class="odd">
+<td>MEM-02</td>
+<td>Verify, supersede and contradict records</td>
+<td>Correct flags and filtering; improved invalid IDs return errors</td>
+</tr>
+<tr class="even">
+<td>ENT-01</td>
+<td>Create project/person; update project; relate them</td>
+<td>Full state replacement, ordered history and valid directed relation
+persist</td>
+</tr>
+<tr class="odd">
+<td>EVT-01</td>
+<td>Subscribe, invoke each emitting MCP tool, inspect DB and log</td>
+<td>Event reflects actual operation and correct label/type; not a demo
+substitute</td>
+</tr>
+<tr class="even">
+<td>EVT-02</td>
+<td>Disconnect, restart, port collision, malformed event, rapid
+burst</td>
+<td>Honest status, bounded recovery, no silent false connected
+state</td>
+</tr>
+<tr class="odd">
+<td>SEC-01</td>
+<td>FTS punctuation, unusual Unicode, malicious HTML label, invalid
+relation</td>
+<td>No crashes/injection; literal escaped log text; invalid references
+rejected</td>
+</tr>
+<tr class="even">
+<td>DESK-01</td>
+<td>Real Windows/macOS installation and app interaction</td>
+<td>Transparent undecorated window, native drag, logs, reset and quit
+work</td>
+</tr>
+<tr class="odd">
+<td>LIFE-01</td>
+<td>Launch twice, close app, restart client, preserve database</td>
+<td>Single hub ownership, no leaked managed processes or data loss</td>
+</tr>
+<tr class="even">
+<td>A11Y-01</td>
+<td>Keyboard, reduced-motion, touch/pen, zoom, failed WebGL</td>
+<td>Usable documented behavior; enhanced-mode accommodations tested</td>
+</tr>
+<tr class="odd">
+<td>OFF-01</td>
+<td>Block network after installing offline distribution</td>
+<td>Local interface/renderer/Brain work; no external dependency
+required</td>
+</tr>
+</tbody>
+</table>
+<p>Use seeded randomness for desktop particles and deterministic clocks
+for screenshots. Compare full-page composition as well as cropped
+canvas. Capture pointer-transition videos; a single screenshot cannot
+validate easing or mouse interaction. Approve any cross-GPU tolerance
+with stored difference images rather than weakening tests until they
+pass.</p>
+<p>Performance targets for the improved build, not measured guarantees:
+aim for 60fps on a declared reference device; p95 render frame ≤16.7ms
+there; avoid per-frame DOM layout reads; pause unnecessary work while
+hidden; bound logs/queues and dispose GPU resources. Measure rather than
+advertise universal performance.</p>
+<h3 id="evidence-already-available">Evidence already available</h3>
+<p>The prior installation PR records 25 passing Python tests, all seven
+tools exercised through real MCP, WebSocket events and persistence after
+restart. This document does not represent a fresh rerun of those backend
+tests.</p>
+<p>Earlier in this session, controlled Chromium comparisons produced ten
+zero-difference canvas comparisons across the original and two deployed
+preview paths at fixed times and pointer state. Separate real mouse
+movement checks found transparent stage/canvas, zero border, no legacy
+frame and matching pointer glow parameters. These establish the web
+visual baseline, not native OS release quality or a cloud Brain
+deployment.</p>
+<p>Remaining validation includes signed native installers, real-machine
+transparent compositing, lifecycle integration fixes, complete
+accessibility, offline assets and the new improvement requirements.</p>
+<h2 id="14-build-sequence-and-deliverables">14. Build sequence and
+deliverables</h2>
+<ol type="1">
+<li><strong>Freeze evidence:</strong> save original website, pinned
+repository, licences, hashes, screenshots and pointer recordings.
+Reconcile advertised claims with actual code.</li>
+<li><strong>Reproduce website:</strong> reuse source shader and exact
+interaction constants; preserve unframed rendering; pass VIS/PTR/WEB
+gates before introducing improvements.</li>
+<li><strong>Reproduce local Brain:</strong> preserve seven-tool API and
+database compatibility; pass real protocol/persistence tests.</li>
+<li><strong>Repair integration:</strong> implement one event hub, honest
+status, validation and managed lifecycle; connect genuine tool events to
+desktop animations.</li>
+<li><strong>Add improvements behind profiles:</strong> timing,
+accessibility, offline delivery and inspection UI; retain a reference
+profile for regression.</li>
+<li><strong>Package and verify:</strong> Windows/macOS builds on their
+native runners; publish source/artifacts only through reviewed branches
+and release gates.</li>
+</ol>
+<p>Required delivery set: source and lockfiles; public visual preview;
+separately labelled working backend distribution; database
+schema/migrations; native installers when actually validated; test
+report with screenshots/videos; known limitations; dependency/licence
+inventory; backup/restore and troubleshooting instructions. Never mark
+“fully working” based solely on a static preview or a green WebSocket
+indicator.</p>
+<h2 id="15-licensing-and-change-control">15. Licensing and change
+control</h2>
+<p>Root project licence is MIT; retain the upstream licence and
+copyright text. Preserve Three.js and other dependency notices. The
+frontend package metadata declares ISC while the repository root
+declares MIT; retain both as found and resolve attribution for
+redistribution rather than silently rewriting metadata. Fonts need their
+own licence files when bundled.</p>
+<p>Keep Sandbox-2 private. Use <code>codex/</code> branches and pull
+requests for changes; do not auto-merge. This specification does not
+authorize changing repository visibility, adding paid hosting, or
+exposing a private memory database. Current public preview remains a
+visual reference.</p>
+<p><strong>Definition of success:</strong> the original website's
+unframed orb and mouse interaction are faithfully reproduced; the real
+product's memory/event pipeline is independently proven; enhancements
+improve reliability and usability without replacing the visual identity
+or claiming features that do not exist.</p>
+</main>
+</body>
+</html>
