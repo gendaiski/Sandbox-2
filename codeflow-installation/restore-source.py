@@ -27,5 +27,6 @@ for name in ['vercel.json','INSTALLATION-CODEX.md','HANDOFF.md','cases','deploy'
     if p.is_dir():shutil.copytree(p, out / name, dirs_exist_ok=True)
     elif p.is_file():shutil.copy2(p, out / name)
 if (root / 'upstream-changes.patch').exists():
+    subprocess.run(['git', 'init', '--quiet', str(out)], check=True)
     subprocess.run(['git', 'apply', str(root / 'upstream-changes.patch')], cwd=out, check=True)
 print('Restored pinned Codeflow source in source/')
