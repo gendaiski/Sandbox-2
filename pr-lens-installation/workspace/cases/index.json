@@ -1,0 +1,20 @@
+[
+  {
+    "id": "postmark-refactor",
+    "title": "Batch email delivery",
+    "description": "Trace the broadcast queue through the worker and Postmark. Open request and response payloads, then play the walkthrough.",
+    "source": "packages/schema/examples/payload.graph.json"
+  },
+  {
+    "id": "billing-org",
+    "title": "Organization billing",
+    "description": "Follow the move from user subscriptions to organization billing. Switch to the data model to inspect tables and relationships.",
+    "source": "packages/schema/examples/billing-org.graph.json"
+  },
+  {
+    "id": "checkout-impact",
+    "title": "Checkout platform",
+    "description": "Inspect a 21-component checkout change across the browser, API, services and storage. Select a component to inspect its relationships and change status.",
+    "source": "packages/renderer/test/fixtures/tier4-checkout.json"
+  }
+]
