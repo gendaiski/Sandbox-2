@@ -70,9 +70,11 @@ Preserve the original Apache-2.0 LICENSE and NOTICE. Added browser code is provi
 Open https://fontes-research-workspace.vercel.app/#graph.
 
 The native blueprint canvas provides two views:
-- Research graph: jurisdiction registry, country adapter, actual sources, supported methods and this browser's saved-note count. Egypt is the initial selection; all loaded jurisdictions can be searched and selected.
+- Whole database network: all 124 jurisdictions, all 238 registered source entries, supported methods, storage and every saved record accessible to this browser. All jurisdictions is the default; Egypt is an optional filter. The base graph has 373 nodes and 955 relationships before saved notes.
 - Storage schema: hosted private JSON documents or the local SQLite `notes` table, its `notes_owner` index and JSON payload. Logical source/country links are distinguished from foreign keys; the actual SQLite schema has no foreign keys.
 
 The graph supports node inspection, source links, notebook/research navigation, pan, zoom, light/dark canvas and standalone vector SVG export. It does not invent a legal corpus, expose session tokens, or read another visitor's notes. `/api/schema` returns structural metadata only. A sixth backend test compares the displayed SQL columns with `PRAGMA table_info(notes)`.
 
-The graph uses a native Langflow-style blueprint presentation. No LangGraph runtime or external graph service is required.
+The network has native 2D nodes and a rotatable perspective-projected 3D sphere layout, rendered as SVG with depth sorting and sphere shading. It runs without WebGL or external graph libraries. Drag to orbit in 3D; Shift-drag to pan; drag to pan in 2D; scroll or use buttons to zoom. Search highlights the whole graph and lists results, with optional labels and light/dark themes. SVG export captures the current view. Storage schema remains available as a separate blueprint view. Sources shared across adapters appear as separate jurisdiction/source registrations, not deduplicated legal documents. No other visitors' private records are exposed. No LangGraph runtime is required.
+
+Browser regression checks verify full registry/source coverage, 2D/3D switching, rotation, search, filters, SVG export, both storage schemas and mobile layout.
