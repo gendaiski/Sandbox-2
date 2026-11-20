@@ -1,10 +1,21 @@
+# Keep keys and local state out of the build context.
+.env
 .git
 .venv
+.worktrees
+.claude
+launch
+research
+status
+docs
+tests
+relay
+scripts
+**/__pycache__
+installer/dist
+
+# Browser workspace build context
 node_modules
 data
 .env*
-__pycache__
-*.pyc
 .pytest_cache
-research
-tests
