@@ -6,13 +6,13 @@ Licence: MIT; original notices retained.
 
 Original website preview: https://jarvis-orb-original-preview.vercel.app/
 
-Native-size desktop visual preview: https://jarvis-orb-original-preview.vercel.app/desktop/
+Previously shared desktop URL (same website animation): https://jarvis-orb-original-preview.vercel.app/desktop/
 
 ## Result — 20 November 2026
 
 Installed the original Python memory/MCP backend and Three.js/Tauri UI dependencies. The production frontend builds. All 25 original brain tests passed. A new real MCP transport check exercises all seven tools, verifies actual WebSocket event delivery, then restarts the process and confirms SQLite memory and entity state persist.
 
-The corrected browser homepage reproduces the official website and its original shader/animation module. The separate desktop view uses the original renderer in the documented 220×220 frame, with manual animation controls and no automatic cycling. Neither preview claims a hosted Brain connection. The full web preview source, documentation and comparison evidence are in `web-preview/`; see its README for build instructions.
+The corrected browser homepage reproduces the official website and its original shader/animation module. The /desktop/ and /orb/ URLs now use that same website renderer; the different native-app renderer and manual event controls were removed from the public web preview. Neither preview claims a hosted Brain connection. The full web preview source, documentation and comparison evidence are in `web-preview/`; see its README for build instructions.
 
 Desktop always-on-top, window dragging and quitting require Tauri on Windows/macOS. Native Windows/macOS installers were not built on this Linux host. The original release installation scripts are included, and the original desktop source is intact. See upstream releases for native binaries: https://github.com/TheStack-ai/jarvis-orb/releases
 

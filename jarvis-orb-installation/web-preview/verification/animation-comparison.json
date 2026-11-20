@@ -1,0 +1,72 @@
+[
+  {
+    "route": "desktop",
+    "time": "0",
+    "mean_channel_difference": 0.0,
+    "changed_pixels": 0,
+    "total_pixels": 90000
+  },
+  {
+    "route": "desktop",
+    "time": "1000",
+    "mean_channel_difference": 0.0,
+    "changed_pixels": 0,
+    "total_pixels": 90000
+  },
+  {
+    "route": "desktop",
+    "time": "3000",
+    "mean_channel_difference": 0.0,
+    "changed_pixels": 0,
+    "total_pixels": 90000
+  },
+  {
+    "route": "desktop",
+    "time": "8000",
+    "mean_channel_difference": 0.0,
+    "changed_pixels": 0,
+    "total_pixels": 90000
+  },
+  {
+    "route": "desktop",
+    "time": "pointer",
+    "mean_channel_difference": 0.0,
+    "changed_pixels": 0,
+    "total_pixels": 90000
+  },
+  {
+    "route": "homepage",
+    "time": "0",
+    "mean_channel_difference": 0.0,
+    "changed_pixels": 0,
+    "total_pixels": 90000
+  },
+  {
+    "route": "homepage",
+    "time": "1000",
+    "mean_channel_difference": 0.0,
+    "changed_pixels": 0,
+    "total_pixels": 90000
+  },
+  {
+    "route": "homepage",
+    "time": "3000",
+    "mean_channel_difference": 0.0,
+    "changed_pixels": 0,
+    "total_pixels": 90000
+  },
+  {
+    "route": "homepage",
+    "time": "8000",
+    "mean_channel_difference": 0.0,
+    "changed_pixels": 0,
+    "total_pixels": 90000
+  },
+  {
+    "route": "homepage",
+    "time": "pointer",
+    "mean_channel_difference": 0.0,
+    "changed_pixels": 0,
+    "total_pixels": 90000
+  }
+]

@@ -1,44 +1,39 @@
-# Jarvis Orb — original website and desktop visual preview
+# Jarvis Orb — website animation preview
 
-Main preview: https://jarvis-orb-original-preview.vercel.app/
+Live preview: https://jarvis-orb-original-preview.vercel.app/desktop/
 
-Native-size desktop visual preview: https://jarvis-orb-original-preview.vercel.app/desktop/
+The root, /desktop/ and /orb/ paths all render the same original website animation. They are generated from one built HTML entry, so the previously shared desktop URL cannot select a different shader.
 
-## Reference examined
+## Reference
 
-- Live official website linked by the upstream README: https://jarvis-brain-visualizer.vercel.app/
-- Upstream README and `docs/superpowers/specs/2026-03-22-orb-quality-buildup-design.md`.
-- `landing/index.html`, `orb/src/orb.js`, `orb/src/events.js`, `orb/src/log.js`, `orb/index.html`, `orb/src-tauri/tauri.conf.json` and `assets/demo.gif`.
-- Upstream pinned revision: `d4345141e02054bafb8987ce0012123ca528a528`.
+Official website linked in the upstream README: https://jarvis-brain-visualizer.vercel.app/
+Upstream: https://github.com/TheStack-ai/jarvis-orb
+Revision: d4345141e02054bafb8987ce0012123ca528a528.
 
-## Correction
+src/website.js contains the exact Three.js module extracted from the official website, unchanged. Three.js is pinned to the website's 0.183.2. Geometry, GLSL, colour palette, opacity, camera, surface displacement, breathing, rotation speed and mouse easing use the original values. The original website's CSS, lighting, typography and page structure are retained. Old upstream repository links are updated to TheStack-ai; the install tab event is passed explicitly for compatibility.
 
-The previous browser preview stretched the desktop canvas across a non-square browser viewport, while its camera initially assumed a square viewport. It also cycled synthetic events automatically. This was not equivalent to the website reference.
-
-The root page now reproduces the official website layout, styles and original WebGL module, with the same geometry, shader uniforms, palette, camera, motion and 300×300 desktop stage (220×220 on mobile). Three.js is pinned at the reference's 0.183.2 and bundled locally. Upstream GitHub links are updated from the previous whynowlab owner to TheStack-ai. A link below the original recording opens the desktop preview. The macOS/Windows tab handler receives its event explicitly for browser compatibility. The reference shader/animation module is otherwise unchanged.
-
-The separate desktop preview embeds the unchanged desktop renderer at the 220×220 size documented in Tauri configuration. Original animation and log functions are preserved. The host page offers explicit manual animation controls; there are no automatic synthetic events. Connected appearance is a visual palette setting only. The status always discloses that the browser preview is not connected to a Brain.
-
-This deployment does not host the Python MCP memory server or emulate native desktop always-on-top/OS window dragging. The existing tested Brain installation is retained separately in the parent handoff. The website's Download links lead to upstream releases. Fonts and the original GIF recording remain loaded from the original external providers; offline operation is not claimed.
+The prior /desktop/ view used the native application's separate renderer, which differed from the website. That web view and its manual event controls have been removed. The native application source and tested Python MCP backend remain available in the parent installation handoff; they are not hosted by this visual preview.
 
 ## Build
+
+Node 24:
 
 ```sh
 npm ci
 npm run build
-npm run dev
+npm run preview
 ```
 
-Node 24 was used. Vite builds three entry points: the reference homepage, desktop host, and orb frame. Deploy `dist/` as a static site. No model keys or backend services are needed for this visual preview.
+Deploy dist/. The Vite build generates identical HTML for all three entry URLs. The local development server also falls back to the same homepage. This preview has no account, database, or Brain connection.
 
-## Validation
+## Animation verification
 
-`verification/browser.cjs` compares the deployed reference and the corrected site in Chromium at matching viewport, fonts and frozen animation time. `verification/reference-comparison.json` records the checks. The original 300×300 orb and corrected frame differed in only 15 of 90,000 pixels, with maximum mean channel difference below 0.000112/255. This is evidence for the controlled reference frame, not a guarantee of pixel identity on every GPU or browser.
+verification/animation.cjs checks the original website and both preview URLs with a controlled frame clock. It compares 0, 1, 3 and 8 seconds of animation plus a matched mouse input after 60 easing frames. Ten 300×300 image comparisons were pixel-identical in the test Chromium environment. The images change between times, confirming a moving animation rather than a static substitute. These controlled results do not guarantee identical rendering on every GPU/browser.
 
-Checks also cover all header anchors, both installation tabs, exact desktop frame dimensions, seven manual animations, log controls, appearance toggling and mobile dimensions, with no JavaScript page errors. Vendor renderer/event/log files were compared byte-for-byte with the upstream checkout.
+The same checks verify legacy URLs, mobile 220×220 canvas sizing, desktop navigation and install tabs. Native application event simulations are deliberately absent from this website-matching preview. Evidence: verification/animation-comparison.json.
 
-Browser test dependencies currently use managed-environment Playwright and Chromium paths. Adapt those paths if testing elsewhere. Set `BASE_URL` to the deployed preview to run the same checks against production.
+The browser script uses managed-environment Playwright/Chromium paths; adapt those paths on another machine. BASE_URL selects a deployed target and ARTIFACT_DIR selects the output directory.
 
-## Licence
+## Licensing and external resources
 
-Jarvis Orb is MIT; the upstream licence is retained in `public/LICENSE.txt`. Three.js is MIT and is installed through the pinned npm dependency. This is a hosted reference preview, not an official upstream deployment.
+MIT licence retained at public/LICENSE.txt; Three.js notice at public/THIRD-PARTY-NOTICES.txt. Google Fonts and the original upstream GIF are still loaded from their original providers. No offline claim. This is a reference preview, not the official upstream deployment.
