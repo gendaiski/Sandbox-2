@@ -1,0 +1,9 @@
+FROM python:3.13-slim
+WORKDIR /app
+COPY . .
+RUN pip install --no-cache-dir . uvicorn==0.54.0
+RUN useradd --create-home fontes && mkdir -p /data && chown fontes:fontes /data
+USER fontes
+ENV FONTES_DB_PATH=/data/research.sqlite3 FONTES_NO_UPDATE_CHECK=1
+EXPOSE 8080
+CMD ["uvicorn", "workspace_app.app:app", "--host", "0.0.0.0", "--port", "8080"]

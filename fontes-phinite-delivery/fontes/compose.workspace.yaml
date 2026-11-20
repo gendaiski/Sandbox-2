@@ -1,0 +1,15 @@
+services:
+  fontes:
+    build:
+      context: .
+      dockerfile: Dockerfile.workspace
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - fontes-research:/data
+    environment:
+      FONTES_NO_UPDATE_CHECK: "1"
+      FONTES_DB_PATH: /data/research.sqlite3
+    restart: unless-stopped
+volumes:
+  fontes-research:
