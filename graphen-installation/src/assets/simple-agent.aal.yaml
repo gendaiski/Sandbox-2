@@ -1,0 +1,37 @@
+# Simple single-agent architecture
+version: "1.1"
+metadata:
+  name: "Simple Agent"
+  description: "A minimal single-agent setup"
+  owner: "Graphen Team"
+
+models:
+  - id: claude_sonnet
+    provider: anthropic
+    model: claude-sonnet-4-5
+    temperature: 0.5
+
+agents:
+  - id: assistant
+    name: "Assistant"
+    role: "General purpose assistant"
+    version: "1.0"
+    model: claude_sonnet
+    tools: [calculator, web_search]
+
+tools:
+  - id: calculator
+    name: "Calculator"
+    mechanism: function
+  - id: web_search
+    name: "Web Search"
+    mechanism: webhook
+    endpoint: https://api.example.com/search
+
+topology:
+  - from: assistant
+    to: calculator
+    label: "Math operations"
+  - from: assistant
+    to: web_search
+    label: "Information lookup"

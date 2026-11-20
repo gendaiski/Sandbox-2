@@ -1,0 +1,92 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-graphen-bg: #090a0f;
+  --color-graphen-card: #12141c;
+  --color-graphen-border: #1e2330;
+
+  --color-graphen-agent: #3b82f6;
+  --color-graphen-mcp: #06b6d4;
+  --color-graphen-memory: #10b981;
+  --color-graphen-tool: #8b5cf6;
+  --color-graphen-guardrail: #f59e0b;
+  --color-graphen-logic: #f97316;
+}
+
+:root {
+  color-scheme: dark;
+  --surface: #090a0f;
+  --panel: #12141c;
+  --border: #1e2330;
+  --text: #f3f4f6;
+  --muted: #9299aa;
+  --accent: #60a5fa;
+  --accent-soft: #172843;
+  --canvas-grid: #273047;
+  --error-text: #fca5a5;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --surface: #f5f7fb;
+  --panel: #ffffff;
+  --border: #dde3ee;
+  --text: #171d2b;
+  --muted: #626e82;
+  /* Softer blue accent — less saturated, darker value to feel at home on white */
+  --accent: #3b6fd4;
+  --accent-soft: #e8f0ff;
+  --canvas-grid: #cdd6e5;
+  --error-text: #b91c1c;
+
+  /* Node-type colors: desaturated ~20% and darkened to avoid neon-on-white effect */
+  --color-graphen-agent:     #4a7fd6;   /* blue:    hsl(213 62% 56%)  → was #3b82f6 */
+  --color-graphen-mcp:       #0e9ab5;   /* cyan:    hsl(191 84% 38%)  → was #06b6d4 */
+  --color-graphen-memory:    #0f9e72;   /* emerald: hsl(161 80% 34%)  → was #10b981 */
+  --color-graphen-tool:      #7048c8;   /* purple:  hsl(261 53% 53%)  → was #8b5cf6 */
+  --color-graphen-guardrail: #c77c0a;   /* amber:   hsl(35 89% 40%)   → was #f59e0b */
+  --color-graphen-logic:     #c4581a;   /* orange:  hsl(24 76% 43%)   → was #f97316 */
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--surface);
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+button {
+  font: inherit;
+}
+
+.landing .site-studio-link,
+.docs-site .site-studio-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 11px 16px;
+  color: #fff;
+  background: #1c202d;
+  border: 1px solid #363d50;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+  transition: background .2s ease;
+}
+
+.landing .site-studio-link:hover,
+.docs-site .site-studio-link:hover {
+  color: #fff;
+  background: #292f42;
+}
+
+@media (max-width: 680px) {
+  .landing .site-studio-link,
+  .docs-site .site-studio-link {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+}

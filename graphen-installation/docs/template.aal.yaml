@@ -1,0 +1,154 @@
+# ==============================================================================
+# GRAPHEN — AGENT ARCHITECTURE LANGUAGE (AAL)
+# Project Name: Customer Support Multi-Agent System
+# Extension: .aal.yaml
+# Visualization: Single Graphen canvas with dark and light themes
+# ==============================================================================
+
+version: "1.1" # AAL Language Schema Version
+
+metadata: # Project context shown alongside the architecture
+  name: "Advanced Support Orchestrator"
+  description: "Complex multi-agent system with supervisor, MCP tools, memory RAG, and human-in-the-loop guardrails."
+  owner: "Platform Architecture Team"
+  cost_center: "SUPPORT-AI"
+  sla: "99.9% availability"
+
+# --- NODE DEFINITIONS (COMPONENTS) --- #
+# These nodes are rendered as semantic cards with distinct glow and iconography.
+# Category colors work in both Graphen themes.
+
+models:
+  - id: claude_sonnet_4_5
+    provider: "anthropic"
+    model: "claude-sonnet-4-5"
+    temperature: 0.5
+    reasoning_capability: "high"
+
+  - id: gpt_4o
+    provider: "openai"
+    model: "gpt-4o"
+    temperature: 0.5
+    reasoning_capability: "high"
+
+  - id: claude_haiku_4_5
+    provider: "anthropic"
+    model: "claude-haiku-4-5"
+    temperature: 0.5
+    reasoning_capability: "low"
+
+# --- OPTIONAL GROUPS / CONTAINERS (FOR VISUAL BOUNDING BOXES) --- #
+groups:
+  - id: tech_subsystem
+    name: "Technical Support Cluster"
+    description: "Contains Tier 2 agent, MCPs and vector stores"
+
+agents:
+  - id: core_supervisor # Renders with deep blue glow (#3B82F6) and supervisor icon
+    name: "Triage Supervisor"
+    role: "Orchestrate all incoming user requests, classify intent, and delegate to specialized sub-agents."
+    version: 2.5
+    model: claude_sonnet_4_5 # References a model defined above
+    tools: [intent_classifier] # References a tool defined below
+    guardrails: [pii_anonymizer] # References a guardrail defined below
+
+  - id: tech_agent # Renders with deep blue glow (#3B82F6)
+    group: tech_subsystem
+    name: "Tier 2 Technical Support"
+    role: "Handle complex code and server issues."
+    version: 1.5
+    model: gpt_4o
+    tools: [postgres_mcp, jira_tool] # References an MCP and a tool
+    memory: [qdrant_kb] # References a memory defined below
+
+  - id: billing_agent # Renders with deep blue glow (#3B82F6)
+    name: "Billing Specialist"
+    role: "Process refunds and check payment status."
+    version: 1.0
+    model: claude_haiku_4_5
+    guardrails: [high_value_check] # Sensitive operation
+
+mcps:
+  - id: postgres_mcp # Renders with cyan neon glow (#06B6D4) and MCP/API icon
+    group: tech_subsystem
+    name: "Postgres Customer DB"
+    description: "Postgres Customer DB"
+    protocol: "mcp/v1"
+    endpoint: "https://mcp.internal/postgres-db"
+
+memories:
+  - id: qdrant_kb # Renders with emerald green glow (#10B981) and database/RAG icon
+    group: tech_subsystem
+    name: "Qdrant Vector DB (Knowledge Base)"
+    description: "Qdrant Vector DB (Knowledge Base)"
+    provider: "Qdrant"
+    mode: "RAG"
+
+tools:
+  - id: intent_classifier # Renders with purple amethyst glow (#8B5CF6) and code/function icon
+    name: "Intent Classification Function"
+    description: "Intent Classification Function"
+    mechanism: "python-script"
+
+  - id: jira_tool # Renders with purple amethyst glow (#8B5CF6)
+    name: "Jira API"
+    description: "Jira API"
+    mechanism: "webhook"
+    endpoint: "https://jira.external"
+
+guardrails:
+  - id: pii_anonymizer # Renders with amber/gold glow (#F59E0B) and lock/security icon
+    name: "PII Anonymizer (Pre-Execution)"
+    description: "PII Anonymizer (Pre-Execution)"
+    mechanism: "pattern-matching"
+    human_in_the_loop: false # Automated control; visible in component details
+
+  - id: high_value_check # Renders with amber/gold glow (#F59E0B)
+    name: "High Value Refund (Admin Review)"
+    description: "Human Approval required for high value refunds"
+    mechanism: "approval_gate"
+    human_in_the_loop: true # Human approval required; visible in component details
+
+# --- CONTROL FLOW & LOGICAL COMPONENTS --- #
+components:
+  - id: score_check_condition
+    group: tech_subsystem
+    type: "condition"
+    name: "Complexity > Level 3?"
+    description: "Check if ticket complexity is greater than level 3"
+    expression: "ticket.complexity > 3"
+
+  - id: auto_assign_action
+    group: tech_subsystem
+    type: "action"
+    name: "Assign Priority Tag"
+    description: "Assign priority tag to ticket"
+    action_type: "state_mutation"
+
+# --- NETWORK TOPOLOGY (RELATIONS) --- #
+# These links define the edges of the graph, rendering as smooth curved blue paths.
+
+topology:
+  - from: core_supervisor
+    to: pii_anonymizer
+    label: "Input Validation (Security)" # Bezier path with particle flow
+
+  - from: core_supervisor
+    to: billing_agent
+    label: "Routes to (Orchestration)"
+
+  - from: core_supervisor
+    to: tech_agent
+    label: "Routes to (Orchestration)"
+
+  - from: tech_agent
+    to: postgres_mcp
+    label: "Queries Data (MCP)"
+
+  - from: postgres_mcp
+    to: qdrant_kb
+    label: "RAG Lookup (Hybrid Search)"
+
+  - from: billing_agent
+    to: high_value_check
+    label: "Approves Refund (Security Gate)"

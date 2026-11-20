@@ -1,0 +1,9 @@
+# Repository notes
+
+- Graphen Studio is a browser-based visual editor for Agent Architecture Language (AAL): users edit YAML in Monaco, and the validated architecture appears as an interactive React Flow canvas. The landing page introduces the product; the Studio is the editor/canvas app.
+- Use Node.js 22+ and npm (`npm ci`); start the dev server with `npm run dev`. CI checks in order: `npm run lint`, `npm test`, `npm run build`; build runs `tsc -b` before Vite. For one test file: `npx vitest run src/core/parser/aalParser.test.ts` (replace path as needed).
+- This is one Vite project with three HTML entries: `index.html` loads `src/landing/main.tsx`, `studio/index.html` loads `src/main.tsx`, and `docs/index.html` loads `src/docs/main.tsx`. Vite's base is `/graphen/`; check `/graphen/`, `/graphen/studio/`, and `/graphen/docs/` when changing routing or asset URLs. `main` deploys `dist/` to GitHub Pages via `.github/workflows/deploy.yml`.
+- AAL schema and cross-reference validation live in `src/core/types/aal.schema.ts`; `src/core/parser/aalParser.ts` loads YAML and surfaces `AalParseError`. `graphTransformer.ts` turns validated documents into React Flow nodes/edges and lays out groups with Dagre. Keep schema, transformer, node types, and the `.aal.yaml` examples aligned when adding AAL components.
+- Studio source is imported as raw YAML from `src/assets/sample.aal.yaml` and persisted in `localStorage` by `src/store/useStudioStore.ts`. `src/App.tsx` validates edits after 300 ms and retains the last valid document (also persisted separately) when YAML is invalid; preserve this behavior when changing the editor/canvas flow.
+- `specs/` is gitignored; don't rely on its contents as tracked project documentation.
+- `skills/aal-architecture/SKILL.md` teaches coding agents to author AAL; keep its rules and examples aligned with the schema, sample architectures, and documentation.
