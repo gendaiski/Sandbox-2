@@ -45,3 +45,17 @@ def test_note_validation_and_cross_origin_write(client):
     assert client.post('/api/records',headers={**HEADERS,'Origin':'https://evil.example'},json={'title':'x'}).status_code==403
     assert client.post('/api/records',headers=HEADERS,json={'title':'x','url':'javascript:alert(1)'}).status_code==400
     assert client.post('/api/records',headers=HEADERS,json={'title':''}).status_code==400
+
+def test_graph_schema_matches_sqlite(client):
+    schema=client.get('/api/schema').json()
+    assert schema['active_storage']=='sqlite'
+    assert schema['no_corpus'] is True
+    from workspace_app.app import database
+    with database() as db:
+        cols=db.execute('PRAGMA table_info(notes)').fetchall()
+        foreign_keys=db.execute('PRAGMA foreign_key_list(notes)').fetchall()
+    assert [(c['name'],c['type']) for c in schema['sqlite']['columns']]==[(c[1],c[2]) for c in cols]
+    assert schema['sqlite']['foreign_keys']==foreign_keys==[]
+    assert [f[0] for f in schema['cloud']['fields']]==['id','created','title','note','url','jurisdiction','matter']
+    text=str(schema)
+    assert 'BLOB_READ_WRITE_TOKEN' not in text

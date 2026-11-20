@@ -8,7 +8,7 @@ const {chromium}=require('playwright');
  const phinite=process.env.PHINITE_URL||'https://phinite-experience.vercel.app/';
  const fontes=process.env.FONTES_URL||'https://fontes-research-workspace.vercel.app/';
  await page.goto(phinite);await page.locator('#start-case').click();await page.locator('#run-case').click();await page.locator('#approve').waitFor();
- await page.reload();await page.locator('#approve').click();
+ await page.reload();await page.locator('#test-jump').click();await page.locator('#approve').click();
  await page.locator('[data-node="intake"]').click();await page.locator('#node-name').fill('Case coordinator');await page.locator('#save-node').click();
  await page.reload();await page.getByRole('button',{name:'Edit Case coordinator',exact:true}).waitFor();
  const dl=page.waitForEvent('download');await page.locator('#export').click();await dl;

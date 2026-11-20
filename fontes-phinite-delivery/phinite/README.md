@@ -31,3 +31,13 @@ Open `index.html` in a modern browser, or serve this folder with `python3 -m htt
 Chromium desktop and 390-pixel mobile viewport: no-login access, navigation through every screen, graph rename and persistence, sample run, approval, session recording, tool output and horizontal-overflow checks passed with no JavaScript page errors. Additional approval resume, rejected/approved outcomes and JSON export checks are covered by the delivery browser test.
 
 Reference documentation was reviewed. YouTube fetching was blocked in the execution environment, so no video transcript or frame-by-frame review is claimed.
+
+## Reference revision — 2026-11-20
+
+Flow Studio was rebuilt against the official public documentation screenshots: `configure-blocks.png`, `add-blocks.png`, `test-and-iterate.png`, `open-rag-tab.png`, `select-inputs.png`, `blocks.png`, and `assistant-overview-1.png` under https://docs.phinite.ai/images/.
+
+The native components now reproduce the documented structure: full workspace canvas, coloured SVG block icons, prompt panels inside agent cards, tool and variable attachment rows, master/child selection treatments, green Start and orange End pills, labelled curved connections, left block palette, bottom zoom/lock/fit/undo controls, and Details/RAG/Tools/Variables inspector tabs. Testing uses a right-hand conversation panel and logs beneath the canvas. Overview now follows the documented assistant summary, environment builds and snapshot arrangement.
+
+The populated legal case and its labels differ from the Google Maps example in the documentation. Public reference screenshots were visually inspected; this is not a claim of a pixel-perfect comparison against an authenticated production Phinite session. No official application source code was available or copied.
+
+New interactions: add master/child/tool/end blocks; attach/detach the sample knowledge collection, tool and session variables; node detail mode; position lock; arrange blocks; undo/redo; filter and export logs. Existing graph designs are backed up to a local version before the first design migration. Styling does not change the frontend-only execution scope.

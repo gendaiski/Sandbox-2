@@ -64,3 +64,15 @@ Run regression checks with `uv run pytest --ignore=tests/live -q` and `uv run py
 ## Licensing
 
 Preserve the original Apache-2.0 LICENSE and NOTICE. Added browser code is provided under the repository's Apache-2.0 terms. Locally bundled Marked is MIT; DOMPurify is Apache-2.0 OR MPL-2.0; their licences are in `workspace_app/static/THIRD-PARTY-LICENSES.txt`. Brand assets are reused from the upstream repository. Legal sources retain their separate terms.
+
+## Database graph revision — 2026-11-20
+
+Open https://fontes-research-workspace.vercel.app/#graph.
+
+The native blueprint canvas provides two views:
+- Research graph: jurisdiction registry, country adapter, actual sources, supported methods and this browser's saved-note count. Egypt is the initial selection; all loaded jurisdictions can be searched and selected.
+- Storage schema: hosted private JSON documents or the local SQLite `notes` table, its `notes_owner` index and JSON payload. Logical source/country links are distinguished from foreign keys; the actual SQLite schema has no foreign keys.
+
+The graph supports node inspection, source links, notebook/research navigation, pan, zoom, light/dark canvas and standalone vector SVG export. It does not invent a legal corpus, expose session tokens, or read another visitor's notes. `/api/schema` returns structural metadata only. A sixth backend test compares the displayed SQL columns with `PRAGMA table_info(notes)`.
+
+The graph uses a native Langflow-style blueprint presentation. No LangGraph runtime or external graph service is required.

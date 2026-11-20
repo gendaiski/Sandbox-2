@@ -50,6 +50,25 @@ async def catalog(request):
         "samples":j.samples, "sources":[dataclasses.asdict(s) for s in j.sources]} for j in registry.available()],
         "tools":{k:MODELS[k].model_json_schema() for k in TOOLS}})
 
+async def schema(request):
+    """Public structural metadata only. Never return tokens, owners or other visitors' records."""
+    return response({
+        "active_storage": "cloud" if os.getenv("VERCEL") else "sqlite",
+        "sqlite": {"table": "notes", "columns": [
+            {"name":"id", "type":"TEXT", "constraint":"PRIMARY KEY"},
+            {"name":"owner", "type":"TEXT", "constraint":"NOT NULL"},
+            {"name":"created", "type":"INTEGER", "constraint":"NOT NULL"},
+            {"name":"data", "type":"TEXT", "constraint":"NOT NULL · JSON payload"}],
+            "indexes":[{"name":"notes_owner", "columns":["owner"]}], "foreign_keys":[]},
+        "cloud": {"store":"Private Vercel Blob", "path":"research/{anonymous-session}/{note-id}.json",
+            "fields":[["id","string"],["created","number"],["title","string"],["note","string"],
+                      ["url","string"],["jurisdiction","string"],["matter","string"]]},
+        "payload_fields":[["title","string · max 180"],["note","string · max 6000"],
+                          ["url","HTTP(S) source link"],["jurisdiction","code · max 40"],["matter","string · max 120"]],
+        "relationships": {"jurisdiction":"Logical match by code, not an enforced database foreign key",
+                           "source":"Stored URL reference; source text is fetched live, not stored"},
+        "no_corpus": True})
+
 async def research(request: Request):
     try:
         raw = await request.body()
@@ -125,6 +144,6 @@ async def records(request):
     except (ValueError,json.JSONDecodeError) as exc:
         return response({"error":str(exc)},400)
 
-app=Starlette(routes=[Route("/api/health",health),Route("/api/catalog",catalog),
+app=Starlette(routes=[Route("/api/health",health),Route("/api/catalog",catalog),Route("/api/schema",schema),
     Route("/api/research",research,methods=["POST"]),Route("/api/records",records,methods=["GET","POST","DELETE"]),
     Mount("/",app=StaticFiles(directory=Path(__file__).parent/"static",html=True))])
