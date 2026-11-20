@@ -16,3 +16,5 @@ This handoff contains the browser workspace source and exact workspace lock/conf
 The public workspace calls the installed original renderer and schema through a stateless Node API. It can validate edited JSON and render architecture, data flow, database diagrams and walkthrough SVGs. Source fixtures and original artwork are preserved. The surrounding editor is an added interface. The original hosted prlens.dev UI and automated review service are not included in upstream, and are not claimed here. Provider-backed analysis, repository publishing and canvas sync require their separate configuration.
 
 Production browser checks passed all three cases, component/table/payload inspection, walkthrough, theme, animation pause, SVG/all-view export, zoom, schema-validated editing, invalid-document rejection and mobile layout. Graph documents are sent to the rendering server and are not persisted; download JSON to keep edits.
+
+Full build, typecheck and 1,139 tests passed. See workspace/VERIFICATION.md for package counts and the temporary-directory condition used by this environment.
