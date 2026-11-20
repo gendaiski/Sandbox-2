@@ -1,0 +1,152 @@
+diff --git a/index.html b/index.html
+index 02fd39a..987fa55 100644
+--- a/index.html
++++ b/index.html
+@@ -29,6 +29,7 @@
+     <script src="./vendor/jspdf/jspdf.umd.min.js"></script>
+     <script src="./vendor/mermaid/mermaid.min.js"></script>
+     <script src="./vendor/3d-force-graph/3d-force-graph.min.js" defer></script>
++    <script src="./cases/cases.js"></script>
+     <style>
+ @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400;font-display:swap;src:url('./vendor/jetbrains-mono/jetbrains-mono-latin-400-normal.woff2') format('woff2')}
+ @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:500;font-display:swap;src:url('./vendor/jetbrains-mono/jetbrains-mono-latin-500-normal.woff2') format('woff2')}
+@@ -772,7 +773,8 @@ body{height:100dvh;min-height:100dvh}
+ .legend{bottom:70px}
+ .legend.with-color-by{bottom:70px}
+ }
+-    </style>
++    .case-strip{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:9px 16px;background:var(--bg1);border-bottom:1px solid var(--border);font-size:10px;flex-shrink:0}.case-strip select{font:inherit;padding:6px 8px;background:var(--bg2);color:var(--t1);border:1px solid var(--border);border-radius:5px;max-width:230px}.case-strip span{color:var(--t2);line-height:1.5}.case-strip a{color:var(--acc);text-decoration:none}.case-guide{padding:10px 16px;background:var(--bg2);font-size:10px;line-height:1.7;border-bottom:1px solid var(--border);flex-shrink:0}.case-guide ol{padding-left:20px}.case-guide p{color:var(--t2)}.case-welcome{margin-top:20px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.case-welcome button{max-width:180px}@media(max-width:700px){.case-strip{gap:6px;padding:8px 10px}.case-strip>span{display:none}.case-guide{max-height:130px;overflow:auto}.case-strip select{max-width:190px}}
++</style>
+ </head>
+ <body>
+ <div id="root"></div>
+@@ -12571,6 +12573,9 @@ function HealthRing(props){
+ // ---------------------------------------------------------------------------
+ 
+ function App(){
++    var _case=useState(''),activeCase=_case[0],setActiveCase=_case[1];
++    var _caseGuide=useState(true),showCaseGuide=_caseGuide[0],setShowCaseGuide=_caseGuide[1];
++    var caseInfo=(window.CODEFLOW_CASES||[]).find(function(c){return c.id===activeCase;});
+     var _a=useState(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'),theme=_a[0],setTheme=_a[1];
+     var _b=useState(''),repoUrl=_b[0],setRepoUrl=_b[1];
+     var _c=useState(''),token=_c[0],setToken=_c[1];
+@@ -12916,6 +12921,8 @@ function App(){
+         }
+         refreshRecentList();
+         probeCodeflowCli();
++        var requestedCase=params.get('case');
++        if(requestedCase)loadBundledCase(requestedCase);
+     },[]);
+ 
+     function parseUrl(url){
+@@ -13352,6 +13359,7 @@ function App(){
+     }
+ 
+     function analyze(forceRefresh,explicitUrl){
++        setActiveCase('');
+         var p=parseUrl(explicitUrl||repoUrl);
+         if(!p){setError('Invalid URL. Use format: owner/repo');return;}
+         if(explicitUrl)setRepoUrl(explicitUrl);
+@@ -13584,6 +13592,7 @@ function App(){
+     }
+ 
+     function launchLocalFolderPicker(compiledPatterns){
++        setActiveCase('');
+         pendingExcludePatternsRef.current=compiledPatterns||activeExcludePatterns;
+         if(!window.showDirectoryPicker){
+             if(folderInputRef.current){
+@@ -13627,6 +13636,7 @@ function App(){
+     }
+ 
+     function handleZipSelected(e){
++        setActiveCase('');
+         var file=e.target.files&&e.target.files[0];
+         if(!file)return;
+         resetAnalysisState();
+@@ -13641,6 +13651,19 @@ function App(){
+         readZipArchive(file,activeExcludePatterns);
+     }
+ 
++    function loadBundledCase(id){
++        var example=(window.CODEFLOW_CASES||[]).find(function(c){return c.id===id;});
++        if(!example){setError('Unknown case. Choose one of the three bundled examples.');return;}
++        var files=Object.keys(example.files).map(function(path){
++            var file=new File([example.files[path]],path.split('/').pop(),{type:'text/plain',lastModified:0});
++            Object.defineProperty(file,'webkitRelativePath',{value:example.id+'/'+path});
++            return file;
++        });
++        setActiveCase(id);setShowCaseGuide(true);
++        window.history.replaceState({},'',window.location.pathname+'?case='+encodeURIComponent(id));
++        handleFolderSelected({target:{files:files}});
++    }
++
+     function handleFolderSelected(e){
+         var fileList=e.target.files;
+         if(!fileList||fileList.length===0)return;
+@@ -16725,7 +16748,7 @@ function App(){
+         navigator.clipboard.writeText(shareUrl).then(function(){showNotification('Link copied to clipboard!');}).catch(function(){showNotification('Failed to copy link','error');});
+     }
+     function analyzePR(){if(!prUrl||!repoInfo)return;var m=prUrl.match(/\/pull\/(\d+)/);if(!m){showNotification('Invalid PR URL','error');return;}GitHub.getPR(repoInfo.owner,repoInfo.repo,m[1]).then(function(pr){if(pr)setPrData(pr);else showNotification('Could not load PR','error');});}
+-    function resetAnalysis(){setData(null);setSelected(null);setBlastRadius(null);setOwnership(null);setRepoInfo(null);setRepoUrl('');setPrData(null);setFolderFilter(null);setLocalDirHandle(null);setLocalSourceKind(null);setArchitectureIncludeTests(false);setArchitectureIncludeBuildOutput(false);setCachedFromId(null);setActiveSymbol(null);setCliDirty([]);clearCliLiveDiffs();localFolderKeyRef.current=null;localFolderSelectionRef.current=null;localFilesRef.current=null;zipKeyRef.current=null;zipArchiveRef.current=null;zipFileRef.current=null;window.history.replaceState({},'',window.location.pathname);}
++    function resetAnalysis(){setActiveCase('');setData(null);setSelected(null);setBlastRadius(null);setOwnership(null);setRepoInfo(null);setRepoUrl('');setPrData(null);setFolderFilter(null);setLocalDirHandle(null);setLocalSourceKind(null);setArchitectureIncludeTests(false);setArchitectureIncludeBuildOutput(false);setCachedFromId(null);setActiveSymbol(null);setCliDirty([]);clearCliLiveDiffs();localFolderKeyRef.current=null;localFolderSelectionRef.current=null;localFilesRef.current=null;zipKeyRef.current=null;zipArchiveRef.current=null;zipFileRef.current=null;window.history.replaceState({},'',window.location.pathname);}
+     function filterByFolder(path){setFolderFilter(function(prev){return prev===path?null:path;});}
+     function renderRecentsList(){
+         return React.createElement('div',{className:'sidebar-scroll'},
+@@ -17457,6 +17480,20 @@ function App(){
+                 React.createElement('button',{className:'top-btn','aria-label':'Toggle theme',title:theme==='dark'?'Switch to light mode':'Switch to dark mode',onClick:function(){setTheme(function(t){return t==='dark'?'light':'dark';});}},React.createElement(Icon,{name:theme==='dark'?'sun':'moon',size:'m'}),!data&&(theme==='dark'?'Light':'Dark'))
+             )
+         ),
++        React.createElement('div',{className:'case-strip'},
++            React.createElement('label',{htmlFor:'codeflow-case'},'Test a case'),
++            React.createElement('select',{id:'codeflow-case','aria-label':'Test a bundled case',value:activeCase,disabled:loading,onChange:function(e){if(e.target.value)loadBundledCase(e.target.value);}},
++                React.createElement('option',{value:''},'Choose an example…'),
++                (window.CODEFLOW_CASES||[]).map(function(c){return React.createElement('option',{key:c.id,value:c.id},c.title);})
++            ),
++            React.createElement('span',null,caseInfo?'Actual source files · computed in your browser':'Three ready-to-analyze workspaces · no GitHub account required'),
++            caseInfo&&React.createElement('a',{href:'./cases/'+activeCase+'.zip',download:activeCase+'.zip'},'Download source ZIP'),
++            caseInfo&&React.createElement('button',{className:'top-btn',type:'button',onClick:function(){setShowCaseGuide(!showCaseGuide);}},showCaseGuide?'Hide steps':'Show steps')
++        ),
++        caseInfo&&showCaseGuide&&React.createElement('div',{className:'case-guide'},
++            React.createElement('p',null,caseInfo.description),
++            React.createElement('ol',null,caseInfo.steps.map(function(step,i){return React.createElement('li',{key:i},step);}))
++        ),
+         React.createElement('div',{className:'main'},
+             isMobile&&React.createElement('button',{type:'button',className:'mobile-panel-backdrop'+(mobilePanel?' visible':''),'aria-label':'Close mobile panel',onClick:function(){setMobilePanel(null);}}),
+             React.createElement('div',{className:'sidebar'+(isMobile&&mobilePanel==='explorer'?' mobile-visible':''),style:{width:isMobile?'100vw':sidebarWidth}},
+@@ -17493,6 +17530,7 @@ function App(){
+                     React.createElement(Icon,{name:'logo',size:'xxl',className:'empty-icon'}),
+                     React.createElement('div',{className:'empty-title'},'CodeFlow'),
+                     React.createElement('div',{className:'empty-desc'},'Visualize architecture, blast radius, ownership, patterns & security\n\nEnter a GitHub URL, open a folder, or load a ZIP archive'),
++                    React.createElement('div',{className:'case-welcome'},(window.CODEFLOW_CASES||[]).map(function(c){return React.createElement('button',{key:c.id,className:'top-btn',type:'button',onClick:function(){loadBundledCase(c.id);}},c.title);})),
+                     parseUrl(repoUrl)&&React.createElement('div',{className:'github-hint'},
+                         'The folder picker is faster when the API is rate-limited. ',
+                         React.createElement('button',{type:'button',onClick:downloadCurrentGithubZip},'Download ZIP'),
+diff --git a/tests/architecture-diagram.test.mjs b/tests/architecture-diagram.test.mjs
+index 5202eb3..ceb8d14 100644
+--- a/tests/architecture-diagram.test.mjs
++++ b/tests/architecture-diagram.test.mjs
+@@ -56,6 +56,7 @@ async function collectRepoFiles(root) {
+     '.venv',
+     'venv',
+     'test-results',
++    'cases', // Authored runnable sample projects are fixtures, not Codeflow's app.
+   ]);
+ 
+   async function walk(dir) {
+diff --git a/tests/offline-assets.test.mjs b/tests/offline-assets.test.mjs
+index 56a45e8..560a5aa 100644
+--- a/tests/offline-assets.test.mjs
++++ b/tests/offline-assets.test.mjs
+@@ -15,8 +15,10 @@ test('browser runtime dependencies are local', () => {
+   const scriptSources = Array.from(html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["']/gi), (match) => match[1]);
+   const stylesheetSources = Array.from(html.matchAll(/<link\b[^>]*\brel=["']stylesheet["'][^>]*\bhref=["']([^"']+)["']/gi), (match) => match[1]);
+ 
+-  assert.equal(scriptSources.length, 12);
+-  assert.equal(scriptSources.every((source) => source.startsWith('./vendor/')), true);
++  // The original twelve runtime libraries remain vendored. The only added script
++  // is the local, generated bundle for the three authored runnable cases.
++  assert.equal(scriptSources.filter((source) => source.startsWith('./vendor/')).length, 12);
++  assert.deepEqual(scriptSources.filter((source) => !source.startsWith('./vendor/')), ['./cases/cases.js']);
+   assert.equal(stylesheetSources.some((source) => /^https?:/i.test(source)), false);
+   assert.doesNotMatch(html, /importScripts\(\\?["']https?:\/\//i);
+   assert.doesNotMatch(html, /treeSitterWasmBase\s*:\s*["']https?:\/\//i);
