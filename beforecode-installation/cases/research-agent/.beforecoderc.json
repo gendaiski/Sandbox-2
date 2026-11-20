@@ -1,0 +1,31 @@
+{
+  "projectName": "Research Agent",
+  "projectType": "ai-agent",
+  "docsPath": "docs",
+  "createdBy": "beforecode",
+  "version": "0.2.0",
+  "workflow": "context-first",
+  "context": {
+    "projectName": "Research Agent",
+    "projectType": "ai-agent",
+    "hasIdea": true,
+    "hasProblem": false,
+    "hasUsers": true,
+    "hasFeatures": true,
+    "aiBuildMode": "TBD"
+  },
+  "documents": [
+    "00-project-context.md",
+    "01-open-questions.md",
+    "03-project-brief.md",
+    "04-research-report.md",
+    "05-prd.md",
+    "06-trd.md",
+    "07-database-schema.md",
+    "08-api-documentation.md",
+    "09-permission-matrix.md",
+    "10-qa-test-plan.md",
+    "11-implementation-plan.md",
+    "12-deployment-plan.md"
+  ]
+}

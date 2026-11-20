@@ -1,0 +1,836 @@
+[
+  {
+    "cwd": "types/small",
+    "args": [
+      "init",
+      "--type",
+      "small",
+      "--name",
+      "Installation small"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: Small app\nDocs path: docs\nCreated: 4\nSkipped: 0\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/small",
+    "args": [
+      "check"
+    ],
+    "stdout": "BeforeCode check: Small app\n\n\u2713 project-brief.md\n\u2713 prd.md\n\u2713 build-plan.md\n\u2713 qa-test-plan.md\n\nReadiness: 100%\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/small",
+    "args": [
+      "score"
+    ],
+    "stdout": "BeforeCode readiness score: Small app\n\nProduct: 100%\nQuality: 100%\nDelivery: 100%\n\nOverall: 100%\nStatus: Ready for implementation review.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/small",
+    "args": [
+      "handoff"
+    ],
+    "stdout": "BeforeCode AI handoff generated\nCreated: 2\nSkipped: 0\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/small",
+    "args": [
+      "doctor"
+    ],
+    "stdout": "BeforeCode doctor: Small app\nDocs folder: docs\nHealth: 84%\n\n\u2713 .beforecoderc.json exists\n\u2713 Required docs present: 4/4\n! Docs with enough content: 0/4\n\u2713 AI handoff files exist\n\nDocs needing attention:\n- 01-project-brief.md: low content depth, placeholder content remains\n- 02-prd.md: low content depth, placeholder content remains\n- 03-build-plan.md: low content depth, placeholder content remains\n- 04-qa-test-plan.md: low content depth, placeholder content remains\n\nNext steps:\n1. Replace placeholders and shallow sections in the docs needing attention.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/small",
+    "args": [
+      "init",
+      "--type",
+      "small"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: Small app\nDocs path: docs\nCreated: 0\nSkipped: 4\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/small",
+    "args": [
+      "init",
+      "--type",
+      "small",
+      "--force"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: Small app\nDocs path: docs\nCreated: 4\nSkipped: 0\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/portfolio",
+    "args": [
+      "init",
+      "--type",
+      "portfolio",
+      "--name",
+      "Installation portfolio"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: Portfolio\nDocs path: docs\nCreated: 5\nSkipped: 0\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/portfolio",
+    "args": [
+      "check"
+    ],
+    "stdout": "BeforeCode check: Portfolio\n\n\u2713 project-brief.md\n\u2713 ux-flows.md\n\u2713 ui-system.md\n\u2713 build-plan.md\n\u2713 qa-test-plan.md\n\nReadiness: 100%\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/portfolio",
+    "args": [
+      "score"
+    ],
+    "stdout": "BeforeCode readiness score: Portfolio\n\nProduct: 100%\nExperience: 100%\nQuality: 100%\nDelivery: 100%\n\nOverall: 100%\nStatus: Ready for implementation review.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/portfolio",
+    "args": [
+      "handoff"
+    ],
+    "stdout": "BeforeCode AI handoff generated\nCreated: 2\nSkipped: 0\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/portfolio",
+    "args": [
+      "doctor"
+    ],
+    "stdout": "BeforeCode doctor: Portfolio\nDocs folder: docs\nHealth: 80%\n\n\u2713 .beforecoderc.json exists\n\u2713 Required docs present: 5/5\n! Docs with enough content: 0/5\n\u2713 AI handoff files exist\n\nDocs needing attention:\n- 01-project-brief.md: low content depth, placeholder content remains\n- 02-ux-flows.md: low content depth, placeholder content remains\n- 03-ui-system.md: low content depth, placeholder content remains\n- 04-build-plan.md: low content depth, placeholder content remains\n- 05-qa-test-plan.md: low content depth, placeholder content remains\n\nNext steps:\n1. Replace placeholders and shallow sections in the docs needing attention.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/portfolio",
+    "args": [
+      "init",
+      "--type",
+      "portfolio"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: Portfolio\nDocs path: docs\nCreated: 0\nSkipped: 5\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/portfolio",
+    "args": [
+      "init",
+      "--type",
+      "portfolio",
+      "--force"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: Portfolio\nDocs path: docs\nCreated: 5\nSkipped: 0\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/saas",
+    "args": [
+      "init",
+      "--type",
+      "saas",
+      "--name",
+      "Installation saas"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: SaaS product\nDocs path: docs\nCreated: 11\nSkipped: 0\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/saas",
+    "args": [
+      "check"
+    ],
+    "stdout": "BeforeCode check: SaaS product\n\n\u2713 project-brief.md\n\u2713 research-report.md\n\u2713 prd.md\n\u2713 ux-flows.md\n\u2713 trd.md\n\u2713 database-schema.md\n\u2713 api-documentation.md\n\u2713 permission-matrix.md\n\u2713 qa-test-plan.md\n\u2713 implementation-plan.md\n\u2713 deployment-plan.md\n\nReadiness: 100%\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/saas",
+    "args": [
+      "score"
+    ],
+    "stdout": "BeforeCode readiness score: SaaS product\n\nProduct: 100%\nExperience: 100%\nEngineering: 100%\nQuality: 100%\nDelivery: 100%\n\nOverall: 100%\nStatus: Ready for implementation review.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/saas",
+    "args": [
+      "handoff"
+    ],
+    "stdout": "BeforeCode AI handoff generated\nCreated: 2\nSkipped: 0\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/saas",
+    "args": [
+      "doctor"
+    ],
+    "stdout": "BeforeCode doctor: SaaS product\nDocs folder: docs\nHealth: 70%\n\n\u2713 .beforecoderc.json exists\n\u2713 Required docs present: 11/11\n! Docs with enough content: 0/11\n\u2713 AI handoff files exist\n\nDocs needing attention:\n- 01-project-brief.md: low content depth, placeholder content remains\n- 02-research-report.md: low content depth, placeholder content remains\n- 03-prd.md: low content depth, placeholder content remains\n- 04-ux-flows.md: low content depth, placeholder content remains\n- 05-trd.md: low content depth, placeholder content remains\n- 06-database-schema.md: low content depth, placeholder content remains\n- 07-api-documentation.md: low content depth, placeholder content remains\n- 08-permission-matrix.md: low content depth, placeholder content remains\n- 09-qa-test-plan.md: low content depth, placeholder content remains\n- 10-implementation-plan.md: low content depth, placeholder content remains\n- 11-deployment-plan.md: low content depth, placeholder content remains\n\nNext steps:\n1. Replace placeholders and shallow sections in the docs needing attention.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/saas",
+    "args": [
+      "init",
+      "--type",
+      "saas"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: SaaS product\nDocs path: docs\nCreated: 0\nSkipped: 11\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/saas",
+    "args": [
+      "init",
+      "--type",
+      "saas",
+      "--force"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: SaaS product\nDocs path: docs\nCreated: 11\nSkipped: 0\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/crm",
+    "args": [
+      "init",
+      "--type",
+      "crm",
+      "--name",
+      "Installation crm"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: CRM or operations system\nDocs path: docs\nCreated: 9\nSkipped: 0\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/crm",
+    "args": [
+      "check"
+    ],
+    "stdout": "BeforeCode check: CRM or operations system\n\n\u2713 business-requirements.md\n\u2713 research-report.md\n\u2713 prd.md\n\u2713 srs.md\n\u2713 permission-matrix.md\n\u2713 database-schema.md\n\u2713 api-documentation.md\n\u2713 qa-test-plan.md\n\u2713 implementation-plan.md\n\nReadiness: 100%\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/crm",
+    "args": [
+      "score"
+    ],
+    "stdout": "BeforeCode readiness score: CRM or operations system\n\nProduct: 100%\nExperience: 100%\nEngineering: 100%\nQuality: 100%\nDelivery: 100%\n\nOverall: 100%\nStatus: Ready for implementation review.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/crm",
+    "args": [
+      "handoff"
+    ],
+    "stdout": "BeforeCode AI handoff generated\nCreated: 2\nSkipped: 0\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/crm",
+    "args": [
+      "doctor"
+    ],
+    "stdout": "BeforeCode doctor: CRM or operations system\nDocs folder: docs\nHealth: 70%\n\n\u2713 .beforecoderc.json exists\n\u2713 Required docs present: 9/9\n! Docs with enough content: 0/9\n\u2713 AI handoff files exist\n\nDocs needing attention:\n- 01-business-requirements.md: low content depth, placeholder content remains\n- 02-research-report.md: low content depth, placeholder content remains\n- 03-prd.md: low content depth, placeholder content remains\n- 04-srs.md: low content depth, placeholder content remains\n- 05-permission-matrix.md: low content depth, placeholder content remains\n- 06-database-schema.md: low content depth, placeholder content remains\n- 07-api-documentation.md: low content depth, placeholder content remains\n- 08-qa-test-plan.md: low content depth, placeholder content remains\n- 09-implementation-plan.md: low content depth, placeholder content remains\n\nNext steps:\n1. Replace placeholders and shallow sections in the docs needing attention.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/crm",
+    "args": [
+      "init",
+      "--type",
+      "crm"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: CRM or operations system\nDocs path: docs\nCreated: 0\nSkipped: 9\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/crm",
+    "args": [
+      "init",
+      "--type",
+      "crm",
+      "--force"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: CRM or operations system\nDocs path: docs\nCreated: 9\nSkipped: 0\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/ecommerce",
+    "args": [
+      "init",
+      "--type",
+      "ecommerce",
+      "--name",
+      "Installation ecommerce"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: E-commerce or marketplace\nDocs path: docs\nCreated: 11\nSkipped: 0\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/ecommerce",
+    "args": [
+      "check"
+    ],
+    "stdout": "BeforeCode check: E-commerce or marketplace\n\n\u2713 project-brief.md\n\u2713 research-report.md\n\u2713 business-requirements.md\n\u2713 prd.md\n\u2713 ux-flows.md\n\u2713 trd.md\n\u2713 database-schema.md\n\u2713 api-documentation.md\n\u2713 permission-matrix.md\n\u2713 qa-test-plan.md\n\u2713 deployment-plan.md\n\nReadiness: 100%\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/ecommerce",
+    "args": [
+      "score"
+    ],
+    "stdout": "BeforeCode readiness score: E-commerce or marketplace\n\nProduct: 100%\nExperience: 100%\nEngineering: 100%\nQuality: 100%\nDelivery: 100%\n\nOverall: 100%\nStatus: Ready for implementation review.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/ecommerce",
+    "args": [
+      "handoff"
+    ],
+    "stdout": "BeforeCode AI handoff generated\nCreated: 2\nSkipped: 0\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/ecommerce",
+    "args": [
+      "doctor"
+    ],
+    "stdout": "BeforeCode doctor: E-commerce or marketplace\nDocs folder: docs\nHealth: 70%\n\n\u2713 .beforecoderc.json exists\n\u2713 Required docs present: 11/11\n! Docs with enough content: 0/11\n\u2713 AI handoff files exist\n\nDocs needing attention:\n- 01-project-brief.md: low content depth, placeholder content remains\n- 02-research-report.md: low content depth, placeholder content remains\n- 03-business-requirements.md: low content depth, placeholder content remains\n- 04-prd.md: low content depth, placeholder content remains\n- 05-ux-flows.md: low content depth, placeholder content remains\n- 06-trd.md: low content depth, placeholder content remains\n- 07-database-schema.md: low content depth, placeholder content remains\n- 08-api-documentation.md: low content depth, placeholder content remains\n- 09-permission-matrix.md: low content depth, placeholder content remains\n- 10-qa-test-plan.md: low content depth, placeholder content remains\n- 11-deployment-plan.md: low content depth, placeholder content remains\n\nNext steps:\n1. Replace placeholders and shallow sections in the docs needing attention.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/ecommerce",
+    "args": [
+      "init",
+      "--type",
+      "ecommerce"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: E-commerce or marketplace\nDocs path: docs\nCreated: 0\nSkipped: 11\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/ecommerce",
+    "args": [
+      "init",
+      "--type",
+      "ecommerce",
+      "--force"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: E-commerce or marketplace\nDocs path: docs\nCreated: 11\nSkipped: 0\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/mobile",
+    "args": [
+      "init",
+      "--type",
+      "mobile",
+      "--name",
+      "Installation mobile"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: Mobile app\nDocs path: docs\nCreated: 8\nSkipped: 0\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/mobile",
+    "args": [
+      "check"
+    ],
+    "stdout": "BeforeCode check: Mobile app\n\n\u2713 project-brief.md\n\u2713 prd.md\n\u2713 ux-flows.md\n\u2713 api-documentation.md\n\u2713 permission-matrix.md\n\u2713 qa-test-plan.md\n\u2713 implementation-plan.md\n\u2713 deployment-plan.md\n\nReadiness: 100%\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/mobile",
+    "args": [
+      "score"
+    ],
+    "stdout": "BeforeCode readiness score: Mobile app\n\nProduct: 100%\nExperience: 100%\nEngineering: 100%\nQuality: 100%\nDelivery: 100%\n\nOverall: 100%\nStatus: Ready for implementation review.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/mobile",
+    "args": [
+      "handoff"
+    ],
+    "stdout": "BeforeCode AI handoff generated\nCreated: 2\nSkipped: 0\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/mobile",
+    "args": [
+      "doctor"
+    ],
+    "stdout": "BeforeCode doctor: Mobile app\nDocs folder: docs\nHealth: 70%\n\n\u2713 .beforecoderc.json exists\n\u2713 Required docs present: 8/8\n! Docs with enough content: 0/8\n\u2713 AI handoff files exist\n\nDocs needing attention:\n- 01-project-brief.md: low content depth, placeholder content remains\n- 02-prd.md: low content depth, placeholder content remains\n- 03-ux-flows.md: low content depth, placeholder content remains\n- 04-api-documentation.md: low content depth, placeholder content remains\n- 05-permission-matrix.md: low content depth, placeholder content remains\n- 06-qa-test-plan.md: low content depth, placeholder content remains\n- 07-implementation-plan.md: low content depth, placeholder content remains\n- 08-deployment-plan.md: low content depth, placeholder content remains\n\nNext steps:\n1. Replace placeholders and shallow sections in the docs needing attention.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/mobile",
+    "args": [
+      "init",
+      "--type",
+      "mobile"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: Mobile app\nDocs path: docs\nCreated: 0\nSkipped: 8\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/mobile",
+    "args": [
+      "init",
+      "--type",
+      "mobile",
+      "--force"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: Mobile app\nDocs path: docs\nCreated: 8\nSkipped: 0\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/ai-agent",
+    "args": [
+      "init",
+      "--type",
+      "ai-agent",
+      "--name",
+      "Installation ai-agent"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: AI agent\nDocs path: docs\nCreated: 10\nSkipped: 0\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/ai-agent",
+    "args": [
+      "check"
+    ],
+    "stdout": "BeforeCode check: AI agent\n\n\u2713 project-brief.md\n\u2713 research-report.md\n\u2713 prd.md\n\u2713 trd.md\n\u2713 database-schema.md\n\u2713 api-documentation.md\n\u2713 permission-matrix.md\n\u2713 qa-test-plan.md\n\u2713 implementation-plan.md\n\u2713 deployment-plan.md\n\nReadiness: 100%\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/ai-agent",
+    "args": [
+      "score"
+    ],
+    "stdout": "BeforeCode readiness score: AI agent\n\nProduct: 100%\nExperience: 100%\nEngineering: 100%\nQuality: 100%\nDelivery: 100%\n\nOverall: 100%\nStatus: Ready for implementation review.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/ai-agent",
+    "args": [
+      "handoff"
+    ],
+    "stdout": "BeforeCode AI handoff generated\nCreated: 2\nSkipped: 0\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/ai-agent",
+    "args": [
+      "doctor"
+    ],
+    "stdout": "BeforeCode doctor: AI agent\nDocs folder: docs\nHealth: 70%\n\n\u2713 .beforecoderc.json exists\n\u2713 Required docs present: 10/10\n! Docs with enough content: 0/10\n\u2713 AI handoff files exist\n\nDocs needing attention:\n- 01-project-brief.md: low content depth, placeholder content remains\n- 02-research-report.md: low content depth, placeholder content remains\n- 03-prd.md: low content depth, placeholder content remains\n- 04-trd.md: low content depth, placeholder content remains\n- 05-database-schema.md: low content depth, placeholder content remains\n- 06-api-documentation.md: low content depth, placeholder content remains\n- 07-permission-matrix.md: low content depth, placeholder content remains\n- 08-qa-test-plan.md: low content depth, placeholder content remains\n- 09-implementation-plan.md: low content depth, placeholder content remains\n- 10-deployment-plan.md: low content depth, placeholder content remains\n\nNext steps:\n1. Replace placeholders and shallow sections in the docs needing attention.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/ai-agent",
+    "args": [
+      "init",
+      "--type",
+      "ai-agent"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: AI agent\nDocs path: docs\nCreated: 0\nSkipped: 10\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/ai-agent",
+    "args": [
+      "init",
+      "--type",
+      "ai-agent",
+      "--force"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: AI agent\nDocs path: docs\nCreated: 10\nSkipped: 0\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/opensource",
+    "args": [
+      "init",
+      "--type",
+      "opensource",
+      "--name",
+      "Installation opensource"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: Open-source tool\nDocs path: docs\nCreated: 6\nSkipped: 0\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/opensource",
+    "args": [
+      "check"
+    ],
+    "stdout": "BeforeCode check: Open-source tool\n\n\u2713 project-brief.md\n\u2713 prd.md\n\u2713 trd.md\n\u2713 build-plan.md\n\u2713 qa-test-plan.md\n\u2713 deployment-plan.md\n\nReadiness: 100%\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/opensource",
+    "args": [
+      "score"
+    ],
+    "stdout": "BeforeCode readiness score: Open-source tool\n\nProduct: 100%\nEngineering: 100%\nQuality: 100%\nDelivery: 100%\n\nOverall: 100%\nStatus: Ready for implementation review.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/opensource",
+    "args": [
+      "handoff"
+    ],
+    "stdout": "BeforeCode AI handoff generated\nCreated: 2\nSkipped: 0\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/opensource",
+    "args": [
+      "doctor"
+    ],
+    "stdout": "BeforeCode doctor: Open-source tool\nDocs folder: docs\nHealth: 76%\n\n\u2713 .beforecoderc.json exists\n\u2713 Required docs present: 6/6\n! Docs with enough content: 0/6\n\u2713 AI handoff files exist\n\nDocs needing attention:\n- 01-project-brief.md: low content depth, placeholder content remains\n- 02-prd.md: low content depth, placeholder content remains\n- 03-trd.md: low content depth, placeholder content remains\n- 04-build-plan.md: low content depth, placeholder content remains\n- 05-qa-test-plan.md: low content depth, placeholder content remains\n- 06-deployment-plan.md: low content depth, placeholder content remains\n\nNext steps:\n1. Replace placeholders and shallow sections in the docs needing attention.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/opensource",
+    "args": [
+      "init",
+      "--type",
+      "opensource"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: Open-source tool\nDocs path: docs\nCreated: 0\nSkipped: 6\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "types/opensource",
+    "args": [
+      "init",
+      "--type",
+      "opensource",
+      "--force"
+    ],
+    "stdout": "BeforeCode initialized\nProject type: Open-source tool\nDocs path: docs\nCreated: 6\nSkipped: 0\nConfig: .beforecoderc.json\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "dry-run",
+    "args": [
+      "start",
+      "--idea",
+      "A simple project planner",
+      "--dry-run"
+    ],
+    "stdout": "BeforeCode dry run: context-first workspace\nwould create docs/00-project-context.md\nwould create docs/01-open-questions.md\nwould create docs/03-project-brief.md\nwould create docs/04-prd.md\nwould create docs/05-build-plan.md\nwould create docs/06-qa-test-plan.md\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "templates",
+    "args": [
+      "add",
+      "api-documentation"
+    ],
+    "stdout": "Added api-documentation\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "templates",
+    "args": [
+      "add",
+      "build-plan"
+    ],
+    "stdout": "Added build-plan\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "templates",
+    "args": [
+      "add",
+      "business-requirements"
+    ],
+    "stdout": "Added business-requirements\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "templates",
+    "args": [
+      "add",
+      "database-schema"
+    ],
+    "stdout": "Added database-schema\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "templates",
+    "args": [
+      "add",
+      "decision-record"
+    ],
+    "stdout": "Added decision-record\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "templates",
+    "args": [
+      "add",
+      "deployment-plan"
+    ],
+    "stdout": "Added deployment-plan\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "templates",
+    "args": [
+      "add",
+      "implementation-plan"
+    ],
+    "stdout": "Added implementation-plan\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "templates",
+    "args": [
+      "add",
+      "permission-matrix"
+    ],
+    "stdout": "Added permission-matrix\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "templates",
+    "args": [
+      "add",
+      "prd"
+    ],
+    "stdout": "Added prd\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "templates",
+    "args": [
+      "add",
+      "project-brief"
+    ],
+    "stdout": "Added project-brief\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "templates",
+    "args": [
+      "add",
+      "qa-test-plan"
+    ],
+    "stdout": "Added qa-test-plan\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "templates",
+    "args": [
+      "add",
+      "release-scope"
+    ],
+    "stdout": "Added release-scope\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "templates",
+    "args": [
+      "add",
+      "research-report"
+    ],
+    "stdout": "Added research-report\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "templates",
+    "args": [
+      "add",
+      "srs"
+    ],
+    "stdout": "Added srs\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "templates",
+    "args": [
+      "add",
+      "trd"
+    ],
+    "stdout": "Added trd\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "templates",
+    "args": [
+      "add",
+      "ui-system"
+    ],
+    "stdout": "Added ui-system\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "templates",
+    "args": [
+      "add",
+      "ux-flows"
+    ],
+    "stdout": "Added ux-flows\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "cases/client-portal",
+    "args": [
+      "start",
+      "--from",
+      "idea.md",
+      "--type",
+      "saas",
+      "--name",
+      "Client Portal",
+      "--users",
+      "Clients,Case managers",
+      "--features",
+      "Upload documents,Track case milestones,Request updates"
+    ],
+    "stdout": "BeforeCode context captured\nProject: Client Portal\nProject type: saas\nDocs path: docs\nCreated: 13\nSkipped: 0\n\nNext steps:\n1. Review docs/00-project-context.md\n2. Answer docs/01-open-questions.md\n3. Run npx beforecode score\n4. Run npx beforecode handoff\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "cases/client-portal",
+    "args": [
+      "check"
+    ],
+    "stdout": "BeforeCode check: SaaS product\n\n\u2713 project-brief.md\n\u2713 research-report.md\n\u2713 prd.md\n\u2713 ux-flows.md\n\u2713 trd.md\n\u2713 database-schema.md\n\u2713 api-documentation.md\n\u2713 permission-matrix.md\n\u2713 qa-test-plan.md\n\u2713 implementation-plan.md\n\u2713 deployment-plan.md\n\nReadiness: 100%\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "cases/client-portal",
+    "args": [
+      "score"
+    ],
+    "stdout": "BeforeCode readiness score: SaaS product\n\nProduct: 100%\nExperience: 100%\nEngineering: 100%\nQuality: 100%\nDelivery: 100%\n\nOverall: 100%\nStatus: Ready for implementation review.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "cases/client-portal",
+    "args": [
+      "handoff"
+    ],
+    "stdout": "BeforeCode AI handoff generated\nCreated: 2\nSkipped: 0\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "cases/client-portal",
+    "args": [
+      "doctor"
+    ],
+    "stdout": "BeforeCode doctor: SaaS product\nDocs folder: docs\nHealth: 70%\n\n\u2713 .beforecoderc.json exists\n\u2713 Required docs present: 11/11\n! Docs with enough content: 0/11\n\u2713 AI handoff files exist\n\nDocs needing attention:\n- 03-project-brief.md: low content depth, placeholder content remains\n- 04-research-report.md: low content depth, placeholder content remains\n- 05-prd.md: low content depth, placeholder content remains\n- 06-ux-flows.md: low content depth, placeholder content remains\n- 07-trd.md: low content depth, placeholder content remains\n- 08-database-schema.md: low content depth, placeholder content remains\n- 09-api-documentation.md: low content depth, placeholder content remains\n- 10-permission-matrix.md: low content depth, placeholder content remains\n- 11-qa-test-plan.md: low content depth, placeholder content remains\n- 12-implementation-plan.md: low content depth, placeholder content remains\n- 13-deployment-plan.md: low content depth, placeholder content remains\n\nNext steps:\n1. Replace placeholders and shallow sections in the docs needing attention.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "cases/agency-crm",
+    "args": [
+      "start",
+      "--from",
+      "idea.md",
+      "--type",
+      "crm",
+      "--name",
+      "Agency CRM",
+      "--users",
+      "Sales staff,Account managers",
+      "--features",
+      "Capture leads,Assign follow-ups,Track deal stages"
+    ],
+    "stdout": "BeforeCode context captured\nProject: Agency CRM\nProject type: crm\nDocs path: docs\nCreated: 11\nSkipped: 0\n\nNext steps:\n1. Review docs/00-project-context.md\n2. Answer docs/01-open-questions.md\n3. Run npx beforecode score\n4. Run npx beforecode handoff\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "cases/agency-crm",
+    "args": [
+      "check"
+    ],
+    "stdout": "BeforeCode check: CRM or operations system\n\n\u2713 business-requirements.md\n\u2713 research-report.md\n\u2713 prd.md\n\u2713 srs.md\n\u2713 permission-matrix.md\n\u2713 database-schema.md\n\u2713 api-documentation.md\n\u2713 qa-test-plan.md\n\u2713 implementation-plan.md\n\nReadiness: 100%\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "cases/agency-crm",
+    "args": [
+      "score"
+    ],
+    "stdout": "BeforeCode readiness score: CRM or operations system\n\nProduct: 100%\nExperience: 100%\nEngineering: 100%\nQuality: 100%\nDelivery: 100%\n\nOverall: 100%\nStatus: Ready for implementation review.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "cases/agency-crm",
+    "args": [
+      "handoff"
+    ],
+    "stdout": "BeforeCode AI handoff generated\nCreated: 2\nSkipped: 0\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "cases/agency-crm",
+    "args": [
+      "doctor"
+    ],
+    "stdout": "BeforeCode doctor: CRM or operations system\nDocs folder: docs\nHealth: 70%\n\n\u2713 .beforecoderc.json exists\n\u2713 Required docs present: 9/9\n! Docs with enough content: 0/9\n\u2713 AI handoff files exist\n\nDocs needing attention:\n- 03-business-requirements.md: low content depth, placeholder content remains\n- 04-research-report.md: low content depth, placeholder content remains\n- 05-prd.md: low content depth, placeholder content remains\n- 06-srs.md: low content depth, placeholder content remains\n- 07-permission-matrix.md: low content depth, placeholder content remains\n- 08-database-schema.md: low content depth, placeholder content remains\n- 09-api-documentation.md: low content depth, placeholder content remains\n- 10-qa-test-plan.md: low content depth, placeholder content remains\n- 11-implementation-plan.md: low content depth, placeholder content remains\n\nNext steps:\n1. Replace placeholders and shallow sections in the docs needing attention.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "cases/research-agent",
+    "args": [
+      "start",
+      "--from",
+      "idea.md",
+      "--type",
+      "ai-agent",
+      "--name",
+      "Research Agent",
+      "--users",
+      "Researchers,Editors",
+      "--features",
+      "Collect sources,Compare evidence,Draft summaries,Approve output"
+    ],
+    "stdout": "BeforeCode context captured\nProject: Research Agent\nProject type: ai-agent\nDocs path: docs\nCreated: 12\nSkipped: 0\n\nNext steps:\n1. Review docs/00-project-context.md\n2. Answer docs/01-open-questions.md\n3. Run npx beforecode score\n4. Run npx beforecode handoff\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "cases/research-agent",
+    "args": [
+      "check"
+    ],
+    "stdout": "BeforeCode check: AI agent\n\n\u2713 project-brief.md\n\u2713 research-report.md\n\u2713 prd.md\n\u2713 trd.md\n\u2713 database-schema.md\n\u2713 api-documentation.md\n\u2713 permission-matrix.md\n\u2713 qa-test-plan.md\n\u2713 implementation-plan.md\n\u2713 deployment-plan.md\n\nReadiness: 100%\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "cases/research-agent",
+    "args": [
+      "score"
+    ],
+    "stdout": "BeforeCode readiness score: AI agent\n\nProduct: 100%\nExperience: 100%\nEngineering: 100%\nQuality: 100%\nDelivery: 100%\n\nOverall: 100%\nStatus: Ready for implementation review.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "cases/research-agent",
+    "args": [
+      "handoff"
+    ],
+    "stdout": "BeforeCode AI handoff generated\nCreated: 2\nSkipped: 0\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "cases/research-agent",
+    "args": [
+      "doctor"
+    ],
+    "stdout": "BeforeCode doctor: AI agent\nDocs folder: docs\nHealth: 70%\n\n\u2713 .beforecoderc.json exists\n\u2713 Required docs present: 10/10\n! Docs with enough content: 0/10\n\u2713 AI handoff files exist\n\nDocs needing attention:\n- 03-project-brief.md: low content depth, placeholder content remains\n- 04-research-report.md: low content depth, placeholder content remains\n- 05-prd.md: low content depth, placeholder content remains\n- 06-trd.md: low content depth, placeholder content remains\n- 07-database-schema.md: low content depth, placeholder content remains\n- 08-api-documentation.md: low content depth, placeholder content remains\n- 09-permission-matrix.md: low content depth, placeholder content remains\n- 10-qa-test-plan.md: low content depth, placeholder content remains\n- 11-implementation-plan.md: low content depth, placeholder content remains\n- 12-deployment-plan.md: low content depth, placeholder content remains\n\nNext steps:\n1. Replace placeholders and shallow sections in the docs needing attention.\n",
+    "stderr": ""
+  }
+]

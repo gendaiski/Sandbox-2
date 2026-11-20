@@ -1,0 +1,49 @@
+{
+  "name": "beforecode",
+  "version": "0.2.0",
+  "description": "Spec-first project planning toolkit for humans and AI coding agents.",
+  "type": "module",
+  "bin": {
+    "beforecode": "bin/beforecode.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BAKUGOS1/beforecode.git"
+  },
+  "homepage": "https://github.com/BAKUGOS1/beforecode#readme",
+  "bugs": {
+    "url": "https://github.com/BAKUGOS1/beforecode/issues"
+  },
+  "scripts": {
+    "cli": "node ./bin/beforecode.js",
+    "test": "node --test",
+    "test:cli": "node ./bin/beforecode.js help && node ./bin/beforecode.js list",
+    "prepublishOnly": "node ./scripts/verify-package.mjs"
+  },
+  "files": [
+    "assets",
+    "bin",
+    "src",
+    "templates",
+    "checklists",
+    "prompts",
+    "docs/cli-usage.md",
+    "examples",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "prd",
+    "documentation",
+    "project-planning",
+    "software-architecture",
+    "ai-coding",
+    "qa",
+    "cli"
+  ],
+  "author": "Mohit Kumar",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
