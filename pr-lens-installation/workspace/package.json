@@ -1,0 +1,23 @@
+{
+  "name": "@coldtea/pr-lens-browser-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test test/*.test.mjs",
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "@coldtea/pr-lens-renderer": "workspace:*",
+    "@coldtea/pr-lens-schema": "workspace:*",
+    "zod": "^4.6.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.0",
+    "typescript": "7.0.2",
+    "esbuild": "0.28.2"
+  }
+}
