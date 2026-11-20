@@ -1,0 +1,218 @@
+{
+  "review_date": "2026-11-20",
+  "upstream_commit": "d4345141e02054bafb8987ce0012123ca528a528",
+  "saved_implementation_commit": "4357f5ea8d81d769c36b2ea7cf1722509beb7201",
+  "files": [
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "sha256": "93fbd7aef42c17750a0fe25e228f951c60015f01984cd86c47a87f874c4befec",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "93fbd7aef42c17750a0fe25e228f951c60015f01984cd86c47a87f874c4befec"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "sha256": "6f25565c0c2329db1d500fea3aba6ab63b28fa9bd1420200f87159645d4760c3",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "6f25565c0c2329db1d500fea3aba6ab63b28fa9bd1420200f87159645d4760c3"
+    },
+    {
+      "path": "Dockerfile",
+      "sha256": "70f469a6f2d06ac2f0350abc027b26879e47e7de255afb424cdaab9ba9aee29c",
+      "origin": "installation adapter or modified source",
+      "upstream_sha256": "d44ef9354ac234442467b68361cd772104d4834058cd62ac14aebe5e5ca97708"
+    },
+    {
+      "path": "README.ko.md",
+      "sha256": "3a3e3bc910eb81183e95dd45da2e194f39016ac0ecca07cc34f09a0efa9ce37c",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "3a3e3bc910eb81183e95dd45da2e194f39016ac0ecca07cc34f09a0efa9ce37c"
+    },
+    {
+      "path": "README.md",
+      "sha256": "8697b5cf749519d32121688a38fae3ee8ae445ae1b352cf4043f92f4de6fb571",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "8697b5cf749519d32121688a38fae3ee8ae445ae1b352cf4043f92f4de6fb571"
+    },
+    {
+      "path": "SECURITY.md",
+      "sha256": "21633b0998429ce920bc8e0d6781b6373aa744b46567aa15b39a171a9afeada8",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "21633b0998429ce920bc8e0d6781b6373aa744b46567aa15b39a171a9afeada8"
+    },
+    {
+      "path": "brain/jarvis_brain/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "brain/jarvis_brain/cli.py",
+      "sha256": "5feeee7e812a60a62d0aad841c2d702e7cc569f2c3bf9922f2ceed3b2091992d",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "5feeee7e812a60a62d0aad841c2d702e7cc569f2c3bf9922f2ceed3b2091992d"
+    },
+    {
+      "path": "brain/jarvis_brain/config.py",
+      "sha256": "fb283999deca3ee2600987110b5acec1dc8bf70e9043cdc3431f863f3c0c082e",
+      "origin": "installation adapter or modified source",
+      "upstream_sha256": "f9c895b0299a28f9338da2836aea6742443d6aa971702496afd848e43a553d66"
+    },
+    {
+      "path": "brain/jarvis_brain/demo_server.py",
+      "sha256": "8581b2b9725e102bdff3d2e960868686ed2e30102fe2530ae51ff8d5b3c3de3b",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "8581b2b9725e102bdff3d2e960868686ed2e30102fe2530ae51ff8d5b3c3de3b"
+    },
+    {
+      "path": "brain/jarvis_brain/entities.py",
+      "sha256": "c0ab78167c4ce0b4add70e29263d44cbb436644ec619c7a9795bf4ae78fdf0c3",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "c0ab78167c4ce0b4add70e29263d44cbb436644ec619c7a9795bf4ae78fdf0c3"
+    },
+    {
+      "path": "brain/jarvis_brain/event_emitter.py",
+      "sha256": "9cad31782f62f5de2eb82a9d4b05debdf9201b7a436849465abeb1dfa93e6500",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "9cad31782f62f5de2eb82a9d4b05debdf9201b7a436849465abeb1dfa93e6500"
+    },
+    {
+      "path": "brain/jarvis_brain/mcp_server.py",
+      "sha256": "a1c3dddbd291f2d7ba898f0c3a1aadc2b51f9fcadaf11473550a64bca13f9192",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "a1c3dddbd291f2d7ba898f0c3a1aadc2b51f9fcadaf11473550a64bca13f9192"
+    },
+    {
+      "path": "brain/jarvis_brain/memory.py",
+      "sha256": "4899d240ee1532d2008ec8dce3a576c180d1d0fbf748e8e78ef9e9950b2c41bb",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "4899d240ee1532d2008ec8dce3a576c180d1d0fbf748e8e78ef9e9950b2c41bb"
+    },
+    {
+      "path": "brain/jarvis_brain/schemas.py",
+      "sha256": "69aff081b42c1c176acabbeae779675db76698d547915a5524377bc42766f8da",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "69aff081b42c1c176acabbeae779675db76698d547915a5524377bc42766f8da"
+    },
+    {
+      "path": "brain/pyproject.toml",
+      "sha256": "1befec156d9ba0381352234ef95a1abcb90f4aecc0f0fc8edbb6b3539d8656e1",
+      "origin": "installation adapter or modified source",
+      "upstream_sha256": "c8fb2db674a6d6c930bba83cfa1924a3757280c4d8d55167825edf5f0d8b2163"
+    },
+    {
+      "path": "brain/tests/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "brain/tests/test_brain_lite.py",
+      "sha256": "2a676c6c0b8c429660cc6cc3be78731e893016faebcb667cdec01bf9c9436db0",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "2a676c6c0b8c429660cc6cc3be78731e893016faebcb667cdec01bf9c9436db0"
+    },
+    {
+      "path": "brain/tests/test_safety.py",
+      "sha256": "e66e570e13b33f99fb8a2c65d3238dd9fedf8b84765b3890cf8489a113c52528",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "e66e570e13b33f99fb8a2c65d3238dd9fedf8b84765b3890cf8489a113c52528"
+    },
+    {
+      "path": "docs/plans/2026-03-16-brain-visualizer-design.md",
+      "sha256": "92992d0bdab459ab5fce7d9ddf20f80ae3e5e9024b59b913b22094c4dabe1e5e",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "92992d0bdab459ab5fce7d9ddf20f80ae3e5e9024b59b913b22094c4dabe1e5e"
+    },
+    {
+      "path": "docs/plans/2026-03-16-implementation-plan.md",
+      "sha256": "4b6cfcc05a7214af4a47400a7b07eee36ca37c0855a7246fbc9271e8aee08ecd",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "4b6cfcc05a7214af4a47400a7b07eee36ca37c0855a7246fbc9271e8aee08ecd"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-03-22-orb-quality-buildup-design.md",
+      "sha256": "e0568bd4eed8ab3d852b9b7cb3752d7509f2445d787d96d4f21a3184bd1aff05",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "e0568bd4eed8ab3d852b9b7cb3752d7509f2445d787d96d4f21a3184bd1aff05"
+    },
+    {
+      "path": "install.ps1",
+      "sha256": "9263927918bfabda279cbb79ca3dc20bb115ff6c3c8537aa46c28a849ce8d9be",
+      "origin": "installation adapter or modified source",
+      "upstream_sha256": "3c01f07aa75a789e175611d7b1aec0060aa634f4d36fc0a8caae76b54d13d837"
+    },
+    {
+      "path": "install.sh",
+      "sha256": "a8cd5f1b45fc702d576043c7659b0231ea0e922dd620b07d64ff9dfc70c72e27",
+      "origin": "installation adapter or modified source",
+      "upstream_sha256": "127f227ed43fcf665d75350e68a7c713cd3716651614fb6be49b36cfe55b0908"
+    },
+    {
+      "path": "orb/index.html",
+      "sha256": "92876fdc4b6bebd99996c7afc9c731ddc2ff6d7e6a45e44674ccf39cc6f233d3",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "92876fdc4b6bebd99996c7afc9c731ddc2ff6d7e6a45e44674ccf39cc6f233d3"
+    },
+    {
+      "path": "orb/package.json",
+      "sha256": "7d2f86749704e4db7bf82a1beae09ef7de492b3c75d3bc7b570ad16ba3052c89",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "7d2f86749704e4db7bf82a1beae09ef7de492b3c75d3bc7b570ad16ba3052c89"
+    },
+    {
+      "path": "orb/src/events.js",
+      "sha256": "dff857ae2ec3bd12c1a5b74550c47241424205891e8f7a3584f6d23438690d16",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "dff857ae2ec3bd12c1a5b74550c47241424205891e8f7a3584f6d23438690d16"
+    },
+    {
+      "path": "orb/src/log.js",
+      "sha256": "dbededbf7ae819e90fb930e748e0dd145daa3b805902101502b499dfe98003f7",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "dbededbf7ae819e90fb930e748e0dd145daa3b805902101502b499dfe98003f7"
+    },
+    {
+      "path": "orb/src/main.js",
+      "sha256": "a4964caca5b09167b6fc22c6634d5ca82f2bede8a9b7d6a550f2ad585facb11d",
+      "origin": "installation adapter or modified source",
+      "upstream_sha256": "99a25b1e685eea62f20a1becb045d24ab58d994e47a5134bdad66ad1e5ed2f94"
+    },
+    {
+      "path": "orb/src/orb.js",
+      "sha256": "82c6799db68aca93535af8e2404a5c80c1b5cd8985e1f4c289ced94a822d847d",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "82c6799db68aca93535af8e2404a5c80c1b5cd8985e1f4c289ced94a822d847d"
+    },
+    {
+      "path": "orb/src-tauri/Cargo.toml",
+      "sha256": "e354d341a6c97c064504b54a152291005c70b78b1b3a457587daa456e9f51af4",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "e354d341a6c97c064504b54a152291005c70b78b1b3a457587daa456e9f51af4"
+    },
+    {
+      "path": "orb/src-tauri/src/main.rs",
+      "sha256": "bf4ff6369b90fd831e544bf617ec205675ac843ed7a27192345647c6f8f2c722",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "bf4ff6369b90fd831e544bf617ec205675ac843ed7a27192345647c6f8f2c722"
+    },
+    {
+      "path": "orb/src-tauri/tauri.conf.json",
+      "sha256": "2f3ad3ffbe1837de9f3da41113aa83083bb970319419e0754de93235f0894a85",
+      "origin": "upstream unchanged",
+      "upstream_sha256": "2f3ad3ffbe1837de9f3da41113aa83083bb970319419e0754de93235f0894a85"
+    },
+    {
+      "path": "web-preview/index.html",
+      "sha256": "ce865e5c37bfd581ce33dda2dacdf8f879fc59ce5261483b9290814a3e07004c",
+      "origin": "installation adapter or modified source",
+      "upstream_sha256": null
+    },
+    {
+      "path": "web-preview/src/website.js",
+      "sha256": "7cafee022fa4d2ef0567641fc073082d3992d96fb098a63cbe1127b9565de99d",
+      "origin": "installation adapter or modified source",
+      "upstream_sha256": null
+    }
+  ],
+  "original_website_snapshot_sha256": "482d8cf424a0a603079ec9573c485dabcc4306e733372436ea8ba42c407dec85"
+}

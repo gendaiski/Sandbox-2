@@ -1,0 +1,149 @@
+diff --git a/Dockerfile b/Dockerfile
+index 8d9cc79..69b6fff 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -2,9 +2,9 @@ FROM python:3.12-slim
+ 
+ WORKDIR /app
+ 
+-COPY brain/pyproject.toml brain/
+-RUN pip install --no-cache-dir aiosqlite "fastmcp>=0.1.0" "websockets>=12.0,<15.0"
+-
+-COPY brain/jarvis_brain brain/jarvis_brain
++COPY brain brain/
++RUN pip install --no-cache-dir ./brain
++ENV JARVIS_BRAIN_DIR=/data
++VOLUME ["/data"]
+ 
+ ENTRYPOINT ["python", "-m", "jarvis_brain.mcp_server"]
+diff --git a/brain/jarvis_brain/config.py b/brain/jarvis_brain/config.py
+index 859ebb5..3c00a1f 100644
+--- a/brain/jarvis_brain/config.py
++++ b/brain/jarvis_brain/config.py
+@@ -2,9 +2,9 @@
+ import os
+ from pathlib import Path
+ 
+-BRAIN_DIR = Path.home() / ".jarvis-orb"
++BRAIN_DIR = Path(os.environ.get("JARVIS_BRAIN_DIR", Path.home() / ".jarvis-orb"))
+ DB_PATH = BRAIN_DIR / "brain.db"
+-WS_PORT = 9321
++WS_PORT = int(os.environ.get("JARVIS_WS_PORT", "9321"))
+ 
+ 
+ def ensure_dirs():
+diff --git a/brain/pyproject.toml b/brain/pyproject.toml
+index 4c21482..b6a0a83 100644
+--- a/brain/pyproject.toml
++++ b/brain/pyproject.toml
+@@ -5,7 +5,7 @@ description = "Lightweight AI memory brain with MCP server"
+ requires-python = ">=3.11"
+ dependencies = [
+     "aiosqlite>=0.20.0",
+-    "mcp>=1.0.0",
++    "mcp>=1.0.0,<2.0.0",
+     "websockets>=12.0,<15.0",
+ ]
+ 
+diff --git a/install.ps1 b/install.ps1
+index 73c3037..7d7ff15 100644
+--- a/install.ps1
++++ b/install.ps1
+@@ -58,7 +58,7 @@ New-Item -ItemType Directory -Force -Path $BrainDir | Out-Null
+ New-Item -ItemType Directory -Force -Path $BrainBin | Out-Null
+ 
+ Write-Info "Installing dependencies..."
+-$pipOutput = python -m pip install --target "$BrainDir\lib" aiosqlite websockets mcp 2>&1
++$pipOutput = python -m pip install --target "$BrainDir\lib" "aiosqlite>=0.20.0" "websockets>=12.0,<15.0" "mcp>=1.0.0,<2.0.0" 2>&1
+ if ($LASTEXITCODE -ne 0) {
+     Write-Host "  Dependency install failed. Check your Python/pip setup." -ForegroundColor Red
+     Write-Info ($pipOutput | Out-String)
+diff --git a/install.sh b/install.sh
+index 2953303..422fec8 100755
+--- a/install.sh
++++ b/install.sh
+@@ -113,7 +113,7 @@ step "Installing Brain Lite"
+ mkdir -p "$BRAIN_DIR" "$BRAIN_BIN"
+ chmod 700 "$BRAIN_DIR"
+ 
+-if ! $PIP_CMD --target "$BRAIN_DIR/lib" aiosqlite websockets mcp >/dev/null 2>&1; then
++if ! $PIP_CMD --target "$BRAIN_DIR/lib" 'aiosqlite>=0.20.0' 'websockets>=12.0,<15.0' 'mcp>=1.0.0,<2.0.0' >/dev/null 2>&1; then
+   echo -e "  ${RED}Dependency install failed. Check your Python/pip setup.${R}"
+   exit 1
+ fi
+diff --git a/orb/src/main.js b/orb/src/main.js
+index 0488c02..fde16ad 100644
+--- a/orb/src/main.js
++++ b/orb/src/main.js
+@@ -11,19 +11,27 @@ const bridge = new EventBridge(orb, logPanel);
+ 
+ // Window drag — manual implementation for decoration-less window
+ const dragRegion = document.getElementById('drag-region');
+-const appWindow = getCurrentWindow();
++const appWindow = window.__TAURI_INTERNALS__ ? getCurrentWindow() : null;
++if (!appWindow) {
++  document.getElementById('ctx-reset-pos').hidden = true;
++  document.getElementById('ctx-quit').hidden = true;
++  // A desktop-sized renderer must not be stretched across a browser viewport.
++  Object.assign(canvas.style, { width: '220px', height: '220px', margin: 'auto' });
++  Object.assign(document.body.style, { display: 'grid', placeItems: 'center', background: '#050507' });
++}
++orb.resize(canvas.clientWidth, canvas.clientHeight);
+ 
+ dragRegion.addEventListener('mousedown', async (e) => {
+   if (e.detail === 2) {
+     logPanel.toggle();
+     return;
+   }
+-  await appWindow.startDragging();
++  await appWindow?.startDragging();
+ });
+ 
+ // Resize handling
+ window.addEventListener('resize', () => {
+-  orb.resize(window.innerWidth, window.innerHeight);
++  orb.resize(canvas.clientWidth, canvas.clientHeight);
+ });
+ 
+ // Context menu
+@@ -49,15 +57,24 @@ document.getElementById('ctx-log').addEventListener('click', () => {
+ 
+ document.getElementById('ctx-reset-pos').addEventListener('click', async () => {
+   const { LogicalPosition } = await import('@tauri-apps/api/dpi');
+-  await appWindow.setPosition(new LogicalPosition(50, 50));
++  await appWindow?.setPosition(new LogicalPosition(50, 50));
+ });
+ 
+ document.getElementById('ctx-quit').addEventListener('click', async () => {
+-  await appWindow.close();
++  await appWindow?.close();
+ });
+ 
+ // WebSocket connection (optional — for Brain Lite)
+-bridge.connectWebSocket('ws://localhost:9321');
++const demoMode = !appWindow && new URLSearchParams(location.search).get('demo') === '1';
++if (demoMode) {
++  const notice = document.createElement('div');
++  notice.textContent = 'Animation demo · Brain is not connected';
++  Object.assign(notice.style, { position: 'fixed', top: '12px', left: '12px', color: '#aaa', font: '12px sans-serif', zIndex: '10' });
++  document.body.appendChild(notice);
++  // No automatic synthetic events. The separate website preview has explicit controls.
++} else {
++  bridge.connectWebSocket(import.meta.env.VITE_BRAIN_WS_URL || 'ws://localhost:9321');
++}
+ 
+ // Start render loop
+ orb.animate();
+diff --git a/orb/vite.config.js b/orb/vite.config.js
+index 742a619..67fe42c 100644
+--- a/orb/vite.config.js
++++ b/orb/vite.config.js
+@@ -8,7 +8,7 @@ export default defineConfig({
+   },
+   envPrefix: ["VITE_", "TAURI_"],
+   build: {
+-    target: ["es2021", "chrome100", "safari13"],
++    target: ["es2022", "chrome110", "safari16"],
+     minify: !process.env.TAURI_DEBUG ? "esbuild" : false,
+     sourcemap: !!process.env.TAURI_DEBUG,
+   },
