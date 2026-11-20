@@ -1,0 +1,26 @@
+diff --git a/frontend/src/i18n/translations/en.json b/frontend/src/i18n/translations/en.json
+index c64e34a..7df7a77 100644
+--- a/frontend/src/i18n/translations/en.json
++++ b/frontend/src/i18n/translations/en.json
+@@ -33,7 +33,7 @@
+       "loggingIn": "Logging in...",
+       "registerLink": "Don't have an account?",
+       "registerLinkAction": "Register now",
+-      "defaultAdminHint": "Default admin account: admin / admin123",
++      "defaultAdminHint": "Use the administrator credentials configured for this installation.",
+       "loginFailedDefault": "Login failed, please check username and password"
+     },
+     "register": {
+diff --git a/frontend/src/i18n/translations/zh.json b/frontend/src/i18n/translations/zh.json
+index 0c96679..f41ec6d 100644
+--- a/frontend/src/i18n/translations/zh.json
++++ b/frontend/src/i18n/translations/zh.json
+@@ -33,7 +33,7 @@
+       "loggingIn": "正在登录...",
+       "registerLink": "还没有账号？",
+       "registerLinkAction": "立即注册",
+-      "defaultAdminHint": "默认管理员账号：admin / admin123",
++      "defaultAdminHint": "请使用此安装配置的管理员账号和密码。",
+       "loginFailedDefault": "登录失败，请检查用户名和密码"
+     },
+     "register": {
