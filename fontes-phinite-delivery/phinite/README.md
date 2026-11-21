@@ -24,7 +24,7 @@ Graph edits are design settings. The sample execution implements the documented 
 
 ## Run or share
 
-Open `index.html` in a modern browser, or serve this folder with `python3 -m http.server 8080`. The three application files are index.html, style.css and app.js; keep them together. `Phinite-Experience.html` in the delivery package combines them into one portable HTML.
+Open `index.html` in a modern browser, or serve this folder with `python3 -m http.server 8080`. Keep index.html, app.js, studio.js, blueprint.js, style.css, studio.css and blueprint.css together. The delivery includes Phinite-Blueprint-Experience.html, which bundles these files into one portable HTML.
 
 ## Validation — 2026-11-20
 
@@ -41,3 +41,12 @@ The native components now reproduce the documented structure: full workspace can
 The populated legal case and its labels differ from the Google Maps example in the documentation. Public reference screenshots were visually inspected; this is not a claim of a pixel-perfect comparison against an authenticated production Phinite session. No official application source code was available or copied.
 
 New interactions: add master/child/tool/end blocks; attach/detach the sample knowledge collection, tool and session variables; node detail mode; position lock; arrange blocks; undo/redo; filter and export logs. Existing graph designs are backed up to a local version before the first design migration. Styling does not change the frontend-only execution scope.
+
+
+## Blueprint revision — 2026-11-21
+
+Open the revised studio directly: https://phinite-experience.vercel.app/#graph
+
+Cards now align in rows with consistent spacing. Connections use right-angle routes that avoid cards, with directional handles and readable labels. Select an arrow to rename or delete it. Drag output handles to input handles to connect blocks. **Arrange** restores a clean blueprint layout, **Fit** shows the whole flow, and **+ / −** change zoom. Drag blank canvas space to pan. Ctrl/Cmd-wheel zooms around the pointer; **0** fits; Ctrl/Cmd-Z and Shift-Ctrl/Cmd-Z undo/redo; Escape cancels connection mode. Existing designs are backed up under Environments before the first rearrangement.
+
+The reference card styling is retained. Orthogonal routing is the requested blueprint variation of Phinite's original curved connectors. See REFERENCE-AUDIT.md for reviewed documentation, visual fidelity boundaries, functionality scope and verification. The deterministic case remains frontend-only; this revision does not claim a proprietary backend or pixel-perfect private-app clone.
